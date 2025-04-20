@@ -89,3 +89,33 @@ class Axes:
             elements.append(f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" font-size="12" font-family="{font}">{round(x_val, 2)}</text>')
 
         return "\n".join(elements)
+
+def grid(figures, rows=1, cols=1, gap=20):
+    """
+    Arrange multiple Figures into a grid layout and return a single HTML string.
+    
+    Args:
+        figures (list[Figure]): List of glyphx.Figure instances
+        rows (int): Number of rows
+        cols (int): Number of columns
+        gap (int): Padding between charts in pixels
+
+    Returns:
+        str: Full HTML page string with all SVGs embedded
+    """
+    from .utils import wrap_svg_with_template
+
+    svg_blocks = []
+    idx = 0
+    for r in range(rows):
+        row = []
+        for c in range(cols):
+            if idx < len(figures):
+                svg = figures[idx].render_svg()
+                row.append(f'<div style="margin:{gap}px">{svg}</div>')
+                idx += 1
+        row_html = '<div style="display:flex">' + "".join(row) + '</div>'
+        svg_blocks.append(row_html)
+
+    grid_html = "<div>" + "".join(svg_blocks) + "</div>"
+    return wrap_svg_with_template(grid_html)
