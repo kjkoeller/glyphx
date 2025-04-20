@@ -41,7 +41,7 @@ __all__ = [
     "themes",
     "normalize",
     "plot",
-    "LineSeries,
+    "LineSeries",
     "BarSeries",
     "ScatterSeries",
     "PieSeries",
