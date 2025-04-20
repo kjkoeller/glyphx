@@ -1,7 +1,3 @@
-# Version
-from .version import __version__
-__version__ = version.__version__
-
 from .figure import Figure
 from .layout import Axes, grid
 from .themes import themes
@@ -33,3 +29,33 @@ from .facet_plot import facet_plot
 from .pairplot import pairplot
 from .jointplot import jointplot
 from .lmplot import lmplot
+
+# Version
+from .version import __version__
+__version__ = version.__version__
+
+__all__ = [
+    "Figure",
+    "Axes",
+    "grid",
+    "themes",
+    "normalize",
+    "plot",
+    "LineSeries,
+    "BarSeries",
+    "ScatterSeries",
+    "PieSeries",
+    "DonutSeries",
+    "HistogramSeries",
+    "HeatmapSeries",
+    "BoxPlotSeries",
+    "GroupedBarSeries",
+    "ViolinPlotSeries",
+    "SwarmPlotSeries",
+    "CountPlotSeries",
+    "face_plot",
+    "pairplot",
+    "jointplot",
+    "lmplot"
+]
+
