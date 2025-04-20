@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+import tempfile
+import webbrowser
 
 def normalize(data):
     import numpy as np
@@ -39,3 +41,20 @@ def write_svg_file(svg_string: str, filename: str):
             raise RuntimeError("To export as PNG/JPG, install cairosvg: pip install cairosvg")
     else:
         raise ValueError(f"Unsupported file extension: {ext}")
+
+
+def in_jupyter():
+    try:
+        from IPython import get_ipython
+        return "IPKernelApp" in get_ipython().config
+    except Exception:
+        return False
+
+def in_cli_or_ide():
+    return not in_jupyter()
+
+def render_cli(svg_string):
+    path = tempfile.mktemp(suffix=".html")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(f"<html><body>{svg_string}</body></html>")
+    webbrowser.open(f"file://{path}")
