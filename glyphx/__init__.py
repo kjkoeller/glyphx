@@ -32,7 +32,7 @@ from .lmplot import lmplot
 
 # Version
 from .version import __version__
-__version__ = version.__version__
+# __version__ = version.__version__
 
 __all__ = [
     "Figure",
@@ -53,7 +53,7 @@ __all__ = [
     "ViolinPlotSeries",
     "SwarmPlotSeries",
     "CountPlotSeries",
-    "face_plot",
+    "facet_plot",
     "pairplot",
     "jointplot",
     "lmplot"
