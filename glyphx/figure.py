@@ -2,7 +2,6 @@ import os
 import webbrowser
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from IPython.display import SVG, display as jupyter_display
 from .layout import Axes
 from .utils import wrap_svg_with_template, write_svg_file
 
@@ -52,6 +51,7 @@ class Figure:
             tmp_path.close()
             webbrowser.open(f"file://{tmp_path.name}")
         else:
+            from IPython.display import SVG, display as jupyter_display
             # Jupyter
             jupyter_display(SVG(svg_string))
 
