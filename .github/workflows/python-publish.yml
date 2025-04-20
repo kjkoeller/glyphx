@@ -32,7 +32,7 @@ jobs:
         python -m pip install --upgrade setuptools
         pip install build
         pip install setuptools  # Add this line to install setuptools
-        pip install
+        pip install .
     - name: Build package
       run: python -m build
     - name: Publish package
