@@ -32,7 +32,7 @@ from .lmplot import lmplot
 
 # Version
 from .version import __version__
-__version__ = version.__version__
+__version__ = "v1.1.0"
 
 __all__ = [
     "Figure",
