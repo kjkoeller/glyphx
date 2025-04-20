@@ -1,3 +1,5 @@
+from .version import __version__
+
 from .figure import Figure
 from .layout import Axes, grid
 from .themes import themes
@@ -30,10 +32,6 @@ from .pairplot import pairplot
 from .jointplot import jointplot
 from .lmplot import lmplot
 
-# Version
-# from .version import __version__
-__version__ = "1.1.0" # version.__version__
-
 __all__ = [
     "Figure",
     "Axes",
@@ -58,4 +56,3 @@ __all__ = [
     "jointplot",
     "lmplot"
 ]
-
