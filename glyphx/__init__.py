@@ -31,8 +31,8 @@ from .jointplot import jointplot
 from .lmplot import lmplot
 
 # Version
-from .version import __version__
-__version__ = "v1.1.0" # version.__version__
+# from .version import __version__
+__version__ = "1.1.0" # version.__version__
 
 __all__ = [
     "Figure",
