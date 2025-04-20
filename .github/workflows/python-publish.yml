@@ -24,6 +24,8 @@ jobs:
         python -m pip install --upgrade setuptools
         pip install build
         pip install setuptools  # Add this line to install setuptools
+    - name: Clean up previous builds
+      run: rm -rf build dist *.egg-info
     - name: Build package
       run: python -m build
     - name: Publish package
