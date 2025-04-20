@@ -43,17 +43,21 @@ class Figure:
         return "\n".join(svg_parts)
 
     def _display(self, svg_string):
-        if os.environ.get("DISPLAY") is None:
-            # CLI or IDE - write to temp file and open
-            tmp_path = NamedTemporaryFile(delete=False, suffix=".html")
-            html = wrap_svg_with_template(svg_string)
-            tmp_path.write(html.encode("utf-8"))
-            tmp_path.close()
-            webbrowser.open(f"file://{tmp_path.name}")
-        else:
-            from IPython.display import SVG, display as jupyter_display
-            # Jupyter
-            jupyter_display(SVG(svg_string))
+        try:
+            from IPython import get_ipython
+            ip = get_ipython()
+            if ip is not None and "IPKernelApp" in ip.config:
+                from IPython.display import SVG, display as jupyter_display
+                return jupyter_display(SVG(svg_string))
+        except Exception:
+            pass
+
+        # fallback: CLI or IDE
+        html = wrap_svg_with_template(svg_string)
+        tmp_file = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
+        tmp_file.write(html)
+        tmp_file.close()
+        webbrowser.open(f"file://{tmp_file.name}")
 
     def show(self):
         svg = self.render_svg()
@@ -66,3 +70,8 @@ class Figure:
     def plot(self):
         if self.auto_display:
             self.show()
+
+    def __repr__(self):
+        if self.auto_display:
+            self.show()
+        return f"<glyphx.Figure with {len(self.series)} series>"
