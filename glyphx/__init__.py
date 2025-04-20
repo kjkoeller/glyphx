@@ -1,3 +1,7 @@
+# Version
+from .version import __version__
+__version__ = version.__version__
+
 from .figure import Figure
 from .layout import Axes, grid
 from .themes import themes
