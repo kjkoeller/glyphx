@@ -47,6 +47,7 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
 
     # Determine the input values to use
     if kind in {"pie", "donut", "hist", "box", "heatmap"}:
+        values = data if data is not None else y if y is not None else x
         if hasattr(values, "values"):  # pandas
             values = values.values
         values = np.asarray(values).flatten()
