@@ -36,7 +36,7 @@ class Figure:
     def render_svg(self):
         self.axes.finalize()
         svg_parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">'
+            f'<svg id="glyphx-chart" xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">'
         ]
 
         if self.title:
