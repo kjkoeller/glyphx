@@ -17,14 +17,14 @@ def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
                 sub_df[hue] = df[hue]
 
             if i == j:
-            if diag_kind == "kde":
-                from scipy.stats import gaussian_kde
-                import numpy as np
-                values = df[xcol].dropna()
-                kde = gaussian_kde(values)
-                x_vals = np.linspace(values.min(), values.max(), 100)
-                y_vals = kde(x_vals)
-                ax.add(LineSeries(x_vals, y_vals, color="#1f77b4"))
+                if diag_kind == "kde":
+                    from scipy.stats import gaussian_kde
+                    import numpy as np
+                    values = df[xcol].dropna()
+                    kde = gaussian_kde(values)
+                    x_vals = np.linspace(values.min(), values.max(), 100)
+                    y_vals = kde(x_vals)
+                    ax.add(LineSeries(x_vals, y_vals, color="#1f77b4"))
 
                 if diag_kind == "hist":
                     ax.add(HistogramSeries(df[xcol], color="#1f77b4"))
