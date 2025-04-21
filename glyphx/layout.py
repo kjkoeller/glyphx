@@ -11,6 +11,10 @@ class Axes:
         self._y_domain = None
         self._y2_domain = None
 
+    def add(self, series, use_y2=False):
+        """Allow Axes to accept series directly (like figure.add)."""
+        self.add_series(series, use_y2=use_y2)
+
     def add_series(self, series, use_y2=False):
         if use_y2:
             self.y2_series.append(series)
