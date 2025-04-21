@@ -45,7 +45,7 @@ def jointplot(df, x, y, kind="scatter", marginal="hist", theme="default", hue=No
     if kind == "scatter":
         ax_main.add(ScatterSeries(df[x], df[y], color="#1f77b4"))
     elif kind == "kde":
-        
+        pass
     elif kind == "hexbin":
         import matplotlib.pyplot as plt
         import io
