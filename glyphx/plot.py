@@ -23,7 +23,11 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
     color = kwargs.pop("color", None)
     label = kwargs.pop("label", None)
 
-    fig = Figure(**kwargs)
+    # Separate known Figure-only arguments
+    figure_keys = {"width", "height", "padding", "title", "theme", "auto_display"}
+    figure_kwargs = {k: kwargs.pop(k) for k in list(kwargs) if k in figure_keys}
+
+    fig = Figure(**figure_kwargs)
 
     # Normalize input
     if kind in {"pie", "donut", "hist", "box", "heatmap"}:
