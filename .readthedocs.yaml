@@ -1,0 +1,15 @@
+version: 2
+# see this website for other commands https://docs.readthedocs.io/en/stable/config-file/v2.html
+# Set the version of Python and other tools you might need
+build:
+  os: "ubuntu-22.04" # can no longer use build.image but must be build.os
+  tools:
+    python: "3.8"
+
+python:
+  install:
+    - requirements: requirements.txt
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
