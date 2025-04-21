@@ -4,9 +4,9 @@ from .series import (
     PieSeries, DonutSeries, HistogramSeries,
     BoxPlotSeries, HeatmapSeries
 )
+import numpy as np
 
-
-def plot(x=None, y=None, kind="line", **kwargs):
+def plot(x=None, y=None, kind="line", data=None, **kwargs):
     """
     Unified high-level plot entry point for all major chart types.
 
@@ -27,7 +27,12 @@ def plot(x=None, y=None, kind="line", **kwargs):
 
     # Normalize input
     if kind in {"pie", "donut", "hist", "box", "heatmap"}:
-        data = y if y is not None else x
+        values = data if data is not None else y if y is not None else x
+        if hasattr(values, "values"):  # pandas
+            values = values.values
+        values = np.asarray(values).flatten()
+        if not np.issubdtype(values.dtype, np.number):
+            raise TypeError(f"Histogram/Box/Heatmap input must be numeric. Got {values.dtype}")
     else:
         if y is None:
             y = x
@@ -41,15 +46,15 @@ def plot(x=None, y=None, kind="line", **kwargs):
     elif kind == "scatter":
         series = ScatterSeries(x, y, color=color, label=label, **kwargs)
     elif kind == "pie":
-        series = PieSeries(values=data, **kwargs)
+        series = PieSeries(values=values, **kwargs)
     elif kind == "donut":
-        series = DonutSeries(values=data, **kwargs)
+        series = DonutSeries(values=values, **kwargs)
     elif kind == "hist":
-        series = HistogramSeries(data, color=color, label=label, **kwargs)
+        series = HistogramSeries(values, color=color, label=label, **kwargs)
     elif kind == "box":
-        series = BoxPlotSeries(data, color=color, label=label, **kwargs)
+        series = BoxPlotSeries(values, color=color, label=label, **kwargs)
     elif kind == "heatmap":
-        series = HeatmapSeries(data, **kwargs)
+        series = HeatmapSeries(values, **kwargs)
     else:
         raise ValueError(f"[glyphx.plot] Unsupported kind: {kind}")
 
