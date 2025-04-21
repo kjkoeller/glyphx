@@ -47,7 +47,11 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
 
     # Determine the input values to use
     if kind in {"pie", "donut", "hist", "box", "heatmap"}:
-        # These charts expect standalone data
+        if hasattr(values, "values"):  # pandas
+            values = values.values
+        values = np.asarray(values).flatten()
+        if not np.issubdtype(values.dtype, np.number):
+            raise TypeError(f"Histogram/Box/Heatmap input must be numeric. Got {values.dtype}")
         values = data or y or x
         if values is None:
             raise ValueError(f"[glyphx.plot] `{kind}` chart requires `data` or `y` values.")
