@@ -1,42 +1,51 @@
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const svgs = document.querySelectorAll("svg");
-  svgs.forEach(svg => {
-    let viewBox = svg.getAttribute("viewBox") || "0 0 " + svg.clientWidth + " " + svg.clientHeight;
-    let [x, y, w, h] = viewBox.split(" ").map(Number);
-    svg.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
+(function() {
+  const svg = document.querySelector("svg");
+  if (!svg) return;
 
-    let isPanning = false, startX = 0, startY = 0, origX = x, origY = y;
+  let viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
+  let isPanning = false, start = { x: 0, y: 0 }, end = { x: 0, y: 0 };
 
-    svg.addEventListener("mousedown", e => {
-      isPanning = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      origX = x;
-      origY = y;
-    });
+  svg.style.cursor = "grab";
 
-    svg.addEventListener("mousemove", e => {
-      if (!isPanning) return;
-      const dx = (e.clientX - startX) * (w / svg.clientWidth);
-      const dy = (e.clientY - startY) * (h / svg.clientHeight);
-      svg.setAttribute("viewBox", `${origX - dx} ${origY - dy} ${w} ${h}`);
-    });
-
-    svg.addEventListener("mouseup", () => isPanning = false);
-    svg.addEventListener("mouseleave", () => isPanning = false);
-
-    svg.addEventListener("wheel", e => {
-      e.preventDefault();
-      const scale = e.deltaY < 0 ? 0.9 : 1.1;
-      const mx = e.offsetX * (w / svg.clientWidth);
-      const my = e.offsetY * (h / svg.clientHeight);
-      x += mx * (1 - scale);
-      y += my * (1 - scale);
-      w *= scale;
-      h *= scale;
-      svg.setAttribute("viewBox", `${x} ${y} ${w} ${h}`);
-    });
+  svg.addEventListener("mousedown", (e) => {
+    isPanning = true;
+    start = { x: e.clientX, y: e.clientY };
+    svg.style.cursor = "grabbing";
   });
-});
-</script>
+
+  svg.addEventListener("mousemove", (e) => {
+    if (!isPanning) return;
+    end = { x: e.clientX, y: e.clientY };
+    const dx = (end.x - start.x) * (viewBox[2] / svg.clientWidth);
+    const dy = (end.y - start.y) * (viewBox[3] / svg.clientHeight);
+    viewBox[0] -= dx;
+    viewBox[1] -= dy;
+    svg.setAttribute("viewBox", viewBox.join(" "));
+    start = { ...end };
+  });
+
+  svg.addEventListener("mouseup", () => {
+    isPanning = false;
+    svg.style.cursor = "grab";
+  });
+
+  svg.addEventListener("mouseleave", () => {
+    isPanning = false;
+    svg.style.cursor = "grab";
+  });
+
+  svg.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    const zoomFactor = 1.1;
+    const scale = e.deltaY > 0 ? zoomFactor : 1 / zoomFactor;
+    const [x, y, w, h] = viewBox;
+    const newW = w * scale;
+    const newH = h * scale;
+    const mx = e.offsetX / svg.clientWidth;
+    const my = e.offsetY / svg.clientHeight;
+    const newX = x + mx * (w - newW);
+    const newY = y + my * (h - newH);
+    viewBox = [newX, newY, newW, newH];
+    svg.setAttribute("viewBox", viewBox.join(" "));
+  });
+})();
