@@ -1,5 +1,5 @@
 import numpy as np
-from .utils import THEMES
+from .themes import themes
 
 class BaseSeries:
     def __init__(self, x, y=None, color=None, label=None):
