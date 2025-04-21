@@ -2,6 +2,8 @@ from .figure import Figure
 from .layout import Axes
 from .plot import plot
 import pandas as pd
+from .series import HistogramSeries, ScatterSeries, LineSeries
+
 
 def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
     numeric_cols = df.select_dtypes(include="number").columns.tolist()
@@ -54,4 +56,5 @@ def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
 
         fig.to_svg = lambda: inject_legend(Figure.to_svg(fig))
 
+    fig.show()
     return fig

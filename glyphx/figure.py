@@ -7,16 +7,27 @@ from .utils import wrap_svg_with_template, write_svg_file
 
 
 class Figure:
-    def __init__(self, width=640, height=480, padding=50, title=None, theme=None, auto_display=True):
+    def __init__(self, width=640, height=480, padding=50, title=None, theme=None,
+                 rows=1, cols=1, auto_display=True):
         self.width = width
         self.height = height
         self.padding = padding
         self.title = title
         self.theme = theme or {}
+        self.rows = rows
+        self.cols = cols
         self.auto_display = auto_display
 
+        self.grid = [[None for _ in range(self.cols)] for _ in range(self.rows)]
         self.axes = Axes(width=self.width, height=self.height, padding=self.padding, theme=self.theme)
         self.series = []
+
+    def add_axes(self, row=0, col=0):
+        if self.grid[row][col] is None:
+            ax = Axes(width=self.width // self.cols, height=self.height // self.rows,
+                      padding=self.padding, theme=self.theme)
+            self.grid[row][col] = ax
+        return self.grid[row][col]
 
     def add(self, series, use_y2=False):
         self.series.append((series, use_y2))
@@ -25,7 +36,7 @@ class Figure:
     def render_svg(self):
         self.axes.finalize()
         svg_parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">',
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">'
         ]
 
         if self.title:
