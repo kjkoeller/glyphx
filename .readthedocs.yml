@@ -1,15 +1,18 @@
 version: 2
-# see this website for other commands https://docs.readthedocs.io/en/stable/config-file/v2.html
-# Set the version of Python and other tools you might need
-build:
-  os: "ubuntu-22.04" # can no longer use build.image but must be build.os
-  tools:
-    python: "3.8"
 
+# Specify Python version and build system
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.10"
+
+# Install your package and docs requirements
 python:
   install:
-    - requirements: requirements.txt
     - method: pip
       path: .
-      extra_requirements:
-        - docs
+    - requirements: docs/requirements.txt
+
+# This is the REQUIRED key mentioned in the error
+sphinx:
+  configuration: docs/conf.py
