@@ -17,6 +17,10 @@ It's designed to be **cleaner, faster, and more capable than matplotlib.pyplot**
 - Export charts to standalone HTML or images
 - Built-in support for pandas DataFrames
 
+**Project Links**
+-----------------
+- `GitHub Repository <https://github.com/kjkoeller/glyphx>`_
+
 Contents
 --------
 
