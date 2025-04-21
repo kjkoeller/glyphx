@@ -2,13 +2,26 @@ import numpy as np
 from .themes import themes
 
 class BaseSeries:
+    """
+    Base class for all series types. Stores data and optional label/color.
+
+    Attributes:
+        x (list): X-axis values
+        y (list): Y-axis values (if applicable)
+        color (str): Color of the series
+        label (str): Optional label for tooltips or legend
+    """
     def __init__(self, x, y=None, color=None, label=None):
         self.x = x
         self.y = y
         self.color = color or "#1f77b4"
         self.label = label
 
+
 class LineSeries(BaseSeries):
+    """
+    Line chart series with optional line style and width.
+    """
     def __init__(self, x, y, color=None, label=None, linestyle="solid", width=2):
         super().__init__(x, y, color, label)
         self.linestyle = linestyle
@@ -25,7 +38,11 @@ class LineSeries(BaseSeries):
         ]
         return "\n".join([svg] + tooltip_points)
 
+
 class BarSeries(BaseSeries):
+    """
+    Bar chart series with adjustable width per bar.
+    """
     def __init__(self, x, y, color=None, label=None, bar_width=0.8):
         super().__init__(x, y, color, label)
         self.bar_width = bar_width
@@ -44,7 +61,11 @@ class BarSeries(BaseSeries):
             elements.append(f'<rect class="glyphx-point" x="{cx - px_width/2}" y="{top}" width="{px_width}" height="{h}" fill="{self.color}" stroke="#000" {tooltip}/>')
         return "\n".join(elements)
 
+
 class ScatterSeries(BaseSeries):
+    """
+    Scatter chart series with adjustable size and marker type.
+    """
     def __init__(self, x, y, color=None, label=None, size=5, marker="circle"):
         super().__init__(x, y, color, label)
         self.size = size
@@ -63,7 +84,11 @@ class ScatterSeries(BaseSeries):
                 elements.append(f'<circle class="glyphx-point" cx="{px}" cy="{py}" r="{self.size}" fill="{self.color}" {tooltip}/>')
         return "\n".join(elements)
 
+
 class PieSeries(BaseSeries):
+    """
+    Pie chart series for showing categorical data proportions.
+    """
     def __init__(self, values, labels=None, colors=None, radius=100, center=(150,150)):
         self.values = values
         self.labels = labels or [f"Slice {i}" for i in range(len(values))]
@@ -91,7 +116,11 @@ class PieSeries(BaseSeries):
             angle += theta
         return "\n".join(svg)
 
+
 class DonutSeries(PieSeries):
+    """
+    Donut chart series (like PieSeries but with a hole in the middle).
+    """
     def __init__(self, values, labels=None, colors=None, radius=100, inner_radius=40, center=(150,150)):
         super().__init__(values, labels, colors, radius, center)
         self.inner_radius = inner_radius
@@ -121,7 +150,11 @@ class DonutSeries(PieSeries):
             angle += theta
         return "\n".join(svg)
 
+
 class HistogramSeries(BaseSeries):
+    """
+    Histogram chart for frequency distribution of numeric data.
+    """
     def __init__(self, data, bins=10, color=None, label=None):
         hist, edges = np.histogram(data, bins=bins)
         x = [(edges[i] + edges[i+1]) / 2 for i in range(len(hist))]
@@ -143,7 +176,11 @@ class HistogramSeries(BaseSeries):
             elements.append(f'<rect class="glyphx-point" x="{cx - width/2}" y="{top}" width="{width}" height="{h}" fill="{self.color}" {tooltip}/>')
         return "\n".join(elements)
 
+
 class BoxPlotSeries(BaseSeries):
+    """
+    Box plot series showing Q1, Q2, Q3 and whiskers.
+    """
     def __init__(self, data, color="#1f77b4", label=None, width=20):
         self.data = np.array(data)
         self.color = color
@@ -168,7 +205,11 @@ class BoxPlotSeries(BaseSeries):
         ]
         return "\n".join(elements)
 
+
 class HeatmapSeries(BaseSeries):
+    """
+    Heatmap for 2D matrix data. Values are mapped to colors using a colormap.
+    """
     def __init__(self, matrix, cmap=None, **kwargs):
         self.matrix = matrix
         self.cmap = cmap or ["#fff", "#ccc", "#999", "#666", "#333"]
