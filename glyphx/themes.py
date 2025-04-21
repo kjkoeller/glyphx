@@ -22,5 +22,12 @@ themes = {
         "axis_color": "#444",
         "grid_color": "#ccc",
         "font": "sans-serif"
+    },
+    "dark": {
+        "colors": ["#4dc3ff", "#ff7675", "#55efc4", "#ffeaa7", "#a29bfe"],
+        "axis_color": "#cccccc",
+        "grid_color": "#444444",
+        "font": "sans-serif",
+        "background": "#121212"
     }
 }
