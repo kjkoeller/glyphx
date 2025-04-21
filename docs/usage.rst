@@ -1,18 +1,41 @@
+Usage Guide
+===========
 
-Usage
-=====
+Basic Plotting
+--------------
 
-Quick Example:
+Use the `plot()` function for quick chart generation:
 
 .. code-block:: python
 
-   from glyphx import plot
+    plot([1, 2, 3, 4], [5, 7, 3, 9], kind="scatter", color="red")
 
-   y = [2, 4, 6, 8, 10]
-   plot(y, kind='line', title="Simple Line Chart")
+Pandas Integration
+------------------
 
-More Examples:
+You can use DataFrames directly:
 
-* Bar chart: `plot(x=categories, y=values, kind='bar')`
-* Pie chart: `plot(data=values, kind='pie')`
-* Heatmap: `plot(data=matrix, kind='heatmap')`
+.. code-block:: python
+
+    import pandas as pd
+    from glyphx import plot
+
+    df = pd.DataFrame({
+        "x": [1, 2, 3, 4],
+        "y": [10, 20, 25, 30]
+    })
+
+    plot(x=df["x"], y=df["y"], kind="line")
+
+Auto Display
+------------
+
+No need to call `.show()` — GlyphX will automatically render the chart in:
+- Jupyter
+- CLI (opens in browser)
+- IDE (fallback HTML viewer)
+
+Chart Types
+-----------
+
+All chart types support theming, tooltips, and interactivity.
