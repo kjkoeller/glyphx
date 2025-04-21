@@ -10,15 +10,22 @@ def normalize(data):
 
 def wrap_svg_with_template(svg_string: str) -> str:
     """
-    Wrap raw <svg> content in a responsive HTML template with hover + export support.
+    Wrap raw <svg> content in a responsive HTML template with hover + export + zoom support.
     """
     template_path = Path(__file__).parent / "assets" / "responsive_template.html"
+    zoom_path = Path(__file__).parent / "assets" / "zoom.js"
+
     if not template_path.exists():
         raise FileNotFoundError("Missing responsive_template.html in assets folder")
 
     html = template_path.read_text(encoding="utf-8")
-    return html.replace("{{svg_content}}", svg_string)
 
+    zoom_script = ""
+    if zoom_path.exists():
+        zoom_content = zoom_path.read_text(encoding="utf-8")
+        zoom_script = f"<script>\n{zoom_content}\n</script>"
+
+    return html.replace("{{svg_content}}", svg_string).replace("{{extra_scripts}}", zoom_script)
 
 def write_svg_file(svg_string: str, filename: str):
     """
