@@ -119,3 +119,24 @@ def render_cli(svg_string):
     with open(path, "w", encoding="utf-8") as f:
         f.write(f"<html><body>{svg_string}</body></html>")
     webbrowser.open(f"file://{path}")
+    
+# Added for DataFrame integration
+def extract_from_dataframe(data, x, y):
+    """
+    If a Pandas DataFrame is passed, extract x and y columns by name.
+
+    Parameters:
+        data (pd.DataFrame or None): DataFrame containing data.
+        x (str or array-like): Column name or array for x-axis.
+        y (str or array-like): Column name or array for y-axis.
+
+    Returns:
+        Tuple of (x_values, y_values): Lists extracted from DataFrame or passed directly.
+    """
+    try:
+        import pandas as pd
+        if isinstance(data, pd.DataFrame):
+            return data[x].tolist(), data[y].tolist()
+    except ImportError:
+        pass
+    return x, y
