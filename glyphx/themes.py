@@ -6,6 +6,13 @@ themes = {
         "font": "sans-serif",
         "background": "#ffffff"
     },
+    "dark": {
+        "colors": ["#8ecae6", "#ffb703", "#219ebc", "#fb8500", "#d62828"],
+        "axis_color": "#ccc",
+        "grid_color": "#444",
+        "font": "sans-serif",
+        "background": "#1e1e1e"
+    },
     "colorblind": {
         "colors": ["#000000", "#666666", "#CCCCCC", "#999999", "#333333"],
         "axis_color": "#000",
@@ -25,13 +32,6 @@ themes = {
         "axis_color": "#444",
         "grid_color": "#ccc",
         "font": "sans-serif",
-        "background": "#ffffff"
-    },
-    "dark": {
-        "colors": ["#17becf", "#bcbd22", "#e377c2", "#8c564b", "#7f7f7f"],
-        "axis_color": "#eee",
-        "grid_color": "#444",
-        "font": "sans-serif",
-        "background": "#111111"
+        "background": "#f9f9f9"
     }
 }
