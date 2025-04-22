@@ -1,4 +1,4 @@
-name: Test pydebugviz
+name: Test glyphx
 
 on:
   push:
