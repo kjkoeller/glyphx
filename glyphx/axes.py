@@ -77,3 +77,52 @@ class Axes:
         min_y = self.ylim[0] if self.ylim else min(self._ydata)
         max_y = self.ylim[1] if self.ylim else max(self._ydata)
         return self.height - self.padding - (y - min_y) / (max_y - min_y) * (self.height - 2 * self.padding)
+
+def add_series(self, series, use_y2=False):
+        """Add a data series to determine bounds and prepare for layout."""
+        self.series.append(series)
+        for x, y in zip(series.x, series.y):
+            self.xmin = min(self.xmin, x)
+            self.xmax = max(self.xmax, x)
+            if use_y2:
+                self.y2min = min(self.y2min, y)
+                self.y2max = max(self.y2max, y)
+            else:
+                self.ymin = min(self.ymin, y)
+                self.ymax = max(self.ymax, y)
+
+    def finalize(self):
+        """Calculate final axis bounds and ticks based on added series."""
+        self._calc_scales()
+
+    def _calc_scales(self):
+        """Precompute scale ranges for x and y axes."""
+        self.xrange = self.xmax - self.xmin if self.xmax != self.xmin else 1
+        self.yrange = self.ymax - self.ymin if self.ymax != self.ymin else 1
+        self.y2range = self.y2max - self.y2min if self.y2max != self.y2min else 1
+
+    def scale_y2(self, y):
+        """Scale y-values to pixel position on the secondary axis."""
+        return self.height - self.padding - (y - self.y2min) / self.y2range * (self.height - 2 * self.padding)
+
+    def render_axes(self):
+        """Render SVG elements for x, y, and y2 axes."""
+        elements = [
+            f'<line x1="{self.padding}" x2="{self.width - self.padding}" y1="{self.height - self.padding}" y2="{self.height - self.padding}" stroke="{self.theme.get("axis_color", "#000")}" />',  # x-axis
+            f'<line x1="{self.padding}" x2="{self.padding}" y1="{self.padding}" y2="{self.height - self.padding}" stroke="{self.theme.get("axis_color", "#000")}" />',  # y-axis
+            f'<line x1="{self.width - self.padding}" x2="{self.width - self.padding}" y1="{self.padding}" y2="{self.height - self.padding}" stroke="{self.theme.get("axis_color", "#000")}" />'  # y2-axis
+        ]
+        return "\n".join(elements)
+
+    def render_grid(self):
+        """Render horizontal and vertical gridlines based on ticks."""
+        elements = []
+        tick_color = self.theme.get("grid_color", "#ccc")
+        for i in range(6):
+            # Vertical grid lines
+            x = self.padding + i * (self.width - 2 * self.padding) / 5
+            elements.append(f'<line x1="{x}" x2="{x}" y1="{self.padding}" y2="{self.height - self.padding}" stroke="{tick_color}" stroke-dasharray="2,2"/>')
+            # Horizontal grid lines
+            y = self.padding + i * (self.height - 2 * self.padding) / 5
+            elements.append(f'<line x1="{self.padding}" x2="{self.width - self.padding}" y1="{y}" y2="{y}" stroke="{tick_color}" stroke-dasharray="2,2"/>')
+        return "\n".join(elements)
