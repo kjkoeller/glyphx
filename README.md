@@ -2,7 +2,7 @@
 
 **A Better, Faster, and Simpler Python Visualization Library**
 
-[![PyPI version](https://badge.fury.io/py/glyphx.svg)](https://badge.fury.io/py/glyphx/)
+[![PyPI version](https://img.shields.io/pypi/v/glyphx.svg)](https://pypi.org/project/glyphx/)
 [![Documentation Status](https://readthedocs.org/projects/glyphx/badge/?version=latest)](https://glyphx.readthedocs.io/en/latest/?badge=latest)
 
 ---
