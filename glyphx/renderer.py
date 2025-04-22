@@ -58,3 +58,27 @@ def render_html(figures, title="glyphx Multi-Chart", inject_tooltip=True):
 </html>"""
 
     return html
+
+# Added legend rendering support
+def render_legend(draw, series_list, start_x=10, start_y=10, spacing=20):
+    """
+    Draws a simple legend for labeled series.
+
+    Parameters:
+        draw (ImageDraw.Draw): Drawing context.
+        series_list (list): List of series objects with 'label' and 'color'.
+        start_x (int): X-coordinate of the legend box.
+        start_y (int): Y-coordinate of the legend box.
+        spacing (int): Vertical spacing between legend entries.
+    """
+    y_offset = 0
+    for series in series_list:
+        label = getattr(series, 'label', None)
+        color = getattr(series, 'color', 'black')
+        if label:
+            draw.rectangle(
+                [start_x, start_y + y_offset, start_x + 10, start_y + 10 + y_offset],
+                fill=color
+            )
+            draw.text((start_x + 15, start_y + y_offset), label, fill='black')
+            y_offset += spacing
