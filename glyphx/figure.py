@@ -8,6 +8,19 @@ from .utils import wrap_svg_with_template, write_svg_file
 
 class Figure:
     """
+    A GlyphX Figure represents a complete chart canvas that can include one or more axes,
+    multiple series, layout configuration, themes, and export options.
+
+    Attributes:
+        width (int): Canvas width
+        height (int): Canvas height
+        padding (int): Inner margin padding
+        title (str): Optional chart title
+        theme (dict): Theme styling for colors, fonts, etc.
+        auto_display (bool): Whether to auto-render in notebook/CLI
+        grid (list[list]): Optional grid for multi-axes support
+    """
+    """
     The central class for creating and rendering visualizations in GlyphX.
 
     Supports grid layout, dynamic axis scaling, SVG rendering,
@@ -29,7 +42,8 @@ class Figure:
         self.height = height
         self.padding = padding
         self.title = title
-        self.theme = theme or {}
+        from .themes import themes
+        self.theme = themes.get(theme, themes['default']) if isinstance(theme, str) else (theme or themes['default'])
         self.rows = rows
         self.cols = cols
         self.auto_display = auto_display
