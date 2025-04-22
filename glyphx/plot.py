@@ -36,6 +36,18 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
         plot(data=[1, 3, 2, 2, 1, 4], kind="hist")
     """
     kind = kind.lower()
+    if kind in {"pie", "donut", "hist", "box", "heatmap"}:
+        values = data if data is not None else y if y is not None else x
+        if values is None:
+            raise ValueError(f"[glyphx.plot] No data provided for kind '{kind}'")
+    else:
+        if y is None:
+            if x is not None:
+                y = x
+                x = list(range(len(y)))
+            else:
+                raise ValueError(f"[glyphx.plot] x or y must be provided for kind '{kind}'")
+
     color = kwargs.pop("color", None)
     label = kwargs.pop("label", None)
 
