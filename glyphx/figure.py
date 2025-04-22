@@ -180,3 +180,42 @@ class Figure:
         if self.auto_display:
             self.show()
         return f"<glyphx.Figure with {len(self.series)} series>"
+
+# Added subplot layout handling
+class SubplotGrid:
+    """
+    Simple 2D grid layout system for organizing subplots (axes) in rows and columns.
+    """
+    def __init__(self, rows, cols):
+        """
+        Create a subplot grid.
+
+        Parameters:
+            rows (int): Number of rows.
+            cols (int): Number of columns.
+        """
+        self.rows = rows
+        self.cols = cols
+        self.grid = [[None for _ in range(cols)] for _ in range(rows)]
+
+    def add_axes(self, row, col, plot):
+        """
+        Assign a plot to a specific cell in the grid.
+
+        Parameters:
+            row (int): Row index.
+            col (int): Column index.
+            plot (Plot): Plot object to assign.
+        """
+        if 0 <= row < self.rows and 0 <= col < self.cols:
+            self.grid[row][col] = plot
+
+    def render(self):
+        """
+        Stub function to render each subplot (to be expanded for layout).
+        """
+        for r in range(self.rows):
+            for c in range(self.cols):
+                plot = self.grid[r][c]
+                if plot:
+                    print(f"Rendering subplot at ({r}, {c})")
