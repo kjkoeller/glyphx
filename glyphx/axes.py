@@ -78,7 +78,7 @@ class Axes:
         max_y = self.ylim[1] if self.ylim else max(self._ydata)
         return self.height - self.padding - (y - min_y) / (max_y - min_y) * (self.height - 2 * self.padding)
 
-def add_series(self, series, use_y2=False):
+    def add_series(self, series, use_y2=False):
         """Add a data series to determine bounds and prepare for layout."""
         self.series.append(series)
         for x, y in zip(series.x, series.y):
