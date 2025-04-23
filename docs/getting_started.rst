@@ -32,6 +32,11 @@ Here's how to create your first chart with GlyphX:
 
 This will automatically render in your Jupyter notebook, IDE, or open in a browser if run from CLI.
 
+.. image:: examples/Quick_Example.png
+   :alt: First Plot
+   :width: 680px
+   :align: center
+
 Available Plot Kinds
 --------------------
 
