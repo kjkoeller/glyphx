@@ -12,6 +12,11 @@ You can set a global or per-chart theme:
 
     plot([1, 2, 3], [4, 5, 6], theme=themes["dark"])
 
+.. image:: examples/dark_theme.png
+   :alt: Basic Plot
+   :width: 680px
+   :align: center
+
 Colors & Styles
 ---------------
 
@@ -19,7 +24,14 @@ Set custom colors, widths, and line styles:
 
 .. code-block:: python
 
+    from glyphx import plot
+
     plot([1, 2, 3], [4, 6, 8], color="green", linestyle="dashed")
+
+.. image:: examples/green_dashed_line.png
+   :alt: Basic Plot
+   :width: 680px
+   :align: center
 
 Grid Layouts
 ------------
