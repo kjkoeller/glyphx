@@ -89,25 +89,20 @@ class Figure:
         self.series.append((series, use_y2))
         self.axes.add_series(series, use_y2)
 
-    def render_svg(self):
+    def render_svg(self, viewbox=False):
         """
         Render the plot and return SVG string output.
 
         Returns:
             str: Complete SVG markup as a string.
         """
-        self.axes.finalize()
+        svg_parts = []
         
-        svg_parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">',
-        ]
+        # Draw background color
+        svg_parts.append(
+            f'<rect width="{self.width}" height="{self.height}" fill="{self.theme.get("background", "#ffffff")}" />'
+        )
 
-        # Inject background if theme defines it
-        bg_color = self.theme.get("background")
-        if bg_color:
-            svg_parts.append(f'<rect width="100%" height="100%" fill="{bg_color}" />')
-
-        # Title
         if self.title:
             svg_parts.append(
                 f'<text x="{self.width // 2}" y="30" text-anchor="middle" '
@@ -115,11 +110,9 @@ class Figure:
                 f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
             )
 
-        if self.grid and any(any(cell for cell in row) for row in self.grid):
-            # Subplot grid mode
+        if self.grid:
             cell_width = self.width // self.cols
             cell_height = self.height // self.rows
-
             for r, row in enumerate(self.grid):
                 for c, ax in enumerate(row):
                     if ax:
@@ -131,16 +124,17 @@ class Figure:
                             group += series.to_svg(ax)
                         group += '</g>'
                         svg_parts.append(group)
-        else:
-            # Single-axes mode (default)
+        elif self.axes and self.series:
             self.axes.finalize()
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
+        elif self.series:
+            # standalone renderable series like PieSeries
+            for series, _ in self.series:
+                svg_parts.append(series.to_svg())
 
-        # Wrap in SVG tag
-        # return wrap_svg_with_template("\n".join(svg_parts), width=self.width, height=self.height)
         return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
     def _display(self, svg_string):
