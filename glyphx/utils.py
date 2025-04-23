@@ -50,6 +50,21 @@ def wrap_svg_with_template(svg_string: str) -> str:
     return html.replace("{{svg_content}}", svg_string).replace("{{extra_scripts}}", zoom_script)
 
 
+def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480) -> str:
+    """
+    Wrap raw SVG elements in a full <svg> canvas.
+
+    Args:
+        svg_content (str): Inner SVG markup (e.g., axes, series, labels).
+        width (int): Canvas width in pixels.
+        height (int): Canvas height in pixels.
+
+    Returns:
+        str: Complete SVG tag with given dimensions and viewBox.
+    """
+    return f"""<svg width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">{svg_content}</svg>"""
+
+
 def write_svg_file(svg_string: str, filename: str):
     """
     Save SVG or HTML export (or convert to image) to file.
@@ -119,24 +134,3 @@ def render_cli(svg_string):
     with open(path, "w", encoding="utf-8") as f:
         f.write(f"<html><body>{svg_string}</body></html>")
     webbrowser.open(f"file://{path}")
-    
-# Added for DataFrame integration
-def extract_from_dataframe(data, x, y):
-    """
-    If a Pandas DataFrame is passed, extract x and y columns by name.
-
-    Parameters:
-        data (pd.DataFrame or None): DataFrame containing data.
-        x (str or array-like): Column name or array for x-axis.
-        y (str or array-like): Column name or array for y-axis.
-
-    Returns:
-        Tuple of (x_values, y_values): Lists extracted from DataFrame or passed directly.
-    """
-    try:
-        import pandas as pd
-        if isinstance(data, pd.DataFrame):
-            return data[x].tolist(), data[y].tolist()
-    except ImportError:
-        pass
-    return x, y
