@@ -83,11 +83,9 @@ class Axes:
         """
         if self.series:
             self._x_domain, self._y_domain = self.compute_domain(self.series)
-        
-        # get even spacing for bar charts
-        if self.series and hasattr(self.series[0], "categories") and self.series[0].categories:
-            self._x_domain = (-0.5, len(self.series[0].x) - 0.5)
-        
+            # Categorical support for bar charts
+            if hasattr(self.series[0], 'categories') and self.series[0].categories:
+                self._x_domain = (-0.5, len(self.series[0].x) - 0.5)
         if self.y2_series:
             _, self._y2_domain = self.compute_domain(self.y2_series)
 
