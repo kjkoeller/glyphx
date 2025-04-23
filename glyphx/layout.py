@@ -83,6 +83,11 @@ class Axes:
         """
         if self.series:
             self._x_domain, self._y_domain = self.compute_domain(self.series)
+        
+        # get even spacing for bar charts
+        if self.series and hasattr(self.series[0], "categories") and self.series[0].categories:
+            self._x_domain = (-0.5, len(self.series[0].x) - 0.5)
+        
         if self.y2_series:
             _, self._y2_domain = self.compute_domain(self.y2_series)
 
@@ -147,9 +152,6 @@ class Axes:
                 f'stroke="{stroke}" stroke-dasharray="3,3" />')
             elements.append(
                 f'<text x="{self.padding - 10}" y="{y_pos + 4}" text-anchor="end" '
-                f'font-size="12" font-family="{font}">{round(y_val, 2)}</text>')
-            elements.append(
-                f'<text x="{self.padding - 10}" y="{y_pos + 4}" text-anchor="end" '
                 f'font-size="12" font-family="{font}" fill="{text_color}">{round(y_val, 2)}</text>')
 
         # Vertical lines and X-tick labels
@@ -159,9 +161,6 @@ class Axes:
             elements.append(
                 f'<line y1="{self.padding}" y2="{self.height - self.padding}" x1="{x_pos}" x2="{x_pos}" '
                 f'stroke="{stroke}" stroke-dasharray="3,3" />')
-            elements.append(
-                f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
-                f'font-size="12" font-family="{font}">{round(x_val, 2)}</text>')
             elements.append(
                 f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
                 f'font-size="12" font-family="{font}" fill="{text_color}">{round(x_val, 2)}</text>')
