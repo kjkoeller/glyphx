@@ -92,24 +92,26 @@ class Figure:
     def render_svg(self, viewbox=False):
         """
         Render the plot and return SVG string output.
-
+    
         Returns:
             str: Complete SVG markup as a string.
         """
         svg_parts = []
-        
+    
         # Draw background color
         svg_parts.append(
             f'<rect width="{self.width}" height="{self.height}" fill="{self.theme.get("background", "#ffffff")}" />'
         )
-
+    
+        # Title
         if self.title:
             svg_parts.append(
                 f'<text x="{self.width // 2}" y="30" text-anchor="middle" '
                 f'font-size="20" font-family="{self.theme.get("font", "sans-serif")}" '
                 f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
             )
-
+    
+        # Grid layout
         if self.grid:
             cell_width = self.width // self.cols
             cell_height = self.height // self.rows
@@ -124,17 +126,25 @@ class Figure:
                             group += series.to_svg(ax)
                         group += '</g>'
                         svg_parts.append(group)
+    
+        # Single axes + series layout
         elif self.axes and self.series:
+            # Ensure series are attached to axes
+            if not self.axes.series:
+                for s, use_y2 in self.series:
+                    self.axes.add_series(s, use_y2)
+    
             self.axes.finalize()
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
+    
+        # Standalone series like PieSeries
         elif self.series:
-            # standalone renderable series like PieSeries
             for series, _ in self.series:
                 svg_parts.append(series.to_svg())
-
+    
         return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
     def _display(self, svg_string):
