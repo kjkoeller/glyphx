@@ -96,7 +96,16 @@ class Figure:
         Returns:
             str: Complete SVG markup as a string.
         """
-        svg_parts = []
+        self.axes.finalize()
+        
+        svg_parts = [
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">',
+        ]
+
+        # Inject background if theme defines it
+        bg_color = self.theme.get("background")
+        if bg_color:
+            svg_parts.append(f'<rect width="100%" height="100%" fill="{bg_color}" />')
 
         # Title
         if self.title:
