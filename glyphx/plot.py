@@ -5,6 +5,8 @@ from .series import (
     BoxPlotSeries, HeatmapSeries
 )
 
+import numpy as np
+
 def plot(x=None, y=None, kind="line", data=None, **kwargs):
     """
     Unified high-level plotting function inspired by matplotlib.pyplot.plot and seaborn.
@@ -65,7 +67,7 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
         values = np.asarray(values).flatten()
         if not np.issubdtype(values.dtype, np.number):
             raise TypeError(f"Histogram/Box/Heatmap input must be numeric. Got {values.dtype}")
-        values = data or y or x
+        # values = data or y or x
         if values is None:
             raise ValueError(f"[glyphx.plot] `{kind}` chart requires `data` or `y` values.")
     else:
@@ -85,6 +87,7 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
         series = PieSeries(values=values, **kwargs)
     elif kind == "donut":
         series = DonutSeries(values=values, **kwargs)
+        print(series.values)
     elif kind == "hist":
         series = HistogramSeries(values, color=color, label=label, **kwargs)
     elif kind == "box":

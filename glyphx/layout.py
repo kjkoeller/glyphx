@@ -103,6 +103,7 @@ class Axes:
         """
         elements = []
         stroke = self.theme.get("axis_color", "#333")
+        text_color = self.theme.get("text_color", "#000")
 
         # X-axis
         elements.append(f'<line x1="{self.padding}" y1="{self.height - self.padding}" '
@@ -135,6 +136,7 @@ class Axes:
         elements = []
         stroke = self.theme.get("grid_color", "#ddd")
         font = self.theme.get("font", "sans-serif")
+        text_color = self.theme.get("text_color", "#000")
 
         # Horizontal lines and Y-tick labels
         for i in range(ticks + 1):
@@ -146,6 +148,9 @@ class Axes:
             elements.append(
                 f'<text x="{self.padding - 10}" y="{y_pos + 4}" text-anchor="end" '
                 f'font-size="12" font-family="{font}">{round(y_val, 2)}</text>')
+            elements.append(
+                f'<text x="{self.padding - 10}" y="{y_pos + 4}" text-anchor="end" '
+                f'font-size="12" font-family="{font}" fill="{text_color}">{round(y_val, 2)}</text>')
 
         # Vertical lines and X-tick labels
         for i in range(ticks + 1):
@@ -157,6 +162,9 @@ class Axes:
             elements.append(
                 f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
                 f'font-size="12" font-family="{font}">{round(x_val, 2)}</text>')
+            elements.append(
+                f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
+                f'font-size="12" font-family="{font}" fill="{text_color}">{round(x_val, 2)}</text>')
 
         return "\n".join(elements)
 
