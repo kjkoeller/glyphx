@@ -3,7 +3,7 @@ import webbrowser
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from .layout import Axes
-from .utils import wrap_svg_with_template, write_svg_file
+from .utils import wrap_svg_with_template, write_svg_file, wrap_svg_canvas
 
 
 class Figure:
@@ -96,33 +96,43 @@ class Figure:
         Returns:
             str: Complete SVG markup as a string.
         """
-        self.axes.finalize()
-        
-        svg_parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">',
-        ]
+        svg_parts = []
 
-        # Inject background if theme defines it
-        bg_color = self.theme.get("background")
-        if bg_color:
-            svg_parts.append(f'<rect width="100%" height="100%" fill="{bg_color}" />')
-
-        # Render optional title
+        # Title
         if self.title:
             svg_parts.append(
-                f'<text x="{self.width / 2}" y="{self.padding / 2}" text-anchor="middle" font-size="16" font-weight="bold">{self.title}</text>'
+                f'<text x="{self.width // 2}" y="30" text-anchor="middle" '
+                f'font-size="20" font-family="{self.theme.get("font", "sans-serif")}" '
+                f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
             )
 
-        # Draw grid lines and axes
-        svg_parts.append(self.axes.render_grid())
-        svg_parts.append(self.axes.render_axes())
+        if self.grid and any(any(cell for cell in row) for row in self.grid):
+            # Subplot grid mode
+            cell_width = self.width // self.cols
+            cell_height = self.height // self.rows
 
-        # Render each series
-        for series, use_y2 in self.series:
-            svg_parts.append(series.to_svg(self.axes, use_y2))
+            for r, row in enumerate(self.grid):
+                for c, ax in enumerate(row):
+                    if ax:
+                        ax.finalize()
+                        group = f'<g transform="translate({c * cell_width}, {r * cell_height})">'
+                        group += ax.render_axes()
+                        group += ax.render_grid()
+                        for series in ax.series:
+                            group += series.to_svg(ax)
+                        group += '</g>'
+                        svg_parts.append(group)
+        else:
+            # Single-axes mode (default)
+            self.axes.finalize()
+            svg_parts.append(self.axes.render_axes())
+            svg_parts.append(self.axes.render_grid())
+            for series, _ in self.series:
+                svg_parts.append(series.to_svg(self.axes))
 
-        svg_parts.append("</svg>")
-        return "\n".join(svg_parts)
+        # Wrap in SVG tag
+        # return wrap_svg_with_template("\n".join(svg_parts), width=self.width, height=self.height)
+        return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
     def _display(self, svg_string):
         """
@@ -180,42 +190,3 @@ class Figure:
         if self.auto_display:
             self.show()
         return f"<glyphx.Figure with {len(self.series)} series>"
-
-# Added subplot layout handling
-class SubplotGrid:
-    """
-    Simple 2D grid layout system for organizing subplots (axes) in rows and columns.
-    """
-    def __init__(self, rows, cols):
-        """
-        Create a subplot grid.
-
-        Parameters:
-            rows (int): Number of rows.
-            cols (int): Number of columns.
-        """
-        self.rows = rows
-        self.cols = cols
-        self.grid = [[None for _ in range(cols)] for _ in range(rows)]
-
-    def add_axes(self, row, col, plot):
-        """
-        Assign a plot to a specific cell in the grid.
-
-        Parameters:
-            row (int): Row index.
-            col (int): Column index.
-            plot (Plot): Plot object to assign.
-        """
-        if 0 <= row < self.rows and 0 <= col < self.cols:
-            self.grid[row][col] = plot
-
-    def render(self):
-        """
-        Stub function to render each subplot (to be expanded for layout).
-        """
-        for r in range(self.rows):
-            for c in range(self.cols):
-                plot = self.grid[r][c]
-                if plot:
-                    print(f"Rendering subplot at ({r}, {c})")
