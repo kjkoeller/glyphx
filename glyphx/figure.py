@@ -3,7 +3,7 @@ import webbrowser
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from .layout import Axes
-from .utils import wrap_svg_with_template, write_svg_file, wrap_svg_canvas
+from .utils import wrap_svg_with_template, write_svg_file, wrap_svg_canvas, draw_legend
 
 
 class Figure:
@@ -37,7 +37,7 @@ class Figure:
         auto_display (bool): If True, automatically displays after plot().
     """
     def __init__(self, width=640, height=480, padding=50, title=None, theme=None,
-                 rows=1, cols=1, auto_display=True):
+                 rows=1, cols=1, auto_display=True, legend="top-right"):
         self.width = width
         self.height = height
         self.padding = padding
@@ -47,6 +47,7 @@ class Figure:
         self.rows = rows
         self.cols = cols
         self.auto_display = auto_display
+        self.legend_position = legend
 
         # Grid stores subplot Axes references (None until created)
         self.grid = [[None for _ in range(self.cols)] for _ in range(self.rows)]
@@ -150,6 +151,23 @@ class Figure:
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg())
+
+        # Render legend if any series has a label
+        all_series = [s for (s, _) in self.series] if self.series else []
+        for row in self.grid:
+            for ax in row:
+                if ax:
+                    all_series += ax.series
+
+        legend_svg = draw_legend(
+            all_series,
+            position=self.legend_position,
+            font=self.theme.get("font", "sans-serif"),
+            text_color=self.theme.get("text_color", "#000"),
+            fig_width=self.width,
+            fig_height=self.height
+        )
+        svg_parts.append(legend_svg)
 
         return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
