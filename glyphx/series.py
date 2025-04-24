@@ -50,15 +50,33 @@ class BarSeries(BaseSeries):
     def to_svg(self, ax, use_y2=False):
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
-        px_width = (ax.width - 2 * ax.padding) * self.bar_width / len(self.x)
+
+        count = len(self.x)
+        if count == 0:
+            return ""
+
+        # Visual bar width setup
+        domain_width = ax._x_domain[1] - ax._x_domain[0]
+        step = domain_width / count
+        px_step = ax.scale_x(ax._x_domain[0] + step) - ax.scale_x(ax._x_domain[0])
+        px_width = px_step * self.bar_width
+
+        # Determine the actual baseline (not hardcoded to 0)
+        y_domain = ax._y2_domain if use_y2 else ax._y_domain
+        y_baseline_val = min(0, y_domain[0])  # always draw upward from min(0, ymin)
+        y0 = scale_y(y_baseline_val)
+
         for i, (x, y) in enumerate(zip(self.x, self.y)):
             cx = ax.scale_x(x)
             cy = scale_y(y)
-            y0 = scale_y(0)
-            h = abs(y0 - cy)
-            top = min(y0, cy)
+            h = abs(cy - y0)
+            top = min(cy, y0)
             tooltip = f'data-x="{x}" data-y="{y}" data-label="{self.label or ""}"'
-            elements.append(f'<rect class="glyphx-point" x="{cx - px_width/2}" y="{top}" width="{px_width}" height="{h}" fill="{self.color}" stroke="#000" {tooltip}/>')
+            elements.append(
+                f'<rect class="glyphx-point" x="{cx - px_width / 2}" y="{top}" width="{px_width}" height="{h}" '
+                f'fill="{self.color}" stroke="#000" {tooltip}/>'
+            )
+
         return "\n".join(elements)
 
 
@@ -96,25 +114,47 @@ class PieSeries(BaseSeries):
         self.radius = radius
         self.center = center
 
-    def to_svg(self, ax=None, use_y2=False):
-        import math
+    def to_svg(self, ax=None):
+        """
+        Render the pie chart into SVG format.
+
+        Args:
+            ax (Axes, optional): If provided, auto-center within Axes region.
+
+        Returns:
+            str: SVG elements for pie slices.
+        """
         total = sum(self.values)
-        svg = []
-        cx, cy = self.center
         angle = 0
-        for i, v in enumerate(self.values):
-            theta = 2 * math.pi * v / total
-            x1 = cx + self.radius * math.cos(angle)
-            y1 = cy + self.radius * math.sin(angle)
-            x2 = cx + self.radius * math.cos(angle + theta)
-            y2 = cy + self.radius * math.sin(angle + theta)
-            large_arc = 1 if theta > math.pi else 0
-            path = f"M {cx},{cy} L {x1},{y1} A {self.radius},{self.radius} 0 {large_arc},1 {x2},{y2} Z"
+        radius = min(ax.width, ax.height) // 4 if ax else 100
+        cx = ax.width // 2 if ax else 150
+        cy = ax.height // 2 if ax else 150
+
+        elements = []
+        for i, value in enumerate(self.values):
+            theta1 = angle
+            theta2 = angle + (value / total) * 360
+            angle = theta2
+
+            # Convert to radians
+            from math import radians, sin, cos, pi
+            x1 = cx + radius * cos(radians(theta1))
+            y1 = cy + radius * sin(radians(theta1))
+            x2 = cx + radius * cos(radians(theta2))
+            y2 = cy + radius * sin(radians(theta2))
+
+            large_arc = 1 if theta2 - theta1 > 180 else 0
             color = self.colors[i % len(self.colors)]
-            label = self.labels[i] if i < len(self.labels) else f"Slice {i}"
-            svg.append(f'<path class="glyphx-point" d="{path}" fill="{color}" stroke="#fff" data-label="{label}" data-value="{v}"/>')
-            angle += theta
-        return "\n".join(svg)
+
+            path = (
+                f'M {cx},{cy} '
+                f'L {x1},{y1} '
+                f'A {radius},{radius} 0 {large_arc},1 {x2},{y2} Z'
+            )
+            tooltip = f'data-label="{self.labels[i]}" data-value="{value}" data-index="{i}"'
+            elements.append(f'<path class="glyphx-point" d="{path}" fill="{color}" {tooltip}></path>')
+
+        return "\n".join(elements)
 
 
 class DonutSeries(PieSeries):

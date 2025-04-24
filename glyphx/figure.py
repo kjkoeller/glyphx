@@ -83,29 +83,28 @@ class Figure:
         Add a data series to the current plot.
 
         Args:
-            series (BaseSeries): Any subclass implementing to_svg().
-            use_y2 (bool): If True, use secondary Y-axis for this series.
+            series (BaseSeries): Series to add.
+            use_y2 (bool): Use secondary Y-axis.
         """
         self.series.append((series, use_y2))
-        self.axes.add_series(series, use_y2)
 
-    def render_svg(self):
+        # Only add to axes if it's a chart that uses x/y
+        if hasattr(series, "x") and hasattr(series, "y"):
+            self.axes.add_series(series, use_y2)
+
+    def render_svg(self, viewbox=False):
         """
         Render the plot and return SVG string output.
 
         Returns:
             str: Complete SVG markup as a string.
         """
-        self.axes.finalize()
-        
-        svg_parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.width}" height="{self.height}" viewBox="0 0 {self.width} {self.height}">',
-        ]
+        svg_parts = []
 
-        # Inject background if theme defines it
-        bg_color = self.theme.get("background")
-        if bg_color:
-            svg_parts.append(f'<rect width="100%" height="100%" fill="{bg_color}" />')
+        # Draw background
+        svg_parts.append(
+            f'<rect width="{self.width}" height="{self.height}" fill="{self.theme.get("background", "#ffffff")}" />'
+        )
 
         # Title
         if self.title:
@@ -115,11 +114,10 @@ class Figure:
                 f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
             )
 
+        # Subplot grid
         if self.grid and any(any(cell for cell in row) for row in self.grid):
-            # Subplot grid mode
             cell_width = self.width // self.cols
             cell_height = self.height // self.rows
-
             for r, row in enumerate(self.grid):
                 for c, ax in enumerate(row):
                     if ax:
@@ -131,16 +129,28 @@ class Figure:
                             group += series.to_svg(ax)
                         group += '</g>'
                         svg_parts.append(group)
-        else:
-            # Single-axes mode (default)
+
+        # Axis-based charts (e.g., line, bar, scatter)
+        elif self.axes and self.series and any(
+                hasattr(s, "x") and hasattr(s, "y") and getattr(s, "x", None) and getattr(s, "y", None)
+                for s, _ in self.series
+        ):
+
+            if not self.axes.series:
+                for s, use_y2 in self.series:
+                    self.axes.add_series(s, use_y2)
+
             self.axes.finalize()
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
-        # Wrap in SVG tag
-        # return wrap_svg_with_template("\n".join(svg_parts), width=self.width, height=self.height)
+        # Standalone renderable series (e.g., PieSeries, DonutSeries)
+        elif self.series:
+            for series, _ in self.series:
+                svg_parts.append(series.to_svg())
+
         return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
     def _display(self, svg_string):
@@ -199,3 +209,42 @@ class Figure:
         if self.auto_display:
             self.show()
         return f"<glyphx.Figure with {len(self.series)} series>"
+
+# Added subplot layout handling
+class SubplotGrid:
+    """
+    Simple 2D grid layout system for organizing subplots (axes) in rows and columns.
+    """
+    def __init__(self, rows, cols):
+        """
+        Create a subplot grid.
+
+        Parameters:
+            rows (int): Number of rows.
+            cols (int): Number of columns.
+        """
+        self.rows = rows
+        self.cols = cols
+        self.grid = [[None for _ in range(cols)] for _ in range(rows)]
+
+    def add_axes(self, row, col, plot):
+        """
+        Assign a plot to a specific cell in the grid.
+
+        Parameters:
+            row (int): Row index.
+            col (int): Column index.
+            plot (Plot): Plot object to assign.
+        """
+        if 0 <= row < self.rows and 0 <= col < self.cols:
+            self.grid[row][col] = plot
+
+    def render(self):
+        """
+        Stub function to render each subplot (to be expanded for layout).
+        """
+        for r in range(self.rows):
+            for c in range(self.cols):
+                plot = self.grid[r][c]
+                if plot:
+                    print(f"Rendering subplot at ({r}, {c})")
