@@ -7,7 +7,7 @@ from .series import (
 
 import numpy as np
 
-def plot(x=None, y=None, kind="line", data=None, **kwargs):
+def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
     """
     Unified high-level plotting function inspired by matplotlib.pyplot.plot and seaborn.
 
@@ -54,7 +54,7 @@ def plot(x=None, y=None, kind="line", data=None, **kwargs):
     label = kwargs.pop("label", None)
 
     # Separate known Figure-only arguments
-    figure_keys = {"width", "height", "padding", "title", "theme", "auto_display"}
+    figure_keys = {"width", "height", "padding", "title", "theme", "auto_display", "legend"}
     figure_kwargs = {k: kwargs.pop(k) for k in list(kwargs) if k in figure_keys}
 
     fig = Figure(**figure_kwargs)
