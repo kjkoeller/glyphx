@@ -47,7 +47,10 @@ class Figure:
         self.rows = rows
         self.cols = cols
         self.auto_display = auto_display
-        self.legend_position = legend
+        if legend in (False, None):
+            self.legend_pos = None
+        else:
+            self.legend_pos = legend
 
         # Grid stores subplot Axes references (None until created)
         self.grid = [[None for _ in range(self.cols)] for _ in range(self.rows)]
@@ -128,15 +131,26 @@ class Figure:
                         group += ax.render_grid()
                         for series in ax.series:
                             group += series.to_svg(ax)
+
+                        # 🔥 Per-Axes Legend
+                        if getattr(ax, "legend_pos", None):
+                            group += draw_legend(
+                                ax.series,
+                                position=ax.legend_pos,
+                                font=self.theme.get("font", "sans-serif"),
+                                text_color=self.theme.get("text_color", "#000"),
+                                fig_width=ax.width,
+                                fig_height=ax.height
+                            )
+
                         group += '</g>'
                         svg_parts.append(group)
 
-        # Axis-based charts (e.g., line, bar, scatter)
+        # Single axes charts (line, bar, scatter)
         elif self.axes and self.series and any(
                 hasattr(s, "x") and hasattr(s, "y") and getattr(s, "x", None) and getattr(s, "y", None)
                 for s, _ in self.series
         ):
-
             if not self.axes.series:
                 for s, use_y2 in self.series:
                     self.axes.add_series(s, use_y2)
@@ -147,27 +161,22 @@ class Figure:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
-        # Standalone renderable series (e.g., PieSeries, DonutSeries)
+            # ✅ Global Legend for non-grid usage
+            if self.legend_pos:
+                legend_svg = draw_legend(
+                    [s for (s, _) in self.series],
+                    position=self.legend_pos,
+                    font=self.theme.get("font", "sans-serif"),
+                    text_color=self.theme.get("text_color", "#000"),
+                    fig_width=self.width,
+                    fig_height=self.height
+                )
+                svg_parts.append(legend_svg)
+
+        # Standalone (e.g., PieSeries, DonutSeries)
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg())
-
-        # Render legend if any series has a label
-        all_series = [s for (s, _) in self.series] if self.series else []
-        for row in self.grid:
-            for ax in row:
-                if ax:
-                    all_series += ax.series
-
-        legend_svg = draw_legend(
-            all_series,
-            position=self.legend_position,
-            font=self.theme.get("font", "sans-serif"),
-            text_color=self.theme.get("text_color", "#000"),
-            fig_width=self.width,
-            fig_height=self.height
-        )
-        svg_parts.append(legend_svg)
 
         return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
 
