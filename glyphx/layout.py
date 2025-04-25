@@ -13,12 +13,17 @@ class Axes:
         series (list): Series plotted on the primary Y-axis.
         y2_series (list): Series plotted on the secondary Y-axis.
     """
-    def __init__(self, width=600, height=400, padding=50, show_grid=True, theme=None):
+    def __init__(self, width=600, height=400, padding=50, show_grid=True, theme=None, legend=None):
         self.width = width
         self.height = height
         self.padding = padding
         self.show_grid = show_grid
         self.theme = theme or {}
+        self.legend_pos = legend
+
+        self.title = None
+        self.xlabel = None
+        self.ylabel = None
 
         self.series = []
         self.y2_series = []
@@ -142,6 +147,18 @@ class Axes:
         # Y-axis (left)
         elements.append(f'<line x1="{self.padding}" y1="{self.padding}" '
                         f'x2="{self.padding}" y2="{self.height - self.padding}" stroke="{stroke}" />')
+
+        # Draw axis title centered below X
+        if self.xlabel:
+            elements.append(
+                f'<text x="{(self.width) // 2}" y="{self.height - 20}" text-anchor="middle" font-size="14" fill="{text_color}">{self.xlabel}</text>'
+            )
+
+        # Draw axis title rotated for Y
+        if self.ylabel:
+            elements.append(
+                f'<text x="20" y="{self.height // 2}" text-anchor="middle" font-size="14" fill="{text_color}" transform="rotate(-90, 15, {self.height // 2})">{self.ylabel}</text>'
+            )
 
         # Y2-axis (right)
         if self.y2_series:
