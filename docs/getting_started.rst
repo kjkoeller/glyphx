@@ -28,7 +28,7 @@ Here's how to create your first chart with GlyphX:
     from glyphx import plot
 
     y = [3, 5, 2, 8, 7]
-    plot(y, kind="line", title="Simple Line Chart")
+    plot(y, kind="line", title="Simple Line Chart", xlabel="x-axis", ylabel="y-axis")
 
 This will automatically render in your Jupyter notebook, IDE, or open in a browser if run from CLI.
 
