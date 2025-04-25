@@ -54,10 +54,19 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
     label = kwargs.pop("label", None)
 
     # Separate known Figure-only arguments
+    # Pull optional figure arguments
     figure_keys = {"width", "height", "padding", "title", "theme", "auto_display", "legend"}
     figure_kwargs = {k: kwargs.pop(k) for k in list(kwargs) if k in figure_keys}
 
+    # Pull axis label options
+    xlabel = kwargs.pop("xlabel", None)
+    ylabel = kwargs.pop("ylabel", None)
+
     fig = Figure(**figure_kwargs)
+
+    # Set axis labels if provided
+    fig.axes.xlabel = xlabel
+    fig.axes.ylabel = ylabel
 
     # Determine the input values to use
     if kind in {"pie", "donut", "hist", "box", "heatmap"}:

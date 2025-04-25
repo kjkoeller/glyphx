@@ -10,7 +10,7 @@ Use the `plot()` function for quick chart generation:
     
     from glyphx import plot
 
-    plot([1, 2, 3, 4], [5, 7, 3, 9], kind="scatter", color="red")
+    plot([1, 2, 3, 4], [5, 7, 3, 9], kind="scatter", color="red", xlabel="x-axis", ylabel="y-axis", label="Test")
 
 .. image:: examples/basic_plotting.png
    :alt: Basic Plot
