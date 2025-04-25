@@ -106,6 +106,106 @@ theme = themes["dark"]
 
 ---
 
+## Comparison with Matplotlib
+
+### 📈 Line Plot
+
+<table>
+  <tr><th>Matplotlib</th><th>GlyphX</th></tr>
+  <tr>
+    <td><img src="images/matplotlib_line.png" width="300"/></td>
+    <td><img src="images/glyphx_line.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.plot([1, 2, 3], [4, 5, 6])
+plt.title("Simple Line Plot")
+plt.xlabel("X Axis")
+plt.ylabel("Y Axis")
+plt.show()</code></pre></td>
+    <td><pre><code class="language-python">from glyphx import plot
+
+plot(x=[1, 2, 3], y=[4, 5, 6],
+     kind="line", title="Simple Line Plot",
+     xlabel="X Axis", ylabel="Y Axis")</code></pre></td>
+  </tr>
+</table>
+
+### 📊 Bar Chart
+
+<table>
+  <tr><th>Matplotlib</th><th>GlyphX</th></tr>
+  <tr>
+    <td><img src="images/matplotlib_bar.png" width="300"/></td>
+    <td><img src="images/glyphx_bar.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.bar(["A", "B", "C"], [5, 3, 7])
+plt.title("Bar Chart")
+plt.xlabel("Categories")
+plt.ylabel("Values")
+plt.show()</code></pre></td>
+    <td><pre><code class="language-python">from glyphx import plot
+
+plot(x=["A", "B", "C"], y=[5, 3, 7],
+     kind="bar", title="Bar Chart",
+     xlabel="Categories", ylabel="Values")</code></pre></td>
+  </tr>
+</table>
+
+### 🔵 Scatter Plot
+
+<table>
+  <tr><th>Matplotlib</th><th>GlyphX</th></tr>
+  <tr>
+    <td><img src="images/matplotlib_scatter.png" width="300"/></td>
+    <td><img src="images/glyphx_scatter.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><pre><code class="language-python">import matplotlib.pyplot as plt
+
+plt.scatter([1, 2, 3, 4], [4, 1, 3, 5])
+plt.title("Scatter Plot")
+plt.xlabel("X Axis")
+plt.ylabel("Y Axis")
+plt.show()</code></pre></td>
+    <td><pre><code class="language-python">from glyphx import plot
+
+plot(x=[1, 2, 3, 4], y=[4, 1, 3, 5],
+     kind="scatter", title="Scatter Plot",
+     xlabel="X Axis", ylabel="Y Axis")</code></pre></td>
+  </tr>
+</table>
+
+### 🥧 Pie Chart
+
+<table>
+  <tr><th>Matplotlib</th><th>GlyphX</th></tr>
+  <tr>
+    <td><img src="images/matplotlib_pie.png" width="300"/></td>
+    <td><img src="images/glyphx_pie.png" width="300"/></td>
+  </tr>
+  <tr>
+    <td><pre><code class="language-python">import matplotlib.pyplot as plt
+
+labels = ["A", "B", "C"]
+sizes = [30, 45, 25]
+plt.pie(sizes, labels=labels)
+plt.title("Pie Chart")
+plt.show()</code></pre></td>
+    <td><pre><code class="language-python">from glyphx import plot
+
+plot(data=[30, 45, 25],
+     kind="pie", labels=["A", "B", "C"],
+     title="Pie Chart")</code></pre></td>
+  </tr>
+</table>
+
+---
+
 ## License
 
 MIT License  
