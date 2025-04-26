@@ -1,1 +1,2 @@
 recursive-include glyphx/assets *
+recursive-include glyphx/images *
