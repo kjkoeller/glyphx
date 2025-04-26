@@ -206,6 +206,65 @@ plot(data=[30, 45, 25],
 
 ---
 
+## Subplot Grid Example
+
+<table>
+  <tr>
+    <td colspan="2"><img src="images/glyphx_sublpot.png" width="600"/></td>
+  </tr>
+  <tr>
+    <td colspan="2"><pre><code class="language-python">from glyphx import Figure, series, themes
+
+fig = Figure(rows=2, cols=2, theme=themes["dark"])
+
+ax1 = fig.add_axes(0, 0)
+ax1.add(series.LineSeries([1, 2], [3, 4], label="Line"))
+ax1.legend_pos = "right"
+
+ax2 = fig.add_axes(1, 0)
+ax2.add(series.ScatterSeries([1, 2, 3, 4], [4, 1, 3, 5], label="Scatter"))
+ax2.legend_pos = "right"
+
+ax3 = fig.add_axes(0, 1)
+ax3.add(series.BarSeries(x=["A", "B", "C"], y=[5, 3, 7], label="Bar"))
+ax3.legend_pos = "right"
+
+ax4 = fig.add_axes(1, 1)
+ax4.add(series.PieSeries(values=[30, 45, 25], labels=["A", "B", "C"]))
+
+fig.plot()</code></pre></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td colspan="2"><img src="images/matplotlib_sublpot.png" width="600"/></td>
+  </tr>
+  <tr>
+    <td colspan="2"><pre><code class="language-python">import matplotlib.pyplot as plt
+import numpy as np
+
+fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+axs[0, 0].plot([1, 2], [3, 4])
+axs[0, 0].set_title("Line")
+
+axs[1, 0].scatter([1, 2, 3, 4], [4, 1, 3, 5])
+axs[1, 0].set_title("Scatter")
+
+axs[0, 1].bar(["A", "B", "C"], [5, 3, 7])
+axs[0, 1].set_title("Bar")
+
+axs[1, 1].pie([30, 45, 25], labels=["A", "B", "C"])
+axs[1, 1].set_title("Pie")
+
+plt.tight_layout()
+plt.show()</code></pre></td>
+  </tr>
+</table>
+
+---
+
 ## License
 
 MIT License  
