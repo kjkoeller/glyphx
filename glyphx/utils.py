@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import tempfile
 import webbrowser
+import math
 
 def normalize(data):
     """
@@ -246,7 +247,38 @@ def draw_legend(series_list, position="top-right", font="sans-serif", text_color
     return '<g class="glyphx-legend">\n' + "\n".join(items) + '\n</g>'
 
 
+def describe_arc(cx, cy, r, start_angle, end_angle):
+    """
+    Create SVG arc path between two angles.
 
+    Args:
+        cx (float): Center X of the circle.
+        cy (float): Center Y of the circle.
+        r (float): Radius of the circle.
+        start_angle (float): Starting angle in degrees.
+        end_angle (float): Ending angle in degrees.
 
+    Returns:
+        str: SVG path string for an arc segment (slice).
+    """
+    # Convert angles from degrees to radians
+    start_rad = math.radians(start_angle)
+    end_rad = math.radians(end_angle)
 
+    # Calculate start and end points on the circle
+    x_start = cx + r * math.cos(start_rad)
+    y_start = cy + r * math.sin(start_rad)
+    x_end = cx + r * math.cos(end_rad)
+    y_end = cy + r * math.sin(end_rad)
 
+    # Large arc flag (for angles > 180°)
+    large_arc = 1 if (end_angle - start_angle) > 180 else 0
+
+    # SVG arc drawing command (Move -> Arc -> Line to center -> Close)
+    d = (
+        f"M {cx},{cy} "  # Move to center
+        f"L {x_start},{y_start} "  # Line to start point
+        f"A {r},{r} 0 {large_arc},1 {x_end},{y_end} "  # Arc
+        "Z"  # Close path
+    )
+    return d
