@@ -153,72 +153,100 @@ def render_cli(svg_string):
     webbrowser.open(f"file://{path}")
 
 
-def draw_legend(series_list, position="top-right", font="sans-serif", text_color="#000", fig_width=640, fig_height=480):
+def draw_legend(series_list, position="top-right", font="sans-serif", text_color="#000",
+                fig_width=640, fig_height=480, cell_width=None, cell_height=None):
     """
-    Render an interactive legend for labeled series.
+    Render a dynamic legend block for a list of series.
 
     Args:
         series_list (list): Series or (series, use_y2) tuples.
-        position (str): "top-right", "bottom-left", "top", "right", etc.
-        font (str): Font name.
-        text_color (str): Label color.
-        fig_width (int): Total width of the SVG canvas.
-        fig_height (int): Total height of the SVG canvas.
+        position (str): Legend position (top-left, bottom-right, left, right, etc.).
+        font (str): Font family for labels.
+        text_color (str): Color for text.
+        fig_width (int): Width of the figure (fallback if Axes width not provided).
+        fig_height (int): Height of the figure.
+        cell_width (int, optional): Width of subplot cell (overrides fig_width).
+        cell_height (int, optional): Height of subplot cell (overrides fig_height).
 
     Returns:
-        str: SVG <g> block for the legend.
+        str: SVG group (<g>) element containing the legend.
     """
+    # Normalize incoming series
     series_list = [s if not isinstance(s, tuple) else s[0] for s in series_list if getattr(s[0] if isinstance(s, tuple) else s, "label", None)]
     if not series_list:
         return ""
 
-    spacing = 20
-    legend_width = 160
-    legend_height = len(series_list) * spacing
-    padding = 10
+    # Size parameters
+    spacing = 20      # Vertical space between legend items
+    padding = 10      # Margin from edges
+    icon_size = 12    # Size of color box
+    text_padding = 6  # Space between icon and label
 
-    # Default origin
+    # Choose working width/height (subplot cell or full figure)
+    width = cell_width if cell_width else fig_width
+    height = cell_height if cell_height else fig_height
+
+    # Estimate longest label width (approx, 8px per char)
+    max_label_len = max(len(s.label) for s in series_list)
+    label_pixel_width = max_label_len * 8
+
+    legend_width = icon_size + text_padding + label_pixel_width + 2 * padding
+    legend_height = len(series_list) * spacing + 2 * padding
+
+    # Default (top-left)
     x = padding
     y = padding
 
     if position == "top-right":
-        x = fig_width - legend_width - padding
+        x = width - legend_width - padding
         y = padding
     elif position == "bottom-right":
-        x = fig_width - legend_width - padding
-        y = fig_height - legend_height - padding
+        x = width - legend_width - padding
+        y = height - legend_height - padding
     elif position == "bottom-left":
         x = padding
-        y = fig_height - legend_height - padding
+        y = height - legend_height - padding
     elif position == "top-left":
         x = padding
         y = padding
     elif position == "top":
-        x = (fig_width - legend_width) // 2
+        x = (width - legend_width) // 2
         y = padding
     elif position == "bottom":
-        x = (fig_width - legend_width) // 2
-        y = fig_height - legend_height - padding
+        x = (width - legend_width) // 2
+        y = height - legend_height - padding
     elif position == "left":
         x = padding
-        y = (fig_height - legend_height) // 2
+        y = (height - legend_height) // 2
     elif position == "right":
-        x = fig_width - legend_width - padding
-        y = (fig_height - legend_height) // 2
+        x = width - legend_width - padding
+        y = (height - legend_height) // 2
 
-    # Render items
+    # Build SVG elements
     items = []
     for i, s in enumerate(series_list):
         class_name = getattr(s, "css_class", f"series-{i}")
         color = s.color or "#888"
         label = s.label
-        cy = y + i * spacing
+        cy = y + padding + i * spacing
 
-        items.append(f'<rect x="{x}" y="{cy}" width="12" height="12" fill="{color}" class="legend-icon" data-target="{class_name}" />')
-        items.append(f'<text x="{x + 18}" y="{cy + 10}" font-size="12" font-family="{font}" fill="{text_color}" '
-                     f'class="legend-label" data-target="{class_name}">{label}</text>')
+        # Icon
+        items.append(
+            f'<rect x="{x}" y="{cy}" width="{icon_size}" height="{icon_size}" '
+            f'fill="{color}" class="legend-icon" data-target="{class_name}" />'
+        )
 
-    return f'<g class="glyphx-legend">\n' + "\n".join(items) + '\n</g>'
+        # Label text
+        items.append(
+            f'<text x="{x + icon_size + text_padding}" y="{cy + icon_size - 2}" '
+            f'font-size="12" font-family="{font}" fill="{text_color}" '
+            f'class="legend-label" data-target="{class_name}">{label}</text>'
+        )
+
+    return '<g class="glyphx-legend">\n' + "\n".join(items) + '\n</g>'
+
+
+
 
 
 
