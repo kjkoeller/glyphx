@@ -106,25 +106,33 @@ class Axes:
         Finalize scale functions for rendering axes and series.
 
         Computes axis domains and prepares .scale_x, .scale_y, .scale_y2.
-        Skips processing if series do not provide x/y coordinates.
         """
         if self.series:
-            domain = self.compute_domain(self.series)
-            if domain is not None:
-                self._x_domain, self._y_domain = domain
-
+            self._x_domain, self._y_domain = self.compute_domain(self.series)
         if self.y2_series:
             _, self._y2_domain = self.compute_domain(self.y2_series)
 
-        # Only scale if domains are computed
+        # Only define scales if domains exist
         if self._x_domain and self._y_domain:
-            self.scale_x = self._scale_linear(self._x_domain[0], self._x_domain[1],
-                                              self.padding, self.width - self.padding)
-            self.scale_y = self._scale_linear(self._y_domain[0], self._y_domain[1],
-                                              self.height - self.padding, self.padding)
-            self.scale_y2 = self._scale_linear(self._y2_domain[0], self._y2_domain[1],
-                                               self.height - self.padding,
-                                               self.padding) if self.y2_series else self.scale_y
+            self.scale_x = self._scale_linear(
+                self._x_domain[0], self._x_domain[1],
+                self.padding, self.width - self.padding
+            )
+            self.scale_y = self._scale_linear(
+                self._y_domain[0], self._y_domain[1],
+                self.height - self.padding, self.padding
+            )
+        else:
+            self.scale_x = None
+            self.scale_y = None
+
+        if self._y2_domain:
+            self.scale_y2 = self._scale_linear(
+                self._y2_domain[0], self._y2_domain[1],
+                self.height - self.padding, self.padding
+            )
+        else:
+            self.scale_y2 = self.scale_y  # fallback
 
     def render_axes(self):
         """
@@ -177,11 +185,7 @@ class Axes:
         Returns:
             str: SVG elements for grid and labels.
         """
-        if not self.show_grid:
-            return ""
-
-        if self._x_domain is None or self._y_domain is None:
-            # No valid axis-based series, skip grid rendering
+        if not self.show_grid or self._x_domain is None or self._y_domain is None:
             return ""
 
         elements = []
@@ -195,48 +199,25 @@ class Axes:
             y_pos = self.scale_y(y_val)
             elements.append(
                 f'<line x1="{self.padding}" x2="{self.width - self.padding}" y1="{y_pos}" y2="{y_pos}" '
-                f'stroke="{stroke}" stroke-dasharray="3,3" />')
+                f'stroke="{stroke}" stroke-dasharray="3,3" />'
+            )
             elements.append(
                 f'<text x="{self.padding - 10}" y="{y_pos + 4}" text-anchor="end" '
-                f'font-size="12" font-family="{font}" fill="{text_color}">{round(y_val, 2)}</text>')
+                f'font-size="12" font-family="{font}" fill="{text_color}">{round(y_val, 2)}</text>'
+            )
 
         # Vertical lines and X-tick labels
         for i in range(ticks + 1):
             x_val = self._x_domain[0] + i * (self._x_domain[1] - self._x_domain[0]) / ticks
             x_pos = self.scale_x(x_val)
-
-            label = round(x_val, 2)
-
-            # Override with categories if available
-            if self.series and hasattr(self.series[0], "categories"):
-                cat = self.series[0].categories
-                idx = round(x_val)
-                if 0 <= idx < len(cat):
-                    label = cat[idx]
-
-            # Use custom ticks when categories exist
-            if self.series and hasattr(self.series[0], "categories"):
-                categories = self.series[0].categories
-                for i, label in enumerate(categories):
-                    x_pos = self.scale_x(i + 0.5)  # match bar offset
-                    elements.append(
-                        f'<line y1="{self.padding}" y2="{self.height - self.padding}" x1="{x_pos}" x2="{x_pos}" '
-                        f'stroke="{stroke}" stroke-dasharray="3,3" />')
-                    elements.append(
-                        f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
-                        f'font-size="12" font-family="{font}" fill="{text_color}">{label}</text>')
-            else:
-                # fallback to numeric ticks
-                for i in range(ticks + 1):
-                    x_val = self._x_domain[0] + i * (self._x_domain[1] - self._x_domain[0]) / ticks
-                    x_pos = self.scale_x(x_val)
-                    label = round(x_val, 2)
-                    elements.append(
-                        f'<line y1="{self.padding}" y2="{self.height - self.padding}" x1="{x_pos}" x2="{x_pos}" '
-                        f'stroke="{stroke}" stroke-dasharray="3,3" />')
-                    elements.append(
-                        f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
-                        f'font-size="12" font-family="{font}" fill="{text_color}">{label}</text>')
+            elements.append(
+                f'<line y1="{self.padding}" y2="{self.height - self.padding}" x1="{x_pos}" x2="{x_pos}" '
+                f'stroke="{stroke}" stroke-dasharray="3,3" />'
+            )
+            elements.append(
+                f'<text x="{x_pos}" y="{self.height - self.padding + 16}" text-anchor="middle" '
+                f'font-size="12" font-family="{font}" fill="{text_color}">{round(x_val, 2)}</text>'
+            )
 
         return "\n".join(elements)
 
