@@ -1,29 +1,32 @@
 import numpy as np
 from .themes import themes
+import math
 
 class BaseSeries:
     """
-    Base class for all series types. Stores data and optional label/color.
+    Base class for all series types. Stores data and optional label/color/title.
 
     Attributes:
         x (list): X-axis values
         y (list): Y-axis values (if applicable)
         color (str): Color of the series
         label (str): Optional label for tooltips or legend
+        title (str): Optional title displayed above the series
     """
-    def __init__(self, x, y=None, color=None, label=None):
+    def __init__(self, x, y=None, color=None, label=None, title=None):
         self.x = x
         self.y = y
         self.color = color or "#1f77b4"
         self.label = label
+        self.title = title
 
 
 class LineSeries(BaseSeries):
     """
     Line chart series with optional line style and width.
     """
-    def __init__(self, x, y, color=None, label=None, linestyle="solid", width=2):
-        super().__init__(x, y, color, label)
+    def __init__(self, x, y, color=None, label=None, legend=None, linestyle="solid", width=2, title=None):
+        super().__init__(x, y, color, label=label or legend, title=title)
         self.linestyle = linestyle
         self.width = width
 
@@ -31,20 +34,39 @@ class LineSeries(BaseSeries):
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         dash = {"solid": "", "dashed": "6,3", "dotted": "2,2", "longdash": "10,5"}.get(self.linestyle, "")
         polyline = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(self.x, self.y))
-        svg = f'<polyline fill="none" stroke="{self.color}" stroke-width="{self.width}" stroke-dasharray="{dash}" points="{polyline}"/>'
+
+        svg_elements = []
+
+        # 🔥 (NEW) If title is set, draw it above the series
+        if self.title:
+            mid_x = (ax.padding + ax.width - ax.padding) // 2
+            svg_elements.append(
+                f'<text x="{mid_x}" y="{ax.padding - 20}" text-anchor="middle" font-size="16" '
+                f'font-family="{ax.theme.get("font", "sans-serif")}" fill="{ax.theme.get("text_color", "#000")}">{self.title}</text>'
+            )
+
+        # Draw the main polyline
+        svg_elements.append(
+            f'<polyline fill="none" stroke="{self.color}" stroke-width="{self.width}" stroke-dasharray="{dash}" points="{polyline}"/>'
+        )
+
+        # Draw points with tooltips
         tooltip_points = [
-            f'<circle class="glyphx-point" cx="{ax.scale_x(x)}" cy="{scale_y(y)}" r="4" fill="{self.color}" data-x="{x}" data-y="{y}" data-label="{self.label or ""}"/>'
+            f'<circle class="glyphx-point" cx="{ax.scale_x(x)}" cy="{scale_y(y)}" r="4" fill="{self.color}" '
+            f'data-x="{x}" data-y="{y}" data-label="{self.label or ""}"/>'
             for x, y in zip(self.x, self.y)
         ]
-        return "\n".join([svg] + tooltip_points)
+        svg_elements.extend(tooltip_points)
+
+        return "\n".join(svg_elements)
 
 
 class BarSeries(BaseSeries):
     """
     Bar chart series with adjustable width per bar.
     """
-    def __init__(self, x, y, color=None, label=None, bar_width=0.8):
-        super().__init__(x, y, color, label)
+    def __init__(self, x, y, color=None, label=None, legend=None, bar_width=0.8, title=None):
+        super().__init__(x, y, color, label=label or legend, title=title)
         self.bar_width = bar_width
 
     def to_svg(self, ax, use_y2=False):
@@ -77,6 +99,10 @@ class BarSeries(BaseSeries):
                 f'fill="{self.color}" stroke="#000" {tooltip}/>'
             )
 
+        if self.title:
+            elements.append(
+                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">{self.title}</text>')
+
         return "\n".join(elements)
 
 
@@ -84,8 +110,8 @@ class ScatterSeries(BaseSeries):
     """
     Scatter chart series with adjustable size and marker type.
     """
-    def __init__(self, x, y, color=None, label=None, size=5, marker="circle"):
-        super().__init__(x, y, color, label)
+    def __init__(self, x, y, color=None, label=None, legend=None, size=5, marker="circle", title=None):
+        super().__init__(x, y, color, label=label or legend, title=title)
         self.size = size
         self.marker = marker
 
@@ -100,61 +126,96 @@ class ScatterSeries(BaseSeries):
                 elements.append(f'<rect class="glyphx-point" x="{px - self.size/2}" y="{py - self.size/2}" width="{self.size}" height="{self.size}" fill="{self.color}" {tooltip}/>')
             else:
                 elements.append(f'<circle class="glyphx-point" cx="{px}" cy="{py}" r="{self.size}" fill="{self.color}" {tooltip}/>')
+
+        if self.title:
+            elements.append(
+                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">{self.title}</text>')
+
         return "\n".join(elements)
 
 
 class PieSeries(BaseSeries):
     """
-    Pie chart series for showing categorical data proportions.
-    """
-    def __init__(self, values, labels=None, colors=None, radius=100, center=(150,150)):
-        self.values = values
-        self.labels = labels or [f"Slice {i}" for i in range(len(values))]
-        self.colors = colors or ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
-        self.radius = radius
-        self.center = center
+    Pie chart series for GlyphX.
 
-    def to_svg(self, ax=None):
+    Attributes:
+        values (list): The values corresponding to each pie slice.
+        labels (list): Optional labels for each slice.
+        label_position (str): Either 'inside' or 'outside' for label placement.
+        radius (float): Radius of the pie chart.
+    """
+    def __init__(self, values, labels=None, colors=None, title=None, label_position="outside", radius=80):
+        super().__init__(x=None, y=None, color=None, title=title)
+        self.values = values
+        self.labels = labels
+        self.colors = colors
+        self.label_position = label_position
+        self.radius = radius
+
+    def to_svg(self, ax=None, **kwargs):
         """
-        Render the pie chart into SVG format.
+        Generate SVG elements for the pie chart.
 
         Args:
-            ax (Axes, optional): If provided, auto-center within Axes region.
+            ax (Axes, optional): Not used but kept for compatibility.
 
         Returns:
-            str: SVG elements for pie slices.
+            str: SVG markup string.
         """
         total = sum(self.values)
-        angle = 0
-        radius = min(ax.width, ax.height) // 4 if ax else 100
-        cx = ax.width // 2 if ax else 150
-        cy = ax.height // 2 if ax else 150
+        angles = [v / total * 360 for v in self.values]
+        start_angle = 0
 
-        elements = []
-        for i, value in enumerate(self.values):
-            theta1 = angle
-            theta2 = angle + (value / total) * 360
-            angle = theta2
+        cx = 150  # Center X
+        cy = 150  # Center Y
 
-            # Convert to radians
-            from math import radians, sin, cos, pi
-            x1 = cx + radius * cos(radians(theta1))
-            y1 = cy + radius * sin(radians(theta1))
-            x2 = cx + radius * cos(radians(theta2))
-            y2 = cy + radius * sin(radians(theta2))
+        svg_parts = []
 
-            large_arc = 1 if theta2 - theta1 > 180 else 0
-            color = self.colors[i % len(self.colors)]
+        for i, (value, angle) in enumerate(zip(self.values, angles)):
+            # Color for this slice
+            color = (self.colors[i] if self.colors and i < len(self.colors)
+                     else f"hsl({i * 360 / len(self.values)}, 70%, 50%)")
 
+            end_angle = start_angle + angle
+            large_arc = 1 if angle > 180 else 0
+
+            # Calculate start and end coordinates
+            x1 = cx + self.radius * math.cos(math.radians(start_angle))
+            y1 = cy + self.radius * math.sin(math.radians(start_angle))
+            x2 = cx + self.radius * math.cos(math.radians(end_angle))
+            y2 = cy + self.radius * math.sin(math.radians(end_angle))
+
+            # SVG Path for slice
             path = (
-                f'M {cx},{cy} '
-                f'L {x1},{y1} '
-                f'A {radius},{radius} 0 {large_arc},1 {x2},{y2} Z'
+                f"M {cx},{cy} L {x1},{y1} "
+                f"A {self.radius},{self.radius} 0 {large_arc},1 {x2},{y2} Z"
             )
-            tooltip = f'data-label="{self.labels[i]}" data-value="{value}" data-index="{i}"'
-            elements.append(f'<path class="glyphx-point" d="{path}" fill="{color}" {tooltip}></path>')
+            svg_parts.append(f'<path d="{path}" fill="{color}" stroke="#fff" stroke-width="1" />')
 
-        return "\n".join(elements)
+            # Label positioning
+            if self.labels and i < len(self.labels):
+                mid_angle = start_angle + angle / 2
+                label_x = cx + (self.radius * 0.7 if self.label_position == "inside" else self.radius * 1.1) * math.cos(math.radians(mid_angle))
+                label_y = cy + (self.radius * 0.7 if self.label_position == "inside" else self.radius * 1.1) * math.sin(math.radians(mid_angle))
+
+                if self.label_position == "outside":
+                    # Draw connector line
+                    line_end_x = cx + self.radius * math.cos(math.radians(mid_angle))
+                    line_end_y = cy + self.radius * math.sin(math.radians(mid_angle))
+                    svg_parts.append(f'<line x1="{line_end_x}" y1="{line_end_y}" x2="{label_x}" y2="{label_y}" stroke="#333" stroke-width="2" />')
+
+                svg_parts.append(
+                    f'<text x="{label_x}" y="{label_y}" font-size="12" text-anchor="middle" dominant-baseline="middle" fill="#333">{self.labels[i]}</text>'
+                )
+
+            start_angle = end_angle
+
+        if self.title:
+            svg_parts.append(
+                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">{self.title}</text>')
+
+        # Wrap all parts in a <g> tag for grouping
+        return f'<g class="glyphx-pie">' + "\n".join(svg_parts) + '</g>'
 
 
 class DonutSeries(PieSeries):

@@ -1,4 +1,4 @@
-__version__ = "v1.2.9"
+__version__ = "v1.2.10"
 
 from .figure import Figure
 from .layout import Axes, grid
