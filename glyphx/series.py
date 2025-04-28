@@ -155,13 +155,13 @@ class PieSeries(BaseSeries):
 
     def to_svg(self, ax=None):
         """
-        Render the PieSeries into SVG <path> elements with leader lines and labels slightly offset.
+        Render the PieSeries into SVG <path> elements with dynamic elbow line lengths.
 
         Args:
             ax (Axes or None): Optional Axes object for sizing.
 
         Returns:
-            str: SVG markup for the pie chart slices, leader lines, and labels.
+            str: SVG markup for the pie chart slices and labels.
         """
         if not self.colors:
             self.colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
@@ -169,65 +169,62 @@ class PieSeries(BaseSeries):
         elements = []
         total = sum(self.values)
 
-        if self.title and ax:
+        # Title
+        if self.title:
             elements.append(
-                f'<text x="{ax.width // 2}" y="20" text-anchor="middle" font-size="16" '
-                f'fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">{self.title}</text>'
+                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" '
+                f'fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">'
+                f'{self.title}</text>'
             )
 
         cx = (ax.width // 2) if ax else 320
         cy = (ax.height // 2) if ax else 240
-        r = min(cx, cy) * 0.8
+        r = min(cx, cy) * 0.6  # Shrunk pie
 
         angle_start = 0
 
         for i, v in enumerate(self.values):
             angle_end = angle_start + (v / total) * 360
             mid_angle = (angle_start + angle_end) / 2
-            mid_angle_rad = math.radians(mid_angle)
+            rad = math.radians(mid_angle)
 
-            # Draw the slice
             path_data = describe_arc(cx, cy, r, angle_start, angle_end)
-            tooltip = ""
-            if self.labels:
-                tooltip = f'data-label="{self.labels[i]}" data-value="{v}"'
+            tooltip = f'data-label="{self.labels[i]}" data-value="{v}"' if self.labels else ""
+
             elements.append(
                 f'<path d="{path_data}" fill="{self.colors[i % len(self.colors)]}" stroke="#000" {tooltip}/>'
             )
 
-            # Leader lines and labels
             if self.labels:
-                # Main radial line
-                x_start = cx + r * math.cos(mid_angle_rad)
-                y_start = cy + r * math.sin(mid_angle_rad)
-                x_mid = cx + (r + 20) * math.cos(mid_angle_rad)
-                y_mid = cy + (r + 20) * math.sin(mid_angle_rad)
+                # Start at edge of pie
+                start_x = cx + r * math.cos(rad)
+                start_y = cy + r * math.sin(rad)
 
-                # Extend a little horizontally
-                horizontal_gap = 15
-                if math.cos(mid_angle_rad) >= 0:
-                    x_end = x_mid + horizontal_gap
-                else:
-                    x_end = x_mid - horizontal_gap
-                y_end = y_mid  # Horizontal extension only
+                # Dynamic elbow distance: longer when closer to vertical
+                base_dist = r * 0.15  # Base distance
+                dynamic_dist = base_dist + r * 0.2 * abs(math.sin(rad))  # sin() higher near vertical (90°, 270°)
 
-                # Draw radial line
+                elbow_x = cx + (r + dynamic_dist) * math.cos(rad)
+                elbow_y = cy + (r + dynamic_dist) * math.sin(rad)
+
+                # Final label x shift
+                label_shift = 30
+                label_x = elbow_x + (label_shift if math.cos(rad) >= 0 else -label_shift)
+                label_y = elbow_y
+
+                # Lines
                 elements.append(
-                    f'<line x1="{x_start}" y1="{y_start}" x2="{x_mid}" y2="{y_mid}" '
-                    f'stroke="{self.colors[i % len(self.colors)]}" stroke-width="1"/>'
+                    f'<line x1="{start_x}" y1="{start_y}" x2="{elbow_x}" y2="{elbow_y}" stroke="black" stroke-width="1"/>'
+                )
+                elements.append(
+                    f'<line x1="{elbow_x}" y1="{elbow_y}" x2="{label_x}" y2="{label_y}" stroke="black" stroke-width="1"/>'
                 )
 
-                # Draw horizontal extension
+                # Label text
+                text_anchor = "start" if math.cos(rad) >= 0 else "end"
                 elements.append(
-                    f'<line x1="{x_mid}" y1="{y_mid}" x2="{x_end}" y2="{y_end}" '
-                    f'stroke="{self.colors[i % len(self.colors)]}" stroke-width="1"/>'
-                )
-
-                # Text label after the extension
-                align = "start" if math.cos(mid_angle_rad) >= 0 else "end"
-                elements.append(
-                    f'<text x="{x_end}" y="{y_end}" text-anchor="{align}" dy="4" '
-                    f'font-size="12" font-family="sans-serif" fill="{self.colors[i % len(self.colors)]}">{self.labels[i]}</text>'
+                    f'<text x="{label_x}" y="{label_y}" text-anchor="{text_anchor}" '
+                    f'font-size="12" font-family="sans-serif" fill="#000">{self.labels[i]}</text>'
                 )
 
             angle_start = angle_end
