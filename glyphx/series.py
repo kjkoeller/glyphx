@@ -149,7 +149,7 @@ class PieSeries(BaseSeries):
         super().__init__(x=None, y=None, color=None, title=title)
         self.values = values
         self.labels = labels
-        self.colors = colors
+        self.colors = self.colors or ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
         self.label_position = label_position
         self.radius = radius
 
