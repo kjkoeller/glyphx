@@ -1,5 +1,6 @@
 import numpy as np
 from .themes import themes
+from .utils import describe_arc
 import math
 
 class BaseSeries:
@@ -148,108 +149,192 @@ class PieSeries(BaseSeries):
         super().__init__(x=None, y=None, color=None, title=title)
         self.values = values
         self.labels = labels
-        self.colors = colors
+        self.colors = self.colors or ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
         self.label_position = label_position
         self.radius = radius
 
-    def to_svg(self, ax=None, **kwargs):
+    def to_svg(self, ax=None):
         """
-        Generate SVG elements for the pie chart.
+        Render the PieSeries into SVG <path> elements with dynamic elbow line lengths.
 
         Args:
-            ax (Axes, optional): Not used but kept for compatibility.
+            ax (Axes or None): Optional Axes object for sizing.
 
         Returns:
-            str: SVG markup string.
+            str: SVG markup for the pie chart slices and labels.
         """
+        if not self.colors:
+            self.colors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd"]
+
+        elements = []
         total = sum(self.values)
-        angles = [v / total * 360 for v in self.values]
-        start_angle = 0
 
-        cx = 150  # Center X
-        cy = 150  # Center Y
-
-        svg_parts = []
-
-        for i, (value, angle) in enumerate(zip(self.values, angles)):
-            # Color for this slice
-            color = (self.colors[i] if self.colors and i < len(self.colors)
-                     else f"hsl({i * 360 / len(self.values)}, 70%, 50%)")
-
-            end_angle = start_angle + angle
-            large_arc = 1 if angle > 180 else 0
-
-            # Calculate start and end coordinates
-            x1 = cx + self.radius * math.cos(math.radians(start_angle))
-            y1 = cy + self.radius * math.sin(math.radians(start_angle))
-            x2 = cx + self.radius * math.cos(math.radians(end_angle))
-            y2 = cy + self.radius * math.sin(math.radians(end_angle))
-
-            # SVG Path for slice
-            path = (
-                f"M {cx},{cy} L {x1},{y1} "
-                f"A {self.radius},{self.radius} 0 {large_arc},1 {x2},{y2} Z"
+        # Title
+        if self.title:
+            elements.append(
+                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" '
+                f'fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">'
+                f'{self.title}</text>'
             )
-            svg_parts.append(f'<path d="{path}" fill="{color}" stroke="#fff" stroke-width="1" />')
 
-            # Label positioning
-            if self.labels and i < len(self.labels):
-                mid_angle = start_angle + angle / 2
-                label_x = cx + (self.radius * 0.7 if self.label_position == "inside" else self.radius * 1.1) * math.cos(math.radians(mid_angle))
-                label_y = cy + (self.radius * 0.7 if self.label_position == "inside" else self.radius * 1.1) * math.sin(math.radians(mid_angle))
+        cx = (ax.width // 2) if ax else 320
+        cy = (ax.height // 2) if ax else 240
+        r = min(cx, cy) * 0.6  # Shrunk pie
 
-                if self.label_position == "outside":
-                    # Draw connector line
-                    line_end_x = cx + self.radius * math.cos(math.radians(mid_angle))
-                    line_end_y = cy + self.radius * math.sin(math.radians(mid_angle))
-                    svg_parts.append(f'<line x1="{line_end_x}" y1="{line_end_y}" x2="{label_x}" y2="{label_y}" stroke="#333" stroke-width="2" />')
+        angle_start = 0
 
-                svg_parts.append(
-                    f'<text x="{label_x}" y="{label_y}" font-size="12" text-anchor="middle" dominant-baseline="middle" fill="#333">{self.labels[i]}</text>'
+        for i, v in enumerate(self.values):
+            angle_end = angle_start + (v / total) * 360
+            mid_angle = (angle_start + angle_end) / 2
+            rad = math.radians(mid_angle)
+
+            path_data = describe_arc(cx, cy, r, angle_start, angle_end)
+            tooltip = f'data-label="{self.labels[i]}" data-value="{v}"' if self.labels else ""
+
+            elements.append(
+                f'<path d="{path_data}" fill="{self.colors[i % len(self.colors)]}" stroke="#000" {tooltip}/>'
+            )
+
+            if self.labels:
+                # Start at edge of pie
+                start_x = cx + r * math.cos(rad)
+                start_y = cy + r * math.sin(rad)
+
+                # Dynamic elbow distance: longer when closer to vertical
+                base_dist = r * 0.15  # Base distance
+                dynamic_dist = base_dist + r * 0.2 * abs(math.sin(rad))  # sin() higher near vertical (90°, 270°)
+
+                elbow_x = cx + (r + dynamic_dist) * math.cos(rad)
+                elbow_y = cy + (r + dynamic_dist) * math.sin(rad)
+
+                # Final label x shift
+                label_shift = 30
+                label_x = elbow_x + (label_shift if math.cos(rad) >= 0 else -label_shift)
+                label_y = elbow_y
+
+                # Lines
+                elements.append(
+                    f'<line x1="{start_x}" y1="{start_y}" x2="{elbow_x}" y2="{elbow_y}" stroke="black" stroke-width="1"/>'
+                )
+                elements.append(
+                    f'<line x1="{elbow_x}" y1="{elbow_y}" x2="{label_x}" y2="{label_y}" stroke="black" stroke-width="1"/>'
                 )
 
-            start_angle = end_angle
+                # Label text
+                text_anchor = "start" if math.cos(rad) >= 0 else "end"
+                elements.append(
+                    f'<text x="{label_x}" y="{label_y}" text-anchor="{text_anchor}" '
+                    f'font-size="12" font-family="sans-serif" fill="#000">{self.labels[i]}</text>'
+                )
 
-        if self.title:
-            svg_parts.append(
-                f'<text x="{(ax.width) // 2}" y="20" text-anchor="middle" font-size="16" fill="{ax.theme.get("text_color", "#000")}" font-family="{ax.theme.get("font", "sans-serif")}">{self.title}</text>')
+            angle_start = angle_end
 
-        # Wrap all parts in a <g> tag for grouping
-        return f'<g class="glyphx-pie">' + "\n".join(svg_parts) + '</g>'
+        return "\n".join(elements)
 
 
-class DonutSeries(PieSeries):
+class DonutSeries(BaseSeries):
     """
-    Donut chart series (like PieSeries but with a hole in the middle).
-    """
-    def __init__(self, values, labels=None, colors=None, radius=100, inner_radius=40, center=(150,150)):
-        super().__init__(values, labels, colors, radius, center)
-        self.inner_radius = inner_radius
+    Donut (pie with hole) chart series with optional label callouts.
 
-    def to_svg(self, ax=None, use_y2=False):
+    Attributes:
+        values (list): Numeric values for slices
+        labels (list): Labels for each slice (optional)
+        colors (list): List of colors (optional)
+        show_labels (bool): Whether to show labels outside slices
+        inner_radius_frac (float): Fractional inner hole size (default 0.5)
+    """
+
+    def __init__(self, values, labels=None, colors=None, show_labels=True, hover_animate=True, inner_radius_frac=0.5):
+        self.values = values
+        self.labels = labels or [str(i) for i in range(len(values))]
+        self.colors = colors
+        self.show_labels = show_labels
+        self.hover_animate = hover_animate
+        self.inner_radius_frac = inner_radius_frac
+
+    def to_svg(self, ax=None):
+        """
+        Render the donut chart to SVG elements.
+
+        Args:
+            ax (Axes or None): Unused, included for compatibility.
+
+        Returns:
+            str: SVG markup string
+        """
         import math
+
         total = sum(self.values)
-        svg = []
-        cx, cy = self.center
-        angle = 0
-        for i, v in enumerate(self.values):
-            theta = 2 * math.pi * v / total
-            x1 = cx + self.radius * math.cos(angle)
-            y1 = cy + self.radius * math.sin(angle)
-            x2 = cx + self.radius * math.cos(angle + theta)
-            y2 = cy + self.radius * math.sin(angle + theta)
-            x3 = cx + self.inner_radius * math.cos(angle + theta)
-            y3 = cy + self.inner_radius * math.sin(angle + theta)
-            x4 = cx + self.inner_radius * math.cos(angle)
-            y4 = cy + self.inner_radius * math.sin(angle)
-            large_arc = 1 if theta > math.pi else 0
-            path = f"M {x1},{y1} A {self.radius},{self.radius} 0 {large_arc},1 {x2},{y2} "
-            path += f"L {x3},{y3} A {self.inner_radius},{self.inner_radius} 0 {large_arc},0 {x4},{y4} Z"
-            color = self.colors[i % len(self.colors)]
-            label = self.labels[i] if i < len(self.labels) else f"Slice {i}"
-            svg.append(f'<path class="glyphx-point" d="{path}" fill="{color}" stroke="#fff" data-label="{label}" data-value="{v}"/>')
-            angle += theta
-        return "\n".join(svg)
+        if total == 0:
+            return ""
+
+        cx = (ax.width // 2) if ax else 320
+        cy = (ax.height // 2) if ax else 240
+        max_radius = min(cx, cy) - 40  # Margin for label space
+
+        outer_radius = max_radius
+        inner_radius = outer_radius * self.inner_radius_frac
+
+        elements = []
+        angle_start = 0
+        slices = []
+
+        # Precompute slices
+        for v, label in zip(self.values, self.labels):
+            angle_span = (v / total) * 360
+            slices.append((angle_start, angle_start + angle_span, v, label))
+            angle_start += angle_span
+
+        def create_slice(angle1, angle2, color, idx):
+            x1 = cx + outer_radius * math.cos(math.radians(angle1))
+            y1 = cy + outer_radius * math.sin(math.radians(angle1))
+            x2 = cx + outer_radius * math.cos(math.radians(angle2))
+            y2 = cy + outer_radius * math.sin(math.radians(angle2))
+            large_arc = 1 if angle2 - angle1 > 180 else 0
+
+            path = (
+                f"M {x1},{y1} "
+                f"A {outer_radius},{outer_radius} 0 {large_arc},1 {x2},{y2} "
+                f"L {cx},{cy} Z"
+            )
+            color_style = self.colors[idx] if self.colors and idx < len(self.colors) else f"hsl({idx * 45 % 360},70%,50%)"
+            animate_class = "glyphx-point" if self.hover_animate else ""
+
+            return f'<path d="{path}" fill="{color_style}" class="{animate_class}" data-label="{slices[idx][3]}" data-value="{slices[idx][2]}"/>'
+
+        def create_label(angle1, angle2, label_text):
+            mid_angle = (angle1 + angle2) / 2
+            label_radius = outer_radius + 20
+            lx = cx + label_radius * math.cos(math.radians(mid_angle))
+            ly = cy + label_radius * math.sin(math.radians(mid_angle))
+
+            line_x = cx + outer_radius * math.cos(math.radians(mid_angle))
+            line_y = cy + outer_radius * math.sin(math.radians(mid_angle))
+
+            line = f'<line x1="{line_x}" y1="{line_y}" x2="{lx}" y2="{ly}" stroke="#333" />'
+            text = f'<text x="{lx}" y="{ly}" text-anchor="middle" font-size="12" font-family="sans-serif">{label_text}</text>'
+            return line + "\n" + text
+
+        # Try to auto-fit: reduce outer radius if labels would overflow
+        if self.show_labels:
+            labels_wide = any(len(label) > 10 for label in self.labels)
+            if labels_wide:
+                outer_radius = max_radius * 0.75
+            else:
+                outer_radius = max_radius * 0.9
+            inner_radius = outer_radius * self.inner_radius_frac
+
+        # Create SVG paths
+        for idx, (a1, a2, v, label) in enumerate(slices):
+            elements.append(create_slice(a1, a2, color=self.colors[idx] if self.colors else None, idx=idx))
+            if self.show_labels:
+                elements.append(create_label(a1, a2, label))
+
+        # Draw center hole
+        elements.append(f'<circle cx="{cx}" cy="{cy}" r="{inner_radius}" fill="{self.theme.get("background", "#ffffff")}" />')
+
+        return "\n".join(elements)
+
 
 
 class HistogramSeries(BaseSeries):

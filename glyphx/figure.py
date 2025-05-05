@@ -105,7 +105,7 @@ class Figure:
         """
         svg_parts = []
 
-        # Draw background
+        # Background
         svg_parts.append(
             f'<rect width="{self.width}" height="{self.height}" fill="{self.theme.get("background", "#ffffff")}" />'
         )
@@ -118,35 +118,41 @@ class Figure:
                 f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
             )
 
-        # Subplot grid
+        # Layout Detection: Grid or Single-Axes
         if self.grid and any(any(cell for cell in row) for row in self.grid):
             cell_width = self.width // self.cols
             cell_height = self.height // self.rows
+
             for r, row in enumerate(self.grid):
                 for c, ax in enumerate(row):
                     if ax:
                         ax.finalize()
-                        group = f'<g transform="translate({c * cell_width}, {r * cell_height})">'
+
+                        # Adjust space for legend if needed
+                        legend_offset_x = 0
+                        if getattr(ax, "legend_pos", None) in ("right", "left"):
+                            legend_offset_x = 100
+
+                        group = f'<g transform="translate({c * cell_width},{r * cell_height})">'
                         group += ax.render_axes()
                         group += ax.render_grid()
                         for series in ax.series:
                             group += series.to_svg(ax)
 
-                        # 🔥 Per-Axes Legend
                         if getattr(ax, "legend_pos", None):
-                            group += draw_legend(
+                            legend_svg = draw_legend(
                                 ax.series,
                                 position=ax.legend_pos,
                                 font=self.theme.get("font", "sans-serif"),
                                 text_color=self.theme.get("text_color", "#000"),
-                                fig_width=ax.width,
+                                fig_width=ax.width - legend_offset_x,
                                 fig_height=ax.height
                             )
+                            group += legend_svg
 
                         group += '</g>'
                         svg_parts.append(group)
 
-        # Single axes charts (line, bar, scatter)
         elif self.axes and self.series and any(
                 hasattr(s, "x") and hasattr(s, "y") and getattr(s, "x", None) and getattr(s, "y", None)
                 for s, _ in self.series
@@ -156,24 +162,28 @@ class Figure:
                     self.axes.add_series(s, use_y2)
 
             self.axes.finalize()
+
+            legend_offset_x = 0
+            if self.legend_pos in ("right", "left"):
+                legend_offset_x = 100
+
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
+
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
-            # ✅ Global Legend for non-grid usage
             if self.legend_pos:
                 legend_svg = draw_legend(
                     [s for (s, _) in self.series],
                     position=self.legend_pos,
                     font=self.theme.get("font", "sans-serif"),
                     text_color=self.theme.get("text_color", "#000"),
-                    fig_width=self.width,
+                    fig_width=self.width - legend_offset_x,
                     fig_height=self.height
                 )
                 svg_parts.append(legend_svg)
 
-        # Standalone (e.g., PieSeries, DonutSeries)
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg())
