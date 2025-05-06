@@ -43,15 +43,14 @@ def wrap_svg_with_template(svg_string: str) -> str:
 
     html = template_path.read_text(encoding="utf-8")
 
-    # Inject zoom script if available
+    # Inject zoom script if available (no outer <script> tag!)
     zoom_script = ""
     if zoom_path.exists():
         zoom_content = zoom_path.read_text(encoding="utf-8")
-        zoom_script = f"<script>\n{zoom_content}\n</script>"
+        zoom_script = f"\n{zoom_content}\n"
 
-    # Inject legend toggle script
-    legend_js = """
-    <script>
+    # Legend interactivity script
+    legend_script = """
     document.querySelectorAll('.legend-icon, .legend-label').forEach(el => {
       el.addEventListener('click', () => {
         const target = el.dataset.target;
@@ -61,11 +60,12 @@ def wrap_svg_with_template(svg_string: str) -> str:
         });
       });
     });
-    </script>
     """
 
-    return html.replace("{{svg_content}}", svg_string).replace("{{extra_scripts}}", zoom_script + legend_js)
+    # Inject all extra scripts in one <script> block
+    combined_script = f"<script>\n{zoom_script}\n{legend_script}\n</script>"
 
+    return html.replace("{{svg_content}}", svg_string).replace("{{extra_scripts}}", combined_script)
 
 
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480) -> str:
