@@ -417,11 +417,13 @@ class TestPPTXExport:
         out = str(tmp_path / "chart.pptx")
         # If the optional deps ARE installed this test is skipped;
         # if not, confirm the error message is helpful.
+        # cairosvg raises OSError (not ImportError) when the system libcairo
+        # C library is absent (e.g. on bare macOS CI runners).
         try:
             import pptx   # noqa: F401
             import cairosvg  # noqa: F401
             pytest.skip("python-pptx and cairosvg are installed — skipping error path test")
-        except ImportError:
+        except (ImportError, OSError):
             with pytest.raises(RuntimeError, match="pptx|cairosvg|pip"):
                 basic_fig.save(out)
 
@@ -430,8 +432,8 @@ class TestPPTXExport:
         try:
             import pptx      # noqa: F401
             import cairosvg  # noqa: F401
-        except ImportError:
-            pytest.skip("python-pptx or cairosvg not installed")
+        except (ImportError, OSError):
+            pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
         out = str(tmp_path / "chart.pptx")
         basic_fig.save(out)
@@ -451,8 +453,8 @@ class TestPPTXExport:
         try:
             import pptx
             import cairosvg
-        except ImportError:
-            pytest.skip("python-pptx or cairosvg not installed")
+        except (ImportError, OSError):
+            pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
         fig = Figure(title="PPTX Title Test", auto_display=False)
         fig.add(LineSeries([1, 2, 3], [4, 5, 6]))
@@ -473,8 +475,8 @@ class TestPPTXExport:
         try:
             import pptx      # noqa: F401
             import cairosvg  # noqa: F401
-        except ImportError:
-            pytest.skip("python-pptx or cairosvg not installed")
+        except (ImportError, OSError):
+            pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
         fig = Figure(auto_display=False)
         fig.add(LineSeries([1, 2], [3, 4]))
