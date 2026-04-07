@@ -1,84 +1,72 @@
-<script>
-(function() {
-  // Select the first <svg> element on the page
-  const svg = document.querySelector("svg");
-  if (!svg) return;  // Exit if no SVG is found
+/**
+ * GlyphX Zoom + Pan
+ *
+ * Mouse wheel  → zoom (centred on cursor)
+ * Mouse drag   → pan  (only when Shift is NOT held — Shift+drag = brush)
+ */
+(function () {
+  const svgs = document.querySelectorAll('svg[data-glyphx]');
+  if (!svgs.length) return;
 
-  // Parse the initial viewBox attribute into numeric values: [x, y, width, height]
-  let viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
+  svgs.forEach(svg => {
+    let viewBox   = svg.getAttribute('viewBox').split(' ').map(Number);
+    let isPanning = false;
+    let startX    = 0, startY = 0;
 
-  // State variables for panning
-  let isPanning = false;
-  let start = { x: 0, y: 0 };
-  let end = { x: 0, y: 0 };
+    svg.style.cursor = 'grab';
 
-  // Set default cursor for the SVG element
-  svg.style.cursor = "grab";
+    svg.addEventListener('mousedown', e => {
+      // Leave Shift+drag to brush.js
+      if (e.shiftKey || e.button !== 0) return;
+      isPanning = true;
+      startX    = e.clientX;
+      startY    = e.clientY;
+      svg.style.cursor = 'grabbing';
+    });
 
-  // Begin panning on mouse down
-  svg.addEventListener("mousedown", (e) => {
-    isPanning = true;
-    start = { x: e.clientX, y: e.clientY };
-    svg.style.cursor = "grabbing";
-  });
+    svg.addEventListener('mousemove', e => {
+      if (!isPanning) return;
+      const dx = (e.clientX - startX) * (viewBox[2] / svg.clientWidth);
+      const dy = (e.clientY - startY) * (viewBox[3] / svg.clientHeight);
+      viewBox[0] -= dx;
+      viewBox[1] -= dy;
+      svg.setAttribute('viewBox', viewBox.join(' '));
+      startX = e.clientX;
+      startY = e.clientY;
+    });
 
-  // Update the viewBox as the mouse moves during panning
-  svg.addEventListener("mousemove", (e) => {
-    if (!isPanning) return;
+    ['mouseup', 'mouseleave'].forEach(ev => {
+      svg.addEventListener(ev, () => {
+        if (isPanning) {
+          isPanning = false;
+          svg.style.cursor = 'grab';
+        }
+      });
+    });
 
-    end = { x: e.clientX, y: e.clientY };
+    svg.addEventListener('wheel', e => {
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 1.1 : 1 / 1.1;
+      const [x, y, w, h] = viewBox;
+      const nw = w * factor;
+      const nh = h * factor;
+      const mx = e.offsetX / svg.clientWidth;
+      const my = e.offsetY / svg.clientHeight;
+      viewBox = [x + mx * (w - nw), y + my * (h - nh), nw, nh];
+      svg.setAttribute('viewBox', viewBox.join(' '));
+    }, { passive: false });
 
-    // Convert screen-space movement into SVG units
-    const dx = (end.x - start.x) * (viewBox[2] / svg.clientWidth);
-    const dy = (end.y - start.y) * (viewBox[3] / svg.clientHeight);
+    // Double-click resets zoom
+    svg.addEventListener('dblclick', () => {
+      const vb = svg.getAttribute('viewBox').split(' ').map(Number);
+      // Reset to original (stored on first load)
+      if (svg.dataset.originalViewBox) {
+        svg.setAttribute('viewBox', svg.dataset.originalViewBox);
+        viewBox = svg.dataset.originalViewBox.split(' ').map(Number);
+      }
+    });
 
-    // Adjust viewBox origin based on movement
-    viewBox[0] -= dx;
-    viewBox[1] -= dy;
-
-    // Apply updated viewBox
-    svg.setAttribute("viewBox", viewBox.join(" "));
-
-    // Update starting point for next frame
-    start = { ...end };
-  });
-
-  // End panning on mouse up
-  svg.addEventListener("mouseup", () => {
-    isPanning = false;
-    svg.style.cursor = "grab";
-  });
-
-  // Cancel panning if mouse leaves the SVG area
-  svg.addEventListener("mouseleave", () => {
-    isPanning = false;
-    svg.style.cursor = "grab";
-  });
-
-  // Zoom in/out on mouse wheel scroll
-  svg.addEventListener("wheel", (e) => {
-    e.preventDefault();
-
-    const zoomFactor = 1.1;
-    const scale = e.deltaY > 0 ? zoomFactor : 1 / zoomFactor;
-
-    const [x, y, w, h] = viewBox;
-
-    // Compute new dimensions for the zoom
-    const newW = w * scale;
-    const newH = h * scale;
-
-    // Determine mouse position as a fraction of the SVG size
-    const mx = e.offsetX / svg.clientWidth;
-    const my = e.offsetY / svg.clientHeight;
-
-    // Adjust the viewBox origin to zoom around the mouse pointer
-    const newX = x + mx * (w - newW);
-    const newY = y + my * (h - newH);
-
-    // Update the viewBox values
-    viewBox = [newX, newY, newW, newH];
-    svg.setAttribute("viewBox", viewBox.join(" "));
+    // Store original viewBox for reset
+    svg.dataset.originalViewBox = viewBox.join(' ');
   });
 })();
-</script>

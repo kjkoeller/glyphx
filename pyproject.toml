@@ -1,10 +1,6 @@
 [build-system]
-requires = [
-    "setuptools",
-    "wheel",
-    "numpy",
-    "ipython",
-    "ipywidgets",
-    "pandas"
-]
+requires = ["setuptools>=64", "setuptools_scm", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "glyphx/_version.py"

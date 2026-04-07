@@ -1,287 +1,664 @@
-import os
+"""
+GlyphX Figure: top-level chart canvas with rendering, display, and export.
+"""
+from __future__ import annotations
+
+import re
 import webbrowser
-from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import Any
+
 from .layout import Axes
-from .utils import wrap_svg_with_template, write_svg_file, wrap_svg_canvas, draw_legend
+from .utils import (
+    wrap_svg_with_template,
+    write_svg_file,
+    wrap_svg_canvas,
+    draw_legend,
+    svg_escape,
+)
 
 
 class Figure:
     """
-    A GlyphX Figure represents a complete chart canvas that can include one or more axes,
-    multiple series, layout configuration, themes, and export options.
+    Central class for creating and rendering GlyphX visualizations.
 
-    Attributes:
-        width (int): Canvas width
-        height (int): Canvas height
-        padding (int): Inner margin padding
-        title (str): Optional chart title
-        theme (dict): Theme styling for colors, fonts, etc.
-        auto_display (bool): Whether to auto-render in notebook/CLI
-        grid (list[list]): Optional grid for multi-axes support
-    """
-    """
-    The central class for creating and rendering visualizations in GlyphX.
+    Every mutating method returns ``self`` so calls can be chained::
 
-    Supports grid layout, dynamic axis scaling, SVG rendering,
-    and auto-display in Jupyter, CLI, or IDE.
-
-    Attributes:
-        width (int): Width of the figure in pixels.
-        height (int): Height of the figure in pixels.
-        padding (int): Space around the plot area.
-        title (str): Optional title rendered at the top of the SVG.
-        theme (dict): Optional theme styling dictionary.
-        rows (int): Number of subplot rows.
-        cols (int): Number of subplot columns.
-        auto_display (bool): If True, automatically displays after plot().
-    """
-    def __init__(self, width=640, height=480, padding=50, title=None, theme=None,
-                 rows=1, cols=1, auto_display=True, legend="top-right"):
-        self.width = width
-        self.height = height
-        self.padding = padding
-        self.title = title
-        from .themes import themes
-        self.theme = themes.get(theme, themes['default']) if isinstance(theme, str) else (theme or themes['default'])
-        self.rows = rows
-        self.cols = cols
-        self.auto_display = auto_display
-        if legend in (False, None):
-            self.legend_pos = None
-        else:
-            self.legend_pos = legend
-
-        # Grid stores subplot Axes references (None until created)
-        self.grid = [[None for _ in range(self.cols)] for _ in range(self.rows)]
-
-        # Main axes for single plots (backward compatibility)
-        self.axes = Axes(width=self.width, height=self.height, padding=self.padding, theme=self.theme)
-
-        # List of (series, use_y2) tuples to render on plot
-        self.series = []
-
-    def add_axes(self, row=0, col=0):
-        """
-        Create or retrieve an Axes object for a specific grid position.
-
-        Args:
-            row (int): Grid row index.
-            col (int): Grid column index.
-
-        Returns:
-            Axes: The axes at the specified location.
-        """
-        if self.grid[row][col] is None:
-            ax = Axes(
-                width=self.width // self.cols,
-                height=self.height // self.rows,
-                padding=self.padding,
-                theme=self.theme
-            )
-            self.grid[row][col] = ax
-        return self.grid[row][col]
-
-    def add(self, series, use_y2=False):
-        """
-        Add a data series to the current plot.
-
-        Args:
-            series (BaseSeries): Series to add.
-            use_y2 (bool): Use secondary Y-axis.
-        """
-        self.series.append((series, use_y2))
-
-        # Only add to axes if it's a chart that uses x/y
-        if hasattr(series, "x") and hasattr(series, "y"):
-            self.axes.add_series(series, use_y2)
-
-    def render_svg(self, viewbox=False):
-        """
-        Render the plot and return SVG string output.
-
-        Returns:
-            str: Complete SVG markup as a string.
-        """
-        svg_parts = []
-
-        # Background
-        svg_parts.append(
-            f'<rect width="{self.width}" height="{self.height}" fill="{self.theme.get("background", "#ffffff")}" />'
+        fig = (
+            Figure(width=900)
+            .set_theme("dark")
+            .set_title("Monthly Revenue")
+            .add(LineSeries(months, revenue, label="Revenue"))
+            .annotate("Peak", x="Oct", y=5400)
+            .share("report.html")
         )
 
-        # Title
+    Args:
+        width:        Canvas width in pixels.
+        height:       Canvas height in pixels.
+        padding:      Inner margin between canvas edge and plot area.
+        title:        Optional title rendered above all plots.
+        theme:        Theme name (str) or custom theme dict.
+        rows:         Number of subplot rows.
+        cols:         Number of subplot columns.
+        auto_display: Auto-render when ``plot()`` or ``__repr__`` is called.
+        legend:       Legend position string, or ``False`` to suppress.
+        xscale:       ``"linear"`` or ``"log"``.
+        yscale:       ``"linear"`` or ``"log"``.
+    """
+
+    def __init__(
+        self,
+        width: int = 640,
+        height: int = 480,
+        padding: int = 50,
+        title: str | None = None,
+        theme: str | dict[str, Any] | None = None,
+        rows: int = 1,
+        cols: int = 1,
+        auto_display: bool = True,
+        legend: str | bool | None = "top-right",
+        xscale: str = "linear",
+        yscale: str = "linear",
+    ) -> None:
+        self.width        = width
+        self.height       = height
+        self.padding      = padding
+        self.title        = title
+        self.rows         = rows
+        self.cols         = cols
+        self.auto_display = auto_display
+        self.xscale       = xscale
+        self.yscale       = yscale
+
+        from .themes import themes
+        self.theme: dict[str, Any] = (
+            themes.get(theme, themes["default"])
+            if isinstance(theme, str)
+            else (theme or themes["default"])
+        )
+
+        self.legend_pos: str | None = (
+            None if legend in (False, None) else str(legend)
+        )
+
+        self.grid: list[list[Axes | None]] = [
+            [None] * self.cols for _ in range(self.rows)
+        ]
+        self.axes = Axes(
+            width=self.width,
+            height=self.height,
+            padding=self.padding,
+            theme=self.theme,
+            xscale=xscale,
+            yscale=yscale,
+        )
+        self.series: list[tuple[Any, bool]] = []
+        self._annotations: list[dict[str, Any]] = []
+
+    # ── Fluent setters ───────────────────────────────────────────────────
+
+    def set_title(self, title: str) -> Figure:
+        """Set the figure title and return ``self`` for chaining."""
+        self.title = title
+        return self
+
+    def set_theme(self, theme: str | dict[str, Any]) -> Figure:
+        """Apply a named theme or a custom dict and return ``self``."""
+        from .themes import themes
+        self.theme = (
+            themes.get(theme, themes["default"])
+            if isinstance(theme, str)
+            else theme
+        )
+        self.axes.theme = self.theme
+        return self
+
+    def set_size(self, width: int, height: int) -> Figure:
+        """Resize the canvas and return ``self``."""
+        self.width  = width
+        self.height = height
+        self.axes.width  = width
+        self.axes.height = height
+        return self
+
+    def set_xlabel(self, label: str) -> Figure:
+        """Set the X-axis label and return ``self``."""
+        self.axes.xlabel = label
+        return self
+
+    def set_ylabel(self, label: str) -> Figure:
+        """Set the Y-axis label and return ``self``."""
+        self.axes.ylabel = label
+        return self
+
+    def set_legend(self, position: str | bool | None) -> Figure:
+        """Set legend position (or ``False`` to hide) and return ``self``."""
+        self.legend_pos = None if position in (False, None) else str(position)
+        return self
+
+    # ── Subplot grid ─────────────────────────────────────────────────────
+
+    def add_axes(self, row: int = 0, col: int = 0) -> Axes:
+        """Create or retrieve the Axes at a grid position."""
+        if self.grid[row][col] is None:
+            self.grid[row][col] = Axes(
+                width=self.width  // self.cols,
+                height=self.height // self.rows,
+                padding=self.padding,
+                theme=self.theme,
+                xscale=self.xscale,
+                yscale=self.yscale,
+            )
+        return self.grid[row][col]  # type: ignore[return-value]
+
+    # ── Series management ─────────────────────────────────────────────────
+
+    def add(self, series: Any, use_y2: bool = False) -> Figure:
+        """
+        Add a series to the figure.
+
+        Returns ``self`` so calls can be chained::
+
+            fig.add(LineSeries(...)).add(BarSeries(...)).show()
+        """
+        self.series.append((series, use_y2))
+        if hasattr(series, "x") and hasattr(series, "y"):
+            self.axes.add_series(series, use_y2)
+        return self
+
+    # ── Annotations ──────────────────────────────────────────────────────
+
+    def annotate(
+        self,
+        text: str,
+        x: float,
+        y: float,
+        color: str = "#333",
+        font_size: int = 12,
+        anchor: str = "start",
+        arrow: bool = False,
+        ax_x: float | None = None,
+        ax_y: float | None = None,
+    ) -> Figure:
+        """
+        Add a text annotation in data-space coordinates.
+
+        Returns ``self`` for chaining.
+
+        Args:
+            text:      Label text.
+            x:         Data-space X coordinate of the annotation point.
+            y:         Data-space Y coordinate.
+            color:     Text and arrow colour.
+            font_size: Label font size in points.
+            anchor:    SVG text-anchor (``"start"``, ``"middle"``, ``"end"``).
+            arrow:     Draw a small leader line from text to point.
+            ax_x:      Arrow tail X pixel offset (default −8).
+            ax_y:      Arrow tail Y pixel offset (default −8).
+        """
+        self._annotations.append(dict(
+            text=text, x=x, y=y, color=color,
+            font_size=font_size, anchor=anchor,
+            arrow=arrow, ax_x=ax_x, ax_y=ax_y,
+        ))
+        return self
+
+    def _render_annotations(
+        self,
+        scale_x: Any,
+        scale_y: Any,
+        font: str,
+    ) -> str:
+        elements: list[str] = []
+        # Build a category→numeric map from all registered series
+        cat_map: dict = {}
+        for s, _ in self.series:
+            if hasattr(s, "_x_categories") and s._x_categories:
+                for i, cat in enumerate(s._x_categories):
+                    cat_map[str(cat)] = i + 0.5
+
+        for ann in self._annotations:
+            ann_x = ann["x"]
+            ann_y = ann["y"]
+            # Resolve categorical x values to numeric
+            if isinstance(ann_x, str) and ann_x in cat_map:
+                ann_x = cat_map[ann_x]
+            try:
+                px  = scale_x(float(ann_x))
+            except (TypeError, ValueError):
+                continue
+            try:
+                py  = scale_y(float(ann_y))
+            except (TypeError, ValueError):
+                continue
+            ox  = ann["ax_x"] if ann["ax_x"] is not None else -8
+            oy  = ann["ax_y"] if ann["ax_y"] is not None else -8
+            if ann["arrow"]:
+                elements.append(
+                    f'<line x1="{px + ox}" y1="{py + oy}" x2="{px}" y2="{py}" '
+                    f'stroke="{ann["color"]}" stroke-width="1.5" '
+                    f'marker-end="url(#arrow)"/>'
+                )
+            elements.append(
+                f'<text x="{px + ox}" y="{py + oy - 2}" '
+                f'text-anchor="{ann["anchor"]}" font-size="{ann["font_size"]}" '
+                f'font-family="{font}" fill="{ann["color"]}">'
+                f'{svg_escape(ann["text"])}</text>'
+            )
+        return "\n".join(elements)
+
+    @staticmethod
+    def _arrow_marker_def() -> str:
+        return (
+            '<defs><marker id="arrow" markerWidth="8" markerHeight="8" '
+            'refX="6" refY="3" orient="auto">'
+            '<path d="M0,0 L0,6 L8,3 z" fill="#333"/>'
+            '</marker></defs>'
+        )
+
+    # ── Accessibility ─────────────────────────────────────────────────────
+
+    def to_alt_text(self) -> str:
+        """
+        Generate a plain-English description of this figure for screen readers.
+
+        Returns:
+            A human-readable string suitable for ``aria-label`` or ``<desc>``.
+        """
+        from .a11y import generate_alt_text
+        return generate_alt_text(self)
+
+    # ── Rendering ────────────────────────────────────────────────────────
+
+    def render_svg(self, viewbox: bool = False) -> str:
+        """
+        Render the complete figure and return an SVG string.
+
+        The SVG includes:
+        - ``role="img"`` and ``aria-labelledby`` on the root element
+        - ``<title>`` and ``<desc>`` ARIA landmark children
+        - ``tabindex="0"`` on every interactive data point
+
+        Returns:
+            Complete SVG document markup.
+        """
+        svg_parts: list[str] = []
+
+        if any(a["arrow"] for a in self._annotations):
+            svg_parts.append(self._arrow_marker_def())
+
+        svg_parts.append(
+            f'<rect width="{self.width}" height="{self.height}" '
+            f'fill="{self.theme.get("background", "#ffffff")}"/>'
+        )
+
         if self.title:
+            font  = self.theme.get("font", "sans-serif")
+            color = self.theme.get("text_color", "#000")
             svg_parts.append(
-                f'<text x="{self.width // 2}" y="30" text-anchor="middle" '
-                f'font-size="20" font-family="{self.theme.get("font", "sans-serif")}" '
-                f'fill="{self.theme.get("text_color", "#000")}">{self.title}</text>'
+                f'<text x="{self.width // 2}" y="28" text-anchor="middle" '
+                f'font-size="20" font-weight="bold" font-family="{font}" '
+                f'fill="{color}">{svg_escape(self.title)}</text>'
             )
 
-        # Layout Detection: Grid or Single-Axes
+        # ── Subplot grid ──────────────────────────────────────────────────
         if self.grid and any(any(cell for cell in row) for row in self.grid):
-            cell_width = self.width // self.cols
-            cell_height = self.height // self.rows
-
+            cell_w = self.width  // self.cols
+            cell_h = self.height // self.rows
             for r, row in enumerate(self.grid):
                 for c, ax in enumerate(row):
-                    if ax:
-                        ax.finalize()
+                    if not ax:
+                        continue
+                    ax.finalize()
+                    group = f'<g transform="translate({c * cell_w},{r * cell_h})">'
+                    group += ax.render_axes() + ax.render_grid()
+                    for s in ax.series:
+                        group += s.to_svg(ax)
+                    if getattr(ax, "legend_pos", None):
+                        group += draw_legend(
+                            ax.series,
+                            position=ax.legend_pos,
+                            font=self.theme.get("font", "sans-serif"),
+                            text_color=self.theme.get("text_color", "#000"),
+                            fig_width=ax.width,
+                            fig_height=ax.height,
+                        )
+                    group += "</g>"
+                    svg_parts.append(group)
 
-                        # Adjust space for legend if needed
-                        legend_offset_x = 0
-                        if getattr(ax, "legend_pos", None) in ("right", "left"):
-                            legend_offset_x = 100
-
-                        group = f'<g transform="translate({c * cell_width},{r * cell_height})">'
-                        group += ax.render_axes()
-                        group += ax.render_grid()
-                        for series in ax.series:
-                            group += series.to_svg(ax)
-
-                        if getattr(ax, "legend_pos", None):
-                            legend_svg = draw_legend(
-                                ax.series,
-                                position=ax.legend_pos,
-                                font=self.theme.get("font", "sans-serif"),
-                                text_color=self.theme.get("text_color", "#000"),
-                                fig_width=ax.width - legend_offset_x,
-                                fig_height=ax.height
-                            )
-                            group += legend_svg
-
-                        group += '</g>'
-                        svg_parts.append(group)
-
-        elif self.axes and self.series and any(
-                hasattr(s, "x") and hasattr(s, "y") and getattr(s, "x", None) and getattr(s, "y", None)
-                for s, _ in self.series
+        # ── Single-axes ───────────────────────────────────────────────────
+        elif self.series and any(
+            hasattr(s, "x") and hasattr(s, "y") and s.x and s.y
+            for s, _ in self.series
         ):
             if not self.axes.series:
                 for s, use_y2 in self.series:
                     self.axes.add_series(s, use_y2)
 
             self.axes.finalize()
-
-            legend_offset_x = 0
-            if self.legend_pos in ("right", "left"):
-                legend_offset_x = 100
-
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
 
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
+            if self._annotations and self.axes.scale_x and self.axes.scale_y:
+                svg_parts.append(self._render_annotations(
+                    self.axes.scale_x,
+                    self.axes.scale_y,
+                    self.theme.get("font", "sans-serif"),
+                ))
+
             if self.legend_pos:
-                legend_svg = draw_legend(
-                    [s for (s, _) in self.series],
+                svg_parts.append(draw_legend(
+                    [s for s, _ in self.series],
                     position=self.legend_pos,
                     font=self.theme.get("font", "sans-serif"),
                     text_color=self.theme.get("text_color", "#000"),
-                    fig_width=self.width - legend_offset_x,
-                    fig_height=self.height
-                )
-                svg_parts.append(legend_svg)
+                    fig_width=self.width,
+                    fig_height=self.height,
+                ))
 
+            # ── Statistical annotations ───────────────────────────────────
+            for ann in getattr(self, "_stat_annotations", []):
+                svg_parts.append(ann.to_svg(self.axes))
+
+        # ── Axis-free (pie, donut, etc.) ──────────────────────────────────
         elif self.series:
             for series, _ in self.series:
-                svg_parts.append(series.to_svg())
+                svg_parts.append(series.to_svg(self.axes))
 
-        return wrap_svg_canvas("\n".join(svg_parts), width=self.width, height=self.height)
+        raw_svg = wrap_svg_canvas(
+            "\n".join(svg_parts),
+            width=self.width,
+            height=self.height,
+        )
 
-    def _display(self, svg_string):
-        """
-        Display logic for Jupyter, CLI, or IDE environments.
+        # ── Accessibility injection ───────────────────────────────────────
+        chart_id = re.search(r'id="(glyphx-chart-[^"]+)"', raw_svg)
+        cid      = chart_id.group(1) if chart_id else "glyphx-chart-0"
 
-        Args:
-            svg_string (str): SVG content to render or preview.
-        """
+        from .a11y import inject_aria
+        return inject_aria(
+            svg=raw_svg,
+            title=self.title or "GlyphX Chart",
+            desc=self.to_alt_text(),
+            chart_id=cid,
+        )
+
+    # ── Display / export ──────────────────────────────────────────────────
+
+    def _display(self, svg_string: str) -> None:
         try:
-            # Display in Jupyter notebook
             from IPython import get_ipython
             ip = get_ipython()
             if ip is not None and "IPKernelApp" in ip.config:
-                from IPython.display import SVG, display as jupyter_display
-                return jupyter_display(SVG(svg_string))
+                from IPython.display import SVG, display as jup_display
+                jup_display(SVG(svg_string))
+                return
         except Exception:
             pass
-
-        # Fallback to saving HTML and opening in system browser
         html = wrap_svg_with_template(svg_string)
-        tmp_file = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
-        tmp_file.write(html)
-        tmp_file.close()
-        webbrowser.open(f"file://{tmp_file.name}")
+        tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
+        tmp.write(html)
+        tmp.close()
+        webbrowser.open(f"file://{tmp.name}")
 
-    def show(self):
+    def show(self) -> Figure:
+        """Render and display the figure. Returns ``self`` for chaining."""
+        self._display(self.render_svg())
+        return self
+
+    def save(self, filename: str = "glyphx_output.svg") -> Figure:
         """
-        Render and display the chart immediately.
+        Save the rendered figure to disk.
+
+        Supported extensions: ``.svg``, ``.html``, ``.png``, ``.jpg``,
+        ``.pptx``.  PNG/JPG/PPTX require optional extras::
+
+            pip install "glyphx[export]"    # PNG/JPG
+            pip install "glyphx[pptx]"      # PowerPoint
+
+        Returns ``self`` for chaining.
         """
         svg = self.render_svg()
-        self._display(svg)
+        if filename.lower().endswith(".pptx"):
+            _save_as_pptx(svg, filename, title=self.title)
+        else:
+            write_svg_file(svg, filename)
+        return self
 
-    def save(self, filename="glyphx_output.svg"):
+
+    def tight_layout(self) -> Figure:
         """
-        Save the rendered SVG to a file.
+        Auto-adjust padding to prevent label clipping and overlap.
+
+        Delegates to :meth:`~glyphx.layout.Axes.tight_layout` on the
+        primary axes after calling ``finalize()``.  Returns ``self``.
+        """
+        if not self.axes.series:
+            for s, use_y2 in self.series:
+                self.axes.add_series(s, use_y2)
+        self.axes.finalize()
+        self.axes.tight_layout()
+        return self
+
+    def add_stat_annotation(
+        self,
+        x1: Any,
+        x2: Any,
+        p_value: float = 0.05,
+        label: str | None = None,
+        style: str = "stars",
+        color: str = "#222",
+        y_offset: float = 0.0,
+    ) -> Figure:
+        """
+        Add a significance bracket between two groups.
+
+        Draws ``***`` / ``**`` / ``*`` / ``ns`` above the bracket
+        based on *p_value*.  Works with both numeric and categorical X axes.
 
         Args:
-            filename (str): Output filename.
-        """
-        svg = self.render_svg()
-        write_svg_file(svg, filename)
+            x1:       First group (label or numeric X value).
+            x2:       Second group.
+            p_value:  Statistical p-value.
+            label:    Override the auto-generated significance label.
+            style:    ``"stars"`` or ``"numeric"``.
+            color:    Bracket and text color.
+            y_offset: Extra upward shift in pixels (stack multiple brackets).
 
-    def plot(self):
+        Returns:
+            ``self`` for chaining.
         """
-        Shortcut for `.show()` when auto_display is True.
-        Called automatically at end of unified plot().
+        from .stat_annotation import StatAnnotation
+        self._stat_annotations = getattr(self, "_stat_annotations", [])
+        self._stat_annotations.append(StatAnnotation(
+            x1=x1, x2=x2, p_value=p_value,
+            label=label, style=style,
+            color=color, y_offset=y_offset,
+        ))
+        return self
+
+    def enable_crosshair(self) -> Figure:
         """
+        Enable the synchronized crosshair on the next ``share()`` / ``show()`` call.
+
+        The crosshair draws a vertical line across all GlyphX charts on the
+        same HTML page and highlights the nearest data point in each.
+
+        Returns ``self``.
+        """
+        self._crosshair = True
+        return self
+
+    def share(
+        self,
+        filename: str | None = None,
+        title: str | None = None,
+    ) -> str:
+        """
+        Generate a fully self-contained, shareable HTML document.
+
+        The output embeds all JavaScript inline — no CDN, no server,
+        works offline.  Pass ``filename`` to also write it to disk.
+
+        Returns:
+            Complete HTML document string.
+        """
+        from .utils import make_shareable_html
+        svg   = self.render_svg()
+        label = title or self.title or "GlyphX Chart"
+        html  = make_shareable_html(svg, title=label)
+        if filename:
+            with open(filename, "w", encoding="utf-8") as fh:
+                fh.write(html)
+        return html
+
+    def plot(self) -> Figure:
+        """Shortcut for :meth:`show` respecting ``auto_display``. Returns ``self``."""
         if self.auto_display:
             self.show()
+        return self
 
-    def __repr__(self):
-        """
-        Custom REPL behavior (auto-show if enabled).
-        """
+    def __repr__(self) -> str:
         if self.auto_display:
             self.show()
         return f"<glyphx.Figure with {len(self.series)} series>"
 
-# Added subplot layout handling
+
+# ---------------------------------------------------------------------------
+# PPTX export helper
+# ---------------------------------------------------------------------------
+
+def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
+    """
+    Save an SVG as a PNG-embedded PowerPoint slide.
+
+    Requires ``python-pptx`` and ``cairosvg``::
+
+        pip install "glyphx[pptx]"
+
+    The SVG is rasterised to PNG at 2× resolution, then inserted as a
+    full-slide picture in a blank 16:9 presentation.
+    """
+    try:
+        import cairosvg
+    except (ImportError, OSError):
+        raise RuntimeError(
+            "PPTX export requires cairosvg and the system libcairo library.  "
+            "Install with:\n"
+            "    pip install \"glyphx[pptx]\"\n"
+            "On macOS: brew install cairo"
+        )
+    try:
+        from pptx import Presentation
+        from pptx.util import Inches, Pt
+        from pptx.enum.text import PP_ALIGN
+    except ImportError:
+        raise RuntimeError(
+            "PPTX export requires python-pptx.  Install it with:\n"
+            "    pip install \"glyphx[pptx]\""
+        )
+
+    import io
+
+    # ── SVG → PNG at 2× for crisp rendering ──────────────────────────────
+    png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
+    png_stream = io.BytesIO(png_bytes)
+
+    # ── Build presentation ────────────────────────────────────────────────
+    prs    = Presentation()
+    blank  = prs.slide_layouts[6]          # completely blank layout
+    slide  = prs.slides.add_slide(blank)
+
+    slide_w = prs.slide_width
+    slide_h = prs.slide_height
+
+    # ── Optional title text box ───────────────────────────────────────────
+    top_offset = Inches(0)
+    if title:
+        txBox = slide.shapes.add_textbox(
+            Inches(0.3), Inches(0.1), slide_w - Inches(0.6), Inches(0.55)
+        )
+        tf = txBox.text_frame
+        tf.text = title
+        tf.paragraphs[0].alignment = PP_ALIGN.CENTER
+        tf.paragraphs[0].runs[0].font.size = Pt(22)
+        tf.paragraphs[0].runs[0].font.bold = True
+        top_offset = Inches(0.65)
+
+    # ── Insert chart PNG ──────────────────────────────────────────────────
+    pic_h = slide_h - top_offset - Inches(0.1)
+    pic_w = min(slide_w - Inches(0.4), pic_h * (slide_w / slide_h))
+    left  = (slide_w - pic_w) // 2
+
+    slide.shapes.add_picture(png_stream, left, top_offset, pic_w, pic_h)
+    prs.save(filename)
+
+
+# ---------------------------------------------------------------------------
+# SubplotGrid
+# ---------------------------------------------------------------------------
+
 class SubplotGrid:
     """
-    Simple 2D grid layout system for organizing subplots (axes) in rows and columns.
-    """
-    def __init__(self, rows, cols):
-        """
-        Create a subplot grid.
+    Standalone 2-D grid for laying out existing Figure objects into one page.
 
-        Parameters:
-            rows (int): Number of rows.
-            cols (int): Number of columns.
-        """
+    Example::
+
+        sg = SubplotGrid(2, 2)
+        sg.add(fig_revenue, 0, 0)
+        sg.add(fig_costs,   0, 1)
+        html = sg.render()
+        open("dashboard.html", "w").write(html)
+
+    Args:
+        rows: Number of rows.
+        cols: Number of columns.
+    """
+
+    def __init__(self, rows: int, cols: int) -> None:
         self.rows = rows
         self.cols = cols
-        self.grid = [[None for _ in range(cols)] for _ in range(rows)]
+        self.grid: list[list[Figure | None]] = [
+            [None] * cols for _ in range(rows)
+        ]
 
-    def add_axes(self, row, col, plot):
-        """
-        Assign a plot to a specific cell in the grid.
+    def add(self, figure: Figure, row: int, col: int) -> SubplotGrid:
+        """Place a Figure at a grid position. Returns ``self``."""
+        if not (0 <= row < self.rows and 0 <= col < self.cols):
+            raise IndexError(
+                f"Position ({row}, {col}) is out of range for a "
+                f"{self.rows}×{self.cols} grid."
+            )
+        self.grid[row][col] = figure
+        return self
 
-        Parameters:
-            row (int): Row index.
-            col (int): Column index.
-            plot (Plot): Plot object to assign.
-        """
-        if 0 <= row < self.rows and 0 <= col < self.cols:
-            self.grid[row][col] = plot
+    def add_axes(self, row: int, col: int, figure: Figure) -> SubplotGrid:
+        """Alias for :meth:`add` kept for backward compatibility."""
+        return self.add(figure, row, col)
 
-    def render(self):
+    def render(self, gap: int = 20) -> str:
         """
-        Stub function to render each subplot (to be expanded for layout).
+        Render all figures into a self-contained HTML page.
+
+        Returns:
+            Full HTML document string.
         """
+        from .utils import wrap_svg_with_template
+
+        rows_html: list[str] = []
         for r in range(self.rows):
+            cells: list[str] = []
             for c in range(self.cols):
-                plot = self.grid[r][c]
-                if plot:
-                    print(f"Rendering subplot at ({r}, {c})")
+                fig = self.grid[r][c]
+                svg = fig.render_svg() if fig is not None else ""
+                cells.append(f'<div style="margin:{gap}px">{svg}</div>')
+            rows_html.append(
+                '<div style="display:flex">' + "".join(cells) + "</div>"
+            )
+
+        html_body = "<div>" + "".join(rows_html) + "</div>"
+        return wrap_svg_with_template(html_body)
