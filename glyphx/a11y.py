@@ -156,9 +156,11 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
     svg = re.sub(r"(<svg\b[^>]*>)", r"\1" + landmark, svg, count=1)
 
     # ── 3. Add tabindex + role to every interactive point ─────────────────
+    # Place the attributes AFTER the closing quote of the class value so
+    # that the test regex `class="glyphx-point..."[^>]*>` captures them.
     svg = re.sub(
-        r'class="glyphx-point',
-        'tabindex="0" role="graphics-symbol" class="glyphx-point',
+        r'(class="glyphx-point[^"]*")',
+        r'\1 tabindex="0" role="graphics-symbol"',
         svg,
     )
 
