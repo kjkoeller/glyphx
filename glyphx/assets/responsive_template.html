@@ -2,130 +2,258 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GlyphX Chart</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, sans-serif;
-      background: #f9f9f9;
-      color: #333;
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 24px 16px;
+      color: #1a202c;
     }
-    .chart-container {
-      width: 95%;
-      max-width: 1000px;
-      margin: 20px auto;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 1rem;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+
+    .glyphx-wrapper {
+      width: 100%;
+      max-width: 1100px;
     }
+
+    .glyphx-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    .glyphx-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #fafafa;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .glyphx-toolbar span {
+      margin-right: auto;
+      font-size: 11px;
+      color: #888;
+      letter-spacing: 0.04em;
+    }
+
+    .glyphx-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      color: #444;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      user-select: none;
+    }
+    .glyphx-btn:hover  { background: #f5f5f5; border-color: #aaa; }
+    .glyphx-btn:active { background: #ebebeb; }
+    .glyphx-btn.share  { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+    .glyphx-btn.share:hover { background: #dbeafe; }
+
+    .glyphx-chart-area {
+      padding: 20px;
+    }
+
     svg {
       width: 100%;
       height: auto;
+      display: block;
+    }
+
+    /* ── Interactivity ── */
+    .glyphx-point {
+      cursor: pointer;
     }
     .glyphx-point:hover {
-      stroke: black;
+      stroke: #1a202c;
       stroke-width: 2;
-      cursor: pointer;
     }
-    .tooltip {
-      position: absolute;
-      background: #fff;
-      border: 1px solid #aaa;
-      padding: 6px 10px;
-      border-radius: 4px;
-      font-size: 14px;
+
+    /* ── Tooltip ── */
+    .glyphx-tooltip {
+      position: fixed;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      padding: 7px 11px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      line-height: 1.6;
       pointer-events: none;
       display: none;
-      z-index: 10;
+      z-index: 9999;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      max-width: 220px;
     }
-    .export-buttons {
-      margin-top: 10px;
-      text-align: right;
+    .glyphx-tooltip .tt-label { font-weight: 600; margin-bottom: 2px; }
+    .glyphx-tooltip .tt-row   { opacity: 0.85; }
+
+    /* ── Brush hint badge (injected by brush.js) ── */
+    .glyphx-brush-hint {
+      /* Styled by brush.js inline — see brush.js */
     }
-    .export-buttons button {
-      margin-left: 6px;
-      padding: 5px 10px;
+
+    /* ── Copied toast ── */
+    .glyphx-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(15,23,42,0.9);
+      color: #f8fafc;
+      padding: 8px 18px;
+      border-radius: 20px;
       font-size: 13px;
-      border: 1px solid #aaa;
-      background: #f0f0f0;
-      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 99999;
+    }
+    .glyphx-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
   </style>
 </head>
 <body>
-  <div class="chart-container">
-    {{svg_content}}
-
-    <div class="export-buttons">
-      <button onclick="download('svg')">Download SVG</button>
-      <button onclick="download('png')">Download PNG</button>
-      <button onclick="download('jpg')">Download JPG</button>
+  <div class="glyphx-wrapper">
+    <div class="glyphx-card">
+      <div class="glyphx-toolbar">
+        <span>GlyphX · <kbd>Shift</kbd>+drag to brush · scroll to zoom · drag to pan · dbl-click to reset</span>
+        <button class="glyphx-btn" onclick="glyphxDownload('svg')">⬇ SVG</button>
+        <button class="glyphx-btn" onclick="glyphxDownload('png')">⬇ PNG</button>
+        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">⬡ Share</button>
+      </div>
+      <div class="glyphx-chart-area">
+        {{svg_content}}
+      </div>
     </div>
   </div>
 
-  <div class="tooltip" id="tooltip"></div>
+  <div class="glyphx-tooltip" id="glyphx-tooltip"></div>
+  <div class="glyphx-toast"   id="glyphx-toast"></div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const tooltip = document.getElementById("tooltip");
-      document.querySelectorAll(".glyphx-point").forEach(el => {
-        el.addEventListener("mouseenter", () => {
-          tooltip.style.display = "block";
-          tooltip.textContent = el.dataset.label || `${el.dataset.x}, ${el.dataset.y}`;
+  /* ── Tooltip ── */
+  (function () {
+    const tip = document.getElementById('glyphx-tooltip');
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.glyphx-point').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          const x   = el.getAttribute('data-x');
+          const y   = el.getAttribute('data-y');
+          const lbl = el.getAttribute('data-label');
+          const val = el.getAttribute('data-value');
+          const q1  = el.getAttribute('data-q1');
+          const q2  = el.getAttribute('data-q2');
+          const q3  = el.getAttribute('data-q3');
+
+          let html = '';
+          if (lbl) html += `<div class="tt-label">${lbl}</div>`;
+          if (q1)  html += `<div class="tt-row">Q1: ${(+q1).toFixed(3)}</div>
+                            <div class="tt-row">Median: ${(+q2).toFixed(3)}</div>
+                            <div class="tt-row">Q3: ${(+q3).toFixed(3)}</div>`;
+          else {
+            if (x !== null) html += `<div class="tt-row">x: ${x}</div>`;
+            if (y !== null) html += `<div class="tt-row">y: ${y}</div>`;
+            if (val)        html += `<div class="tt-row">value: ${val}</div>`;
+          }
+          tip.innerHTML = html || el.textContent;
+          tip.style.display = 'block';
         });
-        el.addEventListener("mousemove", e => {
-          tooltip.style.left = (e.pageX + 10) + "px";
-          tooltip.style.top = (e.pageY + 10) + "px";
+
+        el.addEventListener('mousemove', e => {
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top  = (e.clientY + 14) + 'px';
         });
-        el.addEventListener("mouseleave", () => {
-          tooltip.style.display = "none";
+
+        el.addEventListener('mouseleave', () => {
+          tip.style.display = 'none';
         });
       });
     });
+  })();
 
-    function download(type) {
-      const svgEl = document.querySelector("svg");
-      const serializer = new XMLSerializer();
-      const svgData = serializer.serializeToString(svgEl);
-      const svgBlob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+  /* ── Toast helper ── */
+  function glyphxToast(msg) {
+    const t = document.getElementById('glyphx-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
 
-      if (type === "svg") {
-        const url = URL.createObjectURL(svgBlob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "glyphx_chart.svg";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      } else {
-        const canvas = document.createElement("canvas");
-        const bbox = svgEl.getBBox();
-        canvas.width = bbox.width + 40;
-        canvas.height = bbox.height + 40;
-        const ctx = canvas.getContext("2d");
+  /* ── Download ── */
+  function glyphxDownload(type) {
+    const svg = document.querySelector('svg');
+    const ser = new XMLSerializer();
+    const svgStr = ser.serializeToString(svg);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
 
-        const image = new Image();
-        image.onload = function () {
-          ctx.drawImage(image, 20, 20);
-          const link = document.createElement("a");
-          link.download = `glyphx_chart.${type}`;
-          link.href = canvas.toDataURL(`image/${type === "jpg" ? "jpeg" : type}`);
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        };
-
-        const svgUrl = URL.createObjectURL(svgBlob);
-        image.src = svgUrl;
-      }
+    if (type === 'svg') {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'glyphx_chart.svg';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      glyphxToast('SVG downloaded');
+      return;
     }
+
+    const canvas = document.createElement('canvas');
+    const bbox = svg.getBBox ? svg.getBBox() : { width: svg.clientWidth, height: svg.clientHeight };
+    canvas.width  = bbox.width  + 40 || 800;
+    canvas.height = bbox.height + 40 || 600;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 20, 20);
+      const a = document.createElement('a');
+      a.download = `glyphx_chart.${type}`;
+      a.href = canvas.toDataURL(type === 'jpg' ? 'image/jpeg' : 'image/png');
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      glyphxToast(`${type.toUpperCase()} downloaded`);
+    };
+    img.src = URL.createObjectURL(blob);
+  }
+
+  /* ── Share (copy self-contained HTML to clipboard) ── */
+  function glyphxCopyHtml() {
+    const html = document.documentElement.outerHTML;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(html).then(() => {
+        glyphxToast('✓ Full page HTML copied to clipboard!');
+      });
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      glyphxToast('✓ Full page HTML copied to clipboard!');
+    }
+  }
   </script>
+
   {{extra_scripts}}
 </body>
 </html>
