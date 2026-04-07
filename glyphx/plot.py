@@ -1,91 +1,104 @@
+"""
+GlyphX high-level ``plot()`` function — the fastest path to a chart.
+"""
+
+import numpy as np
+
 from .figure import Figure
 from .series import (
     LineSeries, BarSeries, ScatterSeries,
     PieSeries, DonutSeries, HistogramSeries,
-    BoxPlotSeries, HeatmapSeries
+    BoxPlotSeries, HeatmapSeries,
 )
 
-import numpy as np
+# Chart kinds that don't use X/Y axes
+_AXISFREE_KINDS = {"pie", "donut", "hist", "box", "heatmap"}
+
+# Arguments forwarded to Figure rather than the series constructor
+_FIGURE_KEYS = {"width", "height", "padding", "title", "theme",
+                "auto_display", "legend", "xscale", "yscale"}
+
 
 def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
     """
-    Unified high-level plotting function inspired by matplotlib.pyplot.plot and seaborn.
+    Unified high-level plotting function.
 
-    This is the fastest way to create a single chart. You specify the chart `kind`
-    and provide `x` and `y` (or just `y`) and glyphx will handle layout, axis scaling,
-    rendering, and interactive display/export.
+    This is the quickest way to create a single chart.  Specify ``kind``
+    plus ``x``/``y`` (or ``data`` for distribution charts) and GlyphX
+    handles scaling, theming, rendering, and display automatically.
 
-    Parameters:
-        x (list or None): x-axis values (not needed for pie, donut, hist, box, etc).
-        y (list or None): y-axis values or raw data depending on chart kind.
-        kind (str): Chart type. One of:
-                    - "line", "bar", "scatter"
-                    - "pie", "donut"
-                    - "hist" (histogram)
-                    - "box" (boxplot)
-                    - "heatmap"
-        data (list or None): Optional standalone data array used for charts like hist, box, etc.
-        **kwargs: Additional keyword args forwarded to:
-                  - Series constructors (e.g., `color`, `label`, `bins`)
-                  - `Figure` (e.g., `title`, `width`, `theme`)
+    Parameters
+    ----------
+    x : list or None
+        X-axis values.  Not required for ``pie``, ``donut``, ``hist``,
+        ``box``, or ``heatmap``.
+    y : list or None
+        Y-axis values or raw data for distribution charts.
+    kind : str
+        Chart type.  One of ``"line"``, ``"bar"``, ``"scatter"``,
+        ``"pie"``, ``"donut"``, ``"hist"``, ``"box"``, ``"heatmap"``.
+    data : list or None
+        Explicit data array for ``hist`` / ``box`` / ``pie`` / ``donut``
+        (takes priority over ``y``).
+    legend : str
+        Legend position (``"top-right"``, ``"top-left"``, etc.) or
+        ``False`` to suppress.
+    **kwargs
+        Extra keyword arguments forwarded to the Series constructor
+        (e.g. ``color``, ``label``, ``bins``, ``linestyle``) **or** to
+        Figure (e.g. ``width``, ``height``, ``theme``, ``xscale``).
 
-    Returns:
-        glyphx.Figure: The figure object (automatically displayed unless auto_display is False).
+    Returns
+    -------
+    Figure
+        The Figure object (auto-displayed unless ``auto_display=False``).
 
-    Example:
-        plot([1, 2, 3], [4, 5, 6], kind="line", title="Line Chart")
-        plot(y=[4, 5, 6], kind="bar", title="Bar Chart")
-        plot(data=[1, 3, 2, 2, 1, 4], kind="hist")
+    Examples
+    --------
+    >>> plot([1, 2, 3], [4, 5, 6], kind="line", title="My Line")
+    >>> plot(y=[4, 5, 6], kind="bar")
+    >>> plot(data=[1, 3, 2, 2, 1, 4], kind="hist")
     """
     kind = kind.lower()
-    if kind in {"pie", "donut", "hist", "box", "heatmap"}:
-        values = data if data is not None else y if y is not None else x
+
+    # Separate Figure-level kwargs from series-level kwargs
+    figure_kwargs = {k: kwargs.pop(k) for k in list(kwargs) if k in _FIGURE_KEYS}
+    figure_kwargs.setdefault("legend", legend)
+
+    xlabel = kwargs.pop("xlabel", None)
+    ylabel = kwargs.pop("ylabel", None)
+    color  = kwargs.pop("color", None)
+    label  = kwargs.pop("label", None)
+
+    # Validate / coerce inputs
+    if kind in _AXISFREE_KINDS:
+        values = data if data is not None else (y if y is not None else x)
         if values is None:
-            raise ValueError(f"[glyphx.plot] No data provided for kind '{kind}'")
+            raise ValueError(f"[glyphx.plot] No data provided for kind='{kind}'.")
+        if hasattr(values, "values"):   # unwrap pandas Series
+            values = values.values
+        if kind not in {"pie", "donut"}:
+            values = np.asarray(values, dtype=float).flatten()
+            if not np.issubdtype(values.dtype, np.number):
+                raise TypeError(
+                    f"kind='{kind}' requires numeric data; got {values.dtype}."
+                )
     else:
         if y is None:
             if x is not None:
                 y = x
                 x = list(range(len(y)))
             else:
-                raise ValueError(f"[glyphx.plot] x or y must be provided for kind '{kind}'")
+                raise ValueError(
+                    f"[glyphx.plot] Provide x and/or y for kind='{kind}'."
+                )
 
-    color = kwargs.pop("color", None)
-    label = kwargs.pop("label", None)
-
-    # Separate known Figure-only arguments
-    # Pull optional figure arguments
-    figure_keys = {"width", "height", "padding", "title", "theme", "auto_display", "legend"}
-    figure_kwargs = {k: kwargs.pop(k) for k in list(kwargs) if k in figure_keys}
-
-    # Pull axis label options
-    xlabel = kwargs.pop("xlabel", None)
-    ylabel = kwargs.pop("ylabel", None)
-
+    # Build Figure
     fig = Figure(**figure_kwargs)
-
-    # Set axis labels if provided
     fig.axes.xlabel = xlabel
     fig.axes.ylabel = ylabel
 
-    # Determine the input values to use
-    if kind in {"pie", "donut", "hist", "box", "heatmap"}:
-        values = data if data is not None else y if y is not None else x
-        if hasattr(values, "values"):  # pandas
-            values = values.values
-        values = np.asarray(values).flatten()
-        if not np.issubdtype(values.dtype, np.number):
-            raise TypeError(f"Histogram/Box/Heatmap input must be numeric. Got {values.dtype}")
-        # values = data or y or x
-        if values is None:
-            raise ValueError(f"[glyphx.plot] `{kind}` chart requires `data` or `y` values.")
-    else:
-        # For line/bar/scatter style charts
-        if y is None:
-            y = x
-            x = list(range(len(y)))
-
-    # Construct the appropriate Series object
+    # Build Series
     if kind == "line":
         series = LineSeries(x, y, color=color, label=label, **kwargs)
     elif kind == "bar":
@@ -96,17 +109,18 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
         series = PieSeries(values=values, **kwargs)
     elif kind == "donut":
         series = DonutSeries(values=values, **kwargs)
-        print(series.values)
     elif kind == "hist":
         series = HistogramSeries(values, color=color, label=label, **kwargs)
     elif kind == "box":
-        series = BoxPlotSeries(values, color=color, label=label, **kwargs)
+        series = BoxPlotSeries(values, color=color or "#1f77b4", label=label, **kwargs)
     elif kind == "heatmap":
         series = HeatmapSeries(values, **kwargs)
     else:
-        raise ValueError(f"[glyphx.plot] Unsupported chart kind: '{kind}'")
+        raise ValueError(
+            f"[glyphx.plot] Unsupported kind='{kind}'.  "
+            "Choose from: line, bar, scatter, pie, donut, hist, box, heatmap."
+        )
 
-    # Add to figure and display
     fig.add(series)
     fig.plot()
     return fig
