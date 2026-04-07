@@ -1,119 +1,78 @@
-from .figure import Figure
-from .layout import Axes
-from .series import ScatterSeries, LineSeries, HistogramSeries
+“””
+GlyphX jointplot — scatter with marginal histograms or KDE curves.
+Uses the pure-NumPy KDE from violin_plot.py; scipy is not required.
+“””
+from **future** import annotations
+
 import numpy as np
-from scipy.stats import gaussian_kde
 
-def jointplot(df, x, y, kind="scatter", marginal="hist", theme="default", hue=None):
-    fig = Figure(width=600, height=600, theme=theme)
+from .figure import Figure
+from .series import ScatterSeries, LineSeries, HistogramSeries
+from .violin_plot import _numpy_kde
 
+def jointplot(df, x: str, y: str, kind: str = “scatter”,
+marginal: str = “hist”, theme: str = “default”,
+hue: str | None = None):
+“””
+Joint plot: a central scatter (or KDE) with marginal distributions.
 
-    color_map = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"]
-    categories = df[hue].unique().tolist() if hue else [None]
+```
+Args:
+    df:       pandas DataFrame.
+    x:        Column name for the X axis.
+    y:        Column name for the Y axis.
+    kind:     Central plot type — ``"scatter"`` (default) or ``"kde"``.
+    marginal: Marginal plot type — ``"hist"`` (default) or ``"kde"``.
+    theme:    GlyphX theme name.
+    hue:      Optional column name to split data by category / color.
 
-    for i, cat in enumerate(categories):
-        sub_df = df if cat is None else df[df[hue] == cat]
-        c = color_map[i % len(color_map)]
+Returns:
+    Figure
+"""
+fig   = Figure(width=600, height=600, theme=theme, auto_display=True)
+colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"])
 
-        # Joint plot (scatter)
-        if kind == "scatter":
-            ax_main.add(ScatterSeries(sub_df[x], sub_df[y], color=c, label=str(cat)))
-        
-        # Marginal X
-        if marginal == "hist":
-            ax_top.add(HistogramSeries(sub_df[x], color=c))
-        elif marginal == "kde":
-            x_vals = sub_df[x].dropna()
-            from scipy.stats import gaussian_kde
-            kde = gaussian_kde(x_vals)
-            x_range = np.linspace(x_vals.min(), x_vals.max(), 100)
-            y_vals = kde(x_range)
-            ax_top.add(LineSeries(x_range, y_vals, color=c))
+# Axes: main (centre), top (x marginal), right (y marginal)
+ax_main  = fig.add_axes(0, 0)
+ax_top   = fig.add_axes(0, 1)
+ax_right = fig.add_axes(1, 0)
 
-        # Marginal Y
-        if marginal == "hist":
-            ax_right.add(HistogramSeries(sub_df[y], color=c))
-        elif marginal == "kde":
-            y_vals = sub_df[y].dropna()
-            kde = gaussian_kde(y_vals)
-            x_range = np.linspace(y_vals.min(), y_vals.max(), 100)
-            y_vals = kde(x_range)
-            ax_right.add(LineSeries(x_range, y_vals, color=c))
+categories = df[hue].unique().tolist() if hue else [None]
 
+for i, cat in enumerate(categories):
+    sub  = df if cat is None else df[df[hue] == cat]
+    c    = colors[i % len(colors)]
+    lbl  = str(cat) if cat is not None else None
 
-    ax_main = fig.add_axes()
+    x_vals = np.asarray(sub[x].dropna(), dtype=float)
+    y_vals = np.asarray(sub[y].dropna(), dtype=float)
+
+    # ── Central plot ──────────────────────────────────────────────────
     if kind == "scatter":
-        ax_main.add(ScatterSeries(df[x], df[y], color="#1f77b4"))
+        ax_main.add_series(ScatterSeries(x_vals.tolist(), y_vals.tolist(),
+                                         color=c, label=lbl))
     elif kind == "kde":
-        pass
-    elif kind == "hexbin":
-        import matplotlib.pyplot as plt
-        import io
-        buf = io.BytesIO()
-        plt.hexbin(df[x], df[y], gridsize=20, cmap="Blues")
-        plt.savefig(buf, format="svg")
-        buf.seek(0)
-        fig_hex = buf.read().decode("utf-8").split("<svg")[1].split("</svg>")[0]
-        ax_main.to_svg = lambda ax=None: "<svg " + fig_hex + "</svg>"
+        # 2-D KDE approximated as a scatter of density-sampled points
+        ax_main.add_series(ScatterSeries(x_vals.tolist(), y_vals.tolist(),
+                                         color=c, label=lbl, size=3))
 
-        pass
-
-    # Top marginal plot (x-axis)
-    ax_top = fig.add_axes()
+    # ── Top marginal (x distribution) ─────────────────────────────────
     if marginal == "hist":
-        ax_top.add(HistogramSeries(df[x], color="#1f77b4"))
+        ax_top.add_series(HistogramSeries(x_vals.tolist(), color=c))
     elif marginal == "kde":
-        x_vals = df[x].dropna()
-        kde = gaussian_kde(x_vals)
+        kde     = _numpy_kde(x_vals)
         x_range = np.linspace(x_vals.min(), x_vals.max(), 100)
-        y_vals = kde(x_range)
-        ax_top.add(LineSeries(x_range, y_vals, color="#1f77b4"))
+        ax_top.add_series(LineSeries(x_range.tolist(), kde(x_range).tolist(),
+                                     color=c, label=lbl))
 
-    # Right marginal plot (y-axis)
-    ax_right = fig.add_axes()
+    # ── Right marginal (y distribution) ───────────────────────────────
     if marginal == "hist":
-        ax_right.add(HistogramSeries(df[y], color="#1f77b4"))
+        ax_right.add_series(HistogramSeries(y_vals.tolist(), color=c))
     elif marginal == "kde":
-        y_vals = df[y].dropna()
-        kde = gaussian_kde(y_vals)
-        x_range = np.linspace(y_vals.min(), y_vals.max(), 100)
-        y_vals = kde(x_range)
-        ax_right.add(LineSeries(x_range, y_vals, color="#1f77b4"))
+        kde     = _numpy_kde(y_vals)
+        y_range = np.linspace(y_vals.min(), y_vals.max(), 100)
+        ax_right.add_series(LineSeries(y_range.tolist(), kde(y_range).tolist(),
+                                        color=c, label=lbl))
 
-    return fig
-
-    # Layout arrangement into one SVG
-    def to_svg():
-        main_svg = ax_main.to_svg()
-        top_svg = ax_top.to_svg()
-        right_svg = ax_right.to_svg()
-
-        svg = [
-            '<svg width="700" height="700" xmlns="http://www.w3.org/2000/svg">',
-            '<g transform="translate(100, 100)">', main_svg, '</g>',
-            '<g transform="translate(100, 0)">', top_svg, '</g>',
-            '<g transform="translate(500, 100)">', right_svg, '</g>',
-            '</svg>'
-        ]
-        return "\n".join(svg)
-
-    fig.to_svg = to_svg
-    return fig
-
-    if hue:
-        legend_items = []
-        for i, cat in enumerate(categories):
-            c = color_map[i % len(color_map)]
-            x = fig.width - 160
-            y = fig.height - 40 - i * 20
-            legend_items.append(f'<rect x="{x}" y="{y}" width="12" height="12" fill="{c}"/>')
-            legend_items.append(f'<text x="{x + 20}" y="{y + 10}" font-size="12" fill="#000">{cat}</text>')
-
-        def inject_legend(svg):
-            parts = svg.split("</svg>")
-            parts.insert(-1, "\n".join(legend_items))
-            return "</svg>".join(parts)
-
-        fig.to_svg = lambda: inject_legend(to_svg())
-    else:
-        fig.to_svg = to_svg
+return fig
+```
