@@ -197,11 +197,23 @@ class TestRaincloud:
 
     def test_raincloud_reproducible(self, multi_group_data):
         from glyphx.raincloud import RaincloudSeries
+        import re as _re
         fig1 = Figure(auto_display=False)
         fig1.add(RaincloudSeries(multi_group_data, seed=42))
         fig2 = Figure(auto_display=False)
         fig2.add(RaincloudSeries(multi_group_data, seed=42))
-        assert fig1.render_svg() == fig2.render_svg()
+
+        def _strip_instance_ids(svg):
+            # Remove IDs that vary across Python process runs / instances:
+            #   glyphx-chart-N  — global counter in utils.py
+            #   series-NNNNN    — id(self) % 100000 in BaseSeries
+            #   aria-labelledby / title / desc ids derived from chart-N
+            svg = _re.sub(r'id="glyphx-chart-\d+[^"]*"', 'id="glyphx-chart-X"', svg)
+            svg = _re.sub(r'aria-labelledby="[^"]*"', 'aria-labelledby="X"', svg)
+            svg = _re.sub(r'series-\d+', 'series-X', svg)
+            return svg
+
+        assert _strip_instance_ids(fig1.render_svg()) == _strip_instance_ids(fig2.render_svg())
 
 
 # ============================================================
