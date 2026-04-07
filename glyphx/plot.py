@@ -77,7 +77,9 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
             raise ValueError(f"[glyphx.plot] No data provided for kind='{kind}'.")
         if hasattr(values, "values"):   # unwrap pandas Series
             values = values.values
-        if kind not in {"pie", "donut"}:
+        # Heatmap requires its 2-D matrix structure — never flatten it.
+        # Hist and box need a flat 1-D array.
+        if kind not in {"pie", "donut", "heatmap"}:
             values = np.asarray(values, dtype=float).flatten()
             if not np.issubdtype(values.dtype, np.number):
                 raise TypeError(
@@ -92,6 +94,9 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
                 raise ValueError(
                     f"[glyphx.plot] Provide x and/or y for kind='{kind}'."
                 )
+        # y was supplied directly — infer x if it was not provided
+        if x is None:
+            x = list(range(len(y)))
 
     # Build Figure
     fig = Figure(**figure_kwargs)
