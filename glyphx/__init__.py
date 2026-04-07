@@ -1,5 +1,5 @@
 """
-GlyphX v1.5.0 — SVG-first Python plotting library.
+GlyphX — SVG-first Python plotting library.
 
 Beats Matplotlib, Seaborn, and Plotly across three axes:
 
@@ -30,7 +30,13 @@ Quick-start::
     from_prompt("top 10 products by revenue", df=df)
 """
 
-__version__ = "v1.5.0"
+from importlib.metadata import version, PackageNotFoundError
+
+try:
+    __version__ = version("glyphx")
+except PackageNotFoundError:
+    # Package is not installed (e.g. running from source without install)
+    __version__ = "unknown"
 
 # ── Core ──────────────────────────────────────────────────────────────────
 from .figure   import Figure, SubplotGrid
