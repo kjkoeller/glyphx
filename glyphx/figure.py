@@ -545,10 +545,12 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
     """
     try:
         import cairosvg
-    except ImportError:
+    except (ImportError, OSError):
         raise RuntimeError(
-            "PPTX export requires cairosvg.  Install it with:\n"
-            "    pip install \"glyphx[pptx]\""
+            "PPTX export requires cairosvg and the system libcairo library.  "
+            "Install with:\n"
+            "    pip install \"glyphx[pptx]\"\n"
+            "On macOS: brew install cairo"
         )
     try:
         from pptx import Presentation
