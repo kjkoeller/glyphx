@@ -1,0 +1,18 @@
+<svg id="glyphx-chart-20" data-glyphx="true" width="100%" viewBox="0 0 500 440" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440" role="img" focusable="false" aria-labelledby="glyphx-chart-20-title glyphx-chart-20-desc"><title id="glyphx-chart-20-title">Budget Allocation  —  DonutSeries</title><desc id="glyphx-chart-20-desc">Donut chart titled &quot;Budget Allocation  —  DonutSeries&quot;. Contains 5 slices. Largest: Engineering (35 of 100).</desc><rect width="500" height="440" fill="#ffffff"/>
+<text x="250" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Budget Allocation  —  DonutSeries</text>
+<path d="M 385.0,220.0 A 135.0,135.0 0 0,1 170.64899094051614,329.2172942406179 L 250,220 Z" fill="#440154" class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" data-label="Engineering" data-value="35"/>
+<line x1="311.28871746483884" y1="340.2858807654296" x2="320.3685274596298" y2="358.10601124919697" stroke="#666"/>
+<text x="320.3685274596298" y="358.10601124919697" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000">Engineering</text>
+<path d="M 170.64899094051614,329.2172942406179 A 135.0,135.0 0 0,1 140.78270575938208,140.64899094051614 L 250,220 Z" fill="#3b528b" class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" data-label="Marketing" data-value="25"/>
+<line x1="116.66207401965642" y1="241.11865278043118" x2="96.90830720775367" y2="244.24734208123581" stroke="#666"/>
+<text x="96.90830720775367" y="244.24734208123581" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000">Marketing</text>
+<path d="M 140.78270575938208,140.64899094051614 A 135.0,135.0 0 0,1 291.7172942406179,91.60737030015426 L 250,220 Z" fill="#21918c" class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" data-label="Sales" data-value="20"/>
+<line x1="208.28270575938208" y1="91.60737030015429" x2="202.10236587188314" y2="72.58623997425121" stroke="#666"/>
+<text x="202.10236587188314" y="72.58623997425121" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000">Sales</text>
+<path d="M 291.7172942406179,91.60737030015426 A 135.0,135.0 0 0,1 368.3014018059216,154.96325399626843 L 250,220 Z" fill="#5ec962" class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" data-label="Operations" data-value="12"/>
+<line x1="336.05223861607317" y1="115.98071222526848" x2="348.80071841104694" y2="100.5704473697527" stroke="#666"/>
+<text x="348.80071841104694" y="100.5704473697527" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000">Operations</text>
+<path d="M 368.3014018059216,154.96325399626843 A 135.0,135.0 0 0,1 385.0,219.99999999999997 L 250,220 Z" fill="#fde725" class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" data-label="Legal" data-value="8"/>
+<line x1="380.7587267523652" y1="186.42686523274466" x2="400.1303899749378" y2="181.45306748944756" stroke="#666"/>
+<text x="400.1303899749378" y="181.45306748944756" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000">Legal</text>
+<circle cx="250" cy="220" r="67.5" fill="#ffffff"/></svg>

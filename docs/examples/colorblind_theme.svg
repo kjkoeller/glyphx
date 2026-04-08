@@ -1,0 +1,88 @@
+<svg id="glyphx-chart-17" data-glyphx="true" width="100%" viewBox="0 0 760 460" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" role="img" focusable="false" aria-labelledby="glyphx-chart-17-title glyphx-chart-17-desc"><title id="glyphx-chart-17-title">Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)</title><desc id="glyphx-chart-17-desc">Line chart titled &quot;Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)&quot;. X axis: Month. Y axis: USD ($M). Series &quot;Revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec). Series &quot;Costs&quot;: 12 data points. Ranges from 0.65 (at Mar) to 1.75 (at Dec). Series &quot;Margin&quot;: 12 data points. Ranges from 0.33 (at Mar) to 1.25 (at Dec).</desc><rect width="760" height="460" fill="#ffffff"/>
+<text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)</text>
+<line x1="68" y1="392" x2="692" y2="392" stroke="#000000" />
+<line x1="68" y1="68" x2="68" y2="392" stroke="#000000" />
+<text x="380" y="450" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Month</text>
+<text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">USD ($M)</text>
+<line x1="68" x2="692" y1="392.0" y2="392.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="396.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="68" x2="692" y1="327.2" y2="327.2" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="331.2" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.60</text>
+<line x1="68" x2="692" y1="262.4" y2="262.4" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="266.4" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.20</text>
+<line x1="68" x2="692" y1="197.60000000000002" y2="197.60000000000002" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="201.60000000000002" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.80</text>
+<line x1="68" x2="692" y1="132.79999999999995" y2="132.79999999999995" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="136.79999999999995" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.40</text>
+<line x1="68" x2="692" y1="68.0" y2="68.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="60" y="72.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3</text>
+<line y1="68" y2="392" x1="94.0" x2="94.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="94.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jan</text>
+<line y1="68" y2="392" x1="146.0" x2="146.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="146.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Feb</text>
+<line y1="68" y2="392" x1="198.0" x2="198.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="198.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mar</text>
+<line y1="68" y2="392" x1="250.0" x2="250.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="250.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Apr</text>
+<line y1="68" y2="392" x1="302.0" x2="302.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="302.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >May</text>
+<line y1="68" y2="392" x1="354.0" x2="354.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="354.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jun</text>
+<line y1="68" y2="392" x1="406.0" x2="406.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="406.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jul</text>
+<line y1="68" y2="392" x1="458.0" x2="458.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="458.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Aug</text>
+<line y1="68" y2="392" x1="510.0" x2="510.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="510.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Sep</text>
+<line y1="68" y2="392" x1="562.0" x2="562.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="562.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Oct</text>
+<line y1="68" y2="392" x1="614.0" x2="614.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="614.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Nov</text>
+<line y1="68" y2="392" x1="666.0" x2="666.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
+<text x="666.0" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Dec</text>
+<polyline class="series-73568" fill="none" stroke="#1f77b4" stroke-width="2.5" stroke-dasharray="" points="94.0,262.4 146.0,246.2 198.0,286.16 250.0,208.4 302.0,235.4 354.0,186.79999999999998 406.0,165.20000000000002 458.0,203.0 510.0,143.60000000000002 562.0,170.60000000000002 614.0,111.19999999999999 666.0,68.0"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="94.0" cy="262.4" r="4" fill="#1f77b4" data-x="0.5" data-y="1.2" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="146.0" cy="246.2" r="4" fill="#1f77b4" data-x="1.5" data-y="1.35" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="198.0" cy="286.16" r="4" fill="#1f77b4" data-x="2.5" data-y="0.98" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="250.0" cy="208.4" r="4" fill="#1f77b4" data-x="3.5" data-y="1.7" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="302.0" cy="235.4" r="4" fill="#1f77b4" data-x="4.5" data-y="1.45" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="354.0" cy="186.79999999999998" r="4" fill="#1f77b4" data-x="5.5" data-y="1.9" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="406.0" cy="165.20000000000002" r="4" fill="#1f77b4" data-x="6.5" data-y="2.1" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="458.0" cy="203.0" r="4" fill="#1f77b4" data-x="7.5" data-y="1.75" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="510.0" cy="143.60000000000002" r="4" fill="#1f77b4" data-x="8.5" data-y="2.3" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="562.0" cy="170.60000000000002" r="4" fill="#1f77b4" data-x="9.5" data-y="2.05" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="614.0" cy="111.19999999999999" r="4" fill="#1f77b4" data-x="10.5" data-y="2.6" data-label="Revenue"/>
+<circle class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" cx="666.0" cy="68.0" r="4" fill="#1f77b4" data-x="11.5" data-y="3.0" data-label="Revenue"/>
+<polyline class="series-31024" fill="none" stroke="#1f77b4" stroke-width="2" stroke-dasharray="6,3" points="94.0,305.6 146.0,294.8 198.0,321.8 250.0,284.0 302.0,289.4 354.0,273.2 406.0,251.6 458.0,278.6 510.0,240.8 562.0,262.4 614.0,224.6 666.0,203.0"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="94.0" cy="305.6" r="4" fill="#1f77b4" data-x="0.5" data-y="0.8" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="146.0" cy="294.8" r="4" fill="#1f77b4" data-x="1.5" data-y="0.9" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="198.0" cy="321.8" r="4" fill="#1f77b4" data-x="2.5" data-y="0.65" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="250.0" cy="284.0" r="4" fill="#1f77b4" data-x="3.5" data-y="1.0" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="302.0" cy="289.4" r="4" fill="#1f77b4" data-x="4.5" data-y="0.95" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="354.0" cy="273.2" r="4" fill="#1f77b4" data-x="5.5" data-y="1.1" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="406.0" cy="251.6" r="4" fill="#1f77b4" data-x="6.5" data-y="1.3" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="458.0" cy="278.6" r="4" fill="#1f77b4" data-x="7.5" data-y="1.05" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="510.0" cy="240.8" r="4" fill="#1f77b4" data-x="8.5" data-y="1.4" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="562.0" cy="262.4" r="4" fill="#1f77b4" data-x="9.5" data-y="1.2" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="614.0" cy="224.6" r="4" fill="#1f77b4" data-x="10.5" data-y="1.55" data-label="Costs"/>
+<circle class="glyphx-point series-31024" tabindex="0" role="graphics-symbol" cx="666.0" cy="203.0" r="4" fill="#1f77b4" data-x="11.5" data-y="1.75" data-label="Costs"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="83.6" y="348.8" width="20.8" height="43.19999999999999" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="0.3999999999999999" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="135.6" y="343.4" width="20.8" height="48.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="0.45000000000000007" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="187.6" y="356.36" width="20.8" height="35.639999999999986" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.32999999999999996" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="239.6" y="316.4" width="20.8" height="75.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="0.7" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="291.6" y="338.0" width="20.8" height="54.0" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="0.5" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="343.6" y="305.6" width="20.8" height="86.39999999999998" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="0.7999999999999998" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="395.6" y="305.6" width="20.8" height="86.39999999999998" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="0.8" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="447.6" y="316.4" width="20.8" height="75.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="0.7" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="499.6" y="294.8" width="20.8" height="97.19999999999999" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="0.8999999999999999" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="551.6" y="300.2" width="20.8" height="91.80000000000001" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="0.8499999999999999" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="603.6" y="278.6" width="20.8" height="113.39999999999998" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="1.05" data-label="Margin"/>
+<rect class="glyphx-point series-32320" tabindex="0" role="graphics-symbol" x="655.6" y="257.0" width="20.8" height="135.0" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="1.25" data-label="Margin"/>
+<g class="glyphx-legend">
+<rect x="10" y="20" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-73568" />
+<text x="30" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-73568">Revenue</text>
+<rect x="10" y="42" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-31024" />
+<text x="30" y="52" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-31024">Costs</text>
+<rect x="10" y="64" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-32320" />
+<text x="30" y="74" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-32320">Margin</text>
+</g></svg>
