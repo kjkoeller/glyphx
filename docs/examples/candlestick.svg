@@ -1,44 +1,39 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-16-title glyphx-chart-16-desc" id="glyphx-chart-16" data-glyphx="true" width="660" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 460"><title id="glyphx-chart-16-title">OHLC Candlestick  —  CandlestickSeries</title><desc id="glyphx-chart-16-desc">Candlestick chart titled &quot;OHLC Candlestick  —  CandlestickSeries&quot;. X axis: Session. Y axis: Price (USD). Series: 5 data points. Ranges from 146 (at ?) to 162 (at 4).</desc><rect width="660" height="460" fill="#ffffff"/>
-<text x="330" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">OHLC Candlestick  —  CandlestickSeries</text>
-<line x1="50" y1="410" x2="610" y2="410" stroke="#333" />
-<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
-<text x="330" y="450" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Session</text>
-<text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Price (USD)</text>
-<line x1="50" x2="610" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">146</text>
-<line x1="50" x2="610" y1="338.0000000000002" y2="338.0000000000002" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="342.0000000000002" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">149</text>
-<line x1="50" x2="610" y1="265.9999999999999" y2="265.9999999999999" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="269.9999999999999" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">152</text>
-<line x1="50" x2="610" y1="194.0000000000001" y2="194.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="198.0000000000001" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">156</text>
-<line x1="50" x2="610" y1="121.99999999999977" y2="121.99999999999977" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="125.99999999999977" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">159</text>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-6-title glyphx-chart-6-desc" id="glyphx-chart-6" data-glyphx="true" width="660" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 440"><title id="glyphx-chart-6-title">Candlestick  —  CandlestickSeries</title><desc id="glyphx-chart-6-desc">Candlestick chart titled &quot;Candlestick  —  CandlestickSeries&quot;. X axis: Session. Y axis: Price (USD). Series: 5 data points. Ranges from 146 (at ?) to 162 (at 4).</desc><rect width="660" height="440" fill="#ffffff"/>
+<text x="330" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Candlestick  —  CandlestickSeries</text>
+<line x1="50" y1="390" x2="610" y2="390" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="390" stroke="#333" />
+<text x="330" y="430" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Session</text>
+<text x="15" y="220" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 220)">Price (USD)</text>
+<line x1="50" x2="610" y1="390.0" y2="390.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="394.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">146</text>
+<line x1="50" x2="610" y1="322.0000000000002" y2="322.0000000000002" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="326.0000000000002" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">149</text>
+<line x1="50" x2="610" y1="253.9999999999999" y2="253.9999999999999" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="257.9999999999999" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">152</text>
+<line x1="50" x2="610" y1="186.0000000000001" y2="186.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="190.0000000000001" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">156</text>
+<line x1="50" x2="610" y1="117.99999999999977" y2="117.99999999999977" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="121.99999999999977" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">159</text>
 <line x1="50" x2="610" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">162</text>
-<line y1="50" y2="410" x1="162.0" x2="162.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="162.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mon</text>
-<line y1="50" y2="410" x1="274.0" x2="274.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="274.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Tue</text>
-<line y1="50" y2="410" x1="386.0" x2="386.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="386.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Wed</text>
-<line y1="50" y2="410" x1="498.0" x2="498.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="498.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Thu</text>
-<line y1="50" y2="410" x1="610.0" x2="610.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="610.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Fri</text>
-<line x1="162.0" x2="162.0" y1="207.5" y2="365.0" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" x="128.4" y="252.5" width="67.2" height="67.5" fill="#26a641" data-x="Mon" data-label="Mon" data-value="O:150 H:155 L:148 C:153"/>
-<text x="162.0" y="426" text-anchor="middle" font-size="10" fill="#555">Mon</text>
-<line x1="274.0" x2="274.0" y1="162.5" y2="297.5" stroke="#d73027" stroke-width="1.5"/>
-<rect class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" x="240.4" y="252.5" width="67.2" height="90.0" fill="#d73027" data-x="Tue" data-label="Tue" data-value="O:153 H:157 L:151 C:149"/>
-<text x="274.0" y="426" text-anchor="middle" font-size="10" fill="#555">Tue</text>
-<line x1="386.0" x2="386.0" y1="252.5" y2="410.0" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" x="352.4" y="207.5" width="67.2" height="135.0" fill="#26a641" data-x="Wed" data-label="Wed" data-value="O:149 H:153 L:146 C:155"/>
-<text x="386.0" y="426" text-anchor="middle" font-size="10" fill="#555">Wed</text>
-<line x1="498.0" x2="498.0" y1="95.0" y2="230.0" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" x="464.4" y="140.0" width="67.2" height="67.5" fill="#26a641" data-x="Thu" data-label="Thu" data-value="O:155 H:160 L:154 C:158"/>
-<text x="498.0" y="426" text-anchor="middle" font-size="10" fill="#555">Thu</text>
-<line x1="610.0" x2="610.0" y1="50.0" y2="185.0" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" x="576.4" y="95.0" width="67.2" height="45.0" fill="#26a641" data-x="Fri" data-label="Fri" data-value="O:158 H:162 L:156 C:160"/>
-<text x="610.0" y="426" text-anchor="middle" font-size="10" fill="#555">Fri</text>
+<line y1="50" y2="390" x1="162.0" x2="162.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="162.0" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mon</text>
+<line y1="50" y2="390" x1="274.0" x2="274.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="274.0" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Tue</text>
+<line y1="50" y2="390" x1="386.0" x2="386.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="386.0" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Wed</text>
+<line y1="50" y2="390" x1="498.0" x2="498.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="498.0" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Thu</text>
+<line y1="50" y2="390" x1="610.0" x2="610.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="610.0" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Fri</text>
+<line x1="162.0" x2="162.0" y1="198.75" y2="347.5" stroke="#26a641" stroke-width="1.5"/>
+<rect class="glyphx-point series-4864" tabindex="0" role="graphics-symbol" x="128.4" y="241.25" width="67.2" height="63.75" fill="#26a641" data-x="Mon" data-label="Mon" data-value="O:150 H:155 L:148 C:153"/>
+<line x1="274.0" x2="274.0" y1="156.25" y2="283.75" stroke="#d73027" stroke-width="1.5"/>
+<rect class="glyphx-point series-4864" tabindex="0" role="graphics-symbol" x="240.4" y="241.25" width="67.2" height="85.0" fill="#d73027" data-x="Tue" data-label="Tue" data-value="O:153 H:157 L:151 C:149"/>
+<line x1="386.0" x2="386.0" y1="241.25" y2="390.0" stroke="#26a641" stroke-width="1.5"/>
+<rect class="glyphx-point series-4864" tabindex="0" role="graphics-symbol" x="352.4" y="198.75" width="67.2" height="127.5" fill="#26a641" data-x="Wed" data-label="Wed" data-value="O:149 H:153 L:146 C:155"/>
+<line x1="498.0" x2="498.0" y1="92.5" y2="220.0" stroke="#26a641" stroke-width="1.5"/>
+<rect class="glyphx-point series-4864" tabindex="0" role="graphics-symbol" x="464.4" y="135.0" width="67.2" height="63.75" fill="#26a641" data-x="Thu" data-label="Thu" data-value="O:155 H:160 L:154 C:158"/>
+<line x1="610.0" x2="610.0" y1="50.0" y2="177.5" stroke="#26a641" stroke-width="1.5"/>
+<rect class="glyphx-point series-4864" tabindex="0" role="graphics-symbol" x="576.4" y="92.5" width="67.2" height="42.5" fill="#26a641" data-x="Fri" data-label="Fri" data-value="O:158 H:162 L:156 C:160"/>
 </svg>
