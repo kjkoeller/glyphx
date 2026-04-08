@@ -97,6 +97,10 @@ class Axes:
         The conversion is stored on the series as ``._numeric_x`` so the
         original ``series.x`` is **never mutated**.
 
+        When multiple series each carry different categories (e.g. one bar
+        per group from a groupby aggregation), all unique categories are merged
+        into a single global ordering so each gets a distinct x position.
+
         Args:
             series_list (list): Series objects with ``.x`` and ``.y``.
 
@@ -107,6 +111,20 @@ class Axes:
         x_vals = []
         y_vals = []
 
+        # Build a global category order across all categorical series so that
+        # series each carrying a different single category (e.g. groupby bars)
+        # receive unique, non-overlapping x positions.
+        global_cats: list = []
+        for s in series_list:
+            if not hasattr(s, "x") or not s.x:
+                continue
+            if isinstance(s.x[0], str):
+                for cat in s.x:
+                    if cat not in global_cats:
+                        global_cats.append(cat)
+
+        cat_to_pos: dict = {cat: i + 0.5 for i, cat in enumerate(global_cats)}
+
         for s in series_list:
             if not hasattr(s, "x") or not hasattr(s, "y"):
                 continue
@@ -115,9 +133,8 @@ class Axes:
 
             # Handle categorical X: store numeric mapping without mutation
             if isinstance(s.x[0], str):
-                if not hasattr(s, "_numeric_x"):
-                    s._numeric_x   = [i + 0.5 for i in range(len(s.x))]
-                    s._x_categories = list(s.x)
+                s._numeric_x    = [cat_to_pos[cat] for cat in s.x]
+                s._x_categories = list(s.x)
                 numeric_x = s._numeric_x
             else:
                 numeric_x = s.x
@@ -288,12 +305,16 @@ class Axes:
         text_color = self.theme.get("text_color", "#000")
         pad        = self.padding
 
-        # Gather all category labels from every registered series
+        # Gather all category labels from every registered series.
+        # Use the series._numeric_x positions (set by compute_domain) so that
+        # labels align with where the series actually drew their elements.
         all_categories = {}
         for s in self.series:
             if hasattr(s, "_x_categories") and s._x_categories:
-                for i, cat in enumerate(s._x_categories):
-                    all_categories[i + 0.5] = cat
+                numeric_x = getattr(s, "_numeric_x",
+                                    [i + 0.5 for i in range(len(s._x_categories))])
+                for pos, cat in zip(numeric_x, s._x_categories):
+                    all_categories[pos] = cat
 
         # --- Y ticks (horizontal grid lines) ---
         for i in range(ticks + 1):
