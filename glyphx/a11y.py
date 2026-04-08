@@ -117,7 +117,8 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
 
     Changes made:
     - Adds ``role="img"`` and ``aria-labelledby`` to the root ``<svg>``
-    - Prepends ``<title>`` and ``<desc>`` as the first children of the SVG
+      (only if not already present)
+    - Injects ``<title>`` and ``<desc>`` as the first children of the SVG
     - Adds ``tabindex="0"`` and ``role="graphics-symbol"`` to every
       ``.glyphx-point`` element for keyboard navigation
 
@@ -135,29 +136,23 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
     title_id = f"{chart_id}-title"
     desc_id  = f"{chart_id}-desc"
 
-    # ── 1. Add role + aria-labelledby to the opening <svg ...> tag ───────
-    svg = re.sub(
-        r"(<svg\b[^>]*)(>)",
-        lambda m: (
-            m.group(1)
-            + f' role="img" focusable="false"'
-            + f' aria-labelledby="{title_id} {desc_id}"'
-            + m.group(2)
-        ),
-        svg,
-        count=1,
-    )
+    # ── 1. Add role + aria-labelledby only if not already present ────────
+    if 'role=' not in svg:
+        svg = svg.replace(
+            "<svg ",
+            f'<svg role="img" focusable="false" '
+            f'aria-labelledby="{title_id} {desc_id}" ',
+            1
+        )
 
-    # ── 2. Inject <title> and <desc> right after the opening <svg> tag ───
-    landmark = (
+    # ── 2. Inject <title> and <desc> right after the first > ─────────────
+    insert = (
         f'<title id="{title_id}">{svg_escape(title)}</title>'
         f'<desc id="{desc_id}">{svg_escape(desc)}</desc>'
     )
-    svg = re.sub(r"(<svg\b[^>]*>)", r"\1" + landmark, svg, count=1)
+    svg = svg.replace(">", f">{insert}", 1)
 
     # ── 3. Add tabindex + role to every interactive point ─────────────────
-    # Place the attributes AFTER the closing quote of the class value so
-    # that the test regex `class="glyphx-point..."[^>]*>` captures them.
     svg = re.sub(
         r'(class="glyphx-point[^"]*")',
         r'\1 tabindex="0" role="graphics-symbol"',
