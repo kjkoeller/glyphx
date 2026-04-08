@@ -18,15 +18,14 @@ GlyphX ships seven built-in themes. Pass the name as a string:
    Figure(theme="monochrome")
    Figure(theme="default")      # clean white (default)
 
-Or apply mid-chain with ``.set_theme()``:
+.. image:: examples/dark_theme.svg
+   :alt: Dark theme dual-series line chart
+   :width: 760px
+   :align: center
 
-.. code-block:: python
-
-   fig = Figure().set_theme("dark").add(...)
-
-.. image:: examples/dark_theme.png
-   :alt: Dark theme example
-   :width: 680px
+.. image:: examples/colorblind_theme.svg
+   :alt: Colorblind-safe Okabe-Ito theme
+   :width: 760px
    :align: center
 
 .. list-table:: Built-in Themes
@@ -93,14 +92,14 @@ Pass ``color`` and ``linestyle`` directly to any series:
 
    from glyphx.series import LineSeries
 
-   LineSeries(x, y, color="#16a34a", linestyle="dashed", width=2)
-   LineSeries(x, y, color="#dc2626", linestyle="dotted")
-   LineSeries(x, y, color="#2563eb", linestyle="longdash")
-   LineSeries(x, y, color="#7c3aed", linestyle="solid")   # default
+   LineSeries(x, y, color="#16a34a", linestyle="solid",    width=2.5)
+   LineSeries(x, y, color="#2563eb", linestyle="dashed",   width=2.5)
+   LineSeries(x, y, color="#dc2626", linestyle="dotted",   width=2.5)
+   LineSeries(x, y, color="#d97706", linestyle="longdash", width=2.5)
 
-.. image:: examples/green_dashed_line.png
-   :alt: Green dashed line example
-   :width: 680px
+.. image:: examples/green_dashed_line.svg
+   :alt: All four linestyles showcased
+   :width: 760px
    :align: center
 
 Available ``linestyle`` values: ``"solid"``, ``"dashed"``, ``"dotted"``, ``"longdash"``
@@ -109,8 +108,7 @@ Available ``linestyle`` values: ``"solid"``, ``"dashed"``, ``"dotted"``, ``"long
 Colormaps
 ---------
 
-Nine perceptually-uniform colormaps are built in, all designed to be accurate
-when converted to grayscale:
+Nine perceptually-uniform colormaps are built in:
 
 .. list-table::
    :widths: 20 20 60
@@ -150,22 +148,21 @@ when converted to grayscale:
 .. code-block:: python
 
    from glyphx.colormaps import apply_colormap, colormap_colors, list_colormaps
+   from glyphx.series import ScatterSeries
 
    # Single value → hex color
-   color = apply_colormap(0.75, "plasma")      # "#eb5f34"
+   color = apply_colormap(0.75, "plasma")
 
-   # N evenly-spaced colors (e.g. for a grouped bar chart)
+   # N evenly-spaced colors
    colors = colormap_colors("viridis", 6)
 
-   # List all available names
-   print(list_colormaps())
-
    # Color-encode scatter points by a third variable
-   from glyphx.series import ScatterSeries
-   ScatterSeries(x, y, c=z_values, cmap="inferno", size=7)
+   ScatterSeries(x, y, c=z_values, cmap="plasma", size=8)
 
-When ``c=`` is supplied, a colorbar strip with min/max labels is added to the
-chart automatically.
+.. image:: examples/colormaps.svg
+   :alt: Scatter plot with plasma colormap encoding
+   :width: 760px
+   :align: center
 
 
 Annotations
@@ -178,19 +175,14 @@ Add text callouts in data-space coordinates:
    fig.annotate(
        "Record High",
        x=11, y=2.9,
-       arrow=True,           # draw a leader line from text to point
+       arrow=True,
        color="#dc2626",
        font_size=12,
-       anchor="start",       # SVG text-anchor: start | middle | end
    )
-
-Multiple annotations stack naturally — each is positioned independently.
 
 
 Statistical Significance Brackets
 ----------------------------------
-
-Annotate comparisons between groups with ``***`` / ``**`` / ``*`` / ``ns`` brackets:
 
 .. code-block:: python
 
@@ -201,13 +193,10 @@ Annotate comparisons between groups with ``***`` / ``**`` / ``*`` / ``ns`` brack
        .add_stat_annotation("Control", "Drug B", p_value=0.031, y_offset=30)
    )
 
-``y_offset`` shifts each bracket upward so multiple brackets don't overlap.
-Use ``style="numeric"`` for exact p-value display instead of stars.
-
-.. code-block:: python
-
-   fig.add_stat_annotation("A", "B", p_value=0.0003, style="numeric")
-   # → "p=3.00e-04" instead of "***"
+.. image:: examples/stat_annotations.svg
+   :alt: Bar chart with statistical significance brackets
+   :width: 640px
+   :align: center
 
 
 Grid Layouts
@@ -217,19 +206,35 @@ Grid Layouts
 
 .. code-block:: python
 
-   from glyphx import Figure
-   from glyphx.series import LineSeries, BarSeries, ScatterSeries, PieSeries
-
    fig = Figure(rows=2, cols=2, width=1000, height=700)
    fig.add_axes(0, 0).add_series(LineSeries([1,2,3], [4,5,6]))
    fig.add_axes(0, 1).add_series(BarSeries(["A","B","C"], [5,3,7]))
    fig.add_axes(1, 0).add_series(ScatterSeries([1,2,3], [4,5,6]))
-   fig.add_axes(1, 1).add_series(PieSeries([30,45,25], labels=["A","B","C"]))
+   fig.add_axes(1, 1).add_series(HistogramSeries(data, bins=15))
    fig.show()
 
-.. image:: examples/grid_layout.png
-   :alt: Grid layout example
-   :width: 680px
+.. image:: examples/grid_layout.svg
+   :alt: 2x2 subplot grid
+   :width: 760px
    :align: center
 
-**Multiple independent Figures on one​​​​​​​​​​​​​​​​
+**Multiple Figures on one HTML page:**
+
+.. code-block:: python
+
+   from glyphx.layout import grid
+
+   html = grid([f1, f2, f3], rows=1, cols=3)
+   open("dashboard.html", "w").write(html)
+
+
+Tight Layout
+~~~~~~~~~~~~
+
+.. code-block:: python
+
+   fig = (
+       Figure()
+       .add(BarSeries(long_category_names, values))
+       .tight_layout()
+   )

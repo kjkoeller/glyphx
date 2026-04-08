@@ -1,0 +1,58 @@
+<svg id="glyphx-chart-13" data-glyphx="true" width="100%" viewBox="0 0 720 460" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" role="img" focusable="false" aria-labelledby="glyphx-chart-13-title glyphx-chart-13-desc"><title id="glyphx-chart-13-title">Revenue Bridge  —  WaterfallSeries  (None = auto total)</title><desc id="glyphx-chart-13-desc">Waterfall chart titled &quot;Revenue Bridge  —  WaterfallSeries  (None = auto total)&quot;. Series: 7 data points. Ranges from 0 (at 0) to 11.9 (at 1).</desc><rect width="720" height="460" fill="#ffffff"/>
+<text x="360" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Revenue Bridge  —  WaterfallSeries  (None = auto total)</text>
+<line x1="50" y1="410" x2="670" y2="410" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
+<line x1="50" x2="670" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="670" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.38</text>
+<line x1="50" x2="670" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.76</text>
+<line x1="50" x2="670" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">7.14</text>
+<line x1="50" x2="670" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">9.52</text>
+<line x1="50" x2="670" y1="50.00000000000006" y2="50.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="54.00000000000006" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">11.9</text>
+<line y1="50" y2="410" x1="138.57142857142856" x2="138.57142857142856" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="138.57142857142856" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q2 Revenue</text>
+<line y1="50" y2="410" x1="227.14285714285714" x2="227.14285714285714" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="227.14285714285714" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >New Logos</text>
+<line y1="50" y2="410" x1="315.7142857142857" x2="315.7142857142857" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="315.7142857142857" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Expansions</text>
+<line y1="50" y2="410" x1="404.2857142857143" x2="404.2857142857143" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="404.2857142857143" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Renewals</text>
+<line y1="50" y2="410" x1="492.85714285714283" x2="492.85714285714283" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="492.85714285714283" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Churn</text>
+<line y1="50" y2="410" x1="581.4285714285714" x2="581.4285714285714" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="581.4285714285714" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Discounts</text>
+<line y1="50" y2="410" x1="670.0" x2="670.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="670.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q3 Revenue</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="111.99999999999999" y="161.9327731092437" width="53.14285714285714" height="248.0672268907563" fill="#16a34a" data-x="Q2 Revenue" data-value="8.20" data-label="Q2 Revenue"/>
+<text x="138.57142857142856" y="426" text-anchor="middle" font-size="10" fill="#555">Q2 Revenue</text>
+<text x="138.57142857142856" y="157.9327731092437" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="600">+8.20</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="200.57142857142856" y="98.40336134453781" width="53.14285714285714" height="63.529411764705884" fill="#16a34a" data-x="New Logos" data-value="2.10" data-label="New Logos"/>
+<line x1="129.7142857142857" x2="200.57142857142856" y1="161.9327731092437" y2="161.9327731092437" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="227.14285714285714" y="426" text-anchor="middle" font-size="10" fill="#555">New Logos</text>
+<text x="227.14285714285714" y="94.40336134453781" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="600">+2.10</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="289.14285714285717" y="69.66386554621846" width="53.14285714285714" height="28.739495798319354" fill="#16a34a" data-x="Expansions" data-value="0.95" data-label="Expansions"/>
+<line x1="218.2857142857143" x2="289.14285714285717" y1="98.40336134453781" y2="98.40336134453781" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="315.7142857142857" y="426" text-anchor="middle" font-size="10" fill="#555">Expansions</text>
+<text x="315.7142857142857" y="65.66386554621846" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="600">+0.95</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="377.7142857142857" y="50.00000000000006" width="53.14285714285714" height="19.663865546218403" fill="#16a34a" data-x="Renewals" data-value="0.65" data-label="Renewals"/>
+<line x1="306.8571428571429" x2="377.7142857142857" y1="69.66386554621846" y2="69.66386554621846" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="404.2857142857143" y="426" text-anchor="middle" font-size="10" fill="#555">Renewals</text>
+<text x="404.2857142857143" y="46.00000000000006" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="600">+0.65</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="466.2857142857143" y="50.00000000000006" width="53.14285714285714" height="24.80672268907557" fill="#dc2626" data-x="Churn" data-value="-0.82" data-label="Churn"/>
+<line x1="395.42857142857144" x2="466.2857142857143" y1="50.00000000000006" y2="50.00000000000006" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="492.85714285714283" y="426" text-anchor="middle" font-size="10" fill="#555">Churn</text>
+<text x="492.85714285714283" y="46.00000000000006" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="600">-0.82</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="554.8571428571429" y="74.80672268907563" width="53.14285714285714" height="11.495798319327776" fill="#dc2626" data-x="Discounts" data-value="-0.38" data-label="Discounts"/>
+<line x1="484.0000000000001" x2="554.8571428571429" y1="50.00000000000006" y2="50.00000000000006" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="581.4285714285714" y="426" text-anchor="middle" font-size="10" fill="#555">Discounts</text>
+<text x="581.4285714285714" y="70.80672268907563" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="600">-0.38</text>
+<rect class="glyphx-point series-73568" tabindex="0" role="graphics-symbol" x="643.4285714285714" y="86.3025210084034" width="53.14285714285714" height="323.6974789915966" fill="#2563eb" data-x="Q3 Revenue" data-value="10.7" data-label="Q3 Revenue"/>
+<line x1="572.5714285714287" x2="643.4285714285714" y1="74.80672268907563" y2="74.80672268907563" stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="670.0" y="426" text-anchor="middle" font-size="10" fill="#555">Q3 Revenue</text>
+<text x="670.0" y="82.3025210084034" text-anchor="middle" font-size="10" fill="#2563eb" font-weight="600">+10.7</text>
+</svg>
