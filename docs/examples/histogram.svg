@@ -1,62 +1,62 @@
-<svg id="glyphx-chart-21" data-glyphx="true" width="100%" viewBox="0 0 760 460" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460" role="img" focusable="false" aria-labelledby="glyphx-chart-21-title glyphx-chart-21-desc"><title id="glyphx-chart-21-title">Bimodal Histogram  —  HistogramSeries(bins=28)</title><desc id="glyphx-chart-21-desc">Histogram chart titled &quot;Bimodal Histogram  —  HistogramSeries(bins=28)&quot;. X axis: Response Time (ms). Y axis: Frequency. Series &quot;Response Time&quot;: 28 data points. Ranges from 0 (at 27.680713864811068) to 54 (at 50.02972842273472).</desc><rect width="760" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-3-title glyphx-chart-3-desc" id="glyphx-chart-3" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-3-title">Bimodal Histogram  —  HistogramSeries(bins=28)</title><desc id="glyphx-chart-3-desc">Histogram chart titled &quot;Bimodal Histogram  —  HistogramSeries(bins=28)&quot;. X axis: Response Time (ms). Y axis: Frequency. Series &quot;Response Time&quot;: 28 data points. Ranges from 1 (at 31.86492154833715) to 48 (at 50.211666571642354).</desc><rect width="760" height="460" fill="#ffffff"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Bimodal Histogram  —  HistogramSeries(bins=28)</text>
 <line x1="50" y1="410" x2="710" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
 <text x="380" y="450" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Response Time (ms)</text>
 <text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Frequency</text>
 <line x1="50" x2="710" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1</text>
 <line x1="50" x2="710" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">10.8</text>
+<text x="42" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">10.4</text>
 <line x1="50" x2="710" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">21.6</text>
+<text x="42" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">19.8</text>
 <line x1="50" x2="710" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">32.4</text>
-<line x1="50" x2="710" y1="121.99999999999994" y2="121.99999999999994" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="125.99999999999994" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">43.2</text>
+<text x="42" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">29.2</text>
+<line x1="50" x2="710" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">38.6</text>
 <line x1="50" x2="710" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">54</text>
+<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">48</text>
 <line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >24.7</text>
-<line y1="50" y2="410" x1="181.99999999999997" x2="181.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="181.99999999999997" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >38.3</text>
-<line y1="50" y2="410" x1="313.99999999999994" x2="313.99999999999994" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="313.99999999999994" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >51.9</text>
-<line y1="50" y2="410" x1="446.00000000000006" x2="446.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="446.00000000000006" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >65.5</text>
+<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >29.1</text>
+<line y1="50" y2="410" x1="182.00000000000003" x2="182.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="182.00000000000003" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >41.7</text>
+<line y1="50" y2="410" x1="314.00000000000006" x2="314.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="314.00000000000006" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >54.2</text>
+<line y1="50" y2="410" x1="446.0000000000001" x2="446.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="446.0000000000001" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >66.8</text>
 <line y1="50" y2="410" x1="578.0000000000001" x2="578.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="578.0000000000001" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >79.1</text>
+<text x="578.0000000000001" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >79.4</text>
 <line y1="50" y2="410" x1="710.0" x2="710.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="710.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >92.7</text>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="43.409108617299914" y="396.6666666666667" width="22.880955049271197" height="13.333333333333314" fill="#0891b2" stroke="#fff" data-x="25.2" data-y="2" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="67.49432445863802" y="410.0" width="22.880955049271197" height="0.0" fill="#0891b2" stroke="#fff" data-x="27.7" data-y="0" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="91.57954029997613" y="390.0" width="22.880955049271197" height="20.0" fill="#0891b2" stroke="#fff" data-x="30.2" data-y="3" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="115.66475614131424" y="396.6666666666667" width="22.880955049271197" height="13.333333333333314" fill="#0891b2" stroke="#fff" data-x="32.6" data-y="2" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="139.74997198265234" y="356.6666666666667" width="22.880955049271197" height="53.333333333333314" fill="#0891b2" stroke="#fff" data-x="35.1" data-y="8" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="163.83518782399042" y="310.0" width="22.880955049271197" height="100.0" fill="#0891b2" stroke="#fff" data-x="37.6" data-y="15" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="187.92040366532856" y="236.66666666666666" width="22.880955049271197" height="173.33333333333334" fill="#0891b2" stroke="#fff" data-x="40.1" data-y="26" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="212.00561950666665" y="243.33333333333334" width="22.880955049271197" height="166.66666666666666" fill="#0891b2" stroke="#fff" data-x="42.6" data-y="25" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="236.09083534800476" y="110.0" width="22.880955049271197" height="300.0" fill="#0891b2" stroke="#fff" data-x="45.1" data-y="45" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="260.1760511893429" y="116.66666666666669" width="22.880955049271197" height="293.3333333333333" fill="#0891b2" stroke="#fff" data-x="47.5" data-y="44" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="284.26126703068104" y="50.0" width="22.880955049271197" height="360.0" fill="#0891b2" stroke="#fff" data-x="50" data-y="54" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="308.3464828720191" y="116.66666666666669" width="22.880955049271197" height="293.3333333333333" fill="#0891b2" stroke="#fff" data-x="52.5" data-y="44" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="332.4316987133572" y="123.33333333333331" width="22.880955049271197" height="286.6666666666667" fill="#0891b2" stroke="#fff" data-x="55" data-y="43" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="356.51691455469535" y="196.66666666666666" width="22.880955049271197" height="213.33333333333334" fill="#0891b2" stroke="#fff" data-x="57.5" data-y="32" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="380.60213039603343" y="236.66666666666666" width="22.880955049271197" height="173.33333333333334" fill="#0891b2" stroke="#fff" data-x="60" data-y="26" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="404.68734623737157" y="303.3333333333333" width="22.880955049271197" height="106.66666666666669" fill="#0891b2" stroke="#fff" data-x="62.4" data-y="16" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="428.77256207870965" y="350.0" width="22.880955049271197" height="60.0" fill="#0891b2" stroke="#fff" data-x="64.9" data-y="9" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="452.8577779200478" y="290.0" width="22.880955049271197" height="120.0" fill="#0891b2" stroke="#fff" data-x="67.4" data-y="18" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="476.94299376138594" y="270.0" width="22.880955049271197" height="140.0" fill="#0891b2" stroke="#fff" data-x="69.9" data-y="21" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="501.02820960272396" y="303.3333333333333" width="22.880955049271197" height="106.66666666666669" fill="#0891b2" stroke="#fff" data-x="72.4" data-y="16" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="525.113425444062" y="190.0" width="22.880955049271197" height="220.0" fill="#0891b2" stroke="#fff" data-x="74.9" data-y="33" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="549.1986412854002" y="250.0" width="22.880955049271197" height="160.0" fill="#0891b2" stroke="#fff" data-x="77.3" data-y="24" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="573.2838571267383" y="230.0" width="22.880955049271197" height="180.0" fill="#0891b2" stroke="#fff" data-x="79.8" data-y="27" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="597.3690729680765" y="223.33333333333334" width="22.880955049271197" height="186.66666666666666" fill="#0891b2" stroke="#fff" data-x="82.3" data-y="28" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="621.4542888094145" y="276.66666666666663" width="22.880955049271197" height="133.33333333333337" fill="#0891b2" stroke="#fff" data-x="84.8" data-y="20" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="645.5395046507526" y="336.6666666666667" width="22.880955049271197" height="73.33333333333331" fill="#0891b2" stroke="#fff" data-x="87.3" data-y="11" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="669.6247204920908" y="370.0" width="22.880955049271197" height="40.0" fill="#0891b2" stroke="#fff" data-x="89.8" data-y="6" data-label="Response Time"/>
-<rect class="glyphx-point series-39648" tabindex="0" role="graphics-symbol" x="693.7099363334289" y="396.6666666666667" width="22.880955049271197" height="13.333333333333314" fill="#0891b2" stroke="#fff" data-x="92.2" data-y="2" data-label="Response Time"/>
+<text x="710.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >92.0</text>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="43.81815899888232" y="394.6808510638298" width="22.85314840436935" height="22.978723404255334" fill="#0891b2" stroke="#fff" data-x="29.6" data-y="3" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="67.87410468769212" y="410.0" width="22.85314840436935" height="7.659574468085111" fill="#0891b2" stroke="#fff" data-x="31.9" data-y="1" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="91.93005037650195" y="379.36170212765956" width="22.85314840436935" height="38.297872340425556" fill="#0891b2" stroke="#fff" data-x="34.2" data-y="5" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="115.98599606531192" y="348.72340425531917" width="22.85314840436935" height="68.93617021276594" fill="#0891b2" stroke="#fff" data-x="36.5" data-y="9" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="140.04194175412172" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="38.7" data-y="22" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="164.09788744293155" y="256.8085106382979" width="22.85314840436935" height="160.85106382978722" fill="#0891b2" stroke="#fff" data-x="41" data-y="21" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="188.15383313174135" y="226.17021276595744" width="22.85314840436935" height="191.48936170212767" fill="#0891b2" stroke="#fff" data-x="43.3" data-y="25" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="212.2097788205513" y="65.31914893617022" width="22.85314840436935" height="352.3404255319149" fill="#0891b2" stroke="#fff" data-x="45.6" data-y="46" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="236.26572450936112" y="149.5744680851064" width="22.85314840436935" height="268.0851063829787" fill="#0891b2" stroke="#fff" data-x="47.9" data-y="35" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="260.3216701981709" y="50.0" width="22.85314840436935" height="367.6595744680851" fill="#0891b2" stroke="#fff" data-x="50.2" data-y="48" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="284.3776158869808" y="50.0" width="22.85314840436935" height="367.6595744680851" fill="#0891b2" stroke="#fff" data-x="52.5" data-y="48" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="308.43356157579075" y="80.63829787234044" width="22.85314840436935" height="337.02127659574467" fill="#0891b2" stroke="#fff" data-x="54.8" data-y="44" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="332.48950726460055" y="256.8085106382979" width="22.85314840436935" height="160.85106382978722" fill="#0891b2" stroke="#fff" data-x="57.1" data-y="21" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="356.54545295341035" y="218.51063829787233" width="22.85314840436935" height="199.14893617021278" fill="#0891b2" stroke="#fff" data-x="59.4" data-y="26" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="380.6013986422202" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="61.7" data-y="22" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="404.6573443310301" y="272.1276595744681" width="22.85314840436935" height="145.531914893617" fill="#0891b2" stroke="#fff" data-x="64" data-y="19" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="428.7132900198399" y="394.6808510638298" width="22.85314840436935" height="22.978723404255334" fill="#0891b2" stroke="#fff" data-x="66.3" data-y="3" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="452.7692357086498" y="310.4255319148936" width="22.85314840436935" height="107.2340425531915" fill="#0891b2" stroke="#fff" data-x="68.6" data-y="14" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="476.8251813974596" y="279.7872340425532" width="22.85314840436935" height="137.8723404255319" fill="#0891b2" stroke="#fff" data-x="70.9" data-y="18" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="500.8811270862695" y="295.1063829787234" width="22.85314840436935" height="122.55319148936172" fill="#0891b2" stroke="#fff" data-x="73.1" data-y="16" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="524.9370727750793" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="75.4" data-y="22" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="548.9930184638891" y="195.53191489361703" width="22.85314840436935" height="222.12765957446808" fill="#0891b2" stroke="#fff" data-x="77.7" data-y="29" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="573.0489641526991" y="172.5531914893617" width="22.85314840436935" height="245.10638297872342" fill="#0891b2" stroke="#fff" data-x="80" data-y="32" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="597.1049098415089" y="241.48936170212767" width="22.85314840436935" height="176.17021276595744" fill="#0891b2" stroke="#fff" data-x="82.3" data-y="23" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="621.1608555303187" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="84.6" data-y="22" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="645.2168012191286" y="310.4255319148936" width="22.85314840436935" height="107.2340425531915" fill="#0891b2" stroke="#fff" data-x="86.9" data-y="14" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="669.2727469079383" y="387.02127659574467" width="22.85314840436935" height="30.638297872340445" fill="#0891b2" stroke="#fff" data-x="89.2" data-y="4" data-label="Response Time"/>
+<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="693.3286925967483" y="356.3829787234043" width="22.85314840436935" height="61.27659574468083" fill="#0891b2" stroke="#fff" data-x="91.5" data-y="8" data-label="Response Time"/>
 <g class="glyphx-legend">
-<rect x="619" y="20" width="12" height="12" fill="#0891b2" class="legend-icon" data-target="series-39648" />
-<text x="639" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-39648">Response Time</text>
+<rect x="619" y="20" width="12" height="12" fill="#0891b2" class="legend-icon" data-target="series-17520" />
+<text x="639" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-17520">Response Time</text>
 </g></svg>

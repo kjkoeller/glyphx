@@ -1,4 +1,4 @@
-<svg id="glyphx-chart-12" data-glyphx="true" width="100%" viewBox="0 0 700 460" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460" role="img" focusable="false" aria-labelledby="glyphx-chart-12-title glyphx-chart-12-desc"><title id="glyphx-chart-12-title">OHLC Candlestick Chart  —  CandlestickSeries</title><desc id="glyphx-chart-12-desc">Candlestick chart titled &quot;OHLC Candlestick Chart  —  CandlestickSeries&quot;. X axis: Trading Session. Y axis: Price (USD). Series &quot;AAPL&quot;: 10 data points. Ranges from 145 (at ?) to 155 (at 0).</desc><rect width="700" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-18-title glyphx-chart-18-desc" id="glyphx-chart-18" data-glyphx="true" width="700" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460"><title id="glyphx-chart-18-title">OHLC Candlestick Chart  —  CandlestickSeries</title><desc id="glyphx-chart-18-desc">Candlestick chart titled &quot;OHLC Candlestick Chart  —  CandlestickSeries&quot;. X axis: Trading Session. Y axis: Price (USD). Series &quot;AAPL&quot;: 10 data points. Ranges from 145 (at ?) to 155 (at 0).</desc><rect width="700" height="460" fill="#ffffff"/>
 <text x="350" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">OHLC Candlestick Chart  —  CandlestickSeries</text>
 <line x1="50" y1="410" x2="650" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
@@ -37,33 +37,33 @@
 <line y1="50" y2="410" x1="650.0" x2="650.0" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="650.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Fri</text>
 <line x1="110.0" x2="110.0" y1="50.0" y2="331.5429122468661" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="92.0" y="101.37897782063624" width="36.0" height="187.81099324975924" fill="#26a641" data-x="Mon" data-label="AAPL" data-value="O:148.0 H:154.89 L:146.78 C:153.41"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="92.0" y="101.37897782063624" width="36.0" height="187.81099324975924" fill="#26a641" data-x="Mon" data-label="AAPL" data-value="O:148.0 H:154.89 L:146.78 C:153.41"/>
 <text x="110.0" y="426" text-anchor="middle" font-size="10" fill="#555">Mon</text>
 <line x1="170.0" x2="170.0" y1="84.02121504339414" y2="160.74252651880445" stroke="#d73027" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="152.0" y="101.37897782063624" width="36.0" height="51.726133076181725" fill="#d73027" data-x="Tue" data-label="AAPL" data-value="O:153.41 H:153.91 L:151.7 C:151.92"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="152.0" y="101.37897782063624" width="36.0" height="51.726133076181725" fill="#d73027" data-x="Tue" data-label="AAPL" data-value="O:153.41 H:153.91 L:151.7 C:151.92"/>
 <text x="170.0" y="426" text-anchor="middle" font-size="10" fill="#555">Tue</text>
 <line x1="230.0" x2="230.0" y1="119.43105110896829" y2="233.64513018322097" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="212.0" y="149.2864030858242" width="36.0" height="3.8187078109937715" fill="#26a641" data-x="Wed" data-label="AAPL" data-value="O:151.92 H:152.89 L:149.6 C:152.03"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="212.0" y="149.2864030858242" width="36.0" height="3.8187078109937715" fill="#26a641" data-x="Wed" data-label="AAPL" data-value="O:151.92 H:152.89 L:149.6 C:152.03"/>
 <text x="230.0" y="426" text-anchor="middle" font-size="10" fill="#555">Wed</text>
 <line x1="290.0" x2="290.0" y1="55.554484088717345" y2="188.16779170684663" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="272.0" y="104.1562198649944" width="36.0" height="45.13018322082979" fill="#26a641" data-x="Thu" data-label="AAPL" data-value="O:152.03 H:154.73 L:150.91 C:153.33"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="272.0" y="104.1562198649944" width="36.0" height="45.13018322082979" fill="#26a641" data-x="Thu" data-label="AAPL" data-value="O:152.03 H:154.73 L:150.91 C:153.33"/>
 <text x="290.0" y="426" text-anchor="middle" font-size="10" fill="#555">Thu</text>
 <line x1="350.0" x2="350.0" y1="76.73095467695214" y2="215.59305689488886" stroke="#d73027" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="332.0" y="104.1562198649944" width="36.0" height="87.48312439730049" fill="#d73027" data-x="Fri" data-label="AAPL" data-value="O:153.33 H:154.12 L:150.12 C:150.81"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="332.0" y="104.1562198649944" width="36.0" height="87.48312439730049" fill="#d73027" data-x="Fri" data-label="AAPL" data-value="O:153.33 H:154.12 L:150.12 C:150.81"/>
 <text x="350.0" y="426" text-anchor="middle" font-size="10" fill="#555">Fri</text>
 <line x1="410.0" x2="410.0" y1="163.17261330761806" y2="282.59402121504354" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="392.0" y="191.29218900675036" width="36.0" height="1" fill="#26a641" data-x="Mon" data-label="AAPL" data-value="O:150.81 H:151.63 L:148.19 C:150.82"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="392.0" y="191.29218900675036" width="36.0" height="1" fill="#26a641" data-x="Mon" data-label="AAPL" data-value="O:150.81 H:151.63 L:148.19 C:150.82"/>
 <text x="410.0" y="426" text-anchor="middle" font-size="10" fill="#555">Mon</text>
 <line x1="470.0" x2="470.0" y1="185.737704918033" y2="224.61909353905443" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="452.0" y="191.29218900675036" width="36.0" height="1" fill="#26a641" data-x="Tue" data-label="AAPL" data-value="O:150.82 H:150.98 L:149.86 C:150.82"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="452.0" y="191.29218900675036" width="36.0" height="1" fill="#26a641" data-x="Tue" data-label="AAPL" data-value="O:150.82 H:150.98 L:149.86 C:150.82"/>
 <text x="470.0" y="426" text-anchor="middle" font-size="10" fill="#555">Tue</text>
 <line x1="530.0" x2="530.0" y1="141.3018322082932" y2="391.94792671166886" stroke="#d73027" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="512.0" y="191.29218900675036" width="36.0" height="195.10125361620115" fill="#d73027" data-x="Wed" data-label="AAPL" data-value="O:150.82 H:152.26 L:145.04 C:145.2"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="512.0" y="191.29218900675036" width="36.0" height="195.10125361620115" fill="#d73027" data-x="Wed" data-label="AAPL" data-value="O:150.82 H:152.26 L:145.04 C:145.2"/>
 <text x="530.0" y="426" text-anchor="middle" font-size="10" fill="#555">Wed</text>
 <line x1="590.0" x2="590.0" y1="235.03375120540008" y2="410.0" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-96256" tabindex="0" role="graphics-symbol" x="572.0" y="273.2208293153325" width="36.0" height="113.17261330761903" fill="#26a641" data-x="Thu" data-label="AAPL" data-value="O:145.2 H:149.56 L:144.52 C:148.46"/>
+<rect class="glyphx-point series-87040" tabindex="0" role="graphics-symbol" x="572.0" y="273.2208293153325" width="36.0" height="113.17261330761903" fill="#26a641" data-x="Thu" data-label="AAPL" data-value="O:145.2 H:149.56 L:144.52 C:148.46"/>
 <text x="590.0" y="426" text-anchor="middle" font-size="10" fill="#555">Thu</text>
 <g class="glyphx-legend">
-<rect x="622" y="20" width="12" height="12" fill="#26a641" class="legend-icon" data-target="series-96256" />
-<text x="642" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-96256">AAPL</text>
+<rect x="622" y="20" width="12" height="12" fill="#26a641" class="legend-icon" data-target="series-87040" />
+<text x="642" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-87040">AAPL</text>
 </g></svg>
