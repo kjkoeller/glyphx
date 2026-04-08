@@ -2,10 +2,11 @@
 
 **A next-generation Python visualization library — SVG-first, interactive, and designed to replace Matplotlib, Seaborn, and Plotly.**
 
-[![PyPI version](https://img.shields.io/pypi/v/glyphx.svg)](https://pypi.org/project/glyphx/)
-[![Python](https://img.shields.io/pypi/pyversions/glyphx.svg)](https://pypi.org/project/glyphx/)
-[![Documentation](https://readthedocs.org/projects/glyphx/badge/?version=latest)](https://glyphx.readthedocs.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.12](https://github.com/kjkoeller/glyphx/actions/workflows/ci_tests.yml/badge.svg)](https://github.com/kjkoeller/glyphx/actions/workflows/ci_tests.yml)
+[![Documentation Status](https://readthedocs.org/projects/glyphx/badge/?version=latest)](https://glyphx.readthedocs.io/en/latest/?badge=latest)
+[![PyPI version](https://badge.fury.io/py/glyphx.svg)](https://badge.fury.io/py/glyphx)
+[![GitHub release](https://img.shields.io/github/v/release/kjkoeller/glyphx)](https://github.com/kjkoeller/glyphx/releases/)
+![GitHub](https://img.shields.io/github/license/kjkoeller/glyphx)
 
 GlyphX renders crisp, interactive SVG charts that work everywhere — Jupyter notebooks, CLI pipelines, FastAPI servers, and static HTML files — with zero configuration and no `plt.show()` required.
 
