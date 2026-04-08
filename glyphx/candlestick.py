@@ -120,11 +120,12 @@ class CandlestickSeries(BaseSeries):
                 f'fill="{color}" {tooltip}/>'
             )
 
-            # X-axis label
-            elements.append(
-                f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
-                f'text-anchor="middle" font-size="10" fill="#555">'
-                f'{svg_escape(str(date))}</text>'
-            )
+            # X-axis label — skip if _x_categories is set; grid renders them
+            if not getattr(self, "_x_categories", None):
+                elements.append(
+                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
+                    f'text-anchor="middle" font-size="10" fill="#555">'
+                    f'{svg_escape(str(date))}</text>'
+                )
 
         return "\n".join(elements)
