@@ -20,13 +20,13 @@ def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
 
             if i == j:
                 if diag_kind == "kde":
-                    from scipy.stats import gaussian_kde
+                    from .violin_plot import _numpy_kde
                     import numpy as np
-                    values = df[xcol].dropna()
-                    kde = gaussian_kde(values)
+                    values = np.asarray(df[xcol].dropna(), dtype=float)
+                    kde = _numpy_kde(values)
                     x_vals = np.linspace(values.min(), values.max(), 100)
                     y_vals = kde(x_vals)
-                    ax.add(LineSeries(x_vals, y_vals, color="#1f77b4"))
+                    ax.add(LineSeries(x_vals.tolist(), y_vals.tolist(), color="#1f77b4"))
 
                 if diag_kind == "hist":
                     ax.add(HistogramSeries(df[xcol], color="#1f77b4"))
