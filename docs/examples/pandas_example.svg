@@ -1,5 +1,5 @@
-<svg id="glyphx-chart-6" data-glyphx="true" width="100%" viewBox="0 0 640 480" height="auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480" role="img" focusable="false" aria-labelledby="glyphx-chart-6-title glyphx-chart-6-desc"><title id="glyphx-chart-6-title">Quarterly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)</title><desc id="glyphx-chart-6-desc">Bar chart titled &quot;Quarterly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)&quot;. X axis: Month. Y axis: Revenue ($M). Series &quot;revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec).</desc><rect width="640" height="480" fill="#ffffff"/>
-<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Quarterly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)</text>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-14-title glyphx-chart-14-desc" id="glyphx-chart-14" data-glyphx="true" width="640" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><title id="glyphx-chart-14-title">Monthly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)</title><desc id="glyphx-chart-14-desc">Bar chart titled &quot;Monthly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)&quot;. X axis: Month. Y axis: Revenue ($M). Series &quot;revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec).</desc><rect width="640" height="480" fill="#ffffff"/>
+<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Monthly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)</text>
 <line x1="68" y1="412" x2="572" y2="412" stroke="#333" />
 <line x1="68" y1="68" x2="68" y2="412" stroke="#333" />
 <text x="320" y="470" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Month</text>
@@ -40,19 +40,19 @@
 <text x="509.0" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Nov</text>
 <line y1="68" y2="412" x1="551.0" x2="551.0" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="551.0" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Dec</text>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="72.2" y="274.4" width="33.6" height="137.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="114.2" y="257.2" width="33.6" height="154.8" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="156.2" y="299.62666666666667" width="33.6" height="112.37333333333333" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="198.2" y="217.0666666666667" width="33.6" height="194.9333333333333" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="240.2" y="245.73333333333332" width="33.6" height="166.26666666666668" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="282.2" y="194.13333333333333" width="33.6" height="217.86666666666667" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="324.2" y="171.20000000000002" width="33.6" height="240.79999999999998" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="2.1" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="366.2" y="211.33333333333334" width="33.6" height="200.66666666666666" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="1.75" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="408.2" y="148.2666666666667" width="33.6" height="263.7333333333333" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="2.3" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="450.2" y="176.93333333333337" width="33.6" height="235.06666666666663" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="2.05" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="492.2" y="113.86666666666667" width="33.6" height="298.1333333333333" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="2.6" data-label="revenue"/>
-<rect class="glyphx-point series-58080" tabindex="0" role="graphics-symbol" x="534.2" y="68.0" width="33.6" height="344.0" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="3.0" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="72.2" y="274.4" width="33.6" height="137.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="114.2" y="257.2" width="33.6" height="154.8" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="156.2" y="299.62666666666667" width="33.6" height="112.37333333333333" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="198.2" y="217.0666666666667" width="33.6" height="194.9333333333333" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="240.2" y="245.73333333333332" width="33.6" height="166.26666666666668" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="282.2" y="194.13333333333333" width="33.6" height="217.86666666666667" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="324.2" y="171.20000000000002" width="33.6" height="240.79999999999998" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="2.1" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="366.2" y="211.33333333333334" width="33.6" height="200.66666666666666" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="1.75" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="408.2" y="148.2666666666667" width="33.6" height="263.7333333333333" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="2.3" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="450.2" y="176.93333333333337" width="33.6" height="235.06666666666663" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="2.05" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="492.2" y="113.86666666666667" width="33.6" height="298.1333333333333" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="2.6" data-label="revenue"/>
+<rect class="glyphx-point series-59648" tabindex="0" role="graphics-symbol" x="534.2" y="68.0" width="33.6" height="344.0" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="3.0" data-label="revenue"/>
 <g class="glyphx-legend">
-<rect x="541" y="20" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-58080" />
-<text x="561" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-58080">revenue</text>
+<rect x="541" y="20" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-59648" />
+<text x="561" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-59648">revenue</text>
 </g></svg>
