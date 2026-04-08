@@ -71,8 +71,8 @@ class RaincloudSeries:
         if len(self.colors) < n_cats:
             self.colors = (self.colors * ((n_cats // len(self.colors)) + 1))[:n_cats]
 
-        # Expose x/y for domain computation
-        self.x = list(range(1, n_cats + 1))
+        # Expose x/y for domain computation — 0.5-indexed to align with grid label mapping
+        self.x = [i + 0.5 for i in range(n_cats)]
         all_vals = np.concatenate(self.datasets)
         self.y   = [float(all_vals.min()), float(all_vals.max())]
 
@@ -87,7 +87,7 @@ class RaincloudSeries:
             if len(arr) < 2:
                 continue
 
-            cx = ax.scale_x(i + 1)  # type: ignore[union-attr]
+            cx = ax.scale_x(i + 0.5)  # 0-indexed, matches domain x positions  # type: ignore[union-attr]
 
             # ── 1. Jittered raw points (left side) ───────────────────────
             jitter = rng.uniform(-self.jitter_width, 0, size=len(arr))
@@ -156,11 +156,12 @@ class RaincloudSeries:
                 f'y1="{scale_y(q2)}" y2="{scale_y(q2)}" '
                 f'stroke="#fff" stroke-width="2.5"/>'
             )
-            # Category label
-            elements.append(
-                f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
-                f'text-anchor="middle" font-size="11" fill="#444">'
-                f'{svg_escape(cat)}</text>'
-            )
+            # Category label — skip if _x_categories is set, grid handles it
+            if not getattr(self, "_x_categories", None):
+                elements.append(
+                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
+                    f'text-anchor="middle" font-size="11" fill="#444">'
+                    f'{svg_escape(cat)}</text>'
+                )
 
         return "\n".join(elements)
