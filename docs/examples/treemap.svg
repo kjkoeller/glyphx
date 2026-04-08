@@ -1,26 +1,23 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-20-title glyphx-chart-20-desc" id="glyphx-chart-20" data-glyphx="true" width="720" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500"><title id="glyphx-chart-20-title">Portfolio Allocation  —  TreemapSeries  (squarified layout)</title><desc id="glyphx-chart-20-desc">Treemap chart titled &quot;Portfolio Allocation  —  TreemapSeries  (squarified layout)&quot;. Contains 8 slices. Largest: Cloud Infra (4.2e+03 of 1.7e+04).</desc><rect width="720" height="500" fill="#ffffff"/>
-<text x="360" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Portfolio Allocation  —  TreemapSeries  (squarified layout)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="52.0" y="52.0" width="262.2" height="226.1" fill="#3b518a" rx="3" data-label="Cloud Infra" data-value="4200"/>
-<text x="183.1" y="165.1" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Cloud Infra</text>
-<text x="183.1" y="179.1" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">4200 (24.7%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="52.0" y="282.1" width="262.2" height="165.9" fill="#413d82" rx="3" data-label="AI / ML" data-value="3100"/>
-<text x="183.1" y="365.1" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">AI / ML</text>
-<text x="183.1" y="379.1" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">3100 (18.2%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="318.2" y="52.0" width="198.2" height="198.1" fill="#433880" rx="3" data-label="Mobile" data-value="2800"/>
-<text x="417.3" y="151.0" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Mobile</text>
-<text x="417.3" y="165.0" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">2800 (16.5%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="520.4" y="52.0" width="147.6" height="198.1" fill="#462c7a" rx="3" data-label="Security" data-value="2100"/>
-<text x="594.2" y="151.0" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Security</text>
-<text x="594.2" y="165.0" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">2100 (12.4%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="318.2" y="254.1" width="136.0" height="193.9" fill="#462876" rx="3" data-label="Data Platform" data-value="1900"/>
-<text x="386.3" y="351.0" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Data Platform</text>
-<text x="386.3" y="365.0" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">1900 (11.2%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="458.3" y="254.1" width="99.2" height="193.9" fill="#451d6d" rx="3" data-label="Networking" data-value="1400"/>
-<text x="507.9" y="351.0" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Networking</text>
-<text x="507.9" y="365.0" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">1400 (8.2%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="561.4" y="254.1" width="106.6" height="114.8" fill="#451364" rx="3" data-label="IoT" data-value="900"/>
-<text x="614.7" y="311.4" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">IoT</text>
-<text x="614.7" y="325.4" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">900 (5.3%)</text>
-<rect class="glyphx-point series-20608" tabindex="0" role="graphics-symbol" x="561.4" y="372.8" width="106.6" height="75.2" fill="#440d5f" rx="3" data-label="AR/VR" data-value="600"/>
-<text x="614.7" y="410.4" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">AR/VR</text>
-<text x="614.7" y="424.4" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">600 (3.5%)</text></svg>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-18-title glyphx-chart-18-desc" id="glyphx-chart-18" data-glyphx="true" width="700" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500"><title id="glyphx-chart-18-title">Treemap  —  TreemapSeries</title><desc id="glyphx-chart-18-desc">Treemap chart titled &quot;Treemap  —  TreemapSeries&quot;. Contains 7 slices. Largest: Cloud (4.2e+03 of 1.64e+04).</desc><rect width="700" height="500" fill="#ffffff"/>
+<text x="350" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Treemap  —  TreemapSeries</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="52.0" y="52.0" width="263.1" height="226.1" fill="#3a538b" rx="3" data-label="Cloud" data-value="4200"/>
+<text x="183.5" y="165.1" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Cloud</text>
+<text x="183.5" y="179.1" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">4200 (25.6%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="52.0" y="282.1" width="263.1" height="165.9" fill="#403f83" rx="3" data-label="AI/ML" data-value="3100"/>
+<text x="183.5" y="365.1" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">AI/ML</text>
+<text x="183.5" y="379.1" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">3100 (18.9%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="319.1" y="52.0" width="186.2" height="211.4" fill="#423a80" rx="3" data-label="Mobile" data-value="2800"/>
+<text x="412.2" y="157.7" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Mobile</text>
+<text x="412.2" y="171.7" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">2800 (17.1%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="509.3" y="52.0" width="138.7" height="211.4" fill="#462d7b" rx="3" data-label="Security" data-value="2100"/>
+<text x="578.7" y="157.7" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Security</text>
+<text x="578.7" y="171.7" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">2100 (12.8%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="319.1" y="267.4" width="146.6" height="180.6" fill="#462978" rx="3" data-label="Data" data-value="1900"/>
+<text x="392.4" y="357.7" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Data</text>
+<text x="392.4" y="371.7" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">1900 (11.6%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="469.7" y="267.4" width="178.3" height="108.4" fill="#461f6e" rx="3" data-label="Networking" data-value="1400"/>
+<text x="558.8" y="321.6" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">Networking</text>
+<text x="558.8" y="335.6" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">1400 (8.5%)</text>
+<rect class="glyphx-point series-53984" tabindex="0" role="graphics-symbol" x="469.7" y="379.8" width="178.3" height="68.2" fill="#451465" rx="3" data-label="IoT" data-value="900"/>
+<text x="558.8" y="413.9" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="sans-serif" fill="#fff" font-weight="600">IoT</text>
+<text x="558.8" y="427.9" text-anchor="middle" font-size="12" font-family="sans-serif" fill="#fff" opacity="0.85">900 (5.5%)</text></svg>

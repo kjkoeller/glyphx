@@ -1,62 +1,54 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-3-title glyphx-chart-3-desc" id="glyphx-chart-3" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-3-title">Bimodal Histogram  —  HistogramSeries(bins=28)</title><desc id="glyphx-chart-3-desc">Histogram chart titled &quot;Bimodal Histogram  —  HistogramSeries(bins=28)&quot;. X axis: Response Time (ms). Y axis: Frequency. Series &quot;Response Time&quot;: 28 data points. Ranges from 1 (at 31.86492154833715) to 48 (at 50.211666571642354).</desc><rect width="760" height="460" fill="#ffffff"/>
-<text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Bimodal Histogram  —  HistogramSeries(bins=28)</text>
-<line x1="50" y1="410" x2="710" y2="410" stroke="#333" />
-<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
-<text x="380" y="450" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Response Time (ms)</text>
-<text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Frequency</text>
-<line x1="50" x2="710" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1</text>
-<line x1="50" x2="710" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">10.4</text>
-<line x1="50" x2="710" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">19.8</text>
-<line x1="50" x2="710" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">29.2</text>
-<line x1="50" x2="710" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">38.6</text>
-<line x1="50" x2="710" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">48</text>
-<line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >29.1</text>
-<line y1="50" y2="410" x1="182.00000000000003" x2="182.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="182.00000000000003" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >41.7</text>
-<line y1="50" y2="410" x1="314.00000000000006" x2="314.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="314.00000000000006" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >54.2</text>
-<line y1="50" y2="410" x1="446.0000000000001" x2="446.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="446.0000000000001" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >66.8</text>
-<line y1="50" y2="410" x1="578.0000000000001" x2="578.0000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="578.0000000000001" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >79.4</text>
-<line y1="50" y2="410" x1="710.0" x2="710.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="710.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >92.0</text>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="43.81815899888232" y="394.6808510638298" width="22.85314840436935" height="22.978723404255334" fill="#0891b2" stroke="#fff" data-x="29.6" data-y="3" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="67.87410468769212" y="410.0" width="22.85314840436935" height="7.659574468085111" fill="#0891b2" stroke="#fff" data-x="31.9" data-y="1" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="91.93005037650195" y="379.36170212765956" width="22.85314840436935" height="38.297872340425556" fill="#0891b2" stroke="#fff" data-x="34.2" data-y="5" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="115.98599606531192" y="348.72340425531917" width="22.85314840436935" height="68.93617021276594" fill="#0891b2" stroke="#fff" data-x="36.5" data-y="9" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="140.04194175412172" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="38.7" data-y="22" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="164.09788744293155" y="256.8085106382979" width="22.85314840436935" height="160.85106382978722" fill="#0891b2" stroke="#fff" data-x="41" data-y="21" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="188.15383313174135" y="226.17021276595744" width="22.85314840436935" height="191.48936170212767" fill="#0891b2" stroke="#fff" data-x="43.3" data-y="25" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="212.2097788205513" y="65.31914893617022" width="22.85314840436935" height="352.3404255319149" fill="#0891b2" stroke="#fff" data-x="45.6" data-y="46" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="236.26572450936112" y="149.5744680851064" width="22.85314840436935" height="268.0851063829787" fill="#0891b2" stroke="#fff" data-x="47.9" data-y="35" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="260.3216701981709" y="50.0" width="22.85314840436935" height="367.6595744680851" fill="#0891b2" stroke="#fff" data-x="50.2" data-y="48" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="284.3776158869808" y="50.0" width="22.85314840436935" height="367.6595744680851" fill="#0891b2" stroke="#fff" data-x="52.5" data-y="48" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="308.43356157579075" y="80.63829787234044" width="22.85314840436935" height="337.02127659574467" fill="#0891b2" stroke="#fff" data-x="54.8" data-y="44" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="332.48950726460055" y="256.8085106382979" width="22.85314840436935" height="160.85106382978722" fill="#0891b2" stroke="#fff" data-x="57.1" data-y="21" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="356.54545295341035" y="218.51063829787233" width="22.85314840436935" height="199.14893617021278" fill="#0891b2" stroke="#fff" data-x="59.4" data-y="26" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="380.6013986422202" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="61.7" data-y="22" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="404.6573443310301" y="272.1276595744681" width="22.85314840436935" height="145.531914893617" fill="#0891b2" stroke="#fff" data-x="64" data-y="19" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="428.7132900198399" y="394.6808510638298" width="22.85314840436935" height="22.978723404255334" fill="#0891b2" stroke="#fff" data-x="66.3" data-y="3" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="452.7692357086498" y="310.4255319148936" width="22.85314840436935" height="107.2340425531915" fill="#0891b2" stroke="#fff" data-x="68.6" data-y="14" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="476.8251813974596" y="279.7872340425532" width="22.85314840436935" height="137.8723404255319" fill="#0891b2" stroke="#fff" data-x="70.9" data-y="18" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="500.8811270862695" y="295.1063829787234" width="22.85314840436935" height="122.55319148936172" fill="#0891b2" stroke="#fff" data-x="73.1" data-y="16" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="524.9370727750793" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="75.4" data-y="22" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="548.9930184638891" y="195.53191489361703" width="22.85314840436935" height="222.12765957446808" fill="#0891b2" stroke="#fff" data-x="77.7" data-y="29" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="573.0489641526991" y="172.5531914893617" width="22.85314840436935" height="245.10638297872342" fill="#0891b2" stroke="#fff" data-x="80" data-y="32" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="597.1049098415089" y="241.48936170212767" width="22.85314840436935" height="176.17021276595744" fill="#0891b2" stroke="#fff" data-x="82.3" data-y="23" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="621.1608555303187" y="249.14893617021278" width="22.85314840436935" height="168.51063829787233" fill="#0891b2" stroke="#fff" data-x="84.6" data-y="22" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="645.2168012191286" y="310.4255319148936" width="22.85314840436935" height="107.2340425531915" fill="#0891b2" stroke="#fff" data-x="86.9" data-y="14" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="669.2727469079383" y="387.02127659574467" width="22.85314840436935" height="30.638297872340445" fill="#0891b2" stroke="#fff" data-x="89.2" data-y="4" data-label="Response Time"/>
-<rect class="glyphx-point series-17520" tabindex="0" role="graphics-symbol" x="693.3286925967483" y="356.3829787234043" width="22.85314840436935" height="61.27659574468083" fill="#0891b2" stroke="#fff" data-x="91.5" data-y="8" data-label="Response Time"/>
-<g class="glyphx-legend">
-<rect x="619" y="20" width="12" height="12" fill="#0891b2" class="legend-icon" data-target="series-17520" />
-<text x="639" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-17520">Response Time</text>
-</g></svg>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-3-title glyphx-chart-3-desc" id="glyphx-chart-3" data-glyphx="true" width="640" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><title id="glyphx-chart-3-title">Histogram  —  plot(data=..., kind=&#x27;hist&#x27;, bins=25)</title><desc id="glyphx-chart-3-desc">Histogram chart titled &quot;Histogram  —  plot(data=..., kind=&#x27;hist&#x27;, bins=25)&quot;. Series: 25 data points. Ranges from 0 (at 21.843725897743546) to 59 (at 50.219721220638725).</desc><rect width="640" height="480" fill="#ffffff"/>
+<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Histogram  —  plot(data=..., kind=&#x27;hist&#x27;, bins=25)</text>
+<line x1="50" y1="430" x2="590" y2="430" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="430" stroke="#333" />
+<line x1="50" x2="590" y1="430.0" y2="430.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="434.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="590" y1="354.0" y2="354.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="358.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">11.8</text>
+<line x1="50" x2="590" y1="278.0" y2="278.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="282.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">23.6</text>
+<line x1="50" x2="590" y1="202.0" y2="202.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">35.4</text>
+<line x1="50" x2="590" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">47.2</text>
+<line x1="50" x2="590" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">59</text>
+<line y1="50" y2="430" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="50.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >18.5</text>
+<line y1="50" y2="430" x1="158.00000000000003" x2="158.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="158.00000000000003" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >32.3</text>
+<line y1="50" y2="430" x1="266.0" x2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="266.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >46.1</text>
+<line y1="50" y2="430" x1="374.0" x2="374.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="374.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >60.0</text>
+<line y1="50" y2="430" x1="482.0" x2="482.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="482.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >73.8</text>
+<line y1="50" y2="430" x1="590.0" x2="590.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="590.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >87.6</text>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="43.374407337445874" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="19" data-y="1" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="65.54880354286101" y="430.0" width="21.065676395144397" height="0.0" fill="#1f77b4" stroke="#fff" data-x="21.8" data-y="0" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="87.72319974827619" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="24.7" data-y="1" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="109.89759595369136" y="417.1186440677966" width="21.065676395144397" height="12.881355932203405" fill="#1f77b4" stroke="#fff" data-x="27.5" data-y="2" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="132.07199215910654" y="372.03389830508473" width="21.065676395144397" height="57.96610169491527" fill="#1f77b4" stroke="#fff" data-x="30.4" data-y="9" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="154.24638836452166" y="365.59322033898303" width="21.065676395144397" height="64.40677966101697" fill="#1f77b4" stroke="#fff" data-x="33.2" data-y="10" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="176.4207845699368" y="281.864406779661" width="21.065676395144397" height="148.135593220339" fill="#1f77b4" stroke="#fff" data-x="36" data-y="23" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="198.59518077535196" y="211.01694915254237" width="21.065676395144397" height="218.98305084745763" fill="#1f77b4" stroke="#fff" data-x="38.9" data-y="34" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="220.76957698076714" y="127.28813559322032" width="21.065676395144397" height="302.7118644067797" fill="#1f77b4" stroke="#fff" data-x="41.7" data-y="47" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="242.9439731861823" y="114.40677966101697" width="21.065676395144397" height="315.59322033898303" fill="#1f77b4" stroke="#fff" data-x="44.5" data-y="49" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="265.1183693915975" y="133.72881355932202" width="21.065676395144397" height="296.271186440678" fill="#1f77b4" stroke="#fff" data-x="47.4" data-y="46" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="287.29276559701265" y="50.0" width="21.065676395144397" height="380.0" fill="#1f77b4" stroke="#fff" data-x="50.2" data-y="59" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="309.4671618024278" y="50.0" width="21.065676395144397" height="380.0" fill="#1f77b4" stroke="#fff" data-x="53.1" data-y="59" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="331.64155800784306" y="114.40677966101697" width="21.065676395144397" height="315.59322033898303" fill="#1f77b4" stroke="#fff" data-x="55.9" data-y="49" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="353.8159542132582" y="165.93220338983053" width="21.065676395144397" height="264.06779661016947" fill="#1f77b4" stroke="#fff" data-x="58.7" data-y="41" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="375.99035041867336" y="301.18644067796606" width="21.065676395144397" height="128.81355932203394" fill="#1f77b4" stroke="#fff" data-x="61.6" data-y="20" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="398.1647466240885" y="281.864406779661" width="21.065676395144397" height="148.135593220339" fill="#1f77b4" stroke="#fff" data-x="64.4" data-y="23" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="420.33914282950366" y="365.59322033898303" width="21.065676395144397" height="64.40677966101697" fill="#1f77b4" stroke="#fff" data-x="67.2" data-y="10" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="442.5135390349189" y="372.03389830508473" width="21.065676395144397" height="57.96610169491527" fill="#1f77b4" stroke="#fff" data-x="70.1" data-y="9" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="464.68793524033407" y="404.23728813559325" width="21.065676395144397" height="25.762711864406754" fill="#1f77b4" stroke="#fff" data-x="72.9" data-y="4" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="486.8623314457492" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="75.8" data-y="1" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="509.0367276511643" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="78.6" data-y="1" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="531.2111238565793" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="81.4" data-y="1" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="553.3855200619945" y="430.0" width="21.065676395144397" height="0.0" fill="#1f77b4" stroke="#fff" data-x="84.3" data-y="0" data-label=""/>
+<rect class="glyphx-point series-71360" tabindex="0" role="graphics-symbol" x="575.5599162674097" y="423.5593220338983" width="21.065676395144397" height="6.440677966101703" fill="#1f77b4" stroke="#fff" data-x="87.1" data-y="1" data-label=""/>
+</svg>

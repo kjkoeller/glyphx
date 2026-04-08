@@ -1,84 +1,64 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-6-title glyphx-chart-6-desc" id="glyphx-chart-6" data-glyphx="true" width="680" height="520" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 520"><title id="glyphx-chart-6-title">KPI Correlation Matrix  —  HeatmapSeries(show_values=True)</title><desc id="glyphx-chart-6-desc">Heatmap chart titled &quot;KPI Correlation Matrix  —  HeatmapSeries(show_values=True)&quot;.</desc><rect width="680" height="520" fill="#ffffff"/>
-<text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">KPI Correlation Matrix  —  HeatmapSeries(show_values=True)</text>
-<rect x="50.0" y="50.0" width="116.0" height="84.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
-<text x="108.0" y="96.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
-<rect x="166.0" y="50.0" width="116.0" height="84.0" fill="#dc6464" stroke="#fff" stroke-width="0.5" data-value="0.82"/>
-<text x="224.0" y="96.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.82</text>
-<rect x="282.0" y="50.0" width="116.0" height="84.0" fill="#f4d2d2" stroke="#fff" stroke-width="0.5" data-value="0.45"/>
-<text x="340.0" y="96.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.45</text>
-<rect x="398.0" y="50.0" width="116.0" height="84.0" fill="#1e40af" stroke="#fff" stroke-width="0.5" data-value="-0.37"/>
-<text x="456.0" y="96.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.37</text>
-<rect x="514.0" y="50.0" width="116.0" height="84.0" fill="#faafaf" stroke="#fff" stroke-width="0.5" data-value="0.61"/>
-<text x="572.0" y="96.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.61</text>
-<rect x="50.0" y="134.0" width="116.0" height="84.0" fill="#dc6464" stroke="#fff" stroke-width="0.5" data-value="0.82"/>
-<text x="108.0" y="180.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.82</text>
-<rect x="166.0" y="134.0" width="116.0" height="84.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
-<text x="224.0" y="180.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
-<rect x="282.0" y="134.0" width="116.0" height="84.0" fill="#f9b5b5" stroke="#fff" stroke-width="0.5" data-value="0.58"/>
-<text x="340.0" y="180.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.58</text>
-<rect x="398.0" y="134.0" width="116.0" height="84.0" fill="#395fc1" stroke="#fff" stroke-width="0.5" data-value="-0.29"/>
-<text x="456.0" y="180.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.29</text>
-<rect x="514.0" y="134.0" width="116.0" height="84.0" fill="#f4d4d4" stroke="#fff" stroke-width="0.5" data-value="0.44"/>
-<text x="572.0" y="180.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.44</text>
-<rect x="50.0" y="218.0" width="116.0" height="84.0" fill="#f4d2d2" stroke="#fff" stroke-width="0.5" data-value="0.45"/>
-<text x="108.0" y="264.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.45</text>
-<rect x="166.0" y="218.0" width="116.0" height="84.0" fill="#f9b5b5" stroke="#fff" stroke-width="0.5" data-value="0.58"/>
-<text x="224.0" y="264.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.58</text>
-<rect x="282.0" y="218.0" width="116.0" height="84.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
-<text x="340.0" y="264.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
-<rect x="398.0" y="218.0" width="116.0" height="84.0" fill="#73a1e7" stroke="#fff" stroke-width="0.5" data-value="-0.12"/>
-<text x="456.0" y="264.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.12</text>
-<rect x="514.0" y="218.0" width="116.0" height="84.0" fill="#ed8888" stroke="#fff" stroke-width="0.5" data-value="0.73"/>
-<text x="572.0" y="264.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.73</text>
-<rect x="50.0" y="302.0" width="116.0" height="84.0" fill="#1e40af" stroke="#fff" stroke-width="0.5" data-value="-0.37"/>
-<text x="108.0" y="348.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.37</text>
-<rect x="166.0" y="302.0" width="116.0" height="84.0" fill="#395fc1" stroke="#fff" stroke-width="0.5" data-value="-0.29"/>
-<text x="224.0" y="348.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.29</text>
-<rect x="282.0" y="302.0" width="116.0" height="84.0" fill="#73a1e7" stroke="#fff" stroke-width="0.5" data-value="-0.12"/>
-<text x="340.0" y="348.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.12</text>
-<rect x="398.0" y="302.0" width="116.0" height="84.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
-<text x="456.0" y="348.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
-<rect x="514.0" y="302.0" width="116.0" height="84.0" fill="#81b0f1" stroke="#fff" stroke-width="0.5" data-value="-0.08"/>
-<text x="572.0" y="348.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.08</text>
-<rect x="50.0" y="386.0" width="116.0" height="84.0" fill="#faafaf" stroke="#fff" stroke-width="0.5" data-value="0.61"/>
-<text x="108.0" y="432.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.61</text>
-<rect x="166.0" y="386.0" width="116.0" height="84.0" fill="#f4d4d4" stroke="#fff" stroke-width="0.5" data-value="0.44"/>
-<text x="224.0" y="432.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.44</text>
-<rect x="282.0" y="386.0" width="116.0" height="84.0" fill="#ed8888" stroke="#fff" stroke-width="0.5" data-value="0.73"/>
-<text x="340.0" y="432.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.73</text>
-<rect x="398.0" y="386.0" width="116.0" height="84.0" fill="#81b0f1" stroke="#fff" stroke-width="0.5" data-value="-0.08"/>
-<text x="456.0" y="432.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.08</text>
-<rect x="514.0" y="386.0" width="116.0" height="84.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
-<text x="572.0" y="432.0" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
-<text x="108.0" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Revenue</text>
-<text x="224.0" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Traffic</text>
-<text x="340.0" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Conv Rate</text>
-<text x="456.0" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Bounce Rate</text>
-<text x="572.0" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Avg Order</text>
-<text x="44" y="96.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Revenue</text>
-<text x="44" y="180.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Traffic</text>
-<text x="44" y="264.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Conv Rate</text>
-<text x="44" y="348.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Bounce Rate</text>
-<text x="44" y="432.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Avg Order</text>
-<rect x="660" y="470.0" width="12" height="22.0" fill="#1e40af"/>
-<rect x="660" y="447.89473684210526" width="12" height="22.0" fill="#365cbf"/>
-<rect x="660" y="425.7894736842105" width="12" height="22.0" fill="#4f78cf"/>
-<rect x="660" y="403.6842105263158" width="12" height="22.0" fill="#6794e0"/>
-<rect x="660" y="381.57894736842104" width="12" height="22.0" fill="#80b0f0"/>
-<rect x="660" y="359.47368421052636" width="12" height="22.0" fill="#97c7fc"/>
-<rect x="660" y="337.36842105263156" width="12" height="22.0" fill="#abd0f9"/>
-<rect x="660" y="315.2631578947368" width="12" height="22.0" fill="#bfd9f6"/>
-<rect x="660" y="293.1578947368421" width="12" height="22.0" fill="#d2e2f4"/>
-<rect x="660" y="271.0526315789474" width="12" height="22.0" fill="#e6ebf1"/>
-<rect x="660" y="248.94736842105263" width="12" height="22.0" fill="#f1e8e8"/>
-<rect x="660" y="226.8421052631579" width="12" height="22.0" fill="#f3d8d8"/>
-<rect x="660" y="204.73684210526318" width="12" height="22.0" fill="#f6c8c8"/>
-<rect x="660" y="182.6315789473684" width="12" height="22.0" fill="#f8b8b8"/>
-<rect x="660" y="160.5263157894737" width="12" height="22.0" fill="#fba8a8"/>
-<rect x="660" y="138.42105263157896" width="12" height="22.0" fill="#f18f8f"/>
-<rect x="660" y="116.31578947368423" width="12" height="22.0" fill="#e37272"/>
-<rect x="660" y="94.21052631578948" width="12" height="22.0" fill="#d55555"/>
-<rect x="660" y="72.10526315789475" width="12" height="22.0" fill="#c73838"/>
-<rect x="660" y="50.0" width="12" height="22.0" fill="#b91c1c"/>
-<text x="674" y="470" font-size="10" font-family="sans-serif" fill="#000000">-0.37</text>
-<text x="674" y="60" font-size="10" font-family="sans-serif" fill="#000000">1</text></svg>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-15-title glyphx-chart-15-desc" id="glyphx-chart-15" data-glyphx="true" width="600" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 480"><title id="glyphx-chart-15-title">Heatmap  —  HeatmapSeries(show_values=True)</title><desc id="glyphx-chart-15-desc">Heatmap chart titled &quot;Heatmap  —  HeatmapSeries(show_values=True)&quot;.</desc><rect width="600" height="480" fill="#ffffff"/>
+<text x="300" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Heatmap  —  HeatmapSeries(show_values=True)</text>
+<rect x="50.0" y="50.0" width="125.0" height="95.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
+<text x="112.5" y="101.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
+<rect x="175.0" y="50.0" width="125.0" height="95.0" fill="#d75a5a" stroke="#fff" stroke-width="0.5" data-value="0.85"/>
+<text x="237.5" y="101.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.85</text>
+<rect x="300.0" y="50.0" width="125.0" height="95.0" fill="#f2dede" stroke="#fff" stroke-width="0.5" data-value="0.42"/>
+<text x="362.5" y="101.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.42</text>
+<rect x="425.0" y="50.0" width="125.0" height="95.0" fill="#1e40af" stroke="#fff" stroke-width="0.5" data-value="-0.31"/>
+<text x="487.5" y="101.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.31</text>
+<rect x="50.0" y="145.0" width="125.0" height="95.0" fill="#d75a5a" stroke="#fff" stroke-width="0.5" data-value="0.85"/>
+<text x="112.5" y="196.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.85</text>
+<rect x="175.0" y="145.0" width="125.0" height="95.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
+<text x="237.5" y="196.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
+<rect x="300.0" y="145.0" width="125.0" height="95.0" fill="#f9b3b3" stroke="#fff" stroke-width="0.5" data-value="0.61"/>
+<text x="362.5" y="196.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.61</text>
+<rect x="425.0" y="145.0" width="125.0" height="95.0" fill="#4c74cd" stroke="#fff" stroke-width="0.5" data-value="-0.18"/>
+<text x="487.5" y="196.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.18</text>
+<rect x="50.0" y="240.0" width="125.0" height="95.0" fill="#f2dede" stroke="#fff" stroke-width="0.5" data-value="0.42"/>
+<text x="112.5" y="291.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.42</text>
+<rect x="175.0" y="240.0" width="125.0" height="95.0" fill="#f9b3b3" stroke="#fff" stroke-width="0.5" data-value="0.61"/>
+<text x="237.5" y="291.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.61</text>
+<rect x="300.0" y="240.0" width="125.0" height="95.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
+<text x="362.5" y="291.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
+<rect x="425.0" y="240.0" width="125.0" height="95.0" fill="#cfe0f4" stroke="#fff" stroke-width="0.5" data-value="0.23"/>
+<text x="487.5" y="291.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.23</text>
+<rect x="50.0" y="335.0" width="125.0" height="95.0" fill="#1e40af" stroke="#fff" stroke-width="0.5" data-value="-0.31"/>
+<text x="112.5" y="386.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.31</text>
+<rect x="175.0" y="335.0" width="125.0" height="95.0" fill="#4c74cd" stroke="#fff" stroke-width="0.5" data-value="-0.18"/>
+<text x="237.5" y="386.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">-0.18</text>
+<rect x="300.0" y="335.0" width="125.0" height="95.0" fill="#cfe0f4" stroke="#fff" stroke-width="0.5" data-value="0.23"/>
+<text x="362.5" y="386.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">0.23</text>
+<rect x="425.0" y="335.0" width="125.0" height="95.0" fill="#b91c1c" stroke="#fff" stroke-width="0.5" data-value="1"/>
+<text x="487.5" y="386.5" text-anchor="middle" font-size="10" font-family="sans-serif" fill="#000000">1</text>
+<text x="112.5" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Revenue</text>
+<text x="237.5" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Traffic</text>
+<text x="362.5" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Conv Rate</text>
+<text x="487.5" y="44" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000">Bounce Rate</text>
+<text x="44" y="101.5" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Revenue</text>
+<text x="44" y="196.5" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Traffic</text>
+<text x="44" y="291.5" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Conv Rate</text>
+<text x="44" y="386.5" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Bounce Rate</text>
+<rect x="580" y="430.0" width="12" height="20.0" fill="#1e40af"/>
+<rect x="580" y="410.0" width="12" height="20.0" fill="#365cbf"/>
+<rect x="580" y="390.0" width="12" height="20.0" fill="#4f78cf"/>
+<rect x="580" y="370.0" width="12" height="20.0" fill="#6794e0"/>
+<rect x="580" y="350.0" width="12" height="20.0" fill="#80b0f0"/>
+<rect x="580" y="330.0" width="12" height="20.0" fill="#97c7fc"/>
+<rect x="580" y="310.0" width="12" height="20.0" fill="#abd0f9"/>
+<rect x="580" y="290.0" width="12" height="20.0" fill="#bfd9f6"/>
+<rect x="580" y="270.0" width="12" height="20.0" fill="#d2e2f4"/>
+<rect x="580" y="250.00000000000003" width="12" height="20.0" fill="#e6ebf1"/>
+<rect x="580" y="230.0" width="12" height="20.0" fill="#f1e8e8"/>
+<rect x="580" y="210.0" width="12" height="20.0" fill="#f3d8d8"/>
+<rect x="580" y="190.0" width="12" height="20.0" fill="#f6c8c8"/>
+<rect x="580" y="170.0" width="12" height="20.0" fill="#f8b8b8"/>
+<rect x="580" y="150.0" width="12" height="20.0" fill="#fba8a8"/>
+<rect x="580" y="130.0" width="12" height="20.0" fill="#f18f8f"/>
+<rect x="580" y="110.00000000000001" width="12" height="20.0" fill="#e37272"/>
+<rect x="580" y="90.0" width="12" height="20.0" fill="#d55555"/>
+<rect x="580" y="70.00000000000003" width="12" height="20.0" fill="#c73838"/>
+<rect x="580" y="50.0" width="12" height="20.0" fill="#b91c1c"/>
+<text x="594" y="430" font-size="10" font-family="sans-serif" fill="#000000">-0.31</text>
+<text x="594" y="60" font-size="10" font-family="sans-serif" fill="#000000">1</text></svg>
