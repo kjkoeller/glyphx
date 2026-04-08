@@ -628,8 +628,9 @@ class BoxPlotSeries(BaseSeries):
             self.categories = categories or [""]
 
         # BaseSeries x/y for domain computation
-        all_vals = np.concatenate(self.datasets)
-        positions = list(range(1, len(self.datasets) + 1))
+        all_vals  = np.concatenate(self.datasets)
+        n         = len(self.datasets)
+        positions = [i + 0.5 for i in range(n)]  # align with grid's i+0.5 label mapping
         super().__init__(
             x=positions,
             y=[float(all_vals.min()), float(all_vals.max())],
@@ -645,8 +646,7 @@ class BoxPlotSeries(BaseSeries):
         n        = len(self.datasets)
 
         for i, arr in enumerate(self.datasets):
-            # BUG FIX: was always ax.scale_x(0.5) → now uses actual position
-            pos = i + 1
+            pos = i + 0.5   # 0-indexed half-slot, aligns with grid label positions
             cx  = ax.scale_x(pos)
 
             q1          = float(np.percentile(arr, 25))
@@ -703,8 +703,9 @@ class BoxPlotSeries(BaseSeries):
                     f'<circle cx="{cx}" cy="{scale_y(float(ov))}" r="3" '
                     f'fill="none" stroke="{self.color}" stroke-width="1.5"/>'
                 )
-            # Category label below box
-            if self.categories[i]:
+            # Category label below box — skip if _x_categories is set,
+            # because render_grid() will draw the labels via the grid pass.
+            if self.categories[i] and not getattr(self, "_x_categories", None):
                 elements.append(
                     f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '
                     f'text-anchor="middle" font-size="11" '
