@@ -193,10 +193,12 @@ class BarSeries(BaseSeries):
         if not x_vals:
             return ""
 
-        domain_width = ax._x_domain[1] - ax._x_domain[0]
-        step         = domain_width / len(x_vals)
-        px_step      = ax.scale_x(ax._x_domain[0] + step) - ax.scale_x(ax._x_domain[0])
-        px_width     = px_step * self.bar_width
+        # Each categorical slot is exactly 1 unit wide in our coordinate system.
+        # Using scale_x(start+1) - scale_x(start) gives the correct pixel width
+        # per slot regardless of how many categories this particular series owns.
+        x_start  = ax._x_domain[0]
+        px_step  = ax.scale_x(x_start + 1) - ax.scale_x(x_start)
+        px_width = px_step * self.bar_width
 
         y_domain = ax._y2_domain if use_y2 else ax._y_domain
         y0       = scale_y(min(0, y_domain[0]))
@@ -213,10 +215,15 @@ class BarSeries(BaseSeries):
                 f'data-y="{svg_escape(str(y))}" '
                 f'data-label="{svg_escape(self.label or "")}"'
             )
+            bar_color = (
+                self.color[i % len(self.color)]
+                if isinstance(self.color, list)
+                else self.color
+            )
             elements.append(
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{cx - px_width / 2}" y="{top}" width="{px_width}" height="{h}" '
-                f'fill="{self.color}" stroke="#00000033" {tooltip}/>'
+                f'fill="{bar_color}" stroke="#00000033" {tooltip}/>' 
             )
 
             # Y error bars
