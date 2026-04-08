@@ -47,9 +47,9 @@ The quickest path is the ``plot()`` function:
 This automatically renders in your Jupyter notebook, opens a browser tab in CLI,
 or displays in your IDE's HTML viewer — with no ``.show()`` call required.
 
-.. image:: examples/Quick_Example.png
-   :alt: Quick example line chart
-   :width: 680px
+.. image:: examples/Quick_Example.svg
+   :alt: Multi-series line chart with legend and annotations
+   :width: 760px
    :align: center
 
 
@@ -148,7 +148,7 @@ Available Chart Types
    * - ``RaincloudSeries``
      - Jitter + half-violin + box combined
    * - ``ViolinPlotSeries``
-     - KDE violin plot
+     - KDE violin plot (pure NumPy, no scipy)
    * - ``CandlestickSeries``
      - OHLC financial candles
    * - ``WaterfallSeries``

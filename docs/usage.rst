@@ -19,8 +19,9 @@ Use ``plot()`` for the fastest path to any chart type:
    plot(["Mon","Tue","Wed","Thu","Fri"], [42, 61, 38, 75, 53],
         kind="bar", color="#7c3aed", title="Daily Active Users")
 
-   # Scatter plot
-   plot(x_data, y_data, kind="scatter", size=6, title="Correlation")
+   # Scatter plot with colormap encoding
+   plot(x_data, y_data, kind="scatter",
+        c=color_values, cmap="viridis", size=7)
 
    # Histogram from raw data
    import numpy as np
@@ -30,9 +31,14 @@ Use ``plot()`` for the fastest path to any chart type:
    plot(data=[35, 28, 22, 15], kind="pie",
         labels=["Product A","Product B","Product C","Other"])
 
-.. image:: examples/basic_plotting.png
-   :alt: Basic scatter plot
-   :width: 680px
+.. image:: examples/basic_plotting.svg
+   :alt: Scatter plot with viridis continuous color encoding
+   :width: 760px
+   :align: center
+
+.. image:: examples/histogram.svg
+   :alt: Bimodal histogram
+   :width: 760px
    :align: center
 
 
@@ -119,8 +125,7 @@ All methods return a ``Figure`` for further chaining:
    df.glyphx.hist(col="response_time", bins=20)
    df.glyphx.box(col="score", groupby="treatment_group")
    df.glyphx.pie(labels="category", values="share")
-   df.glyphx.donut(labels="category", values="share")
-   df.glyphx.heatmap()        # uses all numeric columns as a 2-D matrix
+   df.glyphx.heatmap()        # uses all numeric columns
 
    # Groupby aggregation in one call
    df.glyphx.bar(
@@ -139,9 +144,32 @@ All methods return a ``Figure`` for further chaining:
       .set_ylabel("Revenue ($M)")
       .share("monthly_report.html"))
 
-.. image:: examples/pandas_example.png
-   :alt: Pandas integration example
-   :width: 680px
+.. image:: examples/pandas_example.svg
+   :alt: Bar chart generated via the DataFrame accessor
+   :width: 760px
+   :align: center
+
+
+Dual Y-Axis
+-----------
+
+Bind any series to the secondary (right-hand) Y-axis with ``use_y2=True``:
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.series import LineSeries, BarSeries
+
+   fig = Figure(width=800, height=480)
+   fig.set_title("Price & Volume")
+   fig.add(LineSeries(dates, prices, color="#2563eb", label="Price (left)"))
+   fig.add(BarSeries(dates, volume, color="#d97706", label="Volume (right)"),
+           use_y2=True)
+   fig.show()
+
+.. image:: examples/dual_y.svg
+   :alt: Dual Y-axis line and bar chart
+   :width: 760px
    :align: center
 
 
@@ -159,7 +187,6 @@ To suppress auto-display (e.g. when building charts to export only):
 .. code-block:: python
 
    fig = Figure(auto_display=False)
-   # ... configure ...
    fig.save("chart.html")   # explicit save, no auto-open
 
 
@@ -179,27 +206,8 @@ Export and Sharing
    fig.share("report.html")             # also writes to disk
    fig.share("report.html", title="Q3") # custom <title> tag
 
-``fig.share()`` inlines all JavaScript (zoom, pan, brushing, accessibility, tooltips)
-into a single file. It opens correctly in email clients, Confluence, Notion, GitHub
-Pages, and offline / air-gapped environments.
-
-
-Dual Y-Axis
------------
-
-Bind any series to the secondary (right-hand) Y-axis with ``use_y2=True``:
-
-.. code-block:: python
-
-   from glyphx import Figure
-   from glyphx.series import LineSeries, BarSeries
-
-   fig = Figure(width=800, height=480)
-   fig.set_title("Price & Volume")
-   fig.add(LineSeries(dates, prices, color="#2563eb", label="Price (left)"))
-   fig.add(BarSeries(dates, volume, color="#d97706", label="Volume (right)"),
-           use_y2=True)
-   fig.show()
+``fig.share()`` inlines all JavaScript into a single file that works in email
+clients, Confluence, Notion, GitHub Pages, and offline environments.
 
 
 Log Scale
@@ -226,17 +234,9 @@ Requires ``pip install "glyphx[nlp]"`` and an ``ANTHROPIC_API_KEY`` environment 
 
    df = pd.read_csv("sales.csv")
 
-   # GlyphX infers chart type, column mappings, grouping, theme, and title
    fig = from_prompt("bar chart of total revenue by region, dark theme", df=df)
-
-   # Works without a DataFrame — generates illustrative sample data
    fig = from_prompt("scatter plot showing a strong positive correlation")
-
-   # Complex queries
    fig = from_prompt("top 10 products by revenue, sorted descending", df=df)
-
-The model returns a JSON configuration which GlyphX maps to series, axes, and
-theme settings automatically. The result is a fully rendered, auto-displayed Figure.
 
 
 CLI Tool
@@ -246,25 +246,9 @@ Plot any CSV, JSON, or Excel file directly from the terminal:
 
 .. code-block:: bash
 
-   # Basic
    glyphx plot sales.csv --x month --y revenue --kind bar -o chart.html
-
-   # With options
-   glyphx plot data.csv \
-       --x date --y revenue \
-       --kind line \
-       --groupby region \
-       --agg sum \
-       --theme dark \
-       --title "Monthly Revenue" \
-       --width 900 --height 500 \
-       -o report.html \
-       --open
-
-   # Dataset suggestions
+   glyphx plot data.csv --x date --y revenue --kind line --theme dark --open
    glyphx suggest data.csv
-
-   # Version
    glyphx version
 
 Supported input formats: ``.csv`` ``.tsv`` ``.json`` ``.jsonl`` ``.xlsx`` ``.xls``
