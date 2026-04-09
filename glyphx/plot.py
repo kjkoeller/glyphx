@@ -10,9 +10,13 @@ from .series import (
     PieSeries, DonutSeries, HistogramSeries,
     BoxPlotSeries, HeatmapSeries,
 )
+from .bubble          import BubbleSeries
+from .sunburst        import SunburstSeries
+from .parallel_coords import ParallelCoordinatesSeries
+from .diverging_bar   import DivergingBarSeries
 
 # Chart kinds that don't use X/Y axes
-_AXISFREE_KINDS = {"pie", "donut", "hist", "box", "heatmap"}
+_AXISFREE_KINDS = {"pie", "donut", "hist", "box", "heatmap", "sunburst", "parallel", "diverging"}
 
 # Arguments forwarded to Figure rather than the series constructor
 _FIGURE_KEYS = {"width", "height", "padding", "title", "theme",
@@ -120,10 +124,24 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
         series = BoxPlotSeries(values, color=color or "#1f77b4", label=label, **kwargs)
     elif kind == "heatmap":
         series = HeatmapSeries(values, **kwargs)
+    elif kind == "bubble":
+        size = kwargs.pop("size", 10)
+        series = BubbleSeries(x, y, size=size, color=color, label=label, **kwargs)
+    elif kind == "sunburst":
+        parents = kwargs.pop("parents", [])
+        series  = SunburstSeries(labels=values, parents=parents, values=values, **kwargs)
+    elif kind in ("parallel", "parallel_coords"):
+        axes   = kwargs.pop("axes", [])
+        series = ParallelCoordinatesSeries(data=values, axes=axes, **kwargs)
+    elif kind == "diverging":
+        categories = kwargs.pop("categories", x or [])
+        series     = DivergingBarSeries(categories=categories, values=values,
+                                        **kwargs)
     else:
         raise ValueError(
             f"[glyphx.plot] Unsupported kind='{kind}'.  "
-            "Choose from: line, bar, scatter, pie, donut, hist, box, heatmap."
+            "Choose from: line, bar, scatter, pie, donut, hist, box, heatmap, "
+            "bubble, sunburst, parallel, diverging."
         )
 
     fig.add(series)

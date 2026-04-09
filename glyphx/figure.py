@@ -93,11 +93,9 @@ class Figure:
         # axes so the chart data never overlaps the legend.  The legend
         # occupies the right margin within the same total canvas width.
         from .utils import LEGEND_GUTTER
-        _axes_width = (
-            self.width - LEGEND_GUTTER
-            if legend not in (False, None) and str(legend) in ("outside-right", "right-of")
-            else self.width
-        )
+        # Reserve right gutter for legend regardless of position string.
+        # This prevents legends from ever overlapping chart data.
+        _axes_width = self.width - LEGEND_GUTTER if legend not in (False, None) else self.width
         self.axes = Axes(
             width=_axes_width,
             height=self.height,
@@ -301,6 +299,42 @@ class Figure:
                                       cmap=cmap, show_values=show_values,
                                       **kwargs))
 
+    def bubble(self, x, y, size, color=None, c=None, cmap="viridis",
+               alpha=0.65, min_radius=4, max_radius=40,
+               labels=None, label=None, use_y2=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.bubble.BubbleSeries`.  Returns ``self``."""
+        from .bubble import BubbleSeries
+        return self.add(BubbleSeries(x, y, size, color=color, c=c, cmap=cmap,
+                                     alpha=alpha, min_radius=min_radius,
+                                     max_radius=max_radius, labels=labels,
+                                     label=label, **kwargs), use_y2)
+
+    def sunburst(self, labels, parents, values, cmap="viridis",
+                 **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.sunburst.SunburstSeries`.  Returns ``self``."""
+        from .sunburst import SunburstSeries
+        return self.add(SunburstSeries(labels=labels, parents=parents,
+                                       values=values, cmap=cmap, **kwargs))
+
+    def parallel_coords(self, data, axes, hue=None, cmap="viridis",
+                        alpha=0.45, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.parallel_coords.ParallelCoordinatesSeries`.
+        Returns ``self``."""
+        from .parallel_coords import ParallelCoordinatesSeries
+        return self.add(ParallelCoordinatesSeries(data=data, axes=axes,
+                                                  hue=hue, cmap=cmap,
+                                                  alpha=alpha, **kwargs))
+
+    def diverging_bar(self, categories, values, pos_color="#2563eb",
+                      neg_color="#dc2626", show_values=True,
+                      **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.diverging_bar.DivergingBarSeries`.
+        Returns ``self``."""
+        from .diverging_bar import DivergingBarSeries
+        return self.add(DivergingBarSeries(categories=categories, values=values,
+                                           pos_color=pos_color, neg_color=neg_color,
+                                           show_values=show_values, **kwargs))
+
     def stream(self, max_points=100, color=None, label=None,
                **kwargs) -> "Figure":
         """Add a :class:`~glyphx.streaming.StreamingSeries` and return it.
@@ -322,8 +356,12 @@ class Figure:
               linestyle="dashed", label=None) -> "Figure":
         """Draw a vertical reference line at data coordinate ``x``.  Returns ``self``."""
         from .series import LineSeries
+        # Compute domain from existing series if not yet finalized
         if self.axes._y_domain:
             ymin, ymax = self.axes._y_domain
+        elif self.series:
+            all_y = [v for s, _ in self.series for v in (s.y or []) if v is not None]
+            ymin, ymax = (min(all_y), max(all_y)) if all_y else (0, 1)
         else:
             ymin, ymax = 0, 1
         return self.add(LineSeries([x, x], [ymin, ymax],
@@ -336,6 +374,9 @@ class Figure:
         from .series import LineSeries
         if self.axes._x_domain:
             xmin, xmax = self.axes._x_domain
+        elif self.series:
+            all_x = [v for s, _ in self.series for v in (getattr(s, "_numeric_x", None) or s.x or []) if v is not None]
+            xmin, xmax = (min(all_x), max(all_x)) if all_x else (0, 1)
         else:
             xmin, xmax = 0, 1
         return self.add(LineSeries([xmin, xmax], [y, y],
@@ -544,14 +585,11 @@ class Figure:
             if self.legend_pos:
                 # For outside-right legends, anchor x relative to the
                 # axes width (the shrunk plot area) not the full canvas.
-                _legend_ref_w = (
-                    self.axes.width
-                    if self.legend_pos in ("outside-right", "right-of")
-                    else self.width
-                )
+                # Always render legend in the right gutter (outside plot area)
+                _legend_ref_w = self.axes.width
                 svg_parts.append(draw_legend(
                     [s for s, _ in self.series],
-                    position=self.legend_pos,
+                    position="outside-right",
                     font=self.theme.get("font", "sans-serif"),
                     text_color=self.theme.get("text_color", "#000"),
                     fig_width=_legend_ref_w,

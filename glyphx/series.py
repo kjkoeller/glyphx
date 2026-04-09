@@ -10,6 +10,7 @@ import numpy as np
 
 from .themes import themes as _themes
 from .utils import describe_arc, svg_escape, _format_tick
+from .downsample import maybe_downsample, AUTO_THRESHOLD
 
 
 # ---------------------------------------------------------------------------
@@ -99,6 +100,10 @@ class LineSeries(BaseSeries):
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
 
+        # Auto-downsample large datasets using LTTB to keep SVG performant
+        x_vals, y_plot = maybe_downsample(x_vals, self.y)
+        _downsampled = len(x_vals) < len(getattr(self, "_numeric_x", self.x) or self.x or [])
+
         elements = []
 
         if self.title:
@@ -113,7 +118,7 @@ class LineSeries(BaseSeries):
         if self.linestyle == "step":
             step_pts = []
             prev_py = None
-            for i, (x, y) in enumerate(zip(x_vals, self.y)):
+            for i, (x, y) in enumerate(zip(x_vals, y_plot)):
                 px, py = ax.scale_x(x), scale_y(y)
                 if i == 0:
                     step_pts.append(f"{px},{py}")
@@ -123,7 +128,7 @@ class LineSeries(BaseSeries):
                 prev_py = py
             points = " ".join(step_pts)
         else:
-            points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y))
+            points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, y_plot))
 
         elements.append(
             f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '
@@ -131,7 +136,7 @@ class LineSeries(BaseSeries):
         )
 
         # Data points with tooltips
-        for x, y in zip(x_vals, self.y):
+        for x, y in zip(x_vals, y_plot):
             elements.append(
                 f'<circle class="glyphx-point {self.css_class}" '
                 f'cx="{ax.scale_x(x)}" cy="{scale_y(y)}" r="4" fill="{self.color}" '
@@ -668,6 +673,10 @@ class BoxPlotSeries(BaseSeries):
         )
         # Override y so domain covers full whisker range
         self.y = [float(all_vals.min()), float(all_vals.max())]
+        # Set _x_categories so render_grid() draws category names (not raw numbers)
+        # and so BoxPlotSeries.to_svg() suppresses its own inline labels.
+        self._x_categories = list(self.categories)
+        self._numeric_x    = [i + 0.5 for i in range(len(self.datasets))]
 
     def to_svg(self, ax, use_y2=False):
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y

@@ -92,6 +92,7 @@ class WaterfallSeries(BaseSeries):
             color=up_color,
             label=label,
         )
+        # Register as categorical so render_grid() draws x-axis labels
         self._x_categories = list(labels)
         self._numeric_x    = [i + 0.5 for i in range(n)]
 
@@ -102,8 +103,6 @@ class WaterfallSeries(BaseSeries):
         n       = len(self.labels)
         slot_px = (ax.width - 2 * ax.padding) / n           # type: ignore[union-attr]
         body_px = slot_px * self.bar_width
-
-        y0 = scale_y(0)
 
         prev_top_py: float | None = None
 
@@ -129,24 +128,18 @@ class WaterfallSeries(BaseSeries):
                 f'fill="{color}" {tooltip}/>'
             )
 
-            # Connector dashed line to next bar
+            # Connector dashed line from previous bar's top to this bar's base
             if self.connector and prev_top_py is not None:
-                this_base_py = py_base
+                prev_cx = ax.scale_x(i - 1 + 0.5)   # type: ignore[union-attr]
                 elements.append(
-                    f'<line x1="{cx - body_px / 2 - slot_px * (1 - self.bar_width) / 2 - slot_px * self.bar_width}" '
+                    f'<line '
+                    f'x1="{prev_cx + body_px / 2}" '
                     f'x2="{cx - body_px / 2}" '
                     f'y1="{prev_top_py}" y2="{prev_top_py}" '
                     f'stroke="#999" stroke-width="1" stroke-dasharray="3,3"/>'
                 )
-            prev_top_py = py_top
 
-            # X label — skip if _x_categories is set; grid renders them
-            if not getattr(self, "_x_categories", None):
-                elements.append(
-                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '   # type: ignore[union-attr]
-                    f'text-anchor="middle" font-size="10" fill="#555">'
-                    f'{svg_escape(lbl)}</text>'
-                )
+            prev_top_py = py_top
 
             # Delta label above bar
             if self.show_values:

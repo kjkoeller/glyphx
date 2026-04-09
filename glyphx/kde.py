@@ -85,13 +85,11 @@ class KDESeries(BaseSeries):
             y0      = scale_y(0)  # type: ignore[union-attr]
             x_left  = ax.scale_x(x_vals[0])   # type: ignore[union-attr]
             x_right = ax.scale_x(x_vals[-1])  # type: ignore[union-attr]
-            alpha_hex  = format(round(self.alpha * 255), "02x")
-            fill_color = self.color + alpha_hex
             polygon_pts = f"{x_left},{y0} " + pts + f" {x_right},{y0}"
             elements.append(
                 f'<polygon class="{self.css_class}" '
                 f'points="{polygon_pts}" '
-                f'fill="{fill_color}" stroke="none"/>'
+                f'fill="{self.color}" fill-opacity="{self.alpha}" stroke="none"/>'
             )
 
         elements.append(

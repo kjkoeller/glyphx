@@ -78,9 +78,16 @@ from .treemap       import TreemapSeries
 from .streaming     import StreamingSeries
 
 # ── Advanced chart types ──────────────────────────────────────────────────
-from .grouped_bar  import GroupedBarSeries
-from .swarm_plot   import SwarmPlotSeries
-from .count_plot   import CountPlotSeries
+from .grouped_bar      import GroupedBarSeries
+from .swarm_plot       import SwarmPlotSeries
+from .count_plot       import CountPlotSeries
+
+# ── New: competitive feature set ──────────────────────────────────────────
+from .bubble           import BubbleSeries
+from .sunburst         import SunburstSeries
+from .parallel_coords  import ParallelCoordinatesSeries
+from .diverging_bar    import DivergingBarSeries
+from .downsample       import lttb, maybe_downsample, AUTO_THRESHOLD
 
 # ── Seaborn-style composites ──────────────────────────────────────────────
 from .facet_plot   import facet_plot
@@ -114,4 +121,8 @@ __all__ = [
     "GroupedBarSeries", "SwarmPlotSeries", "CountPlotSeries",
     # Composites
     "facet_plot", "pairplot", "jointplot", "lmplot",
+    # New competitive features
+    "BubbleSeries", "SunburstSeries",
+    "ParallelCoordinatesSeries", "DivergingBarSeries",
+    "lttb", "maybe_downsample", "AUTO_THRESHOLD",
 ]

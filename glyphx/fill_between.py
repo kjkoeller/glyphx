@@ -76,14 +76,10 @@ class FillBetweenSeries(BaseSeries):
         lower_pts = [f"{ax.scale_x(x)},{scale_y(y)}" for x, y in reversed(list(zip(x_vals, self.y1)))]  # type: ignore[union-attr]
         polygon_points = " ".join(upper_pts + lower_pts)
 
-        # Convert alpha to hex opacity suffix
-        alpha_hex = format(round(self.alpha * 255), "02x")
-        fill_color = self.color + alpha_hex  # e.g. "#2563eb40"
-
         elements = [
             f'<polygon class="{self.css_class}" '
             f'points="{polygon_points}" '
-            f'fill="{fill_color}" stroke="none"/>'
+            f'fill="{self.color}" fill-opacity="{self.alpha}" stroke="none"/>'
         ]
 
         # Optional boundary lines

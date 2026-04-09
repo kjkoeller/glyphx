@@ -98,8 +98,8 @@ def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
 
 
-def _rgb_to_hex(r: int, g: int, b: int) -> str:
-    return f"#{int(r):02x}{int(g):02x}{int(b):02x}"
+def _rgb_to_hex(r: float, g: float, b: float) -> str:
+    return f"#{round(r):02x}{round(g):02x}{round(b):02x}"
 
 
 def apply_colormap(value: float, cmap: str | list[str] = "viridis") -> str:

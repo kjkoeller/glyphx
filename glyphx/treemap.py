@@ -157,11 +157,15 @@ class TreemapSeries:
         self.label    = label
         self.css_class = f"series-{id(self) % 100000}"
 
-        n = len(self.labels)
         if colors:
-            # Re-sort colors to match sorted order
-            orig_order = {l: c for l, c in zip([l for _, l in zip(values, labels)], colors or [])}
-            self.colors = [orig_order.get(l, apply_colormap(0.5, cmap)) for l in self.labels]
+            # Re-sort colors to stay aligned with the sorted labels/values.
+            # Build a label→color map from the *original* (pre-sort) order,
+            # then look up each sorted label.
+            orig_label_to_color = dict(zip(labels, colors))
+            self.colors = [
+                orig_label_to_color.get(lbl, apply_colormap(0.5, cmap))
+                for lbl in self.labels
+            ]
         else:
             total = sum(self.values)
             self.colors = [apply_colormap(v / total, cmap) for v in self.values]
