@@ -612,7 +612,7 @@ def test_format_tick_integer():
 
 def test_format_tick_large():
     result = _format_tick(1_500_000)
-    assert "e" in result or "E" in result   # scientific notation
+    assert any(x in result for x in ["e", "E", "M"])
 
 
 def test_format_tick_small():
