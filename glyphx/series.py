@@ -37,6 +37,14 @@ class BaseSeries:
         self.title = title
         self.css_class = f"series-{id(self) % 100000}"
 
+    def __repr__(self) -> str:
+        n     = len(self.x) if self.x else 0
+        label = f" label={self.label!r}" if self.label else ""
+        rng   = ""
+        if self.x and n > 0:
+            rng = f" x=[{self.x[0]}..{self.x[-1]}] ({n} pts)"
+        return f"<{self.__class__.__name__}{label}{rng} color={self.color}>"
+
 
 # ---------------------------------------------------------------------------
 # Line chart
@@ -90,7 +98,6 @@ class LineSeries(BaseSeries):
 
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
-        points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y))
 
         elements = []
 
@@ -102,6 +109,21 @@ class LineSeries(BaseSeries):
                 f'fill="{ax.theme.get("text_color", "#000")}">'
                 f'{svg_escape(self.title)}</text>'
             )
+
+        if self.linestyle == "step":
+            step_pts = []
+            prev_py = None
+            for i, (x, y) in enumerate(zip(x_vals, self.y)):
+                px, py = ax.scale_x(x), scale_y(y)
+                if i == 0:
+                    step_pts.append(f"{px},{py}")
+                else:
+                    step_pts.append(f"{px},{prev_py}")
+                    step_pts.append(f"{px},{py}")
+                prev_py = py
+            points = " ".join(step_pts)
+        else:
+            points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y))
 
         elements.append(
             f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '

@@ -3,6 +3,56 @@ GlyphX layout module: Axes scaling, tick/grid rendering, and multi-figure grid l
 """
 
 import math
+import datetime as _dt
+
+
+# ---------------------------------------------------------------------------
+# Datetime helpers
+# ---------------------------------------------------------------------------
+
+def _is_datetime(val) -> bool:
+    """Return True if val is any date/datetime/Timestamp type."""
+    try:
+        import pandas as pd
+        if isinstance(val, (pd.Timestamp, pd.DatetimeTZDtype)):
+            return True
+    except ImportError:
+        pass
+    return isinstance(val, (_dt.date, _dt.datetime))
+
+
+def _to_timestamp(val) -> float:
+    """Convert a datetime-like value to a float Unix timestamp (seconds)."""
+    try:
+        import pandas as pd
+        if isinstance(val, pd.Timestamp):
+            return val.timestamp()
+    except ImportError:
+        pass
+    if isinstance(val, _dt.datetime):
+        return val.timestamp()
+    if isinstance(val, _dt.date):
+        return _dt.datetime(val.year, val.month, val.day).timestamp()
+    return float(val)
+
+
+def _format_datetime_tick(ts: float, span_seconds: float) -> str:
+    """Format a Unix timestamp as a human-readable date label.
+
+    Chooses the right granularity based on the total time span displayed.
+    """
+    dt = _dt.datetime.utcfromtimestamp(ts)
+    if span_seconds <= 3 * 3600:          # ≤ 3 hours → HH:MM
+        return dt.strftime("%H:%M")
+    if span_seconds <= 3 * 86400:         # ≤ 3 days  → Mon 14:00
+        return dt.strftime("%a %H:%M")
+    if span_seconds <= 90 * 86400:        # ≤ 90 days → 15 Jan
+        return dt.strftime("%-d %b")
+    if span_seconds <= 730 * 86400:       # ≤ 2 years → Jan 2024
+        return dt.strftime("%b %Y")
+    return dt.strftime("%Y")              # > 2 years → 2024
+
+
 from .utils import _format_tick, svg_escape
 
 
@@ -118,7 +168,7 @@ class Axes:
         for s in series_list:
             if not hasattr(s, "x") or not s.x:
                 continue
-            if isinstance(s.x[0], str):
+            if isinstance(s.x[0], str) and not _is_datetime(s.x[0]):
                 for cat in s.x:
                     if cat not in global_cats:
                         global_cats.append(cat)
@@ -136,6 +186,12 @@ class Axes:
                 s._numeric_x    = [cat_to_pos[cat] for cat in s.x]
                 s._x_categories = list(s.x)
                 numeric_x = s._numeric_x
+            elif _is_datetime(s.x[0]):
+                # Convert datetime/Timestamp to float epoch seconds
+                timestamps = [_to_timestamp(v) for v in s.x]
+                s._numeric_x   = timestamps
+                s._datetime_x  = True   # flag for tick formatter
+                numeric_x = timestamps
             else:
                 numeric_x = s.x
 
@@ -328,7 +384,7 @@ class Axes:
             elements.append(
                 f'<text x="{pad - 8}" y="{y_p + 4}" text-anchor="end" '
                 f'font-size="11" font-family="{font}" fill="{text_color}">'
-                f'{_format_tick(y_v)}</text>'
+                f'{_format_tick(y_v, is_log=(self.yscale=="log"))}</text>'
             )
 
         # --- X ticks (vertical grid lines) ---
@@ -353,6 +409,9 @@ class Axes:
                     f'{svg_escape(str(label))}</text>'
                 )
         else:
+            # Detect whether x axis holds datetime values
+            _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
+            _span   = (self._x_domain[1] - self._x_domain[0]) if _has_dt else 0
             for i in range(ticks + 1):
                 t       = i / ticks
                 x_v     = self._x_domain[0] + t * (self._x_domain[1] - self._x_domain[0])
@@ -360,6 +419,11 @@ class Axes:
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
                 transform = f'transform="{rot}"' if rot else ""
+                tick_label = (
+                    _format_datetime_tick(x_v, _span)
+                    if _has_dt
+                    else _format_tick(x_v, is_log=(self.xscale=="log"))
+                )
                 elements.append(
                     f'<line y1="{pad}" y2="{self.height - pad}" x1="{x_p}" x2="{x_p}" '
                     f'stroke="{stroke}" stroke-dasharray="3,3" />'
@@ -367,7 +431,7 @@ class Axes:
                 elements.append(
                     f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{_format_tick(x_v)}</text>'
+                    f'{tick_label}</text>'
                 )
 
         return "\n".join(elements)

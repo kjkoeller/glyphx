@@ -1,5 +1,5 @@
 """
-GlyphX — SVG-first Python plotting library.
+GlyphX v1.5.0 — SVG-first Python plotting library.
 
 Beats Matplotlib, Seaborn, and Plotly across three axes:
 
@@ -61,6 +61,8 @@ from .series import (
 
 # ── Statistical / distribution ────────────────────────────────────────────
 from .ecdf          import ECDFSeries
+from .fill_between  import FillBetweenSeries
+from .kde           import KDESeries
 from .raincloud     import RaincloudSeries
 from .stat_annotation import StatAnnotation, pvalue_to_label
 from .violin_plot   import ViolinPlotSeries
