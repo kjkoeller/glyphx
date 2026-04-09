@@ -39,15 +39,16 @@ def normalize(data):
     return (arr - lo) / (hi - lo)
 
 
-def _format_tick(val):
+def _format_tick(val, is_log: bool = False):
     """
     Format a numeric tick label intelligently.
 
-    Uses integer notation for whole numbers, scientific notation for very
-    large or very small values, and limited decimal places otherwise.
+    On log axes uses clean power-of-ten notation (1, 10, 100, 1k, 1M).
+    On linear axes uses readable decimal notation.
 
     Args:
         val (float): Tick value.
+        is_log (bool): Whether the axis is logarithmic.
 
     Returns:
         str: Human-readable label.
@@ -55,7 +56,32 @@ def _format_tick(val):
     if val == 0:
         return "0"
     abs_val = abs(val)
-    if abs_val >= 1e6 or (abs_val < 1e-3 and abs_val > 0):
+
+    if is_log:
+        # Clean log-scale labels: prefer 1/10/100/1k/1M/1B notation
+        if abs_val >= 1e9:
+            v = val / 1e9
+            return f"{int(v)}B" if v == int(v) else f"{v:.1f}B"
+        if abs_val >= 1e6:
+            v = val / 1e6
+            return f"{int(v)}M" if v == int(v) else f"{v:.1f}M"
+        if abs_val >= 1e3:
+            v = val / 1e3
+            return f"{int(v)}k" if v == int(v) else f"{v:.1f}k"
+        if val == int(val):
+            return str(int(val))
+        return f"{val:.2g}"
+
+    # Linear axis
+    if abs_val >= 1e9:
+        v = val / 1e9
+        return f"{int(v)}B" if v == int(v) else f"{v:.1f}B"
+    if abs_val >= 1e6:
+        v = val / 1e6
+        return f"{int(v)}M" if v == int(v) else f"{v:.1f}M"
+    if abs_val >= 1e3 and val == int(val):
+        return f"{int(val):,}"
+    if abs_val < 1e-3 and abs_val > 0:
         return f"{val:.2e}"
     if val == int(val):
         return str(int(val))
@@ -266,6 +292,24 @@ def render_cli(svg_string: str):
 # Legend rendering
 # ---------------------------------------------------------------------------
 
+# Fixed gutter width reserved for outside-right legends.
+# Must be wide enough for typical labels; figure.py uses this to shrink axes.
+LEGEND_GUTTER = 130
+
+
+def legend_pixel_width(series_list, padding=10, icon_size=12, text_gap=8):
+    """Return the pixel width a legend block would occupy for the given series."""
+    normalized = [
+        (item[0] if isinstance(item, tuple) else item)
+        for item in series_list
+        if getattr(item[0] if isinstance(item, tuple) else item, "label", None)
+    ]
+    if not normalized:
+        return 0
+    max_label_len = max(len(s.label) for s in normalized)
+    return icon_size + text_gap + max_label_len * 7 + 2 * padding
+
+
 def draw_legend(
     series_list,
     position="top-right",
@@ -323,7 +367,13 @@ def draw_legend(
 
     # Determine top-left corner of the legend box
     x = y = padding
-    if position == "top-right":
+    if position in ("outside-right", "right-of"):
+        # Legend sits in the right margin (gutter) inside the full canvas.
+        # figure.py shrinks the axes to LEGEND_GUTTER pixels narrower,
+        # so the legend at x = width + gap never overlaps chart data.
+        x = width + 8
+        y = max(8, (height - legend_height) // 2)
+    elif position == "top-right":
         x = width - legend_width - padding
     elif position == "bottom-right":
         x = width  - legend_width - padding

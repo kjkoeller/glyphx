@@ -168,11 +168,17 @@ class GlyphXAccessor:
                 self._df.groupby(groupby)[num_col]
                 .agg(agg)
                 .reset_index()
+                .sort_values(groupby)
             )
-            for i, (grp, gdf) in enumerate(agg_df.groupby(groupby)):
+            # One BarSeries per group: each has only its own category as x.
+            # compute_domain merges all categories into a global position map
+            # so every bar lands at a distinct x coordinate.
+            for i, row in enumerate(agg_df.itertuples(index=False)):
+                grp = getattr(row, groupby)
+                val = getattr(row, num_col)
                 fig.add(BarSeries(
-                    agg_df[groupby].tolist(),
-                    agg_df[num_col].tolist(),
+                    [str(grp)],
+                    [float(val)],
                     color=theme_colors[i % len(theme_colors)],
                     label=str(grp),
                 ))

@@ -37,6 +37,14 @@ class BaseSeries:
         self.title = title
         self.css_class = f"series-{id(self) % 100000}"
 
+    def __repr__(self) -> str:
+        n     = len(self.x) if self.x else 0
+        label = f" label={self.label!r}" if self.label else ""
+        rng   = ""
+        if self.x and n > 0:
+            rng = f" x=[{self.x[0]}..{self.x[-1]}] ({n} pts)"
+        return f"<{self.__class__.__name__}{label}{rng} color={self.color}>"
+
 
 # ---------------------------------------------------------------------------
 # Line chart
@@ -90,7 +98,6 @@ class LineSeries(BaseSeries):
 
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
-        points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y))
 
         elements = []
 
@@ -102,6 +109,21 @@ class LineSeries(BaseSeries):
                 f'fill="{ax.theme.get("text_color", "#000")}">'
                 f'{svg_escape(self.title)}</text>'
             )
+
+        if self.linestyle == "step":
+            step_pts = []
+            prev_py = None
+            for i, (x, y) in enumerate(zip(x_vals, self.y)):
+                px, py = ax.scale_x(x), scale_y(y)
+                if i == 0:
+                    step_pts.append(f"{px},{py}")
+                else:
+                    step_pts.append(f"{px},{prev_py}")
+                    step_pts.append(f"{px},{py}")
+                prev_py = py
+            points = " ".join(step_pts)
+        else:
+            points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y))
 
         elements.append(
             f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '
@@ -193,10 +215,12 @@ class BarSeries(BaseSeries):
         if not x_vals:
             return ""
 
-        domain_width = ax._x_domain[1] - ax._x_domain[0]
-        step         = domain_width / len(x_vals)
-        px_step      = ax.scale_x(ax._x_domain[0] + step) - ax.scale_x(ax._x_domain[0])
-        px_width     = px_step * self.bar_width
+        # Each categorical slot is exactly 1 unit wide in our coordinate system.
+        # Using scale_x(start+1) - scale_x(start) gives the correct pixel width
+        # per slot regardless of how many categories this particular series owns.
+        x_start  = ax._x_domain[0]
+        px_step  = ax.scale_x(x_start + 1) - ax.scale_x(x_start)
+        px_width = px_step * self.bar_width
 
         y_domain = ax._y2_domain if use_y2 else ax._y_domain
         y0       = scale_y(min(0, y_domain[0]))
@@ -213,10 +237,15 @@ class BarSeries(BaseSeries):
                 f'data-y="{svg_escape(str(y))}" '
                 f'data-label="{svg_escape(self.label or "")}"'
             )
+            bar_color = (
+                self.color[i % len(self.color)]
+                if isinstance(self.color, list)
+                else self.color
+            )
             elements.append(
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{cx - px_width / 2}" y="{top}" width="{px_width}" height="{h}" '
-                f'fill="{self.color}" stroke="#00000033" {tooltip}/>'
+                f'fill="{bar_color}" stroke="#00000033" {tooltip}/>' 
             )
 
             # Y error bars

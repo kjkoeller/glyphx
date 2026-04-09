@@ -57,7 +57,7 @@ class Figure:
         rows: int = 1,
         cols: int = 1,
         auto_display: bool = True,
-        legend: str | bool | None = "top-right",
+        legend: str | bool | None = "outside-right",
         xscale: str = "linear",
         yscale: str = "linear",
     ) -> None:
@@ -72,6 +72,10 @@ class Figure:
         self.yscale       = yscale
 
         from .themes import themes
+        self._theme_name: str = (
+            theme if isinstance(theme, str) and theme in themes
+            else ("custom" if isinstance(theme, dict) else "default")
+        )
         self.theme: dict[str, Any] = (
             themes.get(theme, themes["default"])
             if isinstance(theme, str)
@@ -85,8 +89,17 @@ class Figure:
         self.grid: list[list[Axes | None]] = [
             [None] * self.cols for _ in range(self.rows)
         ]
+        # When the legend sits to the right of the chart area, shrink the
+        # axes so the chart data never overlaps the legend.  The legend
+        # occupies the right margin within the same total canvas width.
+        from .utils import LEGEND_GUTTER
+        _axes_width = (
+            self.width - LEGEND_GUTTER
+            if legend not in (False, None) and str(legend) in ("outside-right", "right-of")
+            else self.width
+        )
         self.axes = Axes(
-            width=self.width,
+            width=_axes_width,
             height=self.height,
             padding=self.padding,
             theme=self.theme,
@@ -106,6 +119,10 @@ class Figure:
     def set_theme(self, theme: str | dict[str, Any]) -> Figure:
         """Apply a named theme or a custom dict and return ``self``."""
         from .themes import themes
+        self._theme_name = (
+            theme if isinstance(theme, str) and theme in themes
+            else ("custom" if isinstance(theme, dict) else "default")
+        )
         self.theme = (
             themes.get(theme, themes["default"])
             if isinstance(theme, str)
@@ -166,6 +183,180 @@ class Figure:
         if hasattr(series, "x") and hasattr(series, "y"):
             self.axes.add_series(series, use_y2)
         return self
+
+
+    # ── Shorthand series methods ──────────────────────────────────────────
+    # These mirror the long-form Figure().add(XxxSeries(...)) API so users
+    # can write fig.line(x, y) instead of importing and constructing manually.
+    # Every method returns self for chaining and accepts the same kwargs as
+    # the underlying series class.
+
+    def line(self, x, y, color=None, label=None, linestyle="solid",
+             width=2, yerr=None, xerr=None, use_y2=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.LineSeries`.  Returns ``self``."""
+        from .series import LineSeries
+        return self.add(LineSeries(x, y, color=color, label=label,
+                                   linestyle=linestyle, width=width,
+                                   yerr=yerr, xerr=xerr, **kwargs), use_y2)
+
+    def bar(self, x, y, color=None, label=None, bar_width=0.8,
+            yerr=None, use_y2=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.BarSeries`.  Returns ``self``."""
+        from .series import BarSeries
+        return self.add(BarSeries(x, y, color=color, label=label,
+                                  bar_width=bar_width, yerr=yerr, **kwargs), use_y2)
+
+    def scatter(self, x, y, color=None, label=None, size=5,
+                c=None, cmap="viridis", use_y2=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.ScatterSeries`.  Returns ``self``."""
+        from .series import ScatterSeries
+        return self.add(ScatterSeries(x, y, color=color, label=label,
+                                      size=size, c=c, cmap=cmap, **kwargs), use_y2)
+
+    def hist(self, data, bins=20, color=None, label=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.HistogramSeries`.  Returns ``self``."""
+        from .series import HistogramSeries
+        return self.add(HistogramSeries(data, bins=bins,
+                                        color=color, label=label, **kwargs))
+
+    def box(self, data, categories=None, color=None, box_width=20,
+            **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.BoxPlotSeries`.  Returns ``self``."""
+        from .series import BoxPlotSeries
+        return self.add(BoxPlotSeries(data, categories=categories,
+                                      color=color or "#1f77b4",
+                                      box_width=box_width, **kwargs))
+
+    def heatmap(self, matrix, row_labels=None, col_labels=None,
+                show_values=False, cmap=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.HeatmapSeries`.  Returns ``self``."""
+        from .series import HeatmapSeries
+        return self.add(HeatmapSeries(matrix, row_labels=row_labels,
+                                      col_labels=col_labels,
+                                      show_values=show_values,
+                                      cmap=cmap, **kwargs))
+
+    def pie(self, values, labels=None, colors=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.PieSeries`.  Returns ``self``."""
+        from .series import PieSeries
+        return self.add(PieSeries(values=values, labels=labels,
+                                  colors=colors, **kwargs))
+
+    def donut(self, values, labels=None, colors=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.series.DonutSeries`.  Returns ``self``."""
+        from .series import DonutSeries
+        return self.add(DonutSeries(values=values, labels=labels,
+                                    colors=colors, **kwargs))
+
+    def area(self, x, y1, y2=0, color=None, alpha=0.25,
+             line_width=1, label=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.fill_between.FillBetweenSeries`.  Returns ``self``."""
+        from .fill_between import FillBetweenSeries
+        return self.add(FillBetweenSeries(x, y1, y2, color=color or "#1f77b4",
+                                          alpha=alpha, line_width=line_width,
+                                          label=label, **kwargs))
+
+    def kde(self, data, filled=False, alpha=0.20, color=None,
+            width=2, label=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.kde.KDESeries`.  Returns ``self``."""
+        from .kde import KDESeries
+        return self.add(KDESeries(data, filled=filled, alpha=alpha,
+                                  color=color or "#1f77b4", width=width,
+                                  label=label, **kwargs))
+
+    def ecdf(self, data, color=None, label=None,
+             complementary=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.ecdf.ECDFSeries`.  Returns ``self``."""
+        from .ecdf import ECDFSeries
+        return self.add(ECDFSeries(data, color=color, label=label,
+                                   complementary=complementary, **kwargs))
+
+    def raincloud(self, data, categories=None, seed=42,
+                  violin_width=40, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.raincloud.RaincloudSeries`.  Returns ``self``."""
+        from .raincloud import RaincloudSeries
+        series = RaincloudSeries(data, categories=categories,
+                                 seed=seed, violin_width=violin_width, **kwargs)
+        series._x_categories = series.categories
+        return self.add(series)
+
+    def candlestick(self, dates, open, high, low, close,
+                    label=None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.candlestick.CandlestickSeries`.  Returns ``self``."""
+        from .candlestick import CandlestickSeries
+        return self.add(CandlestickSeries(dates, open, high, low, close,
+                                          label=label, **kwargs))
+
+    def waterfall(self, labels, values, show_values=True, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.waterfall.WaterfallSeries`.  Returns ``self``."""
+        from .waterfall import WaterfallSeries
+        return self.add(WaterfallSeries(labels=labels, values=values,
+                                        show_values=show_values, **kwargs))
+
+    def treemap(self, labels, values, cmap="viridis",
+                show_values=True, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.treemap.TreemapSeries`.  Returns ``self``."""
+        from .treemap import TreemapSeries
+        return self.add(TreemapSeries(labels=labels, values=values,
+                                      cmap=cmap, show_values=show_values,
+                                      **kwargs))
+
+    def stream(self, max_points=100, color=None, label=None,
+               **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.streaming.StreamingSeries` and return it.
+
+        Unlike other shorthand methods, this returns the *series* (not self)
+        so callers can push data to it::
+
+            stream = fig.stream(max_points=100, label="Sensor")
+            stream.push(42.0)
+        """
+        from .streaming import StreamingSeries
+        s = StreamingSeries(max_points=max_points,
+                            color=color or "#7c3aed",
+                            label=label, **kwargs)
+        self.add(s)
+        return s
+
+    def vline(self, x, color="#888", width=1,
+              linestyle="dashed", label=None) -> "Figure":
+        """Draw a vertical reference line at data coordinate ``x``.  Returns ``self``."""
+        from .series import LineSeries
+        if self.axes._y_domain:
+            ymin, ymax = self.axes._y_domain
+        else:
+            ymin, ymax = 0, 1
+        return self.add(LineSeries([x, x], [ymin, ymax],
+                                   color=color, width=width,
+                                   linestyle=linestyle, label=label))
+
+    def hline(self, y, color="#888", width=1,
+              linestyle="dashed", label=None) -> "Figure":
+        """Draw a horizontal reference line at data coordinate ``y``.  Returns ``self``."""
+        from .series import LineSeries
+        if self.axes._x_domain:
+            xmin, xmax = self.axes._x_domain
+        else:
+            xmin, xmax = 0, 1
+        return self.add(LineSeries([xmin, xmax], [y, y],
+                                   color=color, width=width,
+                                   linestyle=linestyle, label=label))
+
+    # ── __repr__ ─────────────────────────────────────────────────────────
+
+    def __repr__(self) -> str:
+        series_desc = ", ".join(
+            f"{s.__class__.__name__}({repr(s.label)})"
+            if getattr(s, "label", None)
+            else s.__class__.__name__
+            for s, _ in self.series
+        )
+        theme_name = getattr(self, "_theme_name", "default")
+        return (
+            f"<glyphx.Figure {self.width}×{self.height}"
+            + (f" [{series_desc}]" if self.series else " [empty]")
+            + f" theme={theme_name!r}>"
+        )
 
     # ── Annotations ──────────────────────────────────────────────────────
 
@@ -351,12 +542,19 @@ class Figure:
                 ))
 
             if self.legend_pos:
+                # For outside-right legends, anchor x relative to the
+                # axes width (the shrunk plot area) not the full canvas.
+                _legend_ref_w = (
+                    self.axes.width
+                    if self.legend_pos in ("outside-right", "right-of")
+                    else self.width
+                )
                 svg_parts.append(draw_legend(
                     [s for s, _ in self.series],
                     position=self.legend_pos,
                     font=self.theme.get("font", "sans-serif"),
                     text_color=self.theme.get("text_color", "#000"),
-                    fig_width=self.width,
+                    fig_width=_legend_ref_w,
                     fig_height=self.height,
                 ))
 
@@ -522,10 +720,6 @@ class Figure:
             self.show()
         return self
 
-    def __repr__(self) -> str:
-        if self.auto_display:
-            self.show()
-        return f"<glyphx.Figure with {len(self.series)} series>"
 
 
 # ---------------------------------------------------------------------------
