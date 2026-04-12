@@ -39,16 +39,19 @@ class Surface3DSeries:
         wireframe:   bool  = True,
         wire_color:  str   = "#ffffff44",
         label:       str | None = None,
+        threshold:   int | None = None,
     ) -> None:
-        self.x_1d      = list(x)
-        self.y_1d      = list(y)
-        self.z_mat     = [list(row) for row in z]   # M × N
-        self.cmap      = cmap
-        self.alpha     = float(alpha)
-        self.wireframe = wireframe
-        self.wire_color = wire_color
-        self.label     = label
-        self.css_class = f"series3d-{id(self) % 100000}"
+        self.x_1d                = list(x)
+        self.y_1d                = list(y)
+        self.z_mat               = [list(row) for row in z]
+        self.cmap                = cmap
+        self.alpha               = float(alpha)
+        self.wireframe           = wireframe
+        self.wire_color          = wire_color
+        self.label               = label
+        self.threshold           = threshold
+        self.last_downsample_info = None
+        self.css_class           = f"series3d-{id(self) % 100000}"
 
         # Pre-compute face colours from Z values
         z_arr = np.asarray(z, dtype=float)
@@ -67,13 +70,34 @@ class Surface3DSeries:
 
         Quads are sorted back-to-front by their average projected depth.
         """
-        nx = len(self.x_1d)
-        ny = len(self.y_1d)
+        from .downsample import decimate_grid, cull_faces, _ds_comment, AUTO_THRESHOLD
+
+        # Decimate grid before projection to keep face count manageable.
+        _thresh  = self.threshold if self.threshold is not None else AUTO_THRESHOLD
+        _orig_nx, _orig_ny = len(self.x_1d), len(self.y_1d)
+        x_1d, y_1d, z_mat_arr = decimate_grid(
+            self.x_1d, self.y_1d, self.z_mat, max_faces=_thresh
+        )
+        _ds_svg = ""
+        if len(x_1d) < _orig_nx or len(y_1d) < _orig_ny:
+            _orig_faces = (_orig_nx - 1) * (_orig_ny - 1)
+            _new_faces  = (len(x_1d) - 1) * (len(y_1d) - 1)
+            _ds_svg = _ds_comment(_orig_faces, _new_faces, "grid-decimate (faces)")
+            self.last_downsample_info = {
+                "algorithm": "grid-decimate",
+                "original_n": _orig_faces,
+                "thinned_n": _new_faces,
+            }
+        else:
+            self.last_downsample_info = None
+
+        nx = len(x_1d)
+        ny = len(y_1d)
 
         # Normalise to [-1, 1]
-        xn, xlo, xhi = normalize(self.x_1d)
-        yn, ylo, yhi = normalize(self.y_1d)
-        z_flat = [v for row in self.z_mat for v in row]
+        xn, xlo, xhi = normalize(x_1d)
+        yn, ylo, yhi = normalize(y_1d)
+        z_flat = [v for row in z_mat_arr for v in row]
         zn_flat, zlo, zhi = normalize(z_flat)
         z_norm = [zn_flat[j * nx + i] for j in range(ny) for i in range(nx)]
 
@@ -97,15 +121,18 @@ class Surface3DSeries:
                       verts[j+1][i+1], verts[j+1][i]]
                 depth = sum(p.depth for p in ps) / 4
                 # Average Z value for colour
-                z_vals = [self.z_mat[j][i],  self.z_mat[j][i+1],
-                          self.z_mat[j+1][i+1], self.z_mat[j+1][i]]
+                z_vals = [z_mat_arr[j][i],  z_mat_arr[j][i+1],
+                          z_mat_arr[j+1][i+1], z_mat_arr[j+1][i]]
                 avg_z = sum(z_vals) / 4
                 faces.append((depth, ps, avg_z))
+
+        # Cull sub-pixel faces before sorting (cheap, saves sort work)
+        faces = cull_faces(faces)
 
         # Sort back-to-front
         faces.sort(key=lambda f: f[0])
 
-        elements: list[str] = []
+        elements: list[str] = [_ds_svg] if _ds_svg else []
         for depth, ps, avg_z in faces:
             pts = " ".join(f"{p.px:.1f},{p.py:.1f}" for p in ps)
             col = self._face_color(avg_z)

@@ -25,26 +25,45 @@ class Line3DSeries:
         width:     float        = 2.0,
         linestyle: str          = "solid",
         label:     str | None   = None,
+        threshold: int | None   = None,
     ) -> None:
-        self.x         = list(x)
-        self.y         = list(y)
-        self.z         = list(z)
-        self.color     = color
-        self.width     = float(width)
-        self.linestyle = linestyle
-        self.label     = label
-        self.css_class = f"series3d-{id(self) % 100000}"
+        self.x                   = list(x)
+        self.y                   = list(y)
+        self.z                   = list(z)
+        self.color               = color
+        self.width               = float(width)
+        self.linestyle           = linestyle
+        self.label               = label
+        self.threshold           = threshold
+        self.last_downsample_info = None
+        self.css_class           = f"series3d-{id(self) % 100000}"
 
     def to_svg(self, cam: Camera3D,
                x_range, y_range, z_range) -> str:
-        xn, *_ = normalize(self.x)
-        yn, *_ = normalize(self.y)
-        zn, *_ = normalize(self.z)
+        from .downsample import lttb_3d, AUTO_THRESHOLD, _ds_comment
+        x_plot, y_plot, z_plot = self.x, self.y, self.z
+        _ds_svg = ""
+        _thresh = self.threshold if self.threshold is not None else AUTO_THRESHOLD
+        if len(x_plot) > _thresh:
+            _orig_n = len(x_plot)
+            x_plot, y_plot, z_plot = lttb_3d(
+                x_plot, y_plot, z_plot, cam, threshold=_thresh
+            )
+            _ds_svg = _ds_comment(_orig_n, len(x_plot), "LTTB-3D")
+            self.last_downsample_info = {
+                "algorithm": "LTTB-3D", "original_n": _orig_n, "thinned_n": len(x_plot)
+            }
+        else:
+            self.last_downsample_info = None
+
+        xn, *_ = normalize(x_plot)
+        yn, *_ = normalize(y_plot)
+        zn, *_ = normalize(z_plot)
 
         pts  = [cam.project(x, y, z) for x, y, z in zip(xn, yn, zn)]
         pts_str = " ".join(f"{p.px:.1f},{p.py:.1f}" for p in pts)
         dash = self._DASH.get(self.linestyle, "")
-        return (
+        return (_ds_svg + 
             f'<polyline points="{pts_str}" fill="none" '
             f'stroke="{self.color}" stroke-width="{self.width}" '
             f'stroke-dasharray="{dash}" '

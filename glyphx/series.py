@@ -10,7 +10,10 @@ import numpy as np
 
 from .themes import themes as _themes
 from .utils import describe_arc, svg_escape, _format_tick
-from .downsample import maybe_downsample, AUTO_THRESHOLD
+from .downsample import (
+    maybe_downsample_line,
+    voxel_thin_2d, AUTO_THRESHOLD, _ds_comment,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -86,12 +89,15 @@ class LineSeries(BaseSeries):
         title=None,
         yerr=None,
         xerr=None,
+        threshold=None,
     ):
         super().__init__(x, y, color, label=label or legend, title=title)
-        self.linestyle = linestyle
-        self.width     = width
-        self.yerr      = yerr
-        self.xerr      = xerr
+        self.linestyle           = linestyle
+        self.width               = width
+        self.yerr                = yerr
+        self.xerr                = xerr
+        self.threshold           = threshold  # None => use AUTO_THRESHOLD
+        self.last_downsample_info = None
 
     def to_svg(self, ax, use_y2=False):
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
@@ -100,11 +106,23 @@ class LineSeries(BaseSeries):
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
 
-        # Auto-downsample large datasets using LTTB to keep SVG performant
-        x_vals, y_plot = maybe_downsample(x_vals, self.y)
-        _downsampled = len(x_vals) < len(getattr(self, "_numeric_x", self.x) or self.x or [])
+        # Auto-downsample large datasets using two-stage M4+LTTB pipeline.
+        # Pass ax.width so M4 buckets align to actual render pixels.
+        _thresh  = self.threshold if self.threshold is not None else AUTO_THRESHOLD
+        _orig_n  = len(x_vals)
+        x_vals, y_plot = maybe_downsample_line(
+            x_vals, self.y, pixel_width=ax.width, threshold=_thresh
+        )
+        _downsampled = len(x_vals) < _orig_n
 
         elements = []
+        if _downsampled:
+            elements.append(_ds_comment(_orig_n, len(x_vals), "M4+LTTB"))
+            self.last_downsample_info = {
+                "algorithm": "M4+LTTB", "original_n": _orig_n, "thinned_n": len(x_vals)
+            }
+        else:
+            self.last_downsample_info = None
 
         if self.title:
             mid_x = (ax.padding + ax.width - ax.padding) // 2
@@ -303,12 +321,14 @@ class ScatterSeries(BaseSeries):
 
     def __init__(self, x, y, color=None, label=None, legend=None,
                  size=5, marker="circle", title=None,
-                 c=None, cmap="viridis"):
+                 c=None, cmap="viridis", threshold=None):
         super().__init__(x, y, color, label=label or legend, title=title)
-        self.size   = size
-        self.marker = marker
-        self.c      = c       # per-point color values
-        self.cmap   = cmap    # colormap name
+        self.size                = size
+        self.marker              = marker
+        self.c                   = c
+        self.cmap                = cmap
+        self.threshold           = threshold  # None => use AUTO_THRESHOLD
+        self.last_downsample_info = None
 
     def _point_color(self, idx: int, total: int) -> str:
         """Return per-point color via colormap encoding or flat color."""
@@ -326,10 +346,57 @@ class ScatterSeries(BaseSeries):
         x_vals   = getattr(self, "_numeric_x", self.x)
         elements = []
 
-        for i, (orig_x, x, y) in enumerate(zip(self.x, x_vals, self.y)):
+        # Voxel-thin large scatter datasets to keep SVG performant.
+        # Works on unordered points unlike LTTB/M4 (which require monotone x).
+        orig_x_list = self.x
+        c_vals      = self.c
+        _thresh     = self.threshold if self.threshold is not None else AUTO_THRESHOLD
+        _orig_n     = len(x_vals)
+        _categories = getattr(self, "_x_categories", None)
+        if len(x_vals) > _thresh:
+            import numpy as _np
+            _c_arr = _np.asarray(c_vals) if c_vals is not None else None
+            x_thin, _y_thin, _c_thin = voxel_thin_2d(
+                x_vals, self.y, c=_c_arr, max_points=_thresh
+            )
+
+            # Rebuild category labels for thinned indices if categorical x was in use.
+            if _categories is not None:
+                _num_orig  = list(x_vals)
+                _x_to_cat  = {v: k for k, v in zip(_categories, _num_orig)}
+                orig_x_list = [_x_to_cat.get(float(v), v) for v in x_thin]
+            else:
+                orig_x_list = x_thin
+
+            x_vals = x_thin
+            self_y = _y_thin
+            c_vals = _c_thin.tolist() if _c_thin is not None else None
+            elements.append(_ds_comment(_orig_n, len(x_vals), "voxel-2D"))
+            self.last_downsample_info = {
+                "algorithm": "voxel-2D", "original_n": _orig_n, "thinned_n": len(x_vals)
+            }
+        else:
+            self_y = self.y
+            self.last_downsample_info = None
+
+        # Resolve colormap bounds once from the (possibly thinned) c_vals
+        _c_lo, _c_hi = None, None
+        if c_vals is not None:
+            import numpy as _np2
+            _c_arr2 = _np2.asarray(c_vals, dtype=float)
+            _c_lo, _c_hi = float(_c_arr2.min()), float(_c_arr2.max())
+
+        for i, (orig_x, x, y) in enumerate(zip(orig_x_list, x_vals, self_y)):
             px      = ax.scale_x(x)
             py      = scale_y(y)
-            color   = self._point_color(i, len(self.x))
+            # Use thinned c_vals for color lookup so indices stay in sync
+            if c_vals is not None and i < len(c_vals):
+                from .colormaps import apply_colormap as _acm
+                _span = (_c_hi - _c_lo) if _c_hi != _c_lo else 1.0
+                _norm = (float(c_vals[i]) - _c_lo) / _span
+                color = _acm(_norm, self.cmap)
+            else:
+                color = self.color
             tooltip = (
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
@@ -349,15 +416,15 @@ class ScatterSeries(BaseSeries):
                     f'fill="{color}" {tooltip}/>'
                 )
 
-        # Colorbar for color-encoded scatter
+        # Colorbar for color-encoded scatter — use thinned range when available
         if self.c is not None:
             import numpy as np
             from .colormaps import render_colorbar_svg
-            c_arr = np.asarray(self.c, dtype=float)
+            _cb_arr = np.asarray(c_vals if c_vals is not None else self.c, dtype=float)
             elements.append(render_colorbar_svg(
                 cmap=self.cmap,
-                vmin=float(c_arr.min()),
-                vmax=float(c_arr.max()),
+                vmin=float(_cb_arr.min()),
+                vmax=float(_cb_arr.max()),
                 x=ax.width - 30,
                 y=ax.padding,
                 width=12,
