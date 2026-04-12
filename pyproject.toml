@@ -4,3 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "glyphx/_version.py"
+# "no-local-version" strips the +gHASH.dDATE local segment so the version
+# string is always PEP 440 public-version-compliant and accepted by PyPI.
+# Dev builds from untagged commits will look like "2.1.0.dev3" (commit
+# distance only) rather than "2.1.0.dev0+gbfa4f6035.d20260412".
+version_scheme = "release-branch-semver"
+local_scheme   = "no-local-version"
