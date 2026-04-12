@@ -84,6 +84,19 @@ from .count_plot       import CountPlotSeries
 
 # ── New: competitive feature set ──────────────────────────────────────────
 from .bubble           import BubbleSeries
+from .stacked_bar      import StackedBarSeries
+
+# ── 3D chart types ────────────────────────────────────────────────────────
+from .figure3d   import Figure3D
+from .plot3d     import plot3d
+from .scatter3d  import Scatter3DSeries
+from .surface3d  import Surface3DSeries
+from .line3d     import Line3DSeries
+from .bar3d      import Bar3DSeries
+from .contour    import ContourSeries
+
+from .bump_chart       import BumpChartSeries
+from .sparkline        import SparklineSeries, sparkline_svg
 from .sunburst         import SunburstSeries
 from .parallel_coords  import ParallelCoordinatesSeries
 from .diverging_bar    import DivergingBarSeries
@@ -125,4 +138,10 @@ __all__ = [
     "BubbleSeries", "SunburstSeries",
     "ParallelCoordinatesSeries", "DivergingBarSeries",
     "lttb", "maybe_downsample", "AUTO_THRESHOLD",
+    "StackedBarSeries", "BumpChartSeries",
+    "SparklineSeries", "sparkline_svg",
+    # 3D
+    "Figure3D", "plot3d",
+    "Scatter3DSeries", "Surface3DSeries",
+    "Line3DSeries", "Bar3DSeries", "ContourSeries",
 ]

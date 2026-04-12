@@ -28,7 +28,7 @@ import numpy as np
 from typing import Any
 
 from .colormaps import colormap_colors, apply_colormap
-from .utils import svg_escape, _format_tick
+from .utils import svg_escape, _format_tick, LEGEND_GUTTER
 
 
 class ParallelCoordinatesSeries:
@@ -141,11 +141,13 @@ class ParallelCoordinatesSeries:
             tc    = ax.theme.get("text_color", "#000")  # type: ignore
             grid_color = ax.theme.get("grid_color", "#ddd")  # type: ignore
 
-        n_axes  = len(self.axes_names)
-        n_rows  = self.matrix.shape[0]
-        plot_w  = w - 2 * pad_x
-        plot_h  = h - 2 * pad_y
-        ax_step = plot_w / (n_axes - 1) if n_axes > 1 else plot_w
+        n_axes   = len(self.axes_names)
+        n_rows   = self.matrix.shape[0]
+        # Reserve right gutter for the legend so it never overlaps the axes
+        _gutter  = LEGEND_GUTTER if self._groups else 0
+        plot_w   = w - 2 * pad_x - _gutter
+        plot_h   = h - 2 * pad_y
+        ax_step  = plot_w / (n_axes - 1) if n_axes > 1 else plot_w
 
         # Axis X positions
         ax_x = [pad_x + i * ax_step for i in range(n_axes)]
@@ -203,16 +205,18 @@ class ParallelCoordinatesSeries:
                 f'stroke-width="{self.line_width}" opacity="{self.alpha}"/>'
             )
 
-        # Categorical legend
+        # Categorical legend — always rendered in the right gutter
         if self._groups:
-            legend_x = w - 110
-            legend_y = pad_y + 10
+            legend_x = w - _gutter + 8 if _gutter else w - 110
+            n_groups  = len(self._groups)
+            total_h   = n_groups * 20
+            legend_y  = (h - total_h) // 2   # vertically centred
             for k, grp in enumerate(self._groups):
                 col = getattr(self, "_legend_items", {}).get(grp, "#888")
-                gy  = legend_y + k * 18
+                gy  = legend_y + k * 20
                 elements.append(
                     f'<rect x="{legend_x}" y="{gy}" width="12" height="12" '
-                    f'fill="{col}"/>'
+                    f'fill="{col}" rx="2"/>'
                 )
                 elements.append(
                     f'<text x="{legend_x + 16}" y="{gy + 10}" '

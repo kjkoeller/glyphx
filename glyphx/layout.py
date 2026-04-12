@@ -114,6 +114,284 @@ class Axes:
         # Categorical label mapping (populated by compute_domain)
         self._x_categories = None
 
+        # ── Custom tick overrides (Matplotlib parity) ──────────────────────
+        # When set, these override the auto-computed tick values in render_grid.
+        self._xticks:       list | None        = None   # explicit x positions
+        self._yticks:       list | None        = None   # explicit y positions
+        self._xticklabels:  list[str] | None   = None   # override x labels
+        self._yticklabels:  list[str] | None   = None   # override y labels
+        self._tick_formatter = None                      # callable(value) → str
+        self._minor_ticks:  int                = 0      # subdivisions between majors
+        self._tick_length:  float              = 4.0    # tick mark length px
+        self._minor_length: float              = 2.0    # minor tick length px
+
+        # ── Spine visibility ───────────────────────────────────────────────
+        self._spines: dict[str, bool] = {
+            "left": True, "right": True, "top": False, "bottom": True
+        }
+
+        # ── Shaded bands (axhspan / axvspan) ──────────────────────────────
+        self._hspans: list[dict] = []   # horizontal shaded regions
+        self._vspans: list[dict] = []   # vertical shaded regions
+
+    # ------------------------------------------------------------------
+    # Matplotlib-parity: custom ticks, formatters, spines, spans
+    # ------------------------------------------------------------------
+
+    def set_xticks(self, ticks: list, labels: list[str] | None = None) -> "Axes":
+        """
+        Set explicit X-axis tick positions.
+
+        Args:
+            ticks:  List of data-space positions where ticks should appear.
+            labels: Optional list of strings to display instead of formatted values.
+                    Must be the same length as ``ticks``.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_xticks([0, 25, 50, 75, 100])
+            ax.set_xticks([1, 6, 12], labels=["Jan", "Jun", "Dec"])
+        """
+        self._xticks = list(ticks)
+        if labels is not None:
+            self._xticklabels = [str(l) for l in labels]
+        return self
+
+    def set_yticks(self, ticks: list, labels: list[str] | None = None) -> "Axes":
+        """
+        Set explicit Y-axis tick positions.
+
+        Args:
+            ticks:  List of data-space positions.
+            labels: Optional display labels (same length as ticks).
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_yticks([0, 1_000_000, 2_000_000], labels=["$0", "$1M", "$2M"])
+        """
+        self._yticks = list(ticks)
+        if labels is not None:
+            self._yticklabels = [str(l) for l in labels]
+        return self
+
+    def set_xticklabels(self, labels: list[str]) -> "Axes":
+        """Override X-tick display strings without changing positions."""
+        self._xticklabels = [str(l) for l in labels]
+        return self
+
+    def set_yticklabels(self, labels: list[str]) -> "Axes":
+        """Override Y-tick display strings without changing positions."""
+        self._yticklabels = [str(l) for l in labels]
+        return self
+
+    def set_tick_format(self, formatter) -> "Axes":
+        """
+        Apply a callable formatter to all numeric tick labels.
+
+        The formatter receives a float and must return a string.  It applies
+        to both X and Y axes (use ``set_xticklabels`` / ``set_yticklabels``
+        to override one axis independently).
+
+        Args:
+            formatter: Callable ``(value: float) -> str``.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_tick_format(lambda v: f"${v:,.0f}")
+            ax.set_tick_format(lambda v: f"{v:.1%}")
+        """
+        self._tick_formatter = formatter
+        return self
+
+    def set_minor_ticks(self, n: int, length: float = 2.0) -> "Axes":
+        """
+        Draw ``n`` minor tick subdivisions between each pair of major ticks.
+
+        Args:
+            n:      Number of minor ticks between major ticks (e.g. 4 gives
+                    5 equal sub-intervals).
+            length: Minor tick length in pixels.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_minor_ticks(4)   # quarterly subdivisions on annual axis
+        """
+        self._minor_ticks  = int(n)
+        self._minor_length = float(length)
+        return self
+
+    def set_tick_length(self, length: float) -> "Axes":
+        """Set the major tick mark length in pixels (default: 4)."""
+        self._tick_length = float(length)
+        return self
+
+    def set_spine_visible(
+        self,
+        left:   bool = True,
+        right:  bool = True,
+        top:    bool = False,
+        bottom: bool = True,
+    ) -> "Axes":
+        """
+        Control which axis spines (border lines) are visible.
+
+        By default the top spine is hidden (matches Matplotlib's ``ax.spines``
+        best-practice for clean scientific plots).
+
+        Args:
+            left:   Show left (Y) spine.
+            right:  Show right (Y2) spine.
+            top:    Show top spine.
+            bottom: Show bottom (X) spine.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_spine_visible(top=False, right=False)  # clean minimal look
+        """
+        self._spines = {"left": left, "right": right, "top": top, "bottom": bottom}
+        return self
+
+    def axhspan(
+        self,
+        ymin: float,
+        ymax: float,
+        color: str   = "#ffff00",
+        alpha: float = 0.20,
+        label: str | None = None,
+    ) -> "Axes":
+        """
+        Add a horizontal shaded band spanning the full plot width.
+
+        The band is drawn in data-space Y coordinates.  Values outside the
+        current Y domain are clipped to the plot boundary.
+
+        Args:
+            ymin:  Lower Y data value of the band.
+            ymax:  Upper Y data value of the band.
+            color: Fill color.
+            alpha: Fill opacity 0–1.
+            label: Optional legend label.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.axhspan(90, 110, color="#22c55e", alpha=0.15, label="Normal range")
+        """
+        self._hspans.append(dict(ymin=ymin, ymax=ymax, color=color,
+                                  alpha=alpha, label=label))
+        return self
+
+    def axvspan(
+        self,
+        xmin,
+        xmax,
+        color: str   = "#a855f7",
+        alpha: float = 0.20,
+        label: str | None = None,
+    ) -> "Axes":
+        """
+        Add a vertical shaded band spanning the full plot height.
+
+        ``xmin`` / ``xmax`` may be numeric data values or category label
+        strings (resolved to their numeric position).
+
+        Args:
+            xmin:  Left X data value of the band.
+            xmax:  Right X data value of the band.
+            color: Fill color.
+            alpha: Fill opacity 0–1.
+            label: Optional legend label.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.axvspan("Jul", "Sep", color="#f59e0b", alpha=0.15, label="Summer")
+        """
+        self._vspans.append(dict(xmin=xmin, xmax=xmax, color=color,
+                                  alpha=alpha, label=label))
+        return self
+
+    def _render_spans(self) -> str:
+        """Render all axhspan / axvspan regions as SVG rects."""
+        if not self._hspans and not self._vspans:
+            return ""
+        if self.scale_x is None or self.scale_y is None:
+            return ""
+
+        pad      = self.padding
+        plot_top = pad
+        plot_bot = self.height - pad
+        plot_lft = pad
+        plot_rgt = self.width  - pad
+
+        elements: list[str] = []
+
+        # Horizontal bands
+        for span in self._hspans:
+            py_lo = max(plot_top, min(plot_bot, self.scale_y(span["ymax"])))
+            py_hi = max(plot_top, min(plot_bot, self.scale_y(span["ymin"])))
+            h     = py_hi - py_lo
+            if h < 0.5:
+                continue
+            elements.append(
+                f'<rect x="{plot_lft}" y="{py_lo:.1f}" '
+                f'width="{plot_rgt - plot_lft}" height="{h:.1f}" '
+                f'fill="{span["color"]}" fill-opacity="{span["alpha"]}" '
+                f'stroke="none"/>'
+            )
+
+        # Vertical bands
+        for span in self._vspans:
+            # Resolve categorical x values
+            def _resolve_x(v):
+                if isinstance(v, str):
+                    for s in self.series + self.y2_series:
+                        cats = getattr(s, "_x_categories", None)
+                        nxs  = getattr(s, "_numeric_x",   None)
+                        if cats and nxs:
+                            for cat, nx in zip(cats, nxs):
+                                if str(cat) == str(v):
+                                    return nx
+                return float(v)
+
+            try:
+                px_lo = max(plot_lft, min(plot_rgt, self.scale_x(_resolve_x(span["xmin"]))))
+                px_hi = max(plot_lft, min(plot_rgt, self.scale_x(_resolve_x(span["xmax"]))))
+            except (TypeError, ValueError):
+                continue
+
+            w = px_hi - px_lo
+            if abs(w) < 0.5:
+                continue
+            x_left = min(px_lo, px_hi)
+            elements.append(
+                f'<rect x="{x_left:.1f}" y="{plot_top}" '
+                f'width="{abs(w):.1f}" height="{plot_bot - plot_top}" '
+                f'fill="{span["color"]}" fill-opacity="{span["alpha"]}" '
+                f'stroke="none"/>'
+            )
+
+        return "\n".join(elements)
+
     # ------------------------------------------------------------------
     # Series registration
     # ------------------------------------------------------------------
@@ -206,15 +484,32 @@ class Axes:
         y_min = min(y_vals)
         y_max = max(y_vals)
 
-        # Force bar-chart Y-axis to include zero
-        if any(s.__class__.__name__ == "BarSeries" for s in series_list):
+        # Detect which series types anchor the Y baseline at zero
+        _zero_anchor_types = ("BarSeries", "HistogramSeries",
+                               "BoxPlotSeries", "GroupedBarSeries",
+                               "WaterfallSeries")
+        _has_zero_anchor = any(
+            s.__class__.__name__ in _zero_anchor_types for s in series_list
+        )
+        _bottom_is_zero = _has_zero_anchor and y_min >= 0
+
+        # Force zero-anchored series to include 0
+        if _has_zero_anchor:
             y_min = min(0, y_min)
             y_max = max(0, y_max)
 
-        # Guard: never pass equal min/max to log scale
+        # Guard: never pass equal min/max
         if y_min == y_max:
             y_min -= 1
             y_max += 1
+
+        # Add 7% breathing room so data never butts against the axis edge.
+        # Bottom pad is skipped when the baseline is zero (bars, histograms).
+        _span = y_max - y_min
+        PAD   = 0.07
+        y_max += _span * PAD
+        if not _bottom_is_zero:
+            y_min -= _span * PAD
 
         return x_domain, (y_min, y_max)
 
@@ -355,42 +650,132 @@ class Axes:
         if not self.show_grid or self._x_domain is None or self._y_domain is None:
             return ""
 
-        elements  = []
+        import math as _math
+
+        elements   = []
         stroke     = self.theme.get("grid_color", "#ddd")
         font       = self.theme.get("font", "sans-serif")
         text_color = self.theme.get("text_color", "#000")
         pad        = self.padding
 
-        # Gather all category labels from every registered series.
-        # Use the series._numeric_x positions (set by compute_domain) so that
-        # labels align with where the series actually drew their elements.
-        all_categories = {}
-        for s in self.series:
+        # ------------------------------------------------------------------
+        # Collect category labels for X axis from primary and Y2 series
+        # ------------------------------------------------------------------
+        all_categories: dict = {}
+        for s in list(self.series) + list(self.y2_series):
             if hasattr(s, "_x_categories") and s._x_categories:
-                numeric_x = getattr(s, "_numeric_x",
-                                    [i + 0.5 for i in range(len(s._x_categories))])
-                for pos, cat in zip(numeric_x, s._x_categories):
+                nx = getattr(s, "_numeric_x",
+                             [i + 0.5 for i in range(len(s._x_categories))])
+                for pos, cat in zip(nx, s._x_categories):
                     all_categories[pos] = cat
 
-        # --- Y ticks (horizontal grid lines) ---
-        for i in range(ticks + 1):
-            t   = i / ticks
-            y_v = self._y_domain[0] + t * (self._y_domain[1] - self._y_domain[0])
-            y_p = self.scale_y(y_v)
+        # ------------------------------------------------------------------
+        # Helper: generate tick values for a numeric domain
+        # ------------------------------------------------------------------
+        def _tick_vals(d_min: float, d_max: float, n: int, is_log: bool) -> list:
+            if is_log and d_min > 0:
+                lo = int(_math.floor(_math.log10(d_min)))
+                hi = int(_math.ceil(_math.log10(max(d_max, d_min * 10))))
+                vals = [m * (10 ** e)
+                        for e in range(lo, hi + 1)
+                        for m in (1, 2, 5)
+                        if d_min <= m * (10 ** e) <= d_max]
+                return vals or [d_min + i * (d_max - d_min) / n for i in range(n + 1)]
+            return [d_min + i * (d_max - d_min) / n for i in range(n + 1)]
+
+        # ------------------------------------------------------------------
+        # Shaded spans (axhspan / axvspan) — drawn before grid so they sit behind
+        # ------------------------------------------------------------------
+        _span_svg = self._render_spans()
+        if _span_svg:
+            elements.append(_span_svg)
+
+        # ------------------------------------------------------------------
+        # Y1 ticks — left side, horizontal grid lines across full plot width
+        # Use custom tick positions if set, otherwise auto-compute.
+        # ------------------------------------------------------------------
+        def _fmt(val: float, label_override: str | None = None) -> str:
+            if label_override is not None:
+                return label_override
+            if self._tick_formatter is not None:
+                return str(self._tick_formatter(val))
+            return _format_tick(val, is_log=(self.yscale == "log"))
+
+        _y_tick_vals = (
+            list(self._yticks)
+            if self._yticks is not None
+            else _tick_vals(self._y_domain[0], self._y_domain[1], ticks, self.yscale == "log")
+        )
+        _y_tick_lbls = self._yticklabels   # None → auto-format each
+
+        for idx_y, y_v in enumerate(_y_tick_vals):
+            if not (self._y_domain[0] <= y_v <= self._y_domain[1]):
+                continue
+            y_p     = self.scale_y(y_v)
+            lbl_ovr = _y_tick_lbls[idx_y] if _y_tick_lbls and idx_y < len(_y_tick_lbls) else None
+            # Grid line
             elements.append(
                 f'<line x1="{pad}" x2="{self.width - pad}" y1="{y_p}" y2="{y_p}" '
-                f'stroke="{stroke}" stroke-dasharray="3,3" />'
-            )
+                f'stroke="{stroke}" stroke-dasharray="3,3" />')
+            # Tick mark on left spine
             elements.append(
-                f'<text x="{pad - 8}" y="{y_p + 4}" text-anchor="end" '
+                f'<line x1="{pad - self._tick_length}" x2="{pad}" '
+                f'y1="{y_p}" y2="{y_p}" stroke="{text_color}" stroke-width="1"/>')
+            # Label
+            elements.append(
+                f'<text x="{pad - self._tick_length - 4}" y="{y_p + 4}" text-anchor="end" '
                 f'font-size="11" font-family="{font}" fill="{text_color}">'
-                f'{_format_tick(y_v, is_log=(self.yscale=="log"))}</text>'
+                f'{_fmt(y_v, lbl_ovr)}</text>'
             )
 
-        # --- X ticks (vertical grid lines) ---
-        rotate  = getattr(self, "_auto_rotate", False)
-        anchor  = "end" if rotate else "middle"
-        rot_tfm = f"rotate(-40, {{x_p}}, {{y_label}})" if rotate else ""
+        # Minor Y ticks
+        if self._minor_ticks > 0 and len(_y_tick_vals) >= 2:
+            for j in range(len(_y_tick_vals) - 1):
+                lo_v = _y_tick_vals[j]
+                hi_v = _y_tick_vals[j + 1]
+                step = (hi_v - lo_v) / (self._minor_ticks + 1)
+                for k in range(1, self._minor_ticks + 1):
+                    mv = lo_v + k * step
+                    if not (self._y_domain[0] <= mv <= self._y_domain[1]):
+                        continue
+                    mp = self.scale_y(mv)
+                    elements.append(
+                        f'<line x1="{pad - self._minor_length}" x2="{pad}" '
+                        f'y1="{mp}" y2="{mp}" stroke="{text_color}" '
+                        f'stroke-width="0.7" opacity="0.5"/>')
+
+        # ------------------------------------------------------------------
+        # Y2 ticks — right side, own independent scale, no extra grid lines
+        # ------------------------------------------------------------------
+        _has_y2 = (
+            bool(self.y2_series)
+            and self._y2_domain is not None
+            and self.scale_y2 is not None
+            and self.scale_y2 is not self.scale_y
+        )
+        if _has_y2:
+            right_x = self.width - pad
+            for y2_v in _tick_vals(self._y2_domain[0], self._y2_domain[1],
+                                    ticks, self.yscale == "log"):
+                y2_p = self.scale_y2(y2_v)
+                # Tick mark on right axis line
+                elements.append(
+                    f'<line x1="{right_x}" x2="{right_x + 5}" '
+                    f'y1="{y2_p}" y2="{y2_p}" '
+                    f'stroke="{text_color}" stroke-width="1" opacity="0.6"/>')
+                # Label to the right of the tick
+                elements.append(
+                    f'<text x="{right_x + 9}" y="{y2_p + 4}" text-anchor="start" '
+                    f'font-size="11" font-family="{font}" fill="{text_color}" opacity="0.85">'
+                    f'{_format_tick(y2_v)}</text>'
+                )
+
+        # ------------------------------------------------------------------
+        # X ticks — bottom, vertical grid lines
+        # ------------------------------------------------------------------
+        rotate      = getattr(self, "_auto_rotate", False)
+        anchor      = "end" if rotate else "middle"
+        rot_tfm     = "rotate(-40, {x_p}, {y_label})" if rotate else ""
         y_label_off = 16 if not rotate else 8
 
         if all_categories:
@@ -400,39 +785,69 @@ class Axes:
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
                 transform = f'transform="{rot}"' if rot else ""
                 elements.append(
-                    f'<line y1="{pad}" y2="{self.height - pad}" x1="{x_p}" x2="{x_p}" '
-                    f'stroke="{stroke}" stroke-dasharray="3,3" />'
-                )
+                    f'<line y1="{pad}" y2="{self.height - pad}" '
+                    f'x1="{x_p}" x2="{x_p}" '
+                    f'stroke="{stroke}" stroke-dasharray="3,3" />')
                 elements.append(
                     f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
                     f'{svg_escape(str(label))}</text>'
                 )
         else:
-            # Detect whether x axis holds datetime values
             _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
             _span   = (self._x_domain[1] - self._x_domain[0]) if _has_dt else 0
-            for i in range(ticks + 1):
-                t       = i / ticks
-                x_v     = self._x_domain[0] + t * (self._x_domain[1] - self._x_domain[0])
+            _x_tick_vals = (
+                list(self._xticks)
+                if self._xticks is not None
+                else _tick_vals(self._x_domain[0], self._x_domain[1],
+                                ticks, self.xscale == "log")
+            )
+            _x_tick_lbls = self._xticklabels
+            for idx_x, x_v in enumerate(_x_tick_vals):
+                if not (self._x_domain[0] <= x_v <= self._x_domain[1]):
+                    continue
                 x_p     = self.scale_x(x_v)
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
                 transform = f'transform="{rot}"' if rot else ""
-                tick_label = (
-                    _format_datetime_tick(x_v, _span)
-                    if _has_dt
-                    else _format_tick(x_v, is_log=(self.xscale=="log"))
-                )
+                if _x_tick_lbls and idx_x < len(_x_tick_lbls):
+                    tick_label = _x_tick_lbls[idx_x]
+                elif self._tick_formatter is not None:
+                    tick_label = str(self._tick_formatter(x_v))
+                elif _has_dt:
+                    tick_label = _format_datetime_tick(x_v, _span)
+                else:
+                    tick_label = _format_tick(x_v, is_log=(self.xscale == "log"))
                 elements.append(
-                    f'<line y1="{pad}" y2="{self.height - pad}" x1="{x_p}" x2="{x_p}" '
-                    f'stroke="{stroke}" stroke-dasharray="3,3" />'
-                )
+                    f'<line y1="{pad}" y2="{self.height - pad}" '
+                    f'x1="{x_p}" x2="{x_p}" '
+                    f'stroke="{stroke}" stroke-dasharray="3,3" />')
+                # Tick mark on bottom spine
+                elements.append(
+                    f'<line x1="{x_p}" x2="{x_p}" '
+                    f'y1="{self.height - pad}" y2="{self.height - pad + self._tick_length}" '
+                    f'stroke="{text_color}" stroke-width="1"/>')
                 elements.append(
                     f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
                     f'{tick_label}</text>'
                 )
+            # Minor X ticks
+            if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
+                for j in range(len(_x_tick_vals) - 1):
+                    lo_xv = _x_tick_vals[j]
+                    hi_xv = _x_tick_vals[j + 1]
+                    xstep = (hi_xv - lo_xv) / (self._minor_ticks + 1)
+                    for k in range(1, self._minor_ticks + 1):
+                        mxv = lo_xv + k * xstep
+                        if not (self._x_domain[0] <= mxv <= self._x_domain[1]):
+                            continue
+                        mxp = self.scale_x(mxv)
+                        by  = self.height - pad
+                        elements.append(
+                            f'<line x1="{mxp}" x2="{mxp}" '
+                            f'y1="{by}" y2="{by + self._minor_length}" '
+                            f'stroke="{text_color}" stroke-width="0.7" opacity="0.5"/>')
 
         return "\n".join(elements)
 
