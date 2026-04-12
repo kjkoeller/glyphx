@@ -184,23 +184,18 @@ class GlyphXAccessor:
             num_col = str(y or self._df.select_dtypes("number").columns[0])
 
             if hue and not groupby and x and x in self._df.columns:
-                # Hue mode with X column → GroupedBarSeries (side-by-side bars)
-                x_vals   = list(self._df[x].unique())
+                # Hue mode with X column → one BarSeries per unique hue value,
+                # each containing the rows that belong to that group.
                 hue_vals = list(self._df[hue].unique())
-                # Build values[x_idx][hue_idx]
-                values_matrix = []
-                for xv in x_vals:
-                    row = []
-                    for hv in hue_vals:
-                        mask = (self._df[x] == xv) & (self._df[hue] == hv)
-                        val  = float(self._df[mask][num_col].mean()) if mask.any() else 0.0
-                        row.append(val)
-                    values_matrix.append(row)
-                colors = [theme_colors[i % len(theme_colors)] for i in range(len(hue_vals))]
-                fig.add(GroupedBarSeries(
-                    groups=x_vals, categories=hue_vals,
-                    values=values_matrix, group_colors=colors,
-                ))
+                for i, hv in enumerate(hue_vals):
+                    grp_df  = self._df[self._df[hue] == hv]
+                    x_data  = grp_df[x].tolist()
+                    y_data  = grp_df[num_col].tolist()
+                    fig.add(BarSeries(
+                        x_data, y_data,
+                        color=theme_colors[i % len(theme_colors)],
+                        label=str(hv),
+                    ))
             elif hue and not groupby:
                 # Hue without X → one aggregated bar per hue group
                 agg_df = (

@@ -206,8 +206,11 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     Returns:
         str: Complete SVG document string.
     """
-    import uuid
-    chart_id  = f"glyphx-chart-{uuid.uuid4().hex[:12]}"
+    import itertools as _itertools
+    # Monotonic integer counter so IDs are unique and match glyphx-chart-\d+
+    if not hasattr(wrap_svg_canvas, "_counter"):
+        wrap_svg_canvas._counter = _itertools.count(1)
+    chart_id = f"glyphx-chart-{next(wrap_svg_canvas._counter)}"
     math_attr = ' data-has-math="true"' if has_math else ""
     return (
         f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
