@@ -93,11 +93,9 @@ class Figure:
         # axes so the chart data never overlaps the legend.  The legend
         # occupies the right margin within the same total canvas width.
         from .utils import LEGEND_GUTTER
-        _axes_width = (
-            self.width - LEGEND_GUTTER
-            if legend not in (False, None) and str(legend) in ("outside-right", "right-of")
-            else self.width
-        )
+        # Reserve right gutter for legend regardless of position string.
+        # This prevents legends from ever overlapping chart data.
+        _axes_width = self.width - LEGEND_GUTTER if legend not in (False, None) else self.width
         self.axes = Axes(
             width=_axes_width,
             height=self.height,
@@ -107,7 +105,10 @@ class Figure:
             yscale=yscale,
         )
         self.series: list[tuple[Any, bool]] = []
-        self._annotations: list[dict[str, Any]] = []
+        self._annotations:   list[dict[str, Any]] = []
+        self._canvas_texts:  list[dict[str, Any]] = []
+        self._supxlabel:     dict | None = None
+        self._supylabel:     dict | None = None
 
     # ── Fluent setters ───────────────────────────────────────────────────
 
@@ -301,6 +302,42 @@ class Figure:
                                       cmap=cmap, show_values=show_values,
                                       **kwargs))
 
+    def bubble(self, x, y, size, color=None, c=None, cmap="viridis",
+               alpha=0.65, min_radius=4, max_radius=40,
+               labels=None, label=None, use_y2=False, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.bubble.BubbleSeries`.  Returns ``self``."""
+        from .bubble import BubbleSeries
+        return self.add(BubbleSeries(x, y, size, color=color, c=c, cmap=cmap,
+                                     alpha=alpha, min_radius=min_radius,
+                                     max_radius=max_radius, labels=labels,
+                                     label=label, **kwargs), use_y2)
+
+    def sunburst(self, labels, parents, values, cmap="viridis",
+                 **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.sunburst.SunburstSeries`.  Returns ``self``."""
+        from .sunburst import SunburstSeries
+        return self.add(SunburstSeries(labels=labels, parents=parents,
+                                       values=values, cmap=cmap, **kwargs))
+
+    def parallel_coords(self, data, axes, hue=None, cmap="viridis",
+                        alpha=0.45, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.parallel_coords.ParallelCoordinatesSeries`.
+        Returns ``self``."""
+        from .parallel_coords import ParallelCoordinatesSeries
+        return self.add(ParallelCoordinatesSeries(data=data, axes=axes,
+                                                  hue=hue, cmap=cmap,
+                                                  alpha=alpha, **kwargs))
+
+    def diverging_bar(self, categories, values, pos_color="#2563eb",
+                      neg_color="#dc2626", show_values=True,
+                      **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.diverging_bar.DivergingBarSeries`.
+        Returns ``self``."""
+        from .diverging_bar import DivergingBarSeries
+        return self.add(DivergingBarSeries(categories=categories, values=values,
+                                           pos_color=pos_color, neg_color=neg_color,
+                                           show_values=show_values, **kwargs))
+
     def stream(self, max_points=100, color=None, label=None,
                **kwargs) -> "Figure":
         """Add a :class:`~glyphx.streaming.StreamingSeries` and return it.
@@ -318,12 +355,262 @@ class Figure:
         self.add(s)
         return s
 
+    def axhspan(self, ymin: float, ymax: float,
+                color: str = "#facc15", alpha: float = 0.20,
+                label: str | None = None) -> "Figure":
+        """
+        Add a horizontal shaded band across the full chart width.
+
+        Equivalent to Matplotlib's ``ax.axhspan()``.  Y values are in
+        data space; the band is clipped to the plot area.
+
+        Args:
+            ymin:  Lower Y bound (data units).
+            ymax:  Upper Y bound (data units).
+            color: Fill color.
+            alpha: Fill opacity 0–1.
+            label: Optional legend label.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.axhspan(90, 110, color="#22c55e", alpha=0.15, label="Target range")
+        """
+        self.axes.axhspan(ymin, ymax, color=color, alpha=alpha, label=label)
+        return self
+
+    def axvspan(self, xmin, xmax,
+                color: str = "#a855f7", alpha: float = 0.20,
+                label: str | None = None) -> "Figure":
+        """
+        Add a vertical shaded band across the full chart height.
+
+        Equivalent to Matplotlib's ``ax.axvspan()``.  X values may be
+        numeric data values or category label strings.
+
+        Args:
+            xmin:  Left X bound (data units or category label).
+            xmax:  Right X bound.
+            color: Fill color.
+            alpha: Fill opacity 0–1.
+            label: Optional legend label.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.axvspan("Jul", "Sep", color="#f59e0b", alpha=0.15, label="Q3")
+        """
+        self.axes.axvspan(xmin, xmax, color=color, alpha=alpha, label=label)
+        return self
+
+    def set_xticks(self, ticks: list,
+                   labels: list | None = None) -> "Figure":
+        """
+        Set explicit X-axis tick positions (and optionally their labels).
+
+        Equivalent to Matplotlib's ``ax.set_xticks()`` + ``ax.set_xticklabels()``.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.set_xticks([0, 25, 50, 75, 100])
+            fig.set_xticks([1, 6, 12], labels=["Jan", "Jun", "Dec"])
+        """
+        self.axes.set_xticks(ticks, labels)
+        return self
+
+    def set_yticks(self, ticks: list,
+                   labels: list | None = None) -> "Figure":
+        """
+        Set explicit Y-axis tick positions (and optionally their labels).
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.set_yticks([0, 500_000, 1_000_000], labels=["$0", "$500k", "$1M"])
+        """
+        self.axes.set_yticks(ticks, labels)
+        return self
+
+    def set_tick_format(self, formatter) -> "Figure":
+        """
+        Apply a callable formatter to all numeric tick labels on both axes.
+
+        Equivalent to Matplotlib's ``FuncFormatter``.
+
+        Args:
+            formatter: Callable ``(value: float) -> str``.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.set_tick_format(lambda v: f"${v:,.0f}")
+            fig.set_tick_format(lambda v: f"{v:.1%}")
+        """
+        self.axes.set_tick_format(formatter)
+        return self
+
+    def set_minor_ticks(self, n: int = 4) -> "Figure":
+        """
+        Draw minor tick subdivisions between each pair of major ticks.
+
+        Args:
+            n: Number of minor ticks between major ticks.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.set_minor_ticks(4)
+        """
+        self.axes.set_minor_ticks(n)
+        return self
+
+    def set_spine_visible(self, left: bool = True, right: bool = True,
+                          top: bool = False, bottom: bool = True) -> "Figure":
+        """
+        Control axis spine (border line) visibility.
+
+        Equivalent to Matplotlib's ``ax.spines[...].set_visible()``.
+
+        Args:
+            left:   Left (Y) spine.
+            right:  Right (Y2) spine.
+            top:    Top spine.
+            bottom: Bottom (X) spine.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.set_spine_visible(top=False, right=False)   # clean minimal look
+        """
+        self.axes.set_spine_visible(left=left, right=right,
+                                     top=top, bottom=bottom)
+        return self
+
+    def text(self, x: float, y: float, s: str,
+             color: str = "#333", font_size: int = 12,
+             anchor: str = "middle",
+             transform: str = "canvas") -> "Figure":
+        """
+        Add free-form text anywhere on the canvas.
+
+        Equivalent to Matplotlib's ``fig.text()`` / ``ax.text()``.
+
+        Args:
+            x:         X position.  When ``transform='canvas'`` this is
+                       a fraction of canvas width (0–1).  When
+                       ``transform='data'`` it is a data-space value.
+            y:         Y position.  Canvas fraction (0 = top, 1 = bottom)
+                       or data-space value depending on ``transform``.
+            s:         Text string.  Use ``$...$`` for math (rendered
+                       via MathJax when the chart is opened in a browser).
+            color:     Font color.
+            font_size: Font size in points.
+            anchor:    SVG text-anchor: ``"start"``, ``"middle"``, ``"end"``.
+            transform: ``"canvas"`` (0–1 fractions) or ``"data"`` (data coords).
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.text(0.5, 0.02, "Source: World Bank", font_size=9, color="#888")
+            fig.text(0.5, 0.5, "$R^2 = 0.95$", font_size=14)
+        """
+        self._canvas_texts.append(dict(
+            x=x, y=y, s=s, color=color,
+            font_size=font_size, anchor=anchor, transform=transform,
+        ))
+        return self
+
+    def supxlabel(self, label: str, font_size: int = 13,
+                  color: str | None = None) -> "Figure":
+        """
+        Set a shared X-axis label below all subplots.
+
+        Equivalent to Matplotlib's ``fig.supxlabel()``.  Useful when all
+        subplots in a grid share the same X-axis meaning.
+
+        Args:
+            label:     Label text.
+            font_size: Font size.
+            color:     Text color (defaults to theme text color).
+
+        Returns:
+            ``self`` for chaining.
+        """
+        self._supxlabel = dict(label=label, font_size=font_size, color=color)
+        return self
+
+    def supylabel(self, label: str, font_size: int = 13,
+                  color: str | None = None) -> "Figure":
+        """
+        Set a shared Y-axis label beside all subplots.
+
+        Equivalent to Matplotlib's ``fig.supylabel()``.
+
+        Args:
+            label:     Label text.
+            font_size: Font size.
+            color:     Text color (defaults to theme text color).
+
+        Returns:
+            ``self`` for chaining.
+        """
+        self._supylabel = dict(label=label, font_size=font_size, color=color)
+        return self
+
+    def stacked_bar(self, x: list, series: dict,
+                    normalize: bool = False, colors: list | None = None,
+                    bar_width: float = 0.75, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.stacked_bar.StackedBarSeries`.  Returns ``self``."""
+        from .stacked_bar import StackedBarSeries
+        return self.add(StackedBarSeries(x=x, series=series,
+                                          normalize=normalize, colors=colors,
+                                          bar_width=bar_width, **kwargs))
+
+    def bump(self, x: list, rankings: dict,
+             colors: list | None = None, show_labels: bool = True,
+             **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.bump_chart.BumpChartSeries`.  Returns ``self``."""
+        from .bump_chart import BumpChartSeries
+        return self.add(BumpChartSeries(x=x, rankings=rankings,
+                                         colors=colors, show_labels=show_labels,
+                                         **kwargs))
+
+    def sparkline(self, data: list, color: str = "#2563eb",
+                  kind: str = "line", fill: bool = True,
+                  label: str | None = None, **kwargs) -> "Figure":
+        """Add a :class:`~glyphx.sparkline.SparklineSeries`.  Returns ``self``."""
+        from .sparkline import SparklineSeries
+        return self.add(SparklineSeries(data=data, color=color,
+                                         kind=kind, fill=fill,
+                                         label=label, **kwargs))
+
     def vline(self, x, color="#888", width=1,
               linestyle="dashed", label=None) -> "Figure":
         """Draw a vertical reference line at data coordinate ``x``.  Returns ``self``."""
         from .series import LineSeries
+        # Compute domain from existing series if not yet finalized
         if self.axes._y_domain:
             ymin, ymax = self.axes._y_domain
+        elif self.series:
+            all_y = [v for s, _ in self.series for v in (s.y or []) if v is not None]
+            ymin, ymax = (min(all_y), max(all_y)) if all_y else (0, 1)
         else:
             ymin, ymax = 0, 1
         return self.add(LineSeries([x, x], [ymin, ymax],
@@ -336,6 +623,9 @@ class Figure:
         from .series import LineSeries
         if self.axes._x_domain:
             xmin, xmax = self.axes._x_domain
+        elif self.series:
+            all_x = [v for s, _ in self.series for v in (getattr(s, "_numeric_x", None) or s.x or []) if v is not None]
+            xmin, xmax = (min(all_x), max(all_x)) if all_x else (0, 1)
         else:
             xmin, xmax = 0, 1
         return self.add(LineSeries([xmin, xmax], [y, y],
@@ -343,6 +633,57 @@ class Figure:
                                    linestyle=linestyle, label=label))
 
     # ── __repr__ ─────────────────────────────────────────────────────────
+
+    def copy(self) -> "Figure":
+        """
+        Return a deep copy of this figure.
+
+        Useful for creating small variations without re-building from scratch::
+
+            base = Figure().add(LineSeries(x, y))
+            dark = base.copy().set_theme("dark")
+            light = base.copy().set_theme("default")
+
+        Returns:
+            A new :class:`Figure` with all series, annotations, and settings
+            duplicated.
+        """
+        import copy as _copy
+        return _copy.deepcopy(self)
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Compare two figures by their rendered SVG output.
+
+        Chart IDs (UUIDs) are stripped before comparison so two figures
+        produced from identical data are considered equal even though their
+        IDs differ.  This enables snapshot / regression testing::
+
+            assert fig_a == fig_b           # visual equality
+            assert fig_new != fig_baseline  # regression detected
+
+        Returns:
+            ``True`` if both figures render to visually identical SVG.
+        """
+        if not isinstance(other, Figure):
+            return NotImplemented
+        import re as _re
+        # Pattern strips any XML attribute whose value contains a glyphx UUID
+        _UUID_ATTR = _re.compile(r'\s[\w:-]+="[^"]*glyphx-chart-[a-f0-9]{12}[^"]*"')
+
+        def _strip_ids(s: str) -> str:
+            return _UUID_ATTR.sub("", s)
+
+        return _strip_ids(self.render_svg()) == _strip_ids(other.render_svg())
+
+    def __hash__(self) -> int:
+        """
+        Hash based on figure identity (not SVG content).
+
+        Required by Python when ``__eq__`` is defined.  Figures remain
+        usable as dict keys and in sets even though equality is SVG-based.
+        """
+        return id(self)
 
     def __repr__(self) -> str:
         series_desc = ", ".join(
@@ -493,6 +834,47 @@ class Figure:
                 f'fill="{color}">{svg_escape(self.title)}</text>'
             )
 
+        # sup[x|y]label — shared axis labels across subplot grids
+        _font  = self.theme.get("font", "sans-serif")
+        _tc    = self.theme.get("text_color", "#000")
+        if self._supxlabel:
+            sx = self._supxlabel
+            c  = sx.get("color") or _tc
+            svg_parts.append(
+                f'<text x="{self.width // 2}" y="{self.height - 4}" '
+                f'text-anchor="middle" font-size="{sx["font_size"]}" '
+                f'font-family="{_font}" fill="{c}">{svg_escape(sx["label"])}</text>'
+            )
+        if self._supylabel:
+            sy = self._supylabel
+            c  = sy.get("color") or _tc
+            cx = 14
+            cy = self.height // 2
+            svg_parts.append(
+                f'<text x="{cx}" y="{cy}" text-anchor="middle" '
+                f'font-size="{sy["font_size"]}" font-family="{_font}" fill="{c}" '
+                f'transform="rotate(-90, {cx}, {cy})">{svg_escape(sy["label"])}</text>'
+            )
+
+        # Free-form canvas text (fig.text())
+        for ct in getattr(self, "_canvas_texts", []):
+            if ct["transform"] == "canvas":
+                cx = ct["x"] * self.width
+                cy = ct["y"] * self.height
+            else:
+                # data coords — resolve if axes are finalized
+                try:
+                    cx = self.axes.scale_x(ct["x"]) if self.axes.scale_x else ct["x"] * self.width
+                    cy = self.axes.scale_y(ct["y"]) if self.axes.scale_y else ct["y"] * self.height
+                except Exception:
+                    cx, cy = ct["x"] * self.width, ct["y"] * self.height
+            svg_parts.append(
+                f'<text x="{cx:.1f}" y="{cy:.1f}" '
+                f'text-anchor="{ct["anchor"]}" '
+                f'font-size="{ct["font_size"]}" font-family="{_font}" '
+                f'fill="{ct["color"]}">{svg_escape(ct["s"])}</text>'
+            )
+
         # ── Subplot grid ──────────────────────────────────────────────────
         if self.grid and any(any(cell for cell in row) for row in self.grid):
             cell_w = self.width  // self.cols
@@ -531,8 +913,8 @@ class Figure:
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
 
-            for series, _ in self.series:
-                svg_parts.append(series.to_svg(self.axes))
+            for series, use_y2 in self.series:
+                svg_parts.append(series.to_svg(self.axes, use_y2=use_y2))
 
             if self._annotations and self.axes.scale_x and self.axes.scale_y:
                 svg_parts.append(self._render_annotations(
@@ -544,14 +926,11 @@ class Figure:
             if self.legend_pos:
                 # For outside-right legends, anchor x relative to the
                 # axes width (the shrunk plot area) not the full canvas.
-                _legend_ref_w = (
-                    self.axes.width
-                    if self.legend_pos in ("outside-right", "right-of")
-                    else self.width
-                )
+                # Always render legend in the right gutter (outside plot area)
+                _legend_ref_w = self.axes.width
                 svg_parts.append(draw_legend(
                     [s for s, _ in self.series],
-                    position=self.legend_pos,
+                    position="outside-right",
                     font=self.theme.get("font", "sans-serif"),
                     text_color=self.theme.get("text_color", "#000"),
                     fig_width=_legend_ref_w,
@@ -567,10 +946,15 @@ class Figure:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
+        # Detect math text ($...$) in the rendered SVG content for MathJax
+        _svg_content = "\n".join(svg_parts)
+        _has_math    = "$" in _svg_content
+
         raw_svg = wrap_svg_canvas(
-            "\n".join(svg_parts),
+            _svg_content,
             width=self.width,
             height=self.height,
+            has_math=_has_math,
         )
 
         # ── Accessibility injection ───────────────────────────────────────
@@ -608,7 +992,8 @@ class Figure:
         self._display(self.render_svg())
         return self
 
-    def save(self, filename: str = "glyphx_output.svg") -> Figure:
+    def save(self, filename: str = "glyphx_output.svg",
+             dpi: int = 96) -> "Figure":
         """
         Save the rendered figure to disk.
 
@@ -618,28 +1003,98 @@ class Figure:
             pip install "glyphx[export]"    # PNG/JPG
             pip install "glyphx[pptx]"      # PowerPoint
 
-        Returns ``self`` for chaining.
+        Args:
+            filename: Output path.  Extension determines the format.
+            dpi:      Output resolution for raster formats (PNG/JPG).
+                      Default 96; use 192 or 300 for high-DPI / print.
+                      Has no effect on SVG or HTML output.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.save("chart.png", dpi=192)   # crisp on retina displays
+            fig.save("chart.png", dpi=300)   # print-quality
         """
         svg = self.render_svg()
         if filename.lower().endswith(".pptx"):
             _save_as_pptx(svg, filename, title=self.title)
         else:
-            write_svg_file(svg, filename)
+            write_svg_file(svg, filename, dpi=dpi)
         return self
 
 
-    def tight_layout(self) -> Figure:
+    def tight_layout(self) -> "Figure":
         """
         Auto-adjust padding to prevent label clipping and overlap.
 
-        Delegates to :meth:`~glyphx.layout.Axes.tight_layout` on the
-        primary axes after calling ``finalize()``.  Returns ``self``.
+        For single-axis figures, delegates to
+        :meth:`~glyphx.layout.Axes.tight_layout`.  For subplot grids,
+        applies :meth:`constrained_layout` which aligns the left edges of
+        all subplot cells so tick labels never overlap across rows.
+
+        Returns ``self`` for chaining.
         """
+        if self.grid and any(any(c for c in r) for r in self.grid):
+            return self.constrained_layout()
         if not self.axes.series:
             for s, use_y2 in self.series:
                 self.axes.add_series(s, use_y2)
         self.axes.finalize()
         self.axes.tight_layout()
+        return self
+
+    def constrained_layout(self) -> "Figure":
+        """
+        Align subplot cells so their plot areas share a common left edge.
+
+        Equivalent to Matplotlib's ``constrained_layout=True``.  Computes
+        the widest Y-tick label across all cells in each column, then sets
+        a uniform left padding for all cells in that column so the actual
+        data area (to the right of the Y-axis) is flush.
+
+        Returns ``self`` for chaining.
+
+        Example::
+
+            fig = Figure(rows=2, cols=2, width=900, height=600)
+            # ... add_axes and add_series ...
+            fig.constrained_layout()   # aligns all subplot left edges
+        """
+        from .utils import _format_tick
+
+        # Finalize all axes first so _y_domain is populated
+        for row in self.grid:
+            for ax in row:
+                if ax is not None and ax.series:
+                    ax.finalize()
+
+        # Per-column: compute the max Y-tick label width across all rows
+        n_cols = self.cols
+        n_rows = self.rows
+        col_max_label_px: list[int] = []
+
+        for c in range(n_cols):
+            max_label_len = 0
+            for r in range(n_rows):
+                ax = self.grid[r][c] if r < len(self.grid) and c < len(self.grid[r]) else None
+                if ax is None or ax._y_domain is None:
+                    continue
+                for v in (ax._y_domain[0], ax._y_domain[1]):
+                    lbl = _format_tick(v, is_log=(ax.yscale == "log"))
+                    max_label_len = max(max_label_len, len(lbl))
+            # ~7px per char + 8px gap between label and axis
+            col_max_label_px.append(max_label_len * 7 + 8 + 8)
+
+        # Apply uniform padding per column
+        for c in range(n_cols):
+            uniform_pad = max(col_max_label_px[c], 50)  # never below default 50
+            for r in range(n_rows):
+                ax = self.grid[r][c] if r < len(self.grid) and c < len(self.grid[r]) else None
+                if ax is not None:
+                    ax.padding = uniform_pad
+
         return self
 
     def add_stat_annotation(

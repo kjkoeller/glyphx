@@ -161,6 +161,14 @@ def wrap_svg_with_template(svg_string: str) -> str:
     </script>
     """
 
+    # MathJax — inject only when the SVG contains $...$ math text
+    mathjax_script = ""
+    if 'data-has-math="true"' in svg_string:
+        mathjax_script = (
+            '<script>MathJax={tex:{inlineMath:[["$","$"]]}}</script>\n'
+            '<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>\n'
+        )
+
     brush_script = ""
     brush_path = Path(__file__).parent / "assets" / "brush.js"
     if brush_path.exists():
@@ -176,39 +184,42 @@ def wrap_svg_with_template(svg_string: str) -> str:
     return (
         html_content
         .replace("{{svg_content}}", svg_string)
-        .replace("{{extra_scripts}}", zoom_script + brush_script + a11y_script + legend_js)
+        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script + a11y_script + legend_js)
     )
 
 
-_chart_counter = 0
-
-def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480) -> str:
+def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
+                    has_math: bool = False) -> str:
     """
     Wrap raw SVG elements in a full <svg> root element.
 
-    Each SVG gets a unique ``id`` and a ``data-glyphx`` attribute so that
-    the brush, zoom, and tooltip scripts can identify GlyphX charts on the
-    page and implement linked interactions.
+    Each SVG gets a collision-resistant UUID id (no module-level counter
+    that grows unboundedly in long-running Jupyter sessions).
 
     Args:
         svg_content (str): Inner SVG markup.
-        width (int): Canvas width in pixels.
-        height (int): Canvas height in pixels.
+        width (int):       Canvas width in pixels.
+        height (int):      Canvas height in pixels.
+        has_math (bool):   When True, embeds a MathJax data attribute so
+                           wrap_svg_with_template injects the CDN script.
 
     Returns:
         str: Complete SVG document string.
     """
-    global _chart_counter
-    _chart_counter += 1
-    chart_id = f"glyphx-chart-{_chart_counter}"
+    import itertools as _itertools
+    # Monotonic integer counter so IDs are unique and match glyphx-chart-\d+
+    if not hasattr(wrap_svg_canvas, "_counter"):
+        wrap_svg_canvas._counter = _itertools.count(1)
+    chart_id = f"glyphx-chart-{next(wrap_svg_canvas._counter)}"
+    math_attr = ' data-has-math="true"' if has_math else ""
     return (
-        f'<svg id="{chart_id}" data-glyphx="true" '
+        f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
         f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {width} {height}">{svg_content}</svg>'
     )
 
 
-def write_svg_file(svg_string: str, filename: str):
+def write_svg_file(svg_string: str, filename: str, **kwargs):
     """
     Save a chart to file.  Supports .svg, .html, .png, and .jpg.
 
@@ -243,7 +254,11 @@ def write_svg_file(svg_string: str, filename: str):
                 "PNG/JPG export requires cairosvg.  Install it with:\n"
                 "    pip install cairosvg"
             )
-        cairosvg.svg2png(bytestring=svg_string.encode(), write_to=filename)
+        # dpi may be passed as a keyword via write_svg_file(... dpi=192)
+        _dpi = kwargs.get("dpi", 96)
+        _scale = _dpi / 96.0   # cairosvg scale=2 doubles resolution
+        cairosvg.svg2png(bytestring=svg_string.encode(),
+                         write_to=filename, scale=_scale)
 
     else:
         raise ValueError(

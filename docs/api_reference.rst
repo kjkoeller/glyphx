@@ -6,6 +6,13 @@ glyphx.plot
 
 .. autofunction:: glyphx.plot
 
+
+glyphx.plot3d
+-------------
+
+.. autofunction:: glyphx.plot3d
+
+
 glyphx.from_prompt
 ------------------
 
@@ -16,6 +23,14 @@ Figure
 ------
 
 .. autoclass:: glyphx.Figure
+   :members:
+   :member-order: bysource
+
+
+Figure3D
+--------
+
+.. autoclass:: glyphx.Figure3D
    :members:
    :member-order: bysource
 
@@ -83,6 +98,12 @@ Statistical Series
 .. autoclass:: glyphx.violin_plot.ViolinPlotSeries
    :members:
 
+.. autoclass:: glyphx.kde.KDESeries
+   :members:
+
+.. autoclass:: glyphx.fill_between.FillBetweenSeries
+   :members:
+
 .. autoclass:: glyphx.stat_annotation.StatAnnotation
    :members:
 
@@ -105,6 +126,9 @@ Hierarchical Series
 .. autoclass:: glyphx.treemap.TreemapSeries
    :members:
 
+.. autoclass:: glyphx.sunburst.SunburstSeries
+   :members:
+
 
 Streaming
 ---------
@@ -113,8 +137,17 @@ Streaming
    :members:
 
 
-Advanced Series
----------------
+Advanced 2-D Series
+-------------------
+
+.. autoclass:: glyphx.bubble.BubbleSeries
+   :members:
+
+.. autoclass:: glyphx.parallel_coords.ParallelCoordinatesSeries
+   :members:
+
+.. autoclass:: glyphx.diverging_bar.DivergingBarSeries
+   :members:
 
 .. autoclass:: glyphx.grouped_bar.GroupedBarSeries
    :members:
@@ -124,6 +157,38 @@ Advanced Series
 
 .. autoclass:: glyphx.count_plot.CountPlotSeries
    :members:
+
+
+3-D Series
+----------
+
+.. autoclass:: glyphx.scatter3d.Scatter3DSeries
+   :members:
+
+.. autoclass:: glyphx.surface3d.Surface3DSeries
+   :members:
+
+.. autoclass:: glyphx.line3d.Line3DSeries
+   :members:
+
+.. autoclass:: glyphx.bar3d.Bar3DSeries
+   :members:
+
+.. autoclass:: glyphx.contour.ContourSeries
+   :members:
+
+
+Downsampling
+------------
+
+.. automodule:: glyphx.downsample
+   :members: lttb, m4, maybe_downsample_line, voxel_thin_2d, voxel_thin_3d,
+             lttb_3d, decimate_grid, cull_faces,
+             enable, disable, is_enabled,
+             AUTO_THRESHOLD, M4_THRESHOLD, MIN_FACE_AREA
+
+.. note::
+   ``maybe_downsample()`` is deprecated; use ``maybe_downsample_line()`` instead.
 
 
 DataFrame Accessor
@@ -171,6 +236,17 @@ Utilities
 
 .. autofunction:: glyphx.utils.svg_escape
 
+.. autofunction:: glyphx.utils.wrap_svg_canvas
+
 .. autofunction:: glyphx.utils.make_shareable_html
 
 .. autofunction:: glyphx.utils.write_svg_file
+
+
+Projection (3-D)
+----------------
+
+.. autoclass:: glyphx.projection3d.Camera3D
+   :members:
+
+.. autofunction:: glyphx.projection3d.normalize

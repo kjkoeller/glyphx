@@ -79,9 +79,8 @@ class CandlestickSeries(BaseSeries):
         elements: list[str] = []
 
         # Candle body pixel width
-        n            = len(self.dates)
-        domain_w     = ax._x_domain[1] - ax._x_domain[0]   # type: ignore[union-attr]
-        slot_px      = (ax.width - 2 * ax.padding) / n      # type: ignore[union-attr]
+        n       = len(self.dates)
+        slot_px = (ax.width - 2 * ax.padding) / n      # type: ignore[union-attr]
         body_px      = slot_px * self.candle_width
 
         for i, (date, o, h, l, c) in enumerate(zip(
@@ -119,13 +118,5 @@ class CandlestickSeries(BaseSeries):
                 f'width="{body_px}" height="{body_h}" '
                 f'fill="{color}" {tooltip}/>'
             )
-
-            # X-axis label — skip if _x_categories is set; grid renders them
-            if not getattr(self, "_x_categories", None):
-                elements.append(
-                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
-                    f'text-anchor="middle" font-size="10" fill="#555">'
-                    f'{svg_escape(str(date))}</text>'
-                )
 
         return "\n".join(elements)

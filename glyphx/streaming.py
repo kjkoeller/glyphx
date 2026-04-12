@@ -169,8 +169,8 @@ class _LiveContext:
         self._interval  = 1.0 / fps
         self._last_draw = 0.0
 
-    def __enter__(self) -> StreamingSeries:
-        return self._stream
+    def __enter__(self) -> "_LiveContext":
+        return self
 
     def push(self, value: float) -> None:
         """Push a value and re-render if enough time has elapsed."""
