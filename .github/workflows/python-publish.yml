@@ -4,11 +4,8 @@ on:
   release:
     types: [published]
 
-# Trusted Publishing (OIDC) — no API token or password needed.
-# Configure at https://pypi.org/manage/project/glyphx/settings/publishing/
 permissions:
   contents: read
-  id-token: write   # required for OIDC Trusted Publishing
 
 jobs:
   deploy:
@@ -18,7 +15,7 @@ jobs:
     - name: Check out repository
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0   # full history so setuptools_scm can find tags
+        fetch-depth: 0
 
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -31,10 +28,6 @@ jobs:
         python -m pip install build "setuptools-scm>=8"
 
     - name: Derive clean version from release tag
-      # GITHUB_REF_NAME is the tag name on a release event, e.g. "v2.1.0".
-      # Stripping the leading "v" gives a valid PEP 440 public version.
-      # Setting SETUPTOOLS_SCM_PRETEND_VERSION prevents any local segment
-      # from being appended even if git describe produces one.
       run: |
         TAG="${GITHUB_REF_NAME#v}"
         TAG="${TAG#V}"
@@ -56,3 +49,6 @@ jobs:
 
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_PASSWORD }}
