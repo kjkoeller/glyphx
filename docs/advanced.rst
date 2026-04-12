@@ -42,6 +42,127 @@ Self-Contained Shareable HTML
    html = fig.share()                           # returns string
 
 
+3-D Interactive Charts
+-----------------------
+
+``Figure3D`` renders via Three.js WebGL with mouse orbit controls, tooltips,
+and theme-aware axis grids.  A static SVG is generated as a fallback for
+environments where JavaScript is not available.
+
+.. code-block:: python
+
+   from glyphx import Figure3D
+   from glyphx.scatter3d import Scatter3DSeries
+   from glyphx.surface3d  import Surface3DSeries
+   from glyphx.line3d     import Line3DSeries
+   from glyphx.bar3d      import Bar3DSeries
+   from glyphx.contour    import ContourSeries
+   import numpy as np
+
+   # 3-D Scatter — fourth variable encoded as color
+   fig = Figure3D(title="Gaussian Mixture", theme="dark",
+                  azimuth=45, elevation=30)
+   fig.add(Scatter3DSeries(xs, ys, zs, c=zs, cmap="plasma",
+                           size=4, label="Cluster A"))
+   fig.show()   # opens WebGL viewer; saves .html for sharing
+
+   # 3-D Surface — large grids are auto-decimated and face-culled
+   x = np.linspace(-3, 3, 150)
+   y = np.linspace(-3, 3, 150)
+   Z = np.sin(np.sqrt(x[None,:]**2 + y[:,None]**2))
+   fig = Figure3D(title="Sinc Surface")
+   fig.add(Surface3DSeries(x, y, Z, cmap="viridis", wireframe=True))
+   fig.show()
+
+   # 3-D Polyline
+   t = np.linspace(0, 4 * np.pi, 2_000)
+   fig = Figure3D(title="Helix")
+   fig.add(Line3DSeries(np.cos(t), np.sin(t), t / (4 * np.pi),
+                        color="#dc2626", width=2.5))
+   fig.show()
+
+   # Contour lines over a grid
+   fig = Figure3D(title="Contour")
+   fig.add(ContourSeries(x, y, Z, levels=12, filled=True, cmap="coolwarm"))
+   fig.show()
+
+All 3-D series accept a ``threshold`` keyword to override the default
+downsampling budget; see :doc:`downsampling` for details.
+
+
+New 2-D Chart Types (v1.5+)
+----------------------------
+
+Bubble Chart
+~~~~~~~~~~~~
+
+Scatter plot with size encoding for a fourth variable:
+
+.. code-block:: python
+
+   from glyphx.bubble import BubbleSeries
+
+   fig = Figure()
+   fig.add(BubbleSeries(x, y, sizes=market_cap, c=growth_rate,
+                        cmap="plasma", label="Companies"))
+   fig.show()
+
+
+Sunburst Chart
+~~~~~~~~~~~~~~
+
+Multi-ring hierarchical chart:
+
+.. code-block:: python
+
+   from glyphx.sunburst import SunburstSeries
+
+   fig = Figure(width=600, height=600)
+   fig.add(SunburstSeries(
+       labels=["Total", "A", "A1", "A2", "B", "B1"],
+       parents=["",     "Total","A","A","Total","B"],
+       values= [0,       40,    25,  15,  60,    60],
+   ))
+   fig.show()
+
+
+Parallel Coordinates
+~~~~~~~~~~~~~~~~~~~~~
+
+High-dimensional data visualization:
+
+.. code-block:: python
+
+   from glyphx.parallel_coords import ParallelCoordinatesSeries
+
+   fig = Figure(width=900, height=500)
+   fig.add(ParallelCoordinatesSeries(
+       data=df[["sepal_length","sepal_width","petal_length","petal_width"]],
+       labels=df["species"],
+       cmap="viridis",
+   ))
+   fig.show()
+
+
+Diverging Bar Chart
+~~~~~~~~~~~~~~~~~~~~
+
+Horizontal bars diverging from a center baseline:
+
+.. code-block:: python
+
+   from glyphx.diverging_bar import DivergingBarSeries
+
+   fig = Figure()
+   fig.add(DivergingBarSeries(
+       categories=["Q1","Q2","Q3","Q4"],
+       values=    [  2,  -3,   5,  -1],
+       color_pos="#2563eb",
+       color_neg="#dc2626",
+   ))
+   fig.show()
+
+
 Statistical Charts
 ------------------
 
@@ -69,6 +190,9 @@ ECDF
 Raincloud Plot
 ~~~~~~~~~~~~~~
 
+Combines jittered strip plot, half-violin, and box in one panel.
+Use ``seed=`` for reproducible jitter:
+
 .. code-block:: python
 
    from glyphx.raincloud import RaincloudSeries
@@ -78,7 +202,7 @@ Raincloud Plot
        data=[control, low_dose, high_dose],
        categories=["Control", "Low Dose", "High Dose"],
        violin_width=35,
-       seed=42,
+       seed=42,   # reproducible jitter
    ))
    fig.show()
 
@@ -315,3 +439,29 @@ Seaborn-Style Composite Plots
    jointplot(df, x="a", y="b")
    lmplot(df, x="x", y="y")
    facet_plot(df, x="value", col="group", kind="hist")
+
+
+Large-Data Performance
+-----------------------
+
+See :doc:`downsampling` for a full description of the automatic downsampling
+pipeline, per-series threshold overrides, the global kill-switch, and the
+``last_downsample_info`` metadata API.
+
+Quick reference:
+
+.. code-block:: python
+
+   # Per-series threshold
+   from glyphx.series import LineSeries
+   ls = LineSeries(x, y, threshold=1_000)   # keep at most 1 000 points
+
+   # Global kill-switch (thread-local)
+   import glyphx.downsample as ds
+   ds.disable()   # no downsampling on this thread
+   # ... render ...
+   ds.enable()
+
+   # Inspect what happened after render
+   print(ls.last_downsample_info)
+   # {'algorithm': 'M4+LTTB', 'original_n': 200000, 'thinned_n': 1000}

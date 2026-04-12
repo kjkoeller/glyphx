@@ -135,6 +135,16 @@ All methods return a ``Figure`` for further chaining:
        title="Revenue by Region",
    )
 
+   # Hue splitting — one BarSeries per unique hue value, auto-colored
+   # Each group gets its own label (appears in the legend) and a distinct
+   # color from the active theme palette.
+   df.glyphx.bar(
+       x="month",
+       y="revenue",
+       hue="region",          # splits into North / South series
+       title="Revenue by Month and Region",
+   )
+
    # Full chain from the accessor
    (df.glyphx
       .bar(x="month", y="revenue", label="Revenue", auto_display=False)
@@ -148,6 +158,105 @@ All methods return a ``Figure`` for further chaining:
    :alt: Bar chart generated via the DataFrame accessor
    :width: 760px
    :align: center
+
+.. note::
+   When both ``x=`` and ``hue=`` are provided, ``bar()`` produces one
+   ``BarSeries`` per unique hue value filtered to its own rows.
+   When only ``hue=`` is given (without ``x=``), it aggregates using ``agg=``
+   and creates one bar per group.
+
+
+3-D Charts
+----------
+
+Use ``Figure3D`` for interactive Three.js output with an SVG fallback:
+
+.. code-block:: python
+
+   from glyphx import Figure3D, plot3d
+   from glyphx.scatter3d import Scatter3DSeries
+   from glyphx.surface3d  import Surface3DSeries
+   from glyphx.line3d     import Line3DSeries
+   from glyphx.bar3d      import Bar3DSeries
+   from glyphx.contour    import ContourSeries
+   import numpy as np
+
+   # Scatter — continuous color via colormap
+   fig = Figure3D(title="Gaussian Clusters", theme="dark",
+                  azimuth=45, elevation=30,
+                  xlabel="X", ylabel="Y", zlabel="Z")
+   fig.add(Scatter3DSeries(xs, ys, zs, c=zs, cmap="plasma",
+                           size=4, label="Points"))
+   fig.show()      # WebGL interactive viewer
+   fig.save("scatter3d.html")
+
+   # Surface — z = f(x, y) over a regular grid
+   x = np.linspace(-3, 3, 60)
+   y = np.linspace(-3, 3, 60)
+   Z = np.sin(np.sqrt(x[None,:]**2 + y[:,None]**2))
+   fig = Figure3D(title="Sinc Surface")
+   fig.add(Surface3DSeries(x, y, Z, cmap="viridis",
+                           wireframe=True, alpha=0.9))
+   fig.show()
+
+   # Polyline through 3-D space
+   t = np.linspace(0, 4*np.pi, 500)
+   fig = Figure3D(title="Helix")
+   fig.add(Line3DSeries(np.cos(t), np.sin(t), t / (4*np.pi),
+                        color="#dc2626", width=2))
+   fig.show()
+
+   # Bar3D
+   fig = Figure3D(title="3D Bars")
+   fig.add(Bar3DSeries(x_cats, y_cats, heights,
+                       color="#2563eb", label="Sales"))
+   fig.show()
+
+   # Contour lines / filled contours
+   fig = Figure3D(title="Contour")
+   fig.add(ContourSeries(x, y, Z, levels=10, filled=True, cmap="coolwarm"))
+   fig.show()
+
+   # One-liner 3-D
+   plot3d(xs, ys, zs, kind="scatter", title="Quick 3D Scatter")
+   plot3d(x, y, Z, kind="surface", title="Quick Surface")
+
+``Figure3D`` constructor parameters:
+
+.. list-table::
+   :widths: 25 15 60
+   :header-rows: 1
+
+   * - Parameter
+     - Default
+     - Description
+   * - ``width``
+     - ``900``
+     - Canvas width in pixels
+   * - ``height``
+     - ``650``
+     - Canvas height in pixels
+   * - ``title``
+     - ``""``
+     - Chart title
+   * - ``theme``
+     - ``"default"``
+     - Theme name (same 7 options as 2-D Figure)
+   * - ``azimuth``
+     - ``45.0``
+     - Initial camera azimuth in degrees
+   * - ``elevation``
+     - ``30.0``
+     - Initial camera elevation in degrees
+   * - ``xlabel``
+     - ``"X"``
+     - X-axis label
+   * - ``ylabel``
+     - ``"Y"``
+     - Y-axis label
+   * - ``zlabel``
+     - ``"Z"``
+     - Z-axis label
 
 
 Dual Y-Axis

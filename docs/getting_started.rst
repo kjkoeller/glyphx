@@ -97,7 +97,9 @@ Best for production charts and dashboards:
 
 **3. DataFrame accessor — pandas-native**
 
-Import ``glyphx`` once and every DataFrame gains a ``.glyphx`` namespace:
+Import ``glyphx`` once and every DataFrame gains a ``.glyphx`` namespace.
+The ``hue=`` parameter splits any chart by a categorical column, producing
+one series per group with automatically assigned theme colors:
 
 .. code-block:: python
 
@@ -110,12 +112,44 @@ Import ``glyphx`` once and every DataFrame gains a ``.glyphx`` namespace:
    df.glyphx.bar(x="product", y="units", title="Units by Product")
    df.glyphx.scatter(x="spend", y="conversions")
 
+   # Hue splitting — one BarSeries per region, auto-colored
+   df.glyphx.bar(x="month", y="revenue", hue="region", title="Revenue by Region")
+
    # Full chain from the accessor
    (df.glyphx
       .bar(x="month", y="revenue", auto_display=False)
       .set_theme("dark")
       .add_stat_annotation("Jan", "Jun", p_value=0.002)
       .share("monthly_report.html"))
+
+**4. Figure3D — interactive 3-D charts**
+
+Three.js WebGL renderer with mouse orbit controls; SVG orthographic fallback:
+
+.. code-block:: python
+
+   from glyphx import Figure3D, plot3d
+   from glyphx.scatter3d import Scatter3DSeries
+   from glyphx.surface3d  import Surface3DSeries
+   from glyphx.line3d     import Line3DSeries
+   from glyphx.bar3d      import Bar3DSeries
+   import numpy as np
+
+   # 3-D scatter with colormap encoding
+   fig = Figure3D(title="3D Scatter", theme="dark", azimuth=45, elevation=30)
+   fig.add(Scatter3DSeries(xs, ys, zs, c=zs, cmap="plasma", size=4))
+   fig.show()   # opens interactive Three.js viewer
+
+   # 3-D surface — z = f(x, y)
+   x = np.linspace(-3, 3, 60)
+   y = np.linspace(-3, 3, 60)
+   Z = np.sin(np.sqrt(x[None,:]**2 + y[:,None]**2))
+   fig = Figure3D(title="Surface")
+   fig.add(Surface3DSeries(x, y, Z, cmap="viridis", wireframe=True))
+   fig.show()
+
+   # One-liner 3-D
+   plot3d(xs, ys, zs, kind="scatter", title="Quick 3D")
 
 
 Available Chart Types
@@ -128,9 +162,9 @@ Available Chart Types
    * - Kind / Class
      - Description
    * - ``"line"`` / ``LineSeries``
-     - Line chart with optional error bars and linestyles
+     - Line chart with error bars, linestyles, and step mode
    * - ``"bar"`` / ``BarSeries``
-     - Bar chart with optional error bars and groupby
+     - Bar chart with error bars and hue grouping
    * - ``"scatter"`` / ``ScatterSeries``
      - Scatter plot with continuous color encoding (``c=``, ``cmap=``)
    * - ``"hist"`` / ``HistogramSeries``
@@ -146,9 +180,13 @@ Available Chart Types
    * - ``ECDFSeries``
      - Empirical CDF step function
    * - ``RaincloudSeries``
-     - Jitter + half-violin + box combined
+     - Jitter + half-violin + box combined; reproducible with ``seed=``
    * - ``ViolinPlotSeries``
      - KDE violin plot (pure NumPy, no scipy)
+   * - ``KDESeries``
+     - Smooth kernel-density curve
+   * - ``FillBetweenSeries``
+     - Shaded area / confidence band
    * - ``CandlestickSeries``
      - OHLC financial candles
    * - ``WaterfallSeries``
@@ -159,7 +197,25 @@ Available Chart Types
      - Sliding-window real-time chart
    * - ``GroupedBarSeries``
      - Side-by-side grouped bars
+   * - ``BubbleSeries``
+     - Scatter with size encoding for a fourth variable
+   * - ``SunburstSeries``
+     - Multi-ring hierarchical chart
+   * - ``ParallelCoordinatesSeries``
+     - High-dimensional parallel axes
+   * - ``DivergingBarSeries``
+     - Horizontal diverging bars centered at zero
    * - ``SwarmPlotSeries``
      - Jittered strip plot
    * - ``CountPlotSeries``
      - Count of categorical values
+   * - ``Scatter3DSeries``
+     - 3-D scatter with colormap and size encoding
+   * - ``Surface3DSeries``
+     - 3-D surface ``z = f(x, y)`` over a regular grid
+   * - ``Line3DSeries``
+     - 3-D connected polyline
+   * - ``Bar3DSeries``
+     - 3-D bar chart
+   * - ``ContourSeries``
+     - Contour lines / filled contours over a grid
