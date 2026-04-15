@@ -250,3 +250,65 @@ Projection (3-D)
    :members:
 
 .. autofunction:: glyphx.projection3d.normalize
+
+
+Additional Chart Types (v1.6+)
+-------------------------------
+
+.. autoclass:: glyphx.gantt.GanttSeries
+   :members:
+
+.. autoclass:: glyphx.stacked_bar.StackedBarSeries
+   :members:
+
+.. autoclass:: glyphx.bump_chart.BumpChartSeries
+   :members:
+
+.. autoclass:: glyphx.sparkline.SparklineSeries
+   :members:
+
+.. autofunction:: glyphx.sparkline.sparkline_svg
+
+
+FacetGrid
+---------
+
+.. autoclass:: glyphx.facet_grid.FacetGrid
+   :members:
+   :member-order: bysource
+
+
+Regression Plot
+---------------
+
+.. autofunction:: glyphx.regplot.regplot
+
+
+Choropleth Map
+--------------
+
+.. autoclass:: glyphx.choropleth.ChoroplethSeries
+   :members:
+
+
+Clustermap
+----------
+
+.. autofunction:: glyphx.clustermap.clustermap
+
+
+Vega-Lite Export
+----------------
+
+.. autofunction:: glyphx.vega_lite.to_vega_lite
+
+.. autofunction:: glyphx.vega_lite.save_vega_lite
+
+
+AI Recommendation
+-----------------
+
+.. autofunction:: glyphx.suggest.suggest
+
+.. autoclass:: glyphx.suggest.Recommendation
+   :members:

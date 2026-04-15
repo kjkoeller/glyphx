@@ -42,52 +42,166 @@ Self-Contained Shareable HTML
    html = fig.share()                           # returns string
 
 
+
 3-D Interactive Charts
 -----------------------
 
-``Figure3D`` renders via Three.js WebGL with mouse orbit controls, tooltips,
-and theme-aware axis grids.  A static SVG is generated as a fallback for
-environments where JavaScript is not available.
+``Figure3D`` renders via Three.js WebGL with mouse orbit controls, surface
+value probe, click-to-select scatter, camera presets, auto-rotate, and
+screenshot-to-PNG.  A static SVG is generated as a fallback for environments
+where JavaScript is not available.  See :doc:`examples` for a full gallery
+with live interactive HTML files.
+
+Series types
+^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 25 75
+   :header-rows: 1
+
+   * - Class
+     - Description
+   * - ``Scatter3DSeries``
+     - Scatter points; ``c=`` encodes a fourth variable as colour;
+       ``size=`` controls marker radius.  3-D voxel thinning applied above
+       ``AUTO_THRESHOLD`` (5 000 pts).
+   * - ``Surface3DSeries``
+     - Regular ``z = f(x, y)`` grid; ``wireframe=True`` adds a mesh overlay.
+       Grid decimation + sub-pixel face culling applied on large grids.
+   * - ``Line3DSeries``
+     - Connected 3-D polyline; ``color=``, ``width=``.  LTTB downsampling
+       runs in camera-projected screen space.
+   * - ``Bar3DSeries``
+     - Vertical bars on a 2-D ``(x, y)`` base; ``cmap=`` colours bars by
+       height.
+   * - ``ContourSeries``
+     - Filled contour lines on a 2-D regular grid (marching squares).
+
+Quick-start
+^^^^^^^^^^^
 
 .. code-block:: python
 
-   from glyphx import Figure3D
+   from glyphx import Figure3D, plot3d
    from glyphx.scatter3d import Scatter3DSeries
-   from glyphx.surface3d  import Surface3DSeries
-   from glyphx.line3d     import Line3DSeries
-   from glyphx.bar3d      import Bar3DSeries
-   from glyphx.contour    import ContourSeries
+   from glyphx.surface3d import Surface3DSeries
+   from glyphx.line3d    import Line3DSeries
+   from glyphx.bar3d     import Bar3DSeries
+   from glyphx.contour   import ContourSeries
    import numpy as np
 
-   # 3-D Scatter — fourth variable encoded as color
-   fig = Figure3D(title="Gaussian Mixture", theme="dark",
-                  azimuth=45, elevation=30)
-   fig.add(Scatter3DSeries(xs, ys, zs, c=zs, cmap="plasma",
-                           size=4, label="Cluster A"))
-   fig.show()   # opens WebGL viewer; saves .html for sharing
+   # Scatter -- fourth variable as colour
+   rng = np.random.default_rng(42)
+   xs, ys = rng.normal(0, 1, 400), rng.normal(0, 1, 400)
+   zs = np.sin(xs) + np.cos(ys)
 
-   # 3-D Surface — large grids are auto-decimated and face-culled
-   x = np.linspace(-3, 3, 150)
-   y = np.linspace(-3, 3, 150)
-   Z = np.sin(np.sqrt(x[None,:]**2 + y[:,None]**2))
-   fig = Figure3D(title="Sinc Surface")
-   fig.add(Surface3DSeries(x, y, Z, cmap="viridis", wireframe=True))
-   fig.show()
+   fig = Figure3D(title="Scatter", theme="dark")
+   fig.scatter(xs, ys, zs, c=zs, cmap="plasma", size=5, label="Points")
+   fig.show()                  # interactive WebGL
+   fig.save("scatter3d.html")  # self-contained HTML
 
-   # 3-D Polyline
-   t = np.linspace(0, 4 * np.pi, 2_000)
-   fig = Figure3D(title="Helix")
-   fig.add(Line3DSeries(np.cos(t), np.sin(t), t / (4 * np.pi),
-                        color="#dc2626", width=2.5))
-   fig.show()
+   # Surface (method chaining)
+   x = np.linspace(-3, 3, 60)
+   y = np.linspace(-3, 3, 60)
+   X, Y = np.meshgrid(x, y)
+   Z = np.sin(np.sqrt(X**2 + Y**2))
 
-   # Contour lines over a grid
+   (Figure3D(title="Sinc Surface", theme="dark")
+    .surface(x, y, Z, cmap="viridis", wireframe=True)
+    .show())
+
+   # Line -- parametric helix
+   t = np.linspace(0, 6 * np.pi, 2_000)
+   (Figure3D(title="Helix")
+    .line3d(np.cos(t), np.sin(t), t / (2 * np.pi),
+            color="#7c3aed", width=2.5)
+    .show())
+
+   # Bar
+   heights = np.abs(np.random.randn(5, 5)) * 3 + 1
+   (Figure3D(title="3D Bars")
+    .bar3d(np.arange(1, 6), np.arange(1, 6), heights, cmap="viridis")
+    .show())
+
+   # Contour (2-D grid, regular Figure)
    fig = Figure3D(title="Contour")
    fig.add(ContourSeries(x, y, Z, levels=12, filled=True, cmap="coolwarm"))
    fig.show()
 
-All 3-D series accept a ``threshold`` keyword to override the default
-downsampling budget; see :doc:`downsampling` for details.
+   # One-liner shorthand
+   plot3d(xs, ys, zs, kind="scatter", title="Quick Scatter")
+   plot3d(x,  y,  Z,  kind="surface", title="Quick Surface")
+
+Overlay multiple series
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Any ``Figure3D`` accepts multiple ``.add()`` or shorthand calls:
+
+.. code-block:: python
+
+   import numpy as np
+   from glyphx import Figure3D
+
+   x = np.linspace(-2, 2, 30)
+   y = np.linspace(-2, 2, 30)
+   X, Y = np.meshgrid(x, y)
+   Z_fit = X**2 + Y**2
+
+   obs_x = np.random.uniform(-2, 2, 80)
+   obs_y = np.random.uniform(-2, 2, 80)
+   obs_z = obs_x**2 + obs_y**2 + np.random.randn(80) * 0.3
+
+   (Figure3D(title="Model vs Observations", theme="dark")
+    .surface(x, y, Z_fit, cmap="viridis", alpha=0.55)
+    .scatter(obs_x, obs_y, obs_z, color="#f87171", size=5, label="Data")
+    .show())
+
+Figure3D constructor parameters
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: 20 15 65
+   :header-rows: 1
+
+   * - Parameter
+     - Default
+     - Description
+   * - ``width``
+     - ``900``
+     - Canvas width in pixels
+   * - ``height``
+     - ``650``
+     - Canvas height in pixels
+   * - ``title``
+     - ``""``
+     - Chart title displayed top-centre
+   * - ``theme``
+     - ``"default"``
+     - Theme name; all seven 2-D themes work in 3-D
+   * - ``azimuth``
+     - ``45.0``
+     - Initial camera azimuth in degrees
+   * - ``elevation``
+     - ``30.0``
+     - Initial camera elevation in degrees
+   * - ``xlabel``
+     - ``"X"``
+     - X-axis label
+   * - ``ylabel``
+     - ``"Y"``
+     - Y-axis label
+   * - ``zlabel``
+     - ``"Z"``
+     - Z-axis label
+
+Downsampling
+^^^^^^^^^^^^
+
+All 3-D series auto-downsample before SVG generation.  Pass
+``threshold=N`` to override the default budget of 5 000 points/faces
+per series.  After rendering, ``series.last_downsample_info`` reports
+the algorithm used and the before/after counts.  See :doc:`downsampling`
+for full details.
 
 
 New 2-D Chart Types (v1.5+)
