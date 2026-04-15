@@ -170,7 +170,7 @@ class TestDataFrameAccessor:
             .save(out)
         )
         assert os.path.exists(out)
-        content = open(out).read()
+        content = open(out, encoding="utf-8").read()
         assert "Full Chain Test" in content
 
 
@@ -324,7 +324,7 @@ class TestCLI:
                                  "--kind", "line", "-o", out])
         assert code == 0
         assert os.path.exists(out)
-        assert "<svg" in open(out).read()
+        assert "<svg" in open(out, encoding="utf-8").read()
 
     def test_plot_bar_to_html(self, tmp_path):
         csv = self._csv(tmp_path)
@@ -333,7 +333,7 @@ class TestCLI:
                                  "--kind", "bar", "-o", out])
         assert code == 0
         assert os.path.exists(out)
-        assert "<svg" in open(out).read()
+        assert "<svg" in open(out, encoding="utf-8").read()
 
     def test_plot_hist(self, tmp_path):
         csv = self._csv(tmp_path)
@@ -363,7 +363,7 @@ class TestCLI:
         code, _, _ = self._run(["plot", csv, "--y", "revenue",
                                  "--theme", "dark", "-o", out])
         assert code == 0
-        assert "#1e1e1e" in open(out).read()
+        assert "#1e1e1e" in open(out, encoding="utf-8").read()
 
     def test_plot_with_title(self, tmp_path):
         csv = self._csv(tmp_path)
@@ -371,7 +371,7 @@ class TestCLI:
         code, _, _ = self._run(["plot", csv, "--y", "revenue",
                                  "--title", "My CLI Chart", "-o", out])
         assert code == 0
-        assert "My CLI Chart" in open(out).read()
+        assert "My CLI Chart" in open(out, encoding="utf-8").read()
 
     def test_plot_groupby(self, tmp_path):
         csv = self._csv(tmp_path)

@@ -511,7 +511,7 @@ def test_figure_save_svg(tmp_path):
     path = str(tmp_path / "out.svg")
     fig.save(path)
     assert os.path.exists(path)
-    content = open(path).read()
+    content = open(path, encoding="utf-8").read()
     assert "<svg" in content
 
 
@@ -521,7 +521,7 @@ def test_figure_save_html(tmp_path):
     path = str(tmp_path / "out.html")
     fig.save(path)
     assert os.path.exists(path)
-    content = open(path).read()
+    content = open(path, encoding="utf-8").read()
     assert "<html" in content.lower() or "<!DOCTYPE" in content or "<svg" in content
 
 
