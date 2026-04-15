@@ -161,8 +161,8 @@ Diverging Bar Chart
    fig.add(DivergingBarSeries(
        categories=["North","South","East","West","Central"],
        values=    [  12,    -8,     21,    -3,      15],
-       color_pos="#2563eb",
-       color_neg="#dc2626",
+       pos_color="#2563eb",
+       neg_color="#dc2626",
    ))
    fig.show()
 
@@ -911,6 +911,11 @@ Tiny inline charts for dashboards and KPI tables:
 AI Chart Recommendation
 ------------------------
 
+.. image:: examples/suggest_scores.svg
+   :alt: suggest() recommendation scores
+   :width: 700px
+   :align: center
+
 :func:`glyphx.suggest` inspects a DataFrame and returns ranked chart recommendations
 with mini preview figures — no external dependencies required:
 
@@ -930,6 +935,13 @@ with mini preview figures — no external dependencies required:
    # Access recommendation metadata
    best = recs[0]
    print(best.kind, best.x_col, best.y_col, best.hue_col)
+
+The ``preview`` property renders a 340x220 mini figure using the actual data:
+
+.. image:: examples/suggest_preview.svg
+   :alt: suggest() top recommendation preview
+   :width: 700px
+   :align: center
 
 
 Responsive Dark-Mode SVG
@@ -1024,6 +1036,22 @@ All statistical chart types now accept ``hue=`` and ``hue_colors=``:
                              cmap="viridis"))
    fig.show()
 
+.. image:: examples/histogram_hue.svg
+   :alt: histogram with hue groups
+   :width: 700px
+   :align: center
+
+.. image:: examples/violin_hue.svg
+   :alt: violin plot with hue groups
+   :width: 700px
+   :align: center
+
+.. image:: examples/violin_hue.svg
+   :alt: violin hue
+   :width: 700px
+   :align: center
+
+
 
 Vega-Lite JSON Export
 ----------------------
@@ -1117,12 +1145,6 @@ OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
    # LOWESS (no parametric assumption)
    fig = regplot(df, x="gdp_per_cap", y="life_expectancy", lowess=True)
 
-.. image:: examples/regplot_lowess.svg
-   :alt: regplot lowess
-   :width: 700px
-   :align: center
-
-
    # Logistic (binary outcome)
    fig = regplot(df, x="dose_mg", y="responded", logistic=True)
 
@@ -1131,6 +1153,11 @@ OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
    x = np.random.randn(200)
    y = 2*x + np.random.randn(200)*0.5
    fig = regplot(None, x_vals=x, y_vals=y, title="Correlation")
+
+.. image:: examples/regplot_lowess.svg
+   :alt: LOWESS regression fit
+   :width: 700px
+   :align: center
 
 
 Choropleth Map

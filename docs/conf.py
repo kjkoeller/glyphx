@@ -81,3 +81,13 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 html_theme = 'furo'
+
+# -- Static files / images
+# Sphinx copies everything from html_static_path into the _static directory.
+# Images referenced via .. image:: are found relative to the docs/ source dir,
+# so docs/examples/*.svg are found automatically without html_static_path.
+# However, to ensure image directories are copied to the build output:
+html_static_path = []
+
+# Images referenced as 'examples/foo.svg' are found by Sphinx relative to docs/
+# No additional configuration needed for .. image:: directives.
