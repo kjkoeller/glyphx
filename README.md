@@ -11,6 +11,8 @@
 
 GlyphX renders crisp, interactive SVG charts that work everywhere — Jupyter notebooks, CLI pipelines, FastAPI servers, and static HTML files — with zero configuration and no `plt.show()` required.
 
+View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index.html) for more detailed explanations of everything.
+
 ---
 
 ## Why GlyphX?
