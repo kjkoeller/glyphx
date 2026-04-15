@@ -1,0 +1,114 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-2f692777ff6f-title glyphx-chart-2f692777ff6f-desc" id="glyphx-chart-2f692777ff6f" data-glyphx="true" width="340" height="220" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 220"><title id="glyphx-chart-2f692777ff6f-title">suggest() top pick: &#x27;line&#x27; (score=92)</title><desc id="glyphx-chart-2f692777ff6f-desc">Line chart titled &quot;suggest() top pick: &#x27;line&#x27; (score=92)&quot;. Series &quot;East&quot;: 24 data points. Ranges from 1.22e+04 (at 0) to 3.82e+04 (at 23). Series &quot;North&quot;: 14 data points. Ranges from 1.1e+04 (at 0) to 3.61e+04 (at 13). Series &quot;South&quot;: 10 data points. Ranges from 1.05e+04 (at 0) to 3.87e+04 (at 9). Series &quot;West&quot;: 12 data points. Ranges from 1.16e+04 (at 0) to 3.93e+04 (at 11).</desc><rect width="340" height="220" fill="#ffffff"/>
+<text x="170" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">suggest() top pick: &#x27;line&#x27; (score=92)</text>
+<line x1="50" y1="170" x2="160" y2="170" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="170" stroke="#333" />
+<line x1="50" x2="160" y1="170.0" y2="170.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="170.0" y2="170.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="174.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">8529</text>
+<line x1="50" x2="160" y1="146.0" y2="146.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="146.0" y2="146.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="150.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">15077</text>
+<line x1="50" x2="160" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">21625</text>
+<line x1="50" x2="160" y1="98.0" y2="98.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="98.0" y2="98.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="102.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">28173</text>
+<line x1="50" x2="160" y1="74.0" y2="74.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="74.0" y2="74.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="78.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">34720</text>
+<line x1="50" x2="160" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">41268</text>
+<line y1="50" y2="170" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="50.0" x2="50.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="50.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-0.50</text>
+<line y1="50" y2="170" x1="72.0" x2="72.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="72.0" x2="72.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="72.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >4.30</text>
+<line y1="50" y2="170" x1="94.0" x2="94.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="94.0" x2="94.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="94.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >9.10</text>
+<line y1="50" y2="170" x1="116.0" x2="116.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="116.0" x2="116.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="116.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >13.9</text>
+<line y1="50" y2="170" x1="138.0" x2="138.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="138.0" x2="138.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="138.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >18.7</text>
+<line y1="50" y2="170" x1="160.0" x2="160.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="160.0" x2="160.0" y1="170" y2="174.0" stroke="#000000" stroke-width="1"/>
+<text x="160.0" y="186" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >23.5</text>
+<polyline class="series-5408" fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="" points="52.291666666666664,156.53746985581049 56.875,154.77342286463875 61.458333333333336,146.96079551972846 66.04166666666667,139.67237013543243 70.625,138.40069917829354 75.20833333333333,135.40596696930473 79.79166666666667,131.94539789938656 84.375,128.96037828786595 88.95833333333334,121.66395419562346 93.54166666666666,119.99087680277754 98.125,116.63044317599142 102.70833333333334,114.68756740443072 107.29166666666666,111.28381190504481 111.875,109.62754378908471 116.45833333333333,100.35175959816365 121.04166666666667,98.45780524711952 125.625,95.75649724960978 130.20833333333331,81.67222300405825 134.79166666666669,79.52953091428229 139.375,76.28033562463513 143.95833333333331,74.35259481468923 148.54166666666669,64.74569726018859 153.125,63.15907526953819 157.70833333333331,61.41703808236373"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="52.291666666666664" cy="156.53746985581049" r="4" fill="#2563eb" data-x="0" data-y="12202.333459707901" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="56.875" cy="154.77342286463875" r="4" fill="#2563eb" data-x="1" data-y="12683.601189730034" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="61.458333333333336" cy="146.96079551972846" r="4" fill="#2563eb" data-x="2" data-y="14815.044085872127" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="66.04166666666667" cy="139.67237013543243" r="4" fill="#2563eb" data-x="3" data-y="16803.47407537367" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="70.625" cy="138.40069917829354" r="4" fill="#2563eb" data-x="4" data-y="17150.411655801046" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="75.20833333333333" cy="135.40596696930473" r="4" fill="#2563eb" data-x="5" data-y="17967.435226860725" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="79.79166666666667" cy="131.94539789938656" r="4" fill="#2563eb" data-x="6" data-y="18911.548523841593" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="84.375" cy="128.96037828786595" r="4" fill="#2563eb" data-x="7" data-y="19725.922301693077" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="88.95833333333334" cy="121.66395419562346" r="4" fill="#2563eb" data-x="8" data-y="21716.534500645834" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="93.54166666666666" cy="119.99087680277754" r="4" fill="#2563eb" data-x="9" data-y="22172.983882683817" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="98.125" cy="116.63044317599142" r="4" fill="#2563eb" data-x="10" data-y="23089.77820366682" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="102.70833333333334" cy="114.68756740443072" r="4" fill="#2563eb" data-x="11" data-y="23619.834045134477" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="107.29166666666666" cy="111.28381190504481" r="4" fill="#2563eb" data-x="12" data-y="24548.447449957508" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="111.875" cy="109.62754378908471" r="4" fill="#2563eb" data-x="13" data-y="25000.31092097916" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="116.45833333333333" cy="100.35175959816365" r="4" fill="#2563eb" data-x="14" data-y="27530.932624414938" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="121.04166666666667" cy="98.45780524711952" r="4" fill="#2563eb" data-x="15" data-y="28047.64171201532" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="125.625" cy="95.75649724960978" r="4" fill="#2563eb" data-x="16" data-y="28784.613218193062" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="130.20833333333331" cy="81.67222300405825" r="4" fill="#2563eb" data-x="17" data-y="32627.088350141465" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="134.79166666666669" cy="79.52953091428229" r="4" fill="#2563eb" data-x="18" data-y="33211.65812823898" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="139.375" cy="76.28033562463513" r="4" fill="#2563eb" data-x="19" data-y="34098.10437897543" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="143.95833333333331" cy="74.35259481468923" r="4" fill="#2563eb" data-x="20" data-y="34624.03109652702" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="148.54166666666669" cy="64.74569726018859" r="4" fill="#2563eb" data-x="21" data-y="37244.98722850547" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="153.125" cy="63.15907526953819" r="4" fill="#2563eb" data-x="22" data-y="37677.84982664767" data-label="East"/>
+<circle class="glyphx-point series-5408" tabindex="0" role="graphics-symbol" cx="157.70833333333331" cy="61.41703808236373" r="4" fill="#2563eb" data-x="23" data-y="38153.112836579574" data-label="East"/>
+<polyline class="series-34304" fill="none" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="" points="52.291666666666664,160.8394140798241 56.875,148.6558385372877 61.458333333333336,137.0737940758894 66.04166666666667,133.87025427915492 70.625,126.69789258243495 75.20833333333333,124.93138915353754 79.79166666666667,113.03098613801049 84.375,101.82647607283653 88.95833333333334,93.86606239080659 93.54166666666666,89.93385129692817 98.125,83.36985691879006 102.70833333333334,77.59606198976276 107.29166666666666,72.63280521546125 111.875,68.98652028584156"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="52.291666666666664" cy="160.8394140798241" r="4" fill="#dc2626" data-x="0" data-y="11028.675988147204" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="56.875" cy="148.6558385372877" r="4" fill="#dc2626" data-x="1" data-y="14352.602036746925" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="61.458333333333336" cy="137.0737940758894" r="4" fill="#dc2626" data-x="2" data-y="17512.418229200004" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="66.04166666666667" cy="133.87025427915492" r="4" fill="#dc2626" data-x="3" data-y="18386.40873723397" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="70.625" cy="126.69789258243495" r="4" fill="#dc2626" data-x="4" data-y="20343.1742032068" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="75.20833333333333" cy="124.93138915353754" r="4" fill="#dc2626" data-x="5" data-y="20825.112099167876" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="79.79166666666667" cy="113.03098613801049" r="4" fill="#dc2626" data-x="6" data-y="24071.78294994097" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="84.375" cy="101.82647607283653" r="4" fill="#dc2626" data-x="7" data-y="27128.60011641262" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="88.95833333333334" cy="93.86606239080659" r="4" fill="#dc2626" data-x="8" data-y="29300.362117062592" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="93.54166666666666" cy="89.93385129692817" r="4" fill="#dc2626" data-x="9" data-y="30373.148905957423" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="98.125" cy="83.36985691879006" r="4" fill="#dc2626" data-x="10" data-y="32163.93945181825" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="102.70833333333334" cy="77.59606198976276" r="4" fill="#dc2626" data-x="11" data-y="33739.14759140446" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="107.29166666666666" cy="72.63280521546125" r="4" fill="#dc2626" data-x="12" data-y="35093.224514093716" data-label="North"/>
+<circle class="glyphx-point series-34304" tabindex="0" role="graphics-symbol" cx="111.875" cy="68.98652028584156" r="4" fill="#dc2626" data-x="13" data-y="36088.00485717651" data-label="North"/>
+<polyline class="series-34592" fill="none" stroke="#16a34a" stroke-width="1.5" stroke-dasharray="" points="52.291666666666664,162.6315789473684 56.875,153.00937105922773 61.458333333333336,141.5760301230123 66.04166666666667,130.37895228608016 70.625,123.07887905557442 75.20833333333333,118.12564202296997 79.79166666666667,107.251685436419 84.375,105.42293469834159 88.95833333333334,84.99148314907043 93.54166666666666,59.48719201456407"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="52.291666666666664" cy="162.6315789473684" r="4" fill="#16a34a" data-x="0" data-y="10539.737132240898" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="56.875" cy="153.00937105922773" r="4" fill="#16a34a" data-x="1" data-y="13164.8702331741" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="61.458333333333336" cy="141.5760301230123" r="4" fill="#16a34a" data-x="2" data-y="16284.117093648387" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="66.04166666666667" cy="130.37895228608016" r="4" fill="#16a34a" data-x="3" data-y="19338.906597799898" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="70.625" cy="123.07887905557442" r="4" fill="#16a34a" data-x="4" data-y="21330.51435554291" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="75.20833333333333" cy="118.12564202296997" r="4" fill="#16a34a" data-x="5" data-y="22681.857689860608" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="79.79166666666667" cy="107.251685436419" r="4" fill="#16a34a" data-x="6" data-y="25648.493175739874" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="84.375" cy="105.42293469834159" r="4" fill="#16a34a" data-x="7" data-y="26147.413397760836" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="88.95833333333334" cy="84.99148314907043" r="4" fill="#16a34a" data-x="8" data-y="31721.526988489826" data-label="South"/>
+<circle class="glyphx-point series-34592" tabindex="0" role="graphics-symbol" cx="93.54166666666666" cy="59.48719201456407" r="4" fill="#16a34a" data-x="9" data-y="38679.61391109186" data-label="South"/>
+<polyline class="series-34064" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="" points="52.291666666666664,158.81678161101235 56.875,150.713584585482 61.458333333333336,144.96899023385313 66.04166666666667,143.27217119174662 70.625,103.90038226580714 75.20833333333333,97.19973735069006 79.79166666666667,91.81681077066938 84.375,88.13505465793567 88.95833333333334,86.39063973510578 93.54166666666666,70.99859276137072 98.125,66.85148824456323 102.70833333333334,57.36842105263159"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="52.291666666666664" cy="158.81678161101235" r="4" fill="#d97706" data-x="0" data-y="11580.49107119526" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="56.875" cy="150.713584585482" r="4" fill="#d97706" data-x="1" data-y="13791.207258414692" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="61.458333333333336" cy="144.96899023385313" r="4" fill="#d97706" data-x="2" data-y="15358.448889359006" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="66.04166666666667" cy="143.27217119174662" r="4" fill="#d97706" data-x="3" data-y="15821.375473934007" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="70.625" cy="103.90038226580714" r="4" fill="#d97706" data-x="4" data-y="26562.796523444365" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="75.20833333333333" cy="97.19973735069006" r="4" fill="#d97706" data-x="5" data-y="28390.868102104938" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="79.79166666666667" cy="91.81681077066938" r="4" fill="#d97706" data-x="6" data-y="29859.439443462226" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="84.375" cy="88.13505465793567" r="4" fill="#d97706" data-x="7" data-y="30863.897043366364" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="88.95833333333334" cy="86.39063973510578" r="4" fill="#d97706" data-x="8" data-y="31339.80874771922" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="93.54166666666666" cy="70.99859276137072" r="4" fill="#d97706" data-x="9" data-y="35539.07075406924" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="98.125" cy="66.85148824456323" r="4" fill="#d97706" data-x="10" data-y="36670.48481897618" data-label="West"/>
+<circle class="glyphx-point series-34064" tabindex="0" role="graphics-symbol" cx="102.70833333333334" cy="57.36842105263159" r="4" fill="#d97706" data-x="11" data-y="39257.657521261644" data-label="West"/>
+<g class="glyphx-legend">
+<rect x="218" y="66" width="12" height="12" fill="#2563eb" class="legend-icon" data-target="series-5408" />
+<text x="238" y="76" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-5408">East</text>
+<rect x="218" y="88" width="12" height="12" fill="#dc2626" class="legend-icon" data-target="series-34304" />
+<text x="238" y="98" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-34304">North</text>
+<rect x="218" y="110" width="12" height="12" fill="#16a34a" class="legend-icon" data-target="series-34592" />
+<text x="238" y="120" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-34592">South</text>
+<rect x="218" y="132" width="12" height="12" fill="#d97706" class="legend-icon" data-target="series-34064" />
+<text x="238" y="142" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-34064">West</text>
+</g></svg>
