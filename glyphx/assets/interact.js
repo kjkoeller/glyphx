@@ -1,16 +1,16 @@
 /**
- * GlyphX 2D Interactivity — Series Highlighting, Inspector, Keyboard
+ * GlyphX 2D Interactivity -- Series Highlighting, Inspector, Keyboard
  *
  * Features added here (beyond tooltip.js / zoom.js / brush.js):
  *
- *   Click a point          → highlight that series, dim all others (0.1 opacity)
- *   Double-click a point   → isolate ONLY that series (hide all others completely)
- *   Escape                 → reset all series to full opacity
- *   Click legend item      → toggle that series visible / hidden
- *   Shift + click a point  → open data inspector panel for that point
- *   F key                  → toggle fullscreen on the chart card
- *   C key                  → toggle synchronized crosshair on/off
- *   H key                  → show keyboard shortcut help overlay
+ *   Click a point          -> highlight that series, dim all others (0.1 opacity)
+ *   Double-click a point   -> isolate ONLY that series (hide all others completely)
+ *   Escape                 -> reset all series to full opacity
+ *   Click legend item      -> toggle that series visible / hidden
+ *   Shift + click a point  -> open data inspector panel for that point
+ *   F key                  -> toggle fullscreen on the chart card
+ *   C key                  -> toggle synchronized crosshair on/off
+ *   H key                  -> show keyboard shortcut help overlay
  *
  * Works with any series that has .glyphx-point elements and a css_class
  * attribute (set by GlyphX as data-series on each element group).
@@ -18,13 +18,13 @@
 (function () {
   'use strict';
 
-  // ── State ──────────────────────────────────────────────────────────────
+  // -- State --------------------------------------------------------------
   let activeClass  = null;   // currently highlighted css_class
   let isIsolated   = false;  // double-click isolation mode
   let crosshairOn  = false;  // C key toggle
   let helpVisible  = false;
 
-  // ── Inspector panel ────────────────────────────────────────────────────
+  // -- Inspector panel ----------------------------------------------------
   const inspector = document.createElement('div');
   inspector.id = 'glyphx-inspector';
   Object.assign(inspector.style, {
@@ -52,16 +52,16 @@
       const v = el.getAttribute(a);
       if (v !== null) attrs[a.replace('data-','')] = v;
     });
-    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">📊 Data Point</div>';
+    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">[chart] Data Point</div>';
     Object.entries(attrs).forEach(([k, v]) => {
       html += `<div><span style="opacity:0.55;min-width:52px;display:inline-block">${k}</span><b>${v}</b></div>`;
     });
-    html += '<div style="margin-top:10px;font-size:10.5px;opacity:0.4">Shift+click to pin · Esc to close</div>';
+    html += '<div style="margin-top:10px;font-size:10.5px;opacity:0.4">Shift+click to pin . Esc to close</div>';
     inspector.innerHTML = html;
     inspector.style.display = 'block';
   }
 
-  // ── Help overlay ───────────────────────────────────────────────────────
+  // -- Help overlay -------------------------------------------------------
   const helpOverlay = document.createElement('div');
   helpOverlay.id = 'glyphx-help';
   Object.assign(helpOverlay.style, {
@@ -78,7 +78,7 @@
                 padding:28px 34px;max-width:380px;width:90%;
                 box-shadow:0 20px 60px rgba(0,0,0,0.5)">
       <div style="font-size:16px;font-weight:700;margin-bottom:16px">
-        ⌨️ GlyphX Keyboard Shortcuts
+        [keyboard] GlyphX Keyboard Shortcuts
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px">
         <tr><td style="padding:4px 0;opacity:0.55;width:110px"><kbd>Click</kbd></td>
@@ -114,7 +114,7 @@
   function showHelp() { helpOverlay.style.display = 'flex'; helpVisible = true; }
   function closeHelp(){ helpOverlay.style.display = 'none'; helpVisible = false; }
 
-  // ── Core: apply highlight state ────────────────────────────────────────
+  // -- Core: apply highlight state ----------------------------------------
   function applyHighlight() {
     document.querySelectorAll('.glyphx-point').forEach(el => {
       el.style.transition = 'opacity 0.18s, filter 0.18s';
@@ -142,20 +142,20 @@
     inspector.style.display = 'none';
   }
 
-  // ── Click / double-click on points ────────────────────────────────────
+  // -- Click / double-click on points ------------------------------------
   // Use event delegation on the document so dynamically injected points work
   let lastClick = 0;
   document.addEventListener('click', e => {
     const el = e.target.closest('.glyphx-point');
     if (!el) {
-      // Clicked outside any point — reset unless clicking inspector/help
+      // Clicked outside any point -- reset unless clicking inspector/help
       if (!inspector.contains(e.target) && !helpOverlay.contains(e.target)) {
         resetHighlight();
       }
       return;
     }
 
-    // Shift+click → inspector
+    // Shift+click -> inspector
     if (e.shiftKey) {
       showInspector(el);
       return;
@@ -182,12 +182,12 @@
     lastClick = now;
   });
 
-  // ── Legend item click → toggle series visibility ───────────────────────
+  // -- Legend item click -> toggle series visibility -----------------------
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.legend-icon, .legend-label').forEach(leg => {
       // Add a visible toggle indicator and pointer cursor
       leg.style.cursor = 'pointer';
-      leg.title = 'Click to show/hide series · double-click to isolate';
+      leg.title = 'Click to show/hide series . double-click to isolate';
 
       leg.addEventListener('click', e => {
         e.stopPropagation();
@@ -212,7 +212,7 @@
     });
   });
 
-  // ── Keyboard shortcuts ─────────────────────────────────────────────────
+  // -- Keyboard shortcuts -------------------------------------------------
   document.addEventListener('keydown', e => {
     // Don't steal keys from input fields
     if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
@@ -245,7 +245,7 @@
           }
         });
         if (typeof glyphxToast === 'function')
-          glyphxToast(crosshairOn ? '✛ Crosshair on' : 'Crosshair off');
+          glyphxToast(crosshairOn ? '+ Crosshair on' : 'Crosshair off');
         break;
 
       case 'h': case 'H':
@@ -254,7 +254,7 @@
     }
   });
 
-  // ── Add [?] help button to every toolbar ───────────────────────────────
+  // -- Add [?] help button to every toolbar -------------------------------
   document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.glyphx-toolbar').forEach(tb => {
       const btn = document.createElement('button');
@@ -267,7 +267,7 @@
 
     // Update toolbar hint
     document.querySelectorAll('.glyphx-toolbar span').forEach(s => {
-      s.textContent = 'GlyphX · click=highlight · shift+click=inspect · dbl-click=isolate · H=shortcuts';
+      s.textContent = 'GlyphX . click=highlight . shift+click=inspect . dbl-click=isolate . H=shortcuts';
     });
   });
 

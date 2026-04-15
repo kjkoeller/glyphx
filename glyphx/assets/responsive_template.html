@@ -78,7 +78,7 @@
       display: block;
     }
 
-    /* ── Interactivity ── */
+    /* -- Interactivity -- */
     .glyphx-point {
       cursor: pointer;
     }
@@ -87,7 +87,7 @@
       stroke-width: 2;
     }
 
-    /* ── Tooltip ── */
+    /* -- Tooltip -- */
     .glyphx-tooltip {
       position: fixed;
       background: rgba(15, 23, 42, 0.92);
@@ -105,12 +105,12 @@
     .glyphx-tooltip .tt-label { font-weight: 600; margin-bottom: 2px; }
     .glyphx-tooltip .tt-row   { opacity: 0.85; }
 
-    /* ── Brush hint badge (injected by brush.js) ── */
+    /* -- Brush hint badge (injected by brush.js) -- */
     .glyphx-brush-hint {
-      /* Styled by brush.js inline — see brush.js */
+      /* Styled by brush.js inline -- see brush.js */
     }
 
-    /* ── Copied toast ── */
+    /* -- Copied toast -- */
     .glyphx-toast {
       position: fixed;
       bottom: 24px;
@@ -136,10 +136,10 @@
   <div class="glyphx-wrapper">
     <div class="glyphx-card">
       <div class="glyphx-toolbar">
-        <span>GlyphX · <kbd>Shift</kbd>+drag to brush · scroll to zoom · drag to pan · dbl-click to reset</span>
-        <button class="glyphx-btn" onclick="glyphxDownload('svg')">⬇ SVG</button>
-        <button class="glyphx-btn" onclick="glyphxDownload('png')">⬇ PNG</button>
-        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">⬡ Share</button>
+        <span>GlyphX . <kbd>Shift</kbd>+drag to brush . scroll to zoom . drag to pan . dbl-click to reset</span>
+        <button class="glyphx-btn" onclick="glyphxDownload('svg')">v SVG</button>
+        <button class="glyphx-btn" onclick="glyphxDownload('png')">v PNG</button>
+        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">[hex] Share</button>
       </div>
       <div class="glyphx-chart-area">
         {{svg_content}}
@@ -151,7 +151,7 @@
   <div class="glyphx-toast"   id="glyphx-toast"></div>
 
   <script>
-  /* ── Tooltip ── */
+  /* -- Tooltip -- */
   (function () {
     const tip = document.getElementById('glyphx-tooltip');
     document.addEventListener('DOMContentLoaded', () => {
@@ -191,7 +191,7 @@
     });
   })();
 
-  /* ── Toast helper ── */
+  /* -- Toast helper -- */
   function glyphxToast(msg) {
     const t = document.getElementById('glyphx-toast');
     t.textContent = msg;
@@ -199,7 +199,7 @@
     setTimeout(() => t.classList.remove('show'), 2200);
   }
 
-  /* ── Download ── */
+  /* -- Download -- */
   function glyphxDownload(type) {
     const svg = document.querySelector('svg');
     const ser = new XMLSerializer();
@@ -235,12 +235,12 @@
     img.src = URL.createObjectURL(blob);
   }
 
-  /* ── Share (copy self-contained HTML to clipboard) ── */
+  /* -- Share (copy self-contained HTML to clipboard) -- */
   function glyphxCopyHtml() {
     const html = document.documentElement.outerHTML;
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(html).then(() => {
-        glyphxToast('✓ Full page HTML copied to clipboard!');
+        glyphxToast('[OK] Full page HTML copied to clipboard!');
       });
     } else {
       const ta = document.createElement('textarea');
@@ -249,7 +249,7 @@
       ta.select();
       document.execCommand('copy');
       document.body.removeChild(ta);
-      glyphxToast('✓ Full page HTML copied to clipboard!');
+      glyphxToast('[OK] Full page HTML copied to clipboard!');
     }
   }
   </script>

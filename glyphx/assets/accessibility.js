@@ -3,10 +3,10 @@
  *
  * Makes every .glyphx-point element fully keyboard-navigable:
  *
- *   Tab / Shift-Tab  — move focus through data points
- *   Enter / Space    — trigger the hover tooltip on the focused point
- *   Arrow keys       — move to the next/previous point within a series
- *   Escape           — dismiss tooltip and blur the active point
+ *   Tab / Shift-Tab  -- move focus through data points
+ *   Enter / Space    -- trigger the hover tooltip on the focused point
+ *   Arrow keys       -- move to the next/previous point within a series
+ *   Escape           -- dismiss tooltip and blur the active point
  *
  * Screen readers receive the aria-label built from data-x / data-y
  * attributes, so each point announces itself correctly.
@@ -16,7 +16,7 @@
 
   const POINT_SEL = '.glyphx-point';
 
-  // ── Build aria-label for a data point element ───────────────────────────
+  // -- Build aria-label for a data point element ---------------------------
   function buildAriaLabel(el) {
     const x   = el.getAttribute('data-x');
     const y   = el.getAttribute('data-y');
@@ -37,7 +37,7 @@
     return parts.join(', ') || 'Data point';
   }
 
-  // ── Show / hide the shared GlyphX tooltip ───────────────────────────────
+  // -- Show / hide the shared GlyphX tooltip -------------------------------
   function showTip(el) {
     const tip = document.getElementById('glyphx-tooltip');
     if (!tip) return;
@@ -76,7 +76,7 @@
     if (tip) tip.style.display = 'none';
   }
 
-  // ── Wire a single point element ─────────────────────────────────────────
+  // -- Wire a single point element -----------------------------------------
   function wirePoint(el, allPoints) {
     // Stamp aria-label so screen readers announce values
     if (!el.getAttribute('aria-label')) {
@@ -120,7 +120,7 @@
     });
   }
 
-  // ── Init ──────────────────────────────────────────────────────────────────
+  // -- Init ------------------------------------------------------------------
   function init() {
     const allPoints = Array.from(document.querySelectorAll(POINT_SEL));
     allPoints.forEach(el => wirePoint(el, allPoints));
