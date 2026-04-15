@@ -1,0 +1,40 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-3243c1e063b9-title glyphx-chart-3243c1e063b9-desc" id="glyphx-chart-3243c1e063b9" data-glyphx="true" width="680" height="320" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 320"><title id="glyphx-chart-3243c1e063b9-title">glyphx.suggest(df) — ranked chart recommendations</title><desc id="glyphx-chart-3243c1e063b9-desc">Bar chart titled &quot;glyphx.suggest(df) — ranked chart recommendations&quot;. X axis: Chart kind. Y axis: Confidence score. Series: 5 data points. Ranges from 65 (at box) to 92 (at line).</desc><rect width="680" height="320" fill="#ffffff"/>
+<text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">glyphx.suggest(df) — ranked chart recommendations</text>
+<line x1="50" y1="270" x2="500" y2="270" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="270" stroke="#333" />
+<text x="275" y="310" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Chart kind</text>
+<text x="15" y="160" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 160)">Confidence score</text>
+<line x1="50" x2="500" y1="270.0" y2="270.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="270.0" y2="270.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="274.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="500" y1="226.0" y2="226.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="226.0" y2="226.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="230.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">19.7</text>
+<line x1="50" x2="500" y1="182.0" y2="182.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="182.0" y2="182.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="186.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">39.4</text>
+<line x1="50" x2="500" y1="138.0" y2="138.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="138.0" y2="138.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="142.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">59.1</text>
+<line x1="50" x2="500" y1="94.0" y2="94.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="94.0" y2="94.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="98.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">78.8</text>
+<line x1="50" x2="500" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">98.4</text>
+<line y1="50" y2="270" x1="95.0" x2="95.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="95.0" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >line</text>
+<line y1="50" y2="270" x1="185.0" x2="185.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="185.0" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >bar</text>
+<line y1="50" y2="270" x1="275.0" x2="275.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="275.0" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >hist</text>
+<line y1="50" y2="270" x1="365.0" x2="365.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="365.0" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >scatter</text>
+<line y1="50" y2="270" x1="455.0" x2="455.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="455.0" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >box</text>
+<rect class="glyphx-point series-44464" tabindex="0" role="graphics-symbol" x="59.0" y="64.39252336448598" width="72.0" height="205.60747663551402" fill="#2563eb" stroke="#00000033" data-x="line" data-y="92" data-label=""/>
+<rect class="glyphx-point series-44464" tabindex="0" role="graphics-symbol" x="149.0" y="86.74116212921575" width="72.0" height="183.25883787078425" fill="#2563eb" stroke="#00000033" data-x="bar" data-y="82" data-label=""/>
+<rect class="glyphx-point series-44464" tabindex="0" role="graphics-symbol" x="239.0" y="113.5595286468915" width="72.0" height="156.4404713531085" fill="#2563eb" stroke="#00000033" data-x="hist" data-y="70" data-label=""/>
+<rect class="glyphx-point series-44464" tabindex="0" role="graphics-symbol" x="329.0" y="120.26412027631045" width="72.0" height="149.73587972368955" fill="#2563eb" stroke="#00000033" data-x="scatter" data-y="67" data-label=""/>
+<rect class="glyphx-point series-44464" tabindex="0" role="graphics-symbol" x="419.0" y="124.7338480292564" width="72.0" height="145.2661519707436" fill="#2563eb" stroke="#00000033" data-x="box" data-y="65" data-label=""/>
+</svg>
