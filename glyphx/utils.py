@@ -175,6 +175,12 @@ def wrap_svg_with_template(svg_string: str) -> str:
         brush_content = brush_path.read_text(encoding="utf-8")
         brush_script = f"<script>\n{brush_content}\n</script>"
 
+    interact_script = ""
+    interact_path = Path(__file__).parent / "assets" / "interact.js"
+    if interact_path.exists():
+        interact_content = interact_path.read_text(encoding="utf-8")
+        interact_script = f"<script>\n{interact_content}\n</script>"
+
     a11y_path = Path(__file__).parent / "assets" / "accessibility.js"
     a11y_script = ""
     if a11y_path.exists():
@@ -184,7 +190,7 @@ def wrap_svg_with_template(svg_string: str) -> str:
     return (
         html_content
         .replace("{{svg_content}}", svg_string)
-        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script + a11y_script + legend_js)
+        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script + interact_script + a11y_script + legend_js)
     )
 
 
@@ -206,16 +212,67 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     Returns:
         str: Complete SVG document string.
     """
-    import itertools as _itertools
-    # Monotonic integer counter so IDs are unique and match glyphx-chart-\d+
-    if not hasattr(wrap_svg_canvas, "_counter"):
-        wrap_svg_canvas._counter = _itertools.count(1)
-    chart_id = f"glyphx-chart-{next(wrap_svg_canvas._counter)}"
+    import uuid
+    chart_id  = f"glyphx-chart-{uuid.uuid4().hex[:12]}"
     math_attr = ' data-has-math="true"' if has_math else ""
     return (
         f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
         f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {width} {height}">{svg_content}</svg>'
+    )
+
+
+
+def wrap_svg_with_css_vars(svg_string: str, light_theme: dict, dark_theme: dict,
+                            width: int = 640, height: int = 480) -> str:
+    """
+    Wrap an SVG in a ``<style>`` block that defines CSS custom properties
+    for every theme colour, then swaps them automatically via
+    ``@media (prefers-color-scheme: dark)``.
+
+    The SVG itself uses ``var(--glyphx-bg)``, ``var(--glyphx-text)`` etc.
+    so no Python re-render is needed when the user switches dark mode.
+
+    Args:
+        svg_string:   Raw SVG inner content (without the ``<svg>`` root).
+        light_theme:  GlyphX theme dict for light mode.
+        dark_theme:   GlyphX theme dict for dark mode.
+        width, height: Canvas dimensions.
+
+    Returns:
+        Complete ``<svg>`` element with an embedded ``<style>`` block.
+    """
+    import uuid as _uuid
+    chart_id = f"glyphx-css-{_uuid.uuid4().hex[:10]}"
+
+    def _props(theme: dict) -> str:
+        mapping = {
+            "--glyphx-bg":         theme.get("background", "#ffffff"),
+            "--glyphx-text":       theme.get("text_color",  "#000000"),
+            "--glyphx-grid":       theme.get("grid_color",  "#dddddd"),
+            "--glyphx-axis":       theme.get("axis_color",  "#333333"),
+            "--glyphx-accent":     theme.get("colors", ["#1f77b4"])[0],
+        }
+        return "; ".join(f"{k}: {v}" for k, v in mapping.items())
+
+    light_props = _props(light_theme)
+    dark_props  = _props(dark_theme)
+
+    style = (
+        f"<style>"
+        f"#{chart_id} {{ {light_props} }} "
+        f"@media (prefers-color-scheme: dark) {{ #{chart_id} {{ {dark_props} }} }} "
+        f"#{chart_id} {{ background: var(--glyphx-bg); }}"
+        f"</style>"
+    )
+
+    return (
+        f'<svg id="{chart_id}" data-glyphx="true" data-responsive="true" '
+        f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
+        f'viewBox="0 0 {width} {height}">'
+        + style
+        + svg_string
+        + "</svg>"
     )
 
 
@@ -492,10 +549,11 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         p = assets_dir / name
         return p.read_text(encoding="utf-8") if p.exists() else ""
 
-    tooltip_js = _read_js("tooltip.js")   # legacy path — already in template
-    zoom_js    = _read_js("zoom.js")
-    brush_js   = _read_js("brush.js")
-    export_js  = _read_js("export.js")
+    tooltip_js  = _read_js("tooltip.js")   # legacy path — already in template
+    zoom_js     = _read_js("zoom.js")
+    brush_js    = _read_js("brush.js")
+    interact_js = _read_js("interact.js")
+    export_js   = _read_js("export.js")
 
     # Read template and replace placeholders
     template_path = assets_dir / "responsive_template.html"
@@ -510,10 +568,11 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     # Inline all JS into {{extra_scripts}}
     a11y_js = _read_js("accessibility.js")
     inlined_scripts = "\n".join(filter(None, [
-        f"<script>\n{zoom_js}\n</script>"  if zoom_js  else "",
-        f"<script>\n{brush_js}\n</script>" if brush_js else "",
-        f"<script>\n{a11y_js}\n</script>"  if a11y_js  else "",
-        f"<script>\n{export_js}\n</script>" if export_js else "",
+        f"<script>\n{zoom_js}\n</script>"     if zoom_js     else "",
+        f"<script>\n{brush_js}\n</script>"    if brush_js    else "",
+        f"<script>\n{interact_js}\n</script>" if interact_js else "",
+        f"<script>\n{a11y_js}\n</script>"     if a11y_js     else "",
+        f"<script>\n{export_js}\n</script>"   if export_js   else "",
     ]))
 
     # Metadata comment

@@ -574,6 +574,58 @@ class Figure:
         self._supylabel = dict(label=label, font_size=font_size, color=color)
         return self
 
+    def to_vega_lite(self, path: str | None = None, **kwargs) -> dict:
+        """
+        Convert this figure to a Vega-Lite v5 specification.
+
+        The spec can be saved as a ``.vl.json`` file, embedded in
+        Observable notebooks, or rendered with ``altair``.
+        No Python plotting library currently produces Vega-Lite output.
+
+        Args:
+            path: If given, write the spec to this JSON file.
+
+        Returns:
+            Vega-Lite v5 specification dict.
+
+        Example::
+
+            spec = fig.to_vega_lite()
+            fig.to_vega_lite("chart.vl.json")  # saves to file
+        """
+        from .vega_lite import to_vega_lite as _to_vl, save_vega_lite
+        spec = _to_vl(self, **kwargs)
+        if path is not None:
+            save_vega_lite(self, path, **kwargs)
+        return spec
+
+    def regplot(self, data=None, x=None, y=None,
+                x_vals=None, y_vals=None, **kwargs) -> 'Figure':
+        """Add a regression plot series to this figure. Returns ``self``."""
+        from .regplot import regplot as _regplot
+        reg_fig = _regplot(data, x=x, y=y,
+                           x_vals=x_vals, y_vals=y_vals,
+                           auto_display=False, **kwargs)
+        for s, u in reg_fig.series:
+            self.add(s, y2=u)
+        return self
+
+    def choropleth(self, geojson, data, key='name', cmap='viridis',
+                   **kwargs) -> 'Figure':
+        """Add a :class:`~glyphx.choropleth.ChoroplethSeries`. Returns ``self``."""
+        from .choropleth import ChoroplethSeries
+        return self.add(ChoroplethSeries(geojson, data, key=key,
+                                          cmap=cmap, **kwargs))
+
+    def gantt(self, tasks: list, group_colors: dict | None = None,
+              cmap: str = 'viridis', bar_height: int = 20,
+              show_today: bool = True, **kwargs) -> 'Figure':
+        """Add a :class:`~glyphx.gantt.GanttSeries`.  Returns ``self``."""
+        from .gantt import GanttSeries
+        return self.add(GanttSeries(tasks=tasks, group_colors=group_colors,
+                                     cmap=cmap, bar_height=bar_height,
+                                     show_today=show_today, **kwargs))
+
     def stacked_bar(self, x: list, series: dict,
                     normalize: bool = False, colors: list | None = None,
                     bar_width: float = 0.75, **kwargs) -> "Figure":
@@ -991,6 +1043,50 @@ class Figure:
         """Render and display the figure. Returns ``self`` for chaining."""
         self._display(self.render_svg())
         return self
+
+    def render_responsive(self,
+                          dark_theme: str | None = None) -> str:
+        """
+        Render an SVG that responds to the OS dark-mode preference.
+
+        The output uses CSS custom properties (``--glyphx-bg``, etc.).
+        When the user switches dark mode, the chart recolours without
+        any Python re-render — a capability none of the three competitors
+        have.
+
+        Args:
+            dark_theme: GlyphX theme name for dark mode (default ``'dark'``).
+
+        Returns:
+            Complete ``<svg>`` string with embedded CSS variable block.
+
+        Example::
+
+            svg = fig.render_responsive(dark_theme='dark')
+            Path('chart.svg').write_text(svg)
+            # Open in a browser — switches colours with the OS setting
+        """
+        from .utils   import wrap_svg_with_css_vars
+        from .themes  import themes as _themes
+
+        light  = self.theme
+        dark   = _themes.get(dark_theme or 'dark', _themes['dark'])
+
+        # Render inner SVG content (no root element)
+        svg_parts: list[str] = []
+        if self.title:
+            font  = light.get('font', 'sans-serif')
+            svg_parts.append(
+                f'<text x="{self.width // 2}" y="28" text-anchor="middle" '
+                f'font-size="20" font-weight="bold" font-family="{font}" '
+                f'fill="var(--glyphx-text)">{svg_escape(self.title)}</text>'
+            )
+        inner = '\n'.join(svg_parts)
+        return wrap_svg_with_css_vars(
+            inner + '\n' + self.render_svg(),
+            light_theme=light, dark_theme=dark,
+            width=self.width, height=self.height,
+        )
 
     def save(self, filename: str = "glyphx_output.svg",
              dpi: int = 96) -> "Figure":

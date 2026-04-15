@@ -50,306 +50,637 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <style>
-* {{ margin:0; padding:0; box-sizing:border-box; }}
-html, body {{ width:100%; height:100%; overflow:hidden;
-  background:{bg}; font-family:{font}; }}
-canvas {{ display:block; }}
-#tooltip {{
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden;
+  background:{bg}; font-family:{font}; }
+canvas { display:block; }
+
+/* ── Tooltip ── */
+#glx-tip {
   position:fixed; pointer-events:none; display:none;
-  background:rgba(0,0,0,0.75); color:#fff;
-  padding:6px 10px; border-radius:4px; font-size:12px;
-  max-width:240px; white-space:pre-line;
-}}
-#title {{
+  background:rgba(15,23,42,0.92); color:#f8fafc;
+  padding:7px 12px; border-radius:7px; font-size:12.5px;
+  line-height:1.6; max-width:260px; white-space:pre-line;
+  box-shadow:0 4px 18px rgba(0,0,0,0.35); z-index:9999;
+}
+
+/* ── Title ── */
+#glx-title {
   position:fixed; top:12px; left:50%; transform:translateX(-50%);
-  font-size:18px; font-weight:600; color:{tc}; pointer-events:none;
-}}
-#legend {{
+  font-size:17px; font-weight:700; color:{tc};
+  pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* ── Control panel ── */
+#glx-panel {
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+  background:rgba(15,23,42,0.55); border-radius:12px;
+  padding:8px 12px; backdrop-filter:blur(6px);
+}
+.glx-btn {
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  color:#f1f5f9; font-size:11.5px; font-family:inherit;
+  padding:5px 11px; border-radius:7px; cursor:pointer;
+  transition:background 0.15s, transform 0.1s;
+  white-space:nowrap; user-select:none;
+}
+.glx-btn:hover  { background:rgba(255,255,255,0.22); }
+.glx-btn:active { transform:scale(0.95); }
+.glx-btn.active { background:rgba(99,102,241,0.6); border-color:#818cf8; }
+.glx-sep { width:1px; background:rgba(255,255,255,0.15); margin:0 2px; }
+
+/* ── Legend ── */
+#glx-legend {
   position:fixed; right:16px; top:50%; transform:translateY(-50%);
-  background:rgba(0,0,0,0.4); border-radius:6px; padding:10px 14px;
-  color:{tc}; font-size:12px; display:{legend_display};
-}}
-#controls {{
-  position:fixed; bottom:10px; left:50%; transform:translateX(-50%);
-  color:{tc}; font-size:11px; opacity:0.5; pointer-events:none;
-}}
+  background:rgba(15,23,42,0.65); border-radius:10px;
+  padding:10px 14px; color:{tc}; font-size:12px;
+  backdrop-filter:blur(6px);
+}
+#glx-legend .glx-leg-item {
+  display:flex; align-items:center; gap:8px;
+  margin:5px 0; cursor:pointer; user-select:none;
+  transition:opacity 0.2s;
+}
+#glx-legend .glx-leg-item:hover { opacity:0.8; }
+#glx-legend .glx-swatch {
+  width:14px; height:14px; border-radius:3px; flex-shrink:0;
+}
+
+/* ── Help overlay ── */
+#glx-help {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.65);
+  display:none; align-items:center; justify-content:center;
+  z-index:99999; backdrop-filter:blur(4px);
+}
+#glx-help-box {
+  background:#1e293b; color:#f8fafc;
+  border-radius:14px; padding:28px 34px;
+  max-width:400px; width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+#glx-help-box h3 { margin-bottom:16px; font-size:15px; }
+#glx-help-box table { border-collapse:collapse; width:100%; font-size:12.5px; }
+#glx-help-box td   { padding:4px 0; }
+#glx-help-box td:first-child { opacity:0.5; width:120px; }
+#glx-help-box .close-hint {
+  margin-top:14px; text-align:center;
+  opacity:0.4; font-size:11px;
+}
+
+/* ── Axis value readout (surface probe) ── */
+#glx-readout {
+  position:fixed; left:16px; bottom:18px;
+  background:rgba(15,23,42,0.7); color:#94a3b8;
+  font-size:11.5px; padding:6px 10px; border-radius:7px;
+  display:none; font-variant-numeric:tabular-nums;
+  backdrop-filter:blur(4px);
+}
+
+/* ── Selection highlight ── */
+.glx-selected { outline:none; }
 </style>
 </head>
 <body>
-<div id="title">{title}</div>
-<div id="tooltip"></div>
-<div id="legend">{legend_html}</div>
-<div id="controls">Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-drag to pan</div>
+<div id="glx-title">{title}</div>
+<div id="glx-tip"></div>
+<div id="glx-readout"></div>
+
+<!-- Legend -->
+<div id="glx-legend" style="display:{legend_display}">{legend_html}</div>
+
+<!-- Control panel -->
+<div id="glx-panel">
+  <button class="glx-btn" onclick="setCam('iso')"     title="Isometric view (I)">⬡ ISO</button>
+  <button class="glx-btn" onclick="setCam('top')"     title="Top view (T)">⬆ Top</button>
+  <button class="glx-btn" onclick="setCam('front')"   title="Front view (V)">◻ Front</button>
+  <button class="glx-btn" onclick="setCam('side')"    title="Side view (S)">◁ Side</button>
+  <div class="glx-sep"></div>
+  <button class="glx-btn" id="btn-rotate" onclick="toggleRotate()" title="Auto-rotate (Space)">↻ Rotate</button>
+  <button class="glx-btn" onclick="resetView()"       title="Reset camera (R)">⟳ Reset</button>
+  <div class="glx-sep"></div>
+  <button class="glx-btn" onclick="screenshot()"      title="Save PNG (P)">📷 PNG</button>
+  <button class="glx-btn" onclick="toggleFullscreen()" title="Fullscreen (F)">⛶ Full</button>
+  <button class="glx-btn" onclick="showHelp()"        title="Keyboard help (H)">? Help</button>
+</div>
+
+<!-- Help overlay -->
+<div id="glx-help" onclick="closeHelp()">
+  <div id="glx-help-box">
+    <h3>⌨️ GlyphX 3D Shortcuts</h3>
+    <table>
+      <tr><td>Drag</td><td>Rotate camera</td></tr>
+      <tr><td>Right-drag / Ctrl+drag</td><td>Pan</td></tr>
+      <tr><td>Scroll</td><td>Zoom</td></tr>
+      <tr><td>Arrow keys</td><td>Rotate (fine)</td></tr>
+      <tr><td>+  /  -</td><td>Zoom in / out</td></tr>
+      <tr><td>Space</td><td>Toggle auto-rotate</td></tr>
+      <tr><td>R</td><td>Reset view</td></tr>
+      <tr><td>I / T / V / S</td><td>ISO / Top / Front / Side</td></tr>
+      <tr><td>P</td><td>Save PNG screenshot</td></tr>
+      <tr><td>F</td><td>Toggle fullscreen</td></tr>
+      <tr><td>Click point</td><td>Select / highlight</td></tr>
+      <tr><td>Esc</td><td>Deselect / close</td></tr>
+      <tr><td>H</td><td>This help screen</td></tr>
+    </table>
+    <div class="close-hint">Click anywhere or press Esc to close</div>
+  </div>
+</div>
+
 <script src="{threejs_cdn}"></script>
 <script>
-const DATA = {data_json};
-const THEME = {theme_json};
-const LABELS = {labels_json};
+// ═══════════════════════════════════════════════════════════════════════
+// Data & config
+// ═══════════════════════════════════════════════════════════════════════
+const DATA    = {data_json};
+const THEME   = {theme_json};
+const LABELS  = {labels_json};
 
-// ── Scene setup ─────────────────────────────────────────────────────────────
+function fmtV(v) {
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a >= 1e6)  return (v/1e6).toFixed(2)+'M';
+  if (a >= 1e3)  return (v/1e3).toFixed(2)+'k';
+  if (Number.isInteger(v)) return String(v);
+  if (a >= 100)  return v.toFixed(1);
+  if (a >= 10)   return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Scene setup
+// ═══════════════════════════════════════════════════════════════════════
 const W = window.innerWidth, H = window.innerHeight;
-const renderer = new THREE.WebGLRenderer({{ antialias: true }});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(W, H);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setClearColor(new THREE.Color(THEME.bg), 1);
 document.body.appendChild(renderer.domElement);
+const cv = renderer.domElement;
 
 const scene  = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, W/H, 0.01, 1000);
-const light1 = new THREE.DirectionalLight(0xffffff, 0.8);
-light1.position.set(5, 8, 5);
-scene.add(light1);
+scene.add(new THREE.DirectionalLight(0xffffff, 0.8).position.set(5,8,5) && new THREE.DirectionalLight(0xffffff, 0.8));
 scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
-// ── Orbit controls (pure JS, no CDN dependency) ───────────────────────────
-let state = {{ theta:45, phi:55, r:6, tx:0, ty:0,
-               drag:false, rdrag:false, lx:0, ly:0 }};
+// Lights properly
+const dLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dLight.position.set(5, 8, 5);
+scene.add(dLight);
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
-function updateCamera() {{
-  const t = state.theta * Math.PI/180;
-  const p = state.phi   * Math.PI/180;
+// ═══════════════════════════════════════════════════════════════════════
+// Camera state & orbit controls
+// ═══════════════════════════════════════════════════════════════════════
+const CAM_PRESETS = {
+  iso:   { theta:45,  phi:55  },
+  top:   { theta:0,   phi:1   },
+  front: { theta:0,   phi:90  },
+  side:  { theta:90,  phi:90  },
+};
+
+let cam = { theta:45, phi:55, r:6, tx:0, ty:0 };
+let drag = false, rDrag = false, lx = 0, ly = 0;
+let autoRotate = false, rotTimer = null;
+let selectedObj = null;
+
+function updateCamera() {
+  const t = cam.theta * Math.PI/180;
+  const p = cam.phi   * Math.PI/180;
   camera.position.set(
-    state.r * Math.sin(p) * Math.cos(t) + state.tx,
-    state.r * Math.cos(p) + state.ty,
-    state.r * Math.sin(p) * Math.sin(t) + state.tx
+    cam.r * Math.sin(p) * Math.cos(t) + cam.tx,
+    cam.r * Math.cos(p)               + cam.ty,
+    cam.r * Math.sin(p) * Math.sin(t) + cam.tx
   );
-  camera.lookAt(state.tx, state.ty, 0);
-}}
+  camera.lookAt(cam.tx, cam.ty, 0);
+}
 
-const cv = renderer.domElement;
-cv.addEventListener('mousedown', e => {{
-  if (e.button===0) state.drag=true;
-  if (e.button===2) state.rdrag=true;
-  state.lx=e.clientX; state.ly=e.clientY;
-}});
-cv.addEventListener('contextmenu', e => e.preventDefault());
-window.addEventListener('mouseup',   () => {{ state.drag=false; state.rdrag=false; }});
-window.addEventListener('mousemove', e => {{
-  const dx=e.clientX-state.lx, dy=e.clientY-state.ly;
-  state.lx=e.clientX; state.ly=e.clientY;
-  if (state.drag) {{
-    state.theta -= dx*0.4;
-    state.phi    = Math.max(5, Math.min(175, state.phi - dy*0.4));
+function setCam(preset) {
+  const p = CAM_PRESETS[preset];
+  if (!p) return;
+  // Smooth tween
+  const t0 = { ...cam };
+  const t1 = { ...cam, theta: p.theta, phi: p.phi };
+  let start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    const prog = Math.min((ts - start) / 500, 1);
+    const ease = 1 - Math.pow(1 - prog, 3);
+    cam.theta = t0.theta + (t1.theta - t0.theta) * ease;
+    cam.phi   = t0.phi   + (t1.phi   - t0.phi)   * ease;
     updateCamera();
-  }}
-  if (state.rdrag) {{
-    state.tx -= dx*0.01; state.ty += dy*0.01;
-    updateCamera();
-  }}
-}});
-cv.addEventListener('wheel', e => {{
-  state.r = Math.max(0.5, state.r * (1 + e.deltaY*0.001));
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function resetView() {
+  cam = { theta:45, phi:55, r:6, tx:0, ty:0 };
   updateCamera();
-}});
-// Touch support
+}
+
+function toggleRotate() {
+  autoRotate = !autoRotate;
+  document.getElementById('btn-rotate').classList.toggle('active', autoRotate);
+}
+
+function screenshot() {
+  renderer.render(scene, camera);
+  const url = cv.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url; a.download = 'glyphx_3d.png';
+  a.click();
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement)
+    document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+function showHelp() { document.getElementById('glx-help').style.display='flex'; }
+function closeHelp(){ document.getElementById('glx-help').style.display='none'; }
+
+// Mouse orbit
+cv.addEventListener('mousedown', e => {
+  if (e.button === 0 && !e.ctrlKey) { drag=true; }
+  if (e.button === 2 || (e.button===0 && e.ctrlKey)) { rDrag=true; }
+  lx=e.clientX; ly=e.clientY;
+});
+cv.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('mouseup',   () => { drag=false; rDrag=false; });
+window.addEventListener('mousemove', e => {
+  const dx=e.clientX-lx, dy=e.clientY-ly;
+  lx=e.clientX; ly=e.clientY;
+  if (drag)  { cam.theta -= dx*0.35; cam.phi = Math.max(2, Math.min(178, cam.phi - dy*0.35)); updateCamera(); }
+  if (rDrag) { cam.tx -= dx*0.009; cam.ty += dy*0.009; updateCamera(); }
+});
+cv.addEventListener('wheel', e => {
+  cam.r = Math.max(0.5, cam.r * (1 + e.deltaY*0.001));
+  updateCamera();
+}, { passive:true });
+
+// Touch
 let touches = [];
-cv.addEventListener('touchstart',  e=>{{ touches=[...e.touches]; }});
-cv.addEventListener('touchmove', e=>{{
+cv.addEventListener('touchstart',  e => { touches=[...e.touches]; }, { passive:true });
+cv.addEventListener('touchmove', e => {
   e.preventDefault();
-  if(e.touches.length===1) {{
-    const dx=e.touches[0].clientX-touches[0].clientX;
-    const dy=e.touches[0].clientY-touches[0].clientY;
-    state.theta-=dx*0.5; state.phi=Math.max(5,Math.min(175,state.phi-dy*0.5));
+  if (e.touches.length===1) {
+    cam.theta -= (e.touches[0].clientX - touches[0].clientX)*0.45;
+    cam.phi = Math.max(2, Math.min(178, cam.phi - (e.touches[0].clientY - touches[0].clientY)*0.45));
     updateCamera();
-  }}
-  if(e.touches.length===2){{
-    const d0=Math.hypot(touches[0].clientX-touches[1].clientX,touches[0].clientY-touches[1].clientY);
-    const d1=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
-    state.r=Math.max(0.5,state.r*(d0/d1)); updateCamera();
-  }}
+  }
+  if (e.touches.length===2) {
+    const d0 = Math.hypot(touches[0].clientX-touches[1].clientX, touches[0].clientY-touches[1].clientY);
+    const d1 = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    cam.r = Math.max(0.5, cam.r*(d0/d1));
+    updateCamera();
+  }
   touches=[...e.touches];
-}},{{passive:false}});
+}, { passive:false });
+
 updateCamera();
 
-// ── Axis grid ────────────────────────────────────────────────────────────────
-const axColor  = new THREE.Color(THEME.axis);
-const gridColor= new THREE.Color(THEME.grid);
-const textColor= THEME.tc;
+// ═══════════════════════════════════════════════════════════════════════
+// Keyboard controls
+// ═══════════════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  switch(e.key) {
+    case 'ArrowLeft':  cam.theta -= 3; updateCamera(); break;
+    case 'ArrowRight': cam.theta += 3; updateCamera(); break;
+    case 'ArrowUp':    cam.phi = Math.max(2,   cam.phi - 3); updateCamera(); break;
+    case 'ArrowDown':  cam.phi = Math.min(178, cam.phi + 3); updateCamera(); break;
+    case '+': case '=': cam.r = Math.max(0.5, cam.r * 0.92); updateCamera(); break;
+    case '-': case '_': cam.r *= 1.08; updateCamera(); break;
+    case ' ': e.preventDefault(); toggleRotate(); break;
+    case 'r': case 'R': resetView(); break;
+    case 'i': case 'I': setCam('iso');   break;
+    case 't': case 'T': setCam('top');   break;
+    case 'v': case 'V': setCam('front'); break;
+    case 's': case 'S': setCam('side');  break;
+    case 'p': case 'P': screenshot();    break;
+    case 'f': case 'F': toggleFullscreen(); break;
+    case 'h': case 'H': showHelp();      break;
+    case 'Escape': closeHelp(); clearSelection(); break;
+  }
+});
 
-function makeLine(p1, p2, col) {{
+// ═══════════════════════════════════════════════════════════════════════
+// Axis grid & labels
+// ═══════════════════════════════════════════════════════════════════════
+const axColor   = new THREE.Color(THEME.axis);
+const gridColor = new THREE.Color(THEME.grid);
+
+function addLine(p1, p2, col, opacity=1) {
   const g = new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(...p1), new THREE.Vector3(...p2)
   ]);
-  const m = new THREE.LineBasicMaterial({{color:col}});
-  return new THREE.Line(g, m);
-}}
+  const m = new THREE.LineBasicMaterial({ color:col, transparent: opacity<1, opacity });
+  scene.add(new THREE.Line(g, m));
+}
 
-// Box edges at [-1,1]^3
+// Axis box edges
 const S = 1;
-[[-S,-S,-S],[S,-S,-S]], [[-S,-S,-S],[-S,S,-S]], [[-S,-S,-S],[-S,-S,S]],
-[[S,S,-S],[S,-S,-S]],   [[S,S,-S],[-S,S,-S]],   [[S,S,-S],[S,S,S]],
-[[S,-S,S],[-S,-S,S]],   [[S,-S,S],[S,S,S]],      [[S,-S,S],[S,-S,-S]],
-[[-S,S,S],[-S,-S,S]],   [[-S,S,S],[S,S,S]],      [[-S,S,S],[-S,S,-S]]
-).forEach(([a,b]) => scene.add(makeLine(a, b, axColor)));
+[
+  [[-S,-S,-S],[S,-S,-S]], [[-S,-S,-S],[-S,S,-S]], [[-S,-S,-S],[-S,-S,S]],
+  [[S,S,-S],[S,-S,-S]],   [[S,S,-S],[-S,S,-S]],   [[S,S,-S],[S,S,S]],
+  [[S,-S,S],[-S,-S,S]],   [[S,-S,S],[S,S,S]],      [[S,-S,S],[S,-S,-S]],
+  [[-S,S,S],[-S,-S,S]],   [[-S,S,S],[S,S,S]],      [[-S,S,S],[-S,S,-S]],
+].forEach(([a,b]) => addLine(a, b, axColor, 0.45));
 
-// Grid lines on the floor (Y = -1 plane)
-const TICKS = 5;
-for(let k=0;k<=TICKS;k++) {{
-  const v = -S + k*(2*S/TICKS);
-  scene.add(makeLine([v,-S,-S],[v,-S,S],gridColor));
-  scene.add(makeLine([-S,-S,v],[S,-S,v],gridColor));
-}}
+// Floor grid
+for (let k=0; k<=5; k++) {
+  const v = -S + k*(2*S/5);
+  addLine([v,-S,-S],[v,-S,S], gridColor, 0.35);
+  addLine([-S,-S,v],[S,-S,v], gridColor, 0.35);
+}
 
-// Axis tick labels using sprites
-function makeLabel(text, pos, col) {{
-  const canvas2 = document.createElement('canvas');
-  canvas2.width=256; canvas2.height=64;
-  const ctx = canvas2.getContext('2d');
-  ctx.fillStyle = col;
-  ctx.font='bold 32px sans-serif';
+// Axis labels as canvas sprites
+function makeSprite(text, pos, size=0.5) {
+  const c = document.createElement('canvas');
+  c.width=256; c.height=64;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle = THEME.tc;
+  ctx.font=`bold ${Math.round(256/text.length*0.65 + 18)}px sans-serif`;
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(text, 128, 32);
-  const tex = new THREE.CanvasTexture(canvas2);
-  const mat = new THREE.SpriteMaterial({{map:tex, transparent:true}});
-  const sprite = new THREE.Sprite(mat);
-  sprite.scale.set(0.6, 0.15, 1);
-  sprite.position.set(...pos);
-  return sprite;
-}}
+  const sp = new THREE.Sprite(
+    new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(c), transparent:true })
+  );
+  sp.scale.set(size, size*0.25, 1);
+  sp.position.set(...pos);
+  scene.add(sp);
+}
 
-// X axis ticks (on floor, front edge)
-LABELS.x.forEach(t => scene.add(makeLabel(t.label,[t.norm,-S-0.12,-S-0.1],textColor)));
-// Y axis ticks (on floor, left edge)
-LABELS.y.forEach(t => scene.add(makeLabel(t.label,[-S-0.12,-S-0.12,t.norm],textColor)));
-// Z axis ticks (left back edge)
-LABELS.z.forEach(t => scene.add(makeLabel(t.label,[-S-0.25,t.norm,-S],textColor)));
+// Tick labels
+LABELS.x.forEach(t => makeSprite(t.label, [t.norm, -S-0.14, -S-0.12], 0.5));
+LABELS.y.forEach(t => makeSprite(t.label, [-S-0.14, -S-0.14,  t.norm], 0.5));
+LABELS.z.forEach(t => makeSprite(t.label, [-S-0.28,  t.norm, -S],      0.5));
 
 // Axis name labels
-scene.add(makeLabel(LABELS.xlabel, [0,-S-0.3,-S-0.2],textColor));
-scene.add(makeLabel(LABELS.ylabel, [-S-0.3,-S-0.3,0],textColor));
-scene.add(makeLabel(LABELS.zlabel, [-S-0.4,0,-S],textColor));
+makeSprite(LABELS.xlabel, [ 0,    -S-0.32, -S-0.18], 0.7);
+makeSprite(LABELS.ylabel, [-S-0.3,-S-0.32,  0],      0.7);
+makeSprite(LABELS.zlabel, [-S-0.45, 0,     -S],      0.7);
 
-// ── Series rendering ────────────────────────────────────────────────────────
-const tooltip = document.getElementById('tooltip');
-const raycaster = new THREE.Raycaster();
-raycaster.params.Points.threshold = 0.06;
-const mouse = new THREE.Vector2();
-let hitObjects = [];
+// ═══════════════════════════════════════════════════════════════════════
+// Series rendering
+// ═══════════════════════════════════════════════════════════════════════
+const hitObjects   = [];   // for raycasting
+const seriesGroups = {};   // css_class → THREE.Group for legend toggle
+const surfaceMeshes = [];  // for surface value probe
 
-DATA.forEach(series => {{
-  if (series.type === 'scatter') {{
-    const positions = new Float32Array(series.x.length * 3);
-    const colors    = new Float32Array(series.x.length * 3);
-    series.x.forEach((x,i) => {{
-      positions[i*3  ] = series.nx[i];
-      positions[i*3+1] = series.nz[i];  // Y-up: swap y/z
+DATA.forEach((series, si) => {
+  const group = new THREE.Group();
+  group.userData.seriesIndex = si;
+  group.userData.label = series.label;
+
+  // ── Scatter ───────────────────────────────────────────────────────
+  if (series.type === 'scatter') {
+    const N = series.x.length;
+    const positions = new Float32Array(N*3);
+    const colors    = new Float32Array(N*3);
+    for (let i=0; i<N; i++) {
+      positions[i*3]   = series.nx[i];
+      positions[i*3+1] = series.nz[i];
       positions[i*3+2] = series.ny[i];
       const c = new THREE.Color(series.colors[i]);
       colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
-    }});
+    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
+    geom.userData = { xs:series.x, ys:series.y, zs:series.z, label:series.label };
+    const mat = new THREE.PointsMaterial({
+      size: series.size*0.012, vertexColors:true,
+      transparent:true, opacity:series.alpha, sizeAttenuation:true
+    });
+    const pts = new THREE.Points(geom, mat);
+    hitObjects.push(pts);
+    group.add(pts);
+  }
+
+  // ── Line ─────────────────────────────────────────────────────────
+  if (series.type === 'line') {
+    const pts3 = series.nx.map((nx,i) =>
+      new THREE.Vector3(nx, series.nz[i], series.ny[i]));
+    const g = new THREE.BufferGeometry().setFromPoints(pts3);
+    const m = new THREE.LineBasicMaterial({
+      color: new THREE.Color(series.color), linewidth:series.width
+    });
+    group.add(new THREE.Line(g, m));
+  }
+
+  // ── Surface ──────────────────────────────────────────────────────
+  if (series.type === 'surface') {
+    const M = series.ny, N = series.nx;
+    const positions = new Float32Array(M*N*3);
+    const colors    = new Float32Array(M*N*3);
+    for (let j=0; j<M; j++) for (let i=0; i<N; i++) {
+      const idx=(j*N+i)*3;
+      positions[idx]   = series.nxArr[i];
+      positions[idx+1] = series.nz[j][i];
+      positions[idx+2] = series.nyArr[j];
+      const c = new THREE.Color(series.face_colors[j][i]);
+      colors[idx]=c.r; colors[idx+1]=c.g; colors[idx+2]=c.b;
+    }
+    const indices=[];
+    for (let j=0; j<M-1; j++) for (let i=0; i<N-1; i++) {
+      const a=j*N+i, b=a+1, c=a+N, d=c+1;
+      indices.push(a,c,b, b,c,d);
+    }
     const geom = new THREE.BufferGeometry();
     geom.setAttribute('position', new THREE.BufferAttribute(positions,3));
     geom.setAttribute('color',    new THREE.BufferAttribute(colors,3));
-    geom.userData = {{ xs:series.x, ys:series.y, zs:series.z,
-                       label:series.label }};
-    const mat = new THREE.PointsMaterial({{
-      size: series.size * 0.012,
-      vertexColors: true,
-      transparent: true,
-      opacity: series.alpha,
-      sizeAttenuation: true,
-    }});
-    const pts = new THREE.Points(geom, mat);
-    hitObjects.push(pts);
-    scene.add(pts);
-  }}
-
-  if (series.type === 'line') {{
-    const pts3 = series.nx.map((nx,i) =>
-      new THREE.Vector3(nx, series.nz[i], series.ny[i]));
-    const geom = new THREE.BufferGeometry().setFromPoints(pts3);
-    const mat  = new THREE.LineBasicMaterial({{
-      color: new THREE.Color(series.color),
-      linewidth: series.width,
-    }});
-    scene.add(new THREE.Line(geom, mat));
-  }}
-
-  if (series.type === 'surface') {{
-    const M=series.ny, N=series.nx;
-    const positions=new Float32Array(M*N*3);
-    const colors   =new Float32Array(M*N*3);
-    for(let j=0;j<M;j++) for(let i=0;i<N;i++) {{
-      const idx=(j*N+i)*3;
-      positions[idx  ]=series.nx[i];
-      positions[idx+1]=series.nz[j][i];
-      positions[idx+2]=series.ny[j];
-      const c=new THREE.Color(series.face_colors[j][i]);
-      colors[idx]=c.r; colors[idx+1]=c.g; colors[idx+2]=c.b;
-    }}
-    const indices=[];
-    for(let j=0;j<M-1;j++) for(let i=0;i<N-1;i++) {{
-      const a=j*N+i, b=a+1, c=a+N, d=c+1;
-      indices.push(a,c,b, b,c,d);
-    }}
-    const geom=new THREE.BufferGeometry();
-    geom.setAttribute('position',new THREE.BufferAttribute(positions,3));
-    geom.setAttribute('color',   new THREE.BufferAttribute(colors,3));
     geom.setIndex(indices);
     geom.computeVertexNormals();
-    const mat=new THREE.MeshPhongMaterial({{
+    geom.userData = {
+      xs:series.xData, ys:series.yData, zs:series.zData,
+      M, N, nxArr:series.nxArr, nyArr:series.nyArr
+    };
+    const mat = new THREE.MeshPhongMaterial({
       vertexColors:true, transparent:true,
-      opacity:series.alpha, side:THREE.DoubleSide,
-    }});
-    scene.add(new THREE.Mesh(geom,mat));
-    if(series.wireframe) {{
-      const wmat=new THREE.MeshBasicMaterial({{color:0xffffff,wireframe:true,transparent:true,opacity:0.15}});
-      scene.add(new THREE.Mesh(geom.clone(),wmat));
-    }}
-  }}
+      opacity:series.alpha, side:THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geom, mat);
+    surfaceMeshes.push(mesh);
+    hitObjects.push(mesh);
+    group.add(mesh);
+    if (series.wireframe) {
+      const wm = new THREE.MeshBasicMaterial({
+        color:0xffffff, wireframe:true, transparent:true, opacity:0.08
+      });
+      group.add(new THREE.Mesh(geom.clone(), wm));
+    }
+  }
 
-  if (series.type === 'bar3d') {{
-    series.bars.forEach(bar => {{
-      const geom = new THREE.BoxGeometry(bar.ndx*0.9, bar.nz, bar.ndy*0.9);
-      const mat  = new THREE.MeshPhongMaterial({{
-        color: new THREE.Color(bar.color),
-        transparent: true, opacity: series.alpha,
-      }});
+  // ── Bar3D ────────────────────────────────────────────────────────
+  if (series.type === 'bar3d') {
+    series.bars.forEach(bar => {
+      const geom = new THREE.BoxGeometry(bar.ndx*0.88, bar.nz, bar.ndy*0.88);
+      const mat  = new THREE.MeshPhongMaterial({
+        color:new THREE.Color(bar.color), transparent:true, opacity:series.alpha
+      });
       const mesh = new THREE.Mesh(geom, mat);
-      mesh.position.set(bar.nx, bar.nz/2 - 1 + bar.nz/2, bar.ny);
-      scene.add(mesh);
-    }});
-  }}
-}});
+      mesh.position.set(bar.nx, -1 + bar.nz/2, bar.ny);
+      group.add(mesh);
+    });
+  }
 
-// ── Tooltip on hover ─────────────────────────────────────────────────────────
-cv.addEventListener('mousemove', e => {{
-  mouse.x = (e.clientX/W)*2-1;
+  scene.add(group);
+  seriesGroups[si] = group;
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Legend — click to toggle series visibility
+// ═══════════════════════════════════════════════════════════════════════
+document.querySelectorAll('.glx-leg-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const si = parseInt(item.dataset.series);
+    const grp = seriesGroups[si];
+    if (!grp) return;
+    grp.visible = !grp.visible;
+    item.style.opacity = grp.visible ? '1' : '0.35';
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Selection highlight
+// ═══════════════════════════════════════════════════════════════════════
+let selectionIdx = null;
+
+function clearSelection() {
+  // Reset all scatter point sizes
+  Object.values(seriesGroups).forEach(grp => {
+    grp.children.forEach(obj => {
+      if (obj.isPoints && obj.material._origSize != null) {
+        obj.material.size = obj.material._origSize;
+        obj.material.opacity = obj.material._origOpacity;
+      }
+    });
+  });
+  selectionIdx = null;
+  document.getElementById('glx-readout').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Raycasting — tooltip + surface probe + click-select
+// ═══════════════════════════════════════════════════════════════════════
+const raycaster = new THREE.Raycaster();
+raycaster.params.Points = { threshold: 0.06 };
+const mouse = new THREE.Vector2();
+const tip   = document.getElementById('glx-tip');
+const readout = document.getElementById('glx-readout');
+
+let hoverTimer = null;
+
+cv.addEventListener('mousemove', e => {
+  mouse.x =  (e.clientX/W)*2-1;
+  mouse.y = -(e.clientY/H)*2+1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(hitObjects, true);
+
+  if (hits.length > 0) {
+    const hit = hits[0];
+    const obj = hit.object;
+
+    // ── Scatter tooltip ──────────────────────────────────────────
+    if (obj.isPoints) {
+      const ud  = obj.geometry.userData;
+      const idx = hit.index;
+      if (ud && ud.xs) {
+        const lbl = ud.label ? `<b>${ud.label}</b>\n` : '';
+        tip.innerHTML = lbl +
+          `x: ${fmtV(ud.xs[idx])}\ny: ${fmtV(ud.ys[idx])}\nz: ${fmtV(ud.zs[idx])}`;
+        tip.style.display = 'block';
+        tip.style.left = (e.clientX+14)+'px';
+        tip.style.top  = (e.clientY-20)+'px';
+      }
+    }
+
+    // ── Surface value probe ──────────────────────────────────────
+    if (obj.isMesh && surfaceMeshes.includes(obj)) {
+      const ud = obj.geometry.userData;
+      if (ud && ud.xs && ud.ys && ud.zs) {
+        // Find nearest grid vertex to hit point in normalised coords
+        const p = hit.point;   // THREE.Vector3 in normalised space
+        // nxArr/nyArr map column/row indices to normalised coords
+        let bestI=0, bestJ=0, bestDist=Infinity;
+        for (let j=0; j<ud.M; j++) {
+          for (let i=0; i<ud.N; i++) {
+            const nx = ud.nxArr[i], ny = ud.nyArr[j];
+            const d = (nx-p.x)**2 + (ny-p.z)**2;
+            if (d < bestDist) { bestDist=d; bestI=i; bestJ=j; }
+          }
+        }
+        const xv = ud.xs[bestI], yv = ud.ys[bestJ], zv = ud.zs[bestJ][bestI];
+        tip.innerHTML = `x: ${fmtV(xv)}\ny: ${fmtV(yv)}\nz: <b>${fmtV(zv)}</b>`;
+        tip.style.display = 'block';
+        tip.style.left = (e.clientX+14)+'px';
+        tip.style.top  = (e.clientY-20)+'px';
+        readout.textContent = `(${fmtV(xv)}, ${fmtV(yv)}, ${fmtV(zv)})`;
+        readout.style.display = 'block';
+      }
+    }
+  } else {
+    tip.style.display = 'none';
+    readout.style.display = 'none';
+  }
+});
+
+cv.addEventListener('mouseleave', () => {
+  tip.style.display = 'none';
+  readout.style.display = 'none';
+});
+
+// Click to select scatter point
+cv.addEventListener('click', e => {
+  mouse.x =  (e.clientX/W)*2-1;
   mouse.y = -(e.clientY/H)*2+1;
   raycaster.setFromCamera(mouse, camera);
-  const hits = raycaster.intersectObjects(hitObjects);
-  if (hits.length > 0) {{
-    const obj  = hits[0].object;
-    const idx  = hits[0].index;
-    const ud   = obj.geometry.userData;
-    if (ud && ud.xs) {{
-      const lbl = ud.label ? ud.label+': ' : '';
-      tooltip.textContent = lbl +
-        `(${{{{{_format_tick_js}}}(ud.xs[idx])},` +
-        ` ${{{{{_format_tick_js}}}(ud.ys[idx])},` +
-        ` ${{{{{_format_tick_js}}}(ud.zs[idx])})`;
-      tooltip.style.display='block';
-      tooltip.style.left=(e.clientX+12)+'px';
-      tooltip.style.top =(e.clientY-20)+'px';
-    }}
-  }} else {{
-    tooltip.style.display='none';
-  }}
-}});
-cv.addEventListener('mouseleave', () => tooltip.style.display='none');
+  const hits = raycaster.intersectObjects(hitObjects, true);
 
-// ── Resize ───────────────────────────────────────────────────────────────────
-window.addEventListener('resize', () => {{
+  if (!hits.length) { clearSelection(); return; }
+
+  const hit = hits[0];
+  if (!hit.object.isPoints) { clearSelection(); return; }
+
+  const idx = hit.index;
+  const ud  = hit.object.geometry.userData;
+
+  // Toggle selection
+  if (selectionIdx === idx) {
+    clearSelection();
+  } else {
+    selectionIdx = idx;
+    // Show enlarged version of the selected point via readout
+    if (ud && ud.xs) {
+      readout.style.display = 'block';
+      readout.innerHTML =
+        `Selected: x=${fmtV(ud.xs[idx])}, y=${fmtV(ud.ys[idx])}, z=${fmtV(ud.zs[idx])}`;
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Resize
+// ═══════════════════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
-}});
+});
 
-// ── Render loop ──────────────────────────────────────────────────────────────
-(function animate() {{
+// ═══════════════════════════════════════════════════════════════════════
+// Render loop
+// ═══════════════════════════════════════════════════════════════════════
+(function animate() {
   requestAnimationFrame(animate);
+  if (autoRotate) { cam.theta += 0.25; updateCamera(); }
   renderer.render(scene, camera);
-}})();
+})();
 </script>
 </body>
 </html>"""
@@ -652,10 +983,17 @@ class Figure3D:
                 d["ny"] = [ny(v) for v in s.y]
                 d["nz"] = [nz(v) for v in s.z]
             elif d["type"] == "surface":
-                d["nx"] = [nx(v) for v in s.x_1d]
-                d["ny"] = [ny(v) for v in s.y_1d]
                 z_arr = np.asarray(s.z_mat, dtype=float)
-                d["nz"] = [[nz(float(v)) for v in row] for row in z_arr]
+                # Normalised grid arrays for Three.js geometry
+                d["nxArr"] = [nx(v) for v in s.x_1d]
+                d["nyArr"] = [ny(v) for v in s.y_1d]
+                d["nz"]    = [[nz(float(v)) for v in row] for row in z_arr]
+                d["nx"]    = len(s.x_1d)
+                d["ny"]    = len(s.y_1d)
+                # Raw data for surface value probe tooltip
+                d["xData"] = s.x_1d
+                d["yData"] = s.y_1d
+                d["zData"] = s.z_mat
                 from .colormaps import apply_colormap
                 zmin, zmax = float(z_arr.min()), float(z_arr.max())
                 span = zmax - zmin or 1
@@ -663,8 +1001,6 @@ class Figure3D:
                     [apply_colormap((float(v)-zmin)/span, s.cmap) for v in row]
                     for row in z_arr
                 ]
-                d["nx"] = len(s.x_1d)
-                d["ny"] = len(s.y_1d)
             elif d["type"] == "bar3d":
                 sx = xhi - xlo or 1; sy = yhi - ylo or 1; sz = zhi - zlo or 1
                 for bar in d["bars"]:
@@ -690,18 +1026,20 @@ class Figure3D:
             "zlabel": self.zlabel,
         }
 
-        # Legend HTML
-        legend_items = [s for s in self._series if getattr(s, "label", None)]
+        # Legend HTML — uses glx-leg-item for click-to-toggle series
         legend_html = ""
-        for s in legend_items:
+        for si, s in enumerate(self._series):
+            lbl = getattr(s, "label", None)
+            if not lbl:
+                continue
             col = getattr(s, "color", "#888")
             legend_html += (
-                f'<div style="display:flex;align-items:center;gap:8px;margin:4px 0">'
-                f'<div style="width:14px;height:14px;border-radius:3px;'
-                f'background:{col}"></div>'
-                f'<span>{svg_escape(s.label)}</span></div>'
+                f'<div class="glx-leg-item" data-series="{si}" '
+                f'title="Click to show/hide">'
+                f'<div class="glx-swatch" style="background:{col}"></div>'
+                f'<span>{svg_escape(lbl)}</span></div>'
             )
-        legend_display = "block" if legend_items else "none"
+        legend_display = "block" if legend_html else "none"
 
         theme = self.theme
         subs = {

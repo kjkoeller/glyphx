@@ -184,13 +184,15 @@ class GlyphXAccessor:
             num_col = str(y or self._df.select_dtypes("number").columns[0])
 
             if hue and not groupby and x and x in self._df.columns:
-                # Hue mode with X column → one BarSeries per unique hue value,
-                # each containing the rows that belong to that group.
+                # Hue mode with X column → one BarSeries per group (all x categories)
+                # This gives each group its own .color and .label, matching the
+                # Seaborn hue= API and enabling proper legend entries.
                 hue_vals = list(self._df[hue].unique())
                 for i, hv in enumerate(hue_vals):
-                    grp_df  = self._df[self._df[hue] == hv]
-                    x_data  = grp_df[x].tolist()
-                    y_data  = grp_df[num_col].tolist()
+                    mask   = self._df[hue] == hv
+                    grp_df = self._df[mask].copy()
+                    x_data = grp_df[x].tolist()
+                    y_data = grp_df[num_col].tolist()
                     fig.add(BarSeries(
                         x_data, y_data,
                         color=theme_colors[i % len(theme_colors)],
