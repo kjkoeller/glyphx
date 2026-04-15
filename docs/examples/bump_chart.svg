@@ -1,0 +1,57 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-ae5dc1b9062f-title glyphx-chart-ae5dc1b9062f-desc" id="glyphx-chart-ae5dc1b9062f" data-glyphx="true" width="740" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 480"><title id="glyphx-chart-ae5dc1b9062f-title">Bump Chart -- Rankings over Time</title><desc id="glyphx-chart-ae5dc1b9062f-desc">Bumpchart chart titled &quot;Bump Chart -- Rankings over Time&quot;.</desc><rect width="740" height="480" fill="#ffffff"/>
+<text x="370" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Bump Chart -- Rankings over Time</text>
+<text x="80.0" y="40" text-anchor="middle" font-size="12" font-weight="600" font-family="sans-serif" fill="#000000">2020</text>
+<text x="192.5" y="40" text-anchor="middle" font-size="12" font-weight="600" font-family="sans-serif" fill="#000000">2021</text>
+<text x="305.0" y="40" text-anchor="middle" font-size="12" font-weight="600" font-family="sans-serif" fill="#000000">2022</text>
+<text x="417.5" y="40" text-anchor="middle" font-size="12" font-weight="600" font-family="sans-serif" fill="#000000">2023</text>
+<text x="530.0" y="40" text-anchor="middle" font-size="12" font-weight="600" font-family="sans-serif" fill="#000000">2024</text>
+<text x="70" y="54.0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000" opacity="0.5">#1</text>
+<text x="70" y="149.0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000" opacity="0.5">#2</text>
+<text x="70" y="244.0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000" opacity="0.5">#3</text>
+<text x="70" y="339.0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000" opacity="0.5">#4</text>
+<text x="70" y="434.0" text-anchor="end" font-size="10" font-family="sans-serif" fill="#000000" opacity="0.5">#5</text>
+<line x1="80" x2="530" y1="50.0" y2="50.0" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="80" x2="530" y1="145.0" y2="145.0" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="80" x2="530" y1="240.0" y2="240.0" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="80" x2="530" y1="335.0" y2="335.0" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<line x1="80" x2="530" y1="430.0" y2="430.0" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<path d="M 80.00,430.00 C 136.25,430.00 136.25,335.00 192.50,335.00 C 248.75,335.00 248.75,145.00 305.00,145.00 C 361.25,145.00 361.25,50.00 417.50,50.00 C 473.75,50.00 473.75,50.00 530.00,50.00" fill="none" stroke="#440154" stroke-width="3.0" class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" data-label="GlyphX"/>
+<circle cx="80.00" cy="430.00" r="6.0" fill="#440154" stroke="#fff" stroke-width="1.5" data-label="GlyphX" data-rank="5" data-period="2020"/>
+<circle cx="192.50" cy="335.00" r="6.0" fill="#440154" stroke="#fff" stroke-width="1.5" data-label="GlyphX" data-rank="4" data-period="2021"/>
+<circle cx="305.00" cy="145.00" r="6.0" fill="#440154" stroke="#fff" stroke-width="1.5" data-label="GlyphX" data-rank="2" data-period="2022"/>
+<circle cx="417.50" cy="50.00" r="6.0" fill="#440154" stroke="#fff" stroke-width="1.5" data-label="GlyphX" data-rank="1" data-period="2023"/>
+<circle cx="530.00" cy="50.00" r="6.0" fill="#440154" stroke="#fff" stroke-width="1.5" data-label="GlyphX" data-rank="1" data-period="2024"/>
+<text x="70.0" y="434.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#440154" font-weight="600">GlyphX</text>
+<text x="540.0" y="54.0" text-anchor="start" font-size="11" font-family="sans-serif" fill="#440154" font-weight="600">GlyphX</text>
+<path d="M 80.00,50.00 C 136.25,50.00 136.25,50.00 192.50,50.00 C 248.75,50.00 248.75,50.00 305.00,50.00 C 361.25,50.00 361.25,145.00 417.50,145.00 C 473.75,145.00 473.75,145.00 530.00,145.00" fill="none" stroke="#3b528b" stroke-width="3.0" class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" data-label="Matplotlib"/>
+<circle cx="80.00" cy="50.00" r="6.0" fill="#3b528b" stroke="#fff" stroke-width="1.5" data-label="Matplotlib" data-rank="1" data-period="2020"/>
+<circle cx="192.50" cy="50.00" r="6.0" fill="#3b528b" stroke="#fff" stroke-width="1.5" data-label="Matplotlib" data-rank="1" data-period="2021"/>
+<circle cx="305.00" cy="50.00" r="6.0" fill="#3b528b" stroke="#fff" stroke-width="1.5" data-label="Matplotlib" data-rank="1" data-period="2022"/>
+<circle cx="417.50" cy="145.00" r="6.0" fill="#3b528b" stroke="#fff" stroke-width="1.5" data-label="Matplotlib" data-rank="2" data-period="2023"/>
+<circle cx="530.00" cy="145.00" r="6.0" fill="#3b528b" stroke="#fff" stroke-width="1.5" data-label="Matplotlib" data-rank="2" data-period="2024"/>
+<text x="70.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#3b528b" font-weight="600">Matplotlib</text>
+<text x="540.0" y="149.0" text-anchor="start" font-size="11" font-family="sans-serif" fill="#3b528b" font-weight="600">Matplotlib</text>
+<path d="M 80.00,145.00 C 136.25,145.00 136.25,145.00 192.50,145.00 C 248.75,145.00 248.75,240.00 305.00,240.00 C 361.25,240.00 361.25,240.00 417.50,240.00 C 473.75,240.00 473.75,240.00 530.00,240.00" fill="none" stroke="#21918c" stroke-width="3.0" class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" data-label="Plotly"/>
+<circle cx="80.00" cy="145.00" r="6.0" fill="#21918c" stroke="#fff" stroke-width="1.5" data-label="Plotly" data-rank="2" data-period="2020"/>
+<circle cx="192.50" cy="145.00" r="6.0" fill="#21918c" stroke="#fff" stroke-width="1.5" data-label="Plotly" data-rank="2" data-period="2021"/>
+<circle cx="305.00" cy="240.00" r="6.0" fill="#21918c" stroke="#fff" stroke-width="1.5" data-label="Plotly" data-rank="3" data-period="2022"/>
+<circle cx="417.50" cy="240.00" r="6.0" fill="#21918c" stroke="#fff" stroke-width="1.5" data-label="Plotly" data-rank="3" data-period="2023"/>
+<circle cx="530.00" cy="240.00" r="6.0" fill="#21918c" stroke="#fff" stroke-width="1.5" data-label="Plotly" data-rank="3" data-period="2024"/>
+<text x="70.0" y="149.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#21918c" font-weight="600">Plotly</text>
+<text x="540.0" y="244.0" text-anchor="start" font-size="11" font-family="sans-serif" fill="#21918c" font-weight="600">Plotly</text>
+<path d="M 80.00,240.00 C 136.25,240.00 136.25,240.00 192.50,240.00 C 248.75,240.00 248.75,335.00 305.00,335.00 C 361.25,335.00 361.25,335.00 417.50,335.00 C 473.75,335.00 473.75,335.00 530.00,335.00" fill="none" stroke="#5ec962" stroke-width="3.0" class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" data-label="Seaborn"/>
+<circle cx="80.00" cy="240.00" r="6.0" fill="#5ec962" stroke="#fff" stroke-width="1.5" data-label="Seaborn" data-rank="3" data-period="2020"/>
+<circle cx="192.50" cy="240.00" r="6.0" fill="#5ec962" stroke="#fff" stroke-width="1.5" data-label="Seaborn" data-rank="3" data-period="2021"/>
+<circle cx="305.00" cy="335.00" r="6.0" fill="#5ec962" stroke="#fff" stroke-width="1.5" data-label="Seaborn" data-rank="4" data-period="2022"/>
+<circle cx="417.50" cy="335.00" r="6.0" fill="#5ec962" stroke="#fff" stroke-width="1.5" data-label="Seaborn" data-rank="4" data-period="2023"/>
+<circle cx="530.00" cy="335.00" r="6.0" fill="#5ec962" stroke="#fff" stroke-width="1.5" data-label="Seaborn" data-rank="4" data-period="2024"/>
+<text x="70.0" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#5ec962" font-weight="600">Seaborn</text>
+<text x="540.0" y="339.0" text-anchor="start" font-size="11" font-family="sans-serif" fill="#5ec962" font-weight="600">Seaborn</text>
+<path d="M 80.00,335.00 C 136.25,335.00 136.25,430.00 192.50,430.00 C 248.75,430.00 248.75,430.00 305.00,430.00 C 361.25,430.00 361.25,430.00 417.50,430.00 C 473.75,430.00 473.75,430.00 530.00,430.00" fill="none" stroke="#fde725" stroke-width="3.0" class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" data-label="Bokeh"/>
+<circle cx="80.00" cy="335.00" r="6.0" fill="#fde725" stroke="#fff" stroke-width="1.5" data-label="Bokeh" data-rank="4" data-period="2020"/>
+<circle cx="192.50" cy="430.00" r="6.0" fill="#fde725" stroke="#fff" stroke-width="1.5" data-label="Bokeh" data-rank="5" data-period="2021"/>
+<circle cx="305.00" cy="430.00" r="6.0" fill="#fde725" stroke="#fff" stroke-width="1.5" data-label="Bokeh" data-rank="5" data-period="2022"/>
+<circle cx="417.50" cy="430.00" r="6.0" fill="#fde725" stroke="#fff" stroke-width="1.5" data-label="Bokeh" data-rank="5" data-period="2023"/>
+<circle cx="530.00" cy="430.00" r="6.0" fill="#fde725" stroke="#fff" stroke-width="1.5" data-label="Bokeh" data-rank="5" data-period="2024"/>
+<text x="70.0" y="339.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#fde725" font-weight="600">Bokeh</text>
+<text x="540.0" y="434.0" text-anchor="start" font-size="11" font-family="sans-serif" fill="#fde725" font-weight="600">Bokeh</text></svg>

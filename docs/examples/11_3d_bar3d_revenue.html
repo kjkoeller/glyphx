@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3D Bar — Monthly Revenue by Product Line</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden;
+  background:#1e1e1e; font-family:sans-serif; }
+canvas { display:block; }
+
+/* -- Tooltip -- */
+#glx-tip {
+  position:fixed; pointer-events:none; display:none;
+  background:rgba(15,23,42,0.92); color:#f8fafc;
+  padding:7px 12px; border-radius:7px; font-size:12.5px;
+  line-height:1.6; max-width:260px; white-space:pre-line;
+  box-shadow:0 4px 18px rgba(0,0,0,0.35); z-index:9999;
+}
+
+/* -- Title -- */
+#glx-title {
+  position:fixed; top:12px; left:50%; transform:translateX(-50%);
+  font-size:17px; font-weight:700; color:#ffffff;
+  pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* -- Control panel -- */
+#glx-panel {
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+  background:rgba(15,23,42,0.55); border-radius:12px;
+  padding:8px 12px; backdrop-filter:blur(6px);
+}
+.glx-btn {
+  background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);
+  color:#f1f5f9; font-size:11.5px; font-family:inherit;
+  padding:5px 11px; border-radius:7px; cursor:pointer;
+  transition:background 0.15s, transform 0.1s;
+  white-space:nowrap; user-select:none;
+}
+.glx-btn:hover  { background:rgba(255,255,255,0.22); }
+.glx-btn:active { transform:scale(0.95); }
+.glx-btn.active { background:rgba(99,102,241,0.6); border-color:#818cf8; }
+.glx-sep { width:1px; background:rgba(255,255,255,0.15); margin:0 2px; }
+
+/* -- Legend -- */
+#glx-legend {
+  position:fixed; right:16px; top:50%; transform:translateY(-50%);
+  background:rgba(15,23,42,0.65); border-radius:10px;
+  padding:10px 14px; color:#ffffff; font-size:12px;
+  backdrop-filter:blur(6px);
+}
+#glx-legend .glx-leg-item {
+  display:flex; align-items:center; gap:8px;
+  margin:5px 0; cursor:pointer; user-select:none;
+  transition:opacity 0.2s;
+}
+#glx-legend .glx-leg-item:hover { opacity:0.8; }
+#glx-legend .glx-swatch {
+  width:14px; height:14px; border-radius:3px; flex-shrink:0;
+}
+
+/* -- Help overlay -- */
+#glx-help {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,0.65);
+  display:none; align-items:center; justify-content:center;
+  z-index:99999; backdrop-filter:blur(4px);
+}
+#glx-help-box {
+  background:#1e293b; color:#f8fafc;
+  border-radius:14px; padding:28px 34px;
+  max-width:400px; width:90%;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+#glx-help-box h3 { margin-bottom:16px; font-size:15px; }
+#glx-help-box table { border-collapse:collapse; width:100%; font-size:12.5px; }
+#glx-help-box td   { padding:4px 0; }
+#glx-help-box td:first-child { opacity:0.5; width:120px; }
+#glx-help-box .close-hint {
+  margin-top:14px; text-align:center;
+  opacity:0.4; font-size:11px;
+}
+
+/* -- Axis value readout (surface probe) -- */
+#glx-readout {
+  position:fixed; left:16px; bottom:18px;
+  background:rgba(15,23,42,0.7); color:#94a3b8;
+  font-size:11.5px; padding:6px 10px; border-radius:7px;
+  display:none; font-variant-numeric:tabular-nums;
+  backdrop-filter:blur(4px);
+}
+
+/* -- Selection highlight -- */
+.glx-selected { outline:none; }
+</style>
+</head>
+<body>
+<div id="glx-title">3D Bar — Monthly Revenue by Product Line</div>
+<div id="glx-tip"></div>
+<div id="glx-readout"></div>
+
+<!-- Legend -->
+<div id="glx-legend" style="display:none"></div>
+
+<!-- Control panel -->
+<div id="glx-panel">
+  <button class="glx-btn" onclick="setCam('iso')"     title="Isometric view (I)"> ISO</button>
+  <button class="glx-btn" onclick="setCam('top')"     title="Top view (T)">^ Top</button>
+  <button class="glx-btn" onclick="setCam('front')"   title="Front view (V)">[] Front</button>
+  <button class="glx-btn" onclick="setCam('side')"    title="Side view (S)">< Side</button>
+  <div class="glx-sep"></div>
+  <button class="glx-btn" id="btn-rotate" onclick="toggleRotate()" title="Auto-rotate (Space)"> Rotate</button>
+  <button class="glx-btn" onclick="resetView()"       title="Reset camera (R)">Reset Reset</button>
+  <div class="glx-sep"></div>
+  <button class="glx-btn" onclick="screenshot()"      title="Save PNG (P)">PNG PNG</button>
+  <button class="glx-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"> Full</button>
+  <button class="glx-btn" onclick="showHelp()"        title="Keyboard help (H)">? Help</button>
+</div>
+
+<!-- Help overlay -->
+<div id="glx-help" onclick="closeHelp()">
+  <div id="glx-help-box">
+    <h3>KB GlyphX 3D Shortcuts</h3>
+    <table>
+      <tr><td>Drag</td><td>Rotate camera</td></tr>
+      <tr><td>Right-drag / Ctrl+drag</td><td>Pan</td></tr>
+      <tr><td>Scroll</td><td>Zoom</td></tr>
+      <tr><td>Arrow keys</td><td>Rotate (fine)</td></tr>
+      <tr><td>+  /  -</td><td>Zoom in / out</td></tr>
+      <tr><td>Space</td><td>Toggle auto-rotate</td></tr>
+      <tr><td>R</td><td>Reset view</td></tr>
+      <tr><td>I / T / V / S</td><td>ISO / Top / Front / Side</td></tr>
+      <tr><td>P</td><td>Save PNG screenshot</td></tr>
+      <tr><td>F</td><td>Toggle fullscreen</td></tr>
+      <tr><td>Click point</td><td>Select / highlight</td></tr>
+      <tr><td>Esc</td><td>Deselect / close</td></tr>
+      <tr><td>H</td><td>This help screen</td></tr>
+    </table>
+    <div class="close-hint">Click anywhere or press Esc to close</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// =======================================================================
+// Data & config
+// =======================================================================
+const DATA    = [{"type": "bar3d", "bars": [{"x": 1, "y": 1, "z": 1.2746606504267126, "color": "#6304a4", "dx": 0.7, "dy": 0.7, "nx": -1.0, "ny": -1.0, "nz": -0.6306644645760708, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 2, "y": 1, "z": 1.7973860722861565, "color": "#b42e8c", "dx": 0.7, "dy": 0.7, "nx": -0.8181818181818181, "ny": -1.0, "nz": -0.1696981720152222, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 3, "y": 1, "z": 0.8558424490141388, "color": "#0d0887", "dx": 0.7, "dy": 0.7, "nx": -0.6363636363636364, "ny": -1.0, "nz": -1.0, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 4, "y": 1, "z": 2.5246982746716276, "color": "#f69044", "dx": 0.7, "dy": 0.7, "nx": -0.4545454545454546, "ny": -1.0, "nz": 0.4716833170948411, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 5, "y": 1, "z": 1.7917628407399908, "color": "#b32e8c", "dx": 0.7, "dy": 0.7, "nx": -0.2727272727272727, "ny": -1.0, "nz": -0.17465702821323625, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 6, "y": 1, "z": 1.628723237397716, "color": "#9c199a", "dx": 0.7, "dy": 0.7, "nx": -0.09090909090909094, "ny": -1.0, "nz": -0.318433776675048, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 7, "y": 1, "z": 2.5362350657877477, "color": "#f69243", "dx": 0.7, "dy": 0.7, "nx": 0.09090909090909083, "ny": -1.0, "nz": 0.4818570557470181, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 8, "y": 1, "z": 1.1744622052970806, "color": "#5202a3", "dx": 0.7, "dy": 0.7, "nx": 0.2727272727272727, "ny": -1.0, "nz": -0.7190246319608278, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 9, "y": 1, "z": 2.2677146781630455, "color": "#e46c5d", "dx": 0.7, "dy": 0.7, "nx": 0.4545454545454546, "ny": -1.0, "nz": 0.2450619002329555, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 10, "y": 1, "z": 0.9677925984394122, "color": "#250691", "dx": 0.7, "dy": 0.7, "nx": 0.6363636363636365, "ny": -1.0, "nz": -0.9012765724141928, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 11, "y": 1, "z": 1.6689203301665956, "color": "#a21e97", "dx": 0.7, "dy": 0.7, "nx": 0.8181818181818181, "ny": -1.0, "nz": -0.2829859027999234, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 12, "y": 1, "z": 1.3978900772001337, "color": "#7907a4", "dx": 0.7, "dy": 0.7, "nx": 1.0, "ny": -1.0, "nz": -0.5219943872875461, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 1, "y": 2, "z": 2.7309878136067622, "color": "#fcb231", "dx": 0.7, "dy": 0.7, "nx": -1.0, "ny": -0.33333333333333337, "nz": 0.6536000940113948, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 2, "y": 2, "z": 2.883080438964667, "color": "#facc28", "dx": 0.7, "dy": 0.7, "nx": -0.8181818181818181, "ny": -0.33333333333333337, "nz": 0.7877232315234084, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 3, "y": 2, "z": 1.8352931240434676, "color": "#b93388", "dx": 0.7, "dy": 0.7, "nx": -0.6363636363636364, "ny": -0.33333333333333337, "nz": -0.1362697746583046, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 4, "y": 2, "z": 2.420366621071768, "color": "#f0804e", "dx": 0.7, "dy": 0.7, "nx": -0.4545454545454546, "ny": -0.33333333333333337, "nz": 0.3796782728680044, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 5, "y": 2, "z": 1.9100067993738248, "color": "#c13d81", "dx": 0.7, "dy": 0.7, "nx": -0.2727272727272727, "ny": -0.33333333333333337, "nz": -0.07038339438983077, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 6, "y": 2, "z": 2.284030943663991, "color": "#e56e5b", "dx": 0.7, "dy": 0.7, "nx": -0.09090909090909094, "ny": -0.33333333333333337, "nz": 0.25945042641110594, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 7, "y": 2, "z": 1.6235814017892676, "color": "#9c199b", "dx": 0.7, "dy": 0.7, "nx": 0.09090909090909083, "ny": -0.33333333333333337, "nz": -0.3229681130556138, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 8, "y": 2, "z": 1.145830398416472, "color": "#4c03a0", "dx": 0.7, "dy": 0.7, "nx": 0.2727272727272727, "ny": -0.33333333333333337, "nz": -0.7442736390210224, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 9, "y": 2, "z": 1.0984506707601294, "color": "#41049c", "dx": 0.7, "dy": 0.7, "nx": 0.4545454545454546, "ny": -0.33333333333333337, "nz": -0.7860555315538093, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 10, "y": 2, "z": 2.191560925878756, "color": "#de6164", "dx": 0.7, "dy": 0.7, "nx": 0.6363636363636365, "ny": -0.33333333333333337, "nz": 0.17790558568025427, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 11, "y": 2, "z": 3.12379752640385, "color": "#f0f921", "dx": 0.7, "dy": 0.7, "nx": 0.8181818181818181, "ny": -0.33333333333333337, "nz": 1.0, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 12, "y": 2, "z": 2.1347058152539433, "color": "#d95a6a", "dx": 0.7, "dy": 0.7, "nx": 1.0, "ny": -0.33333333333333337, "nz": 0.12776781073786037, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 1, "y": 3, "z": 1.7376976902995738, "color": "#ab2791", "dx": 0.7, "dy": 0.7, "nx": -1.0, "ny": 0.33333333333333326, "nz": -0.22233447207393475, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 2, "y": 3, "z": 2.9560094311659704, "color": "#f7da26", "dx": 0.7, "dy": 0.7, "nx": -0.8181818181818181, "ny": 0.33333333333333326, "nz": 0.8520357859724503, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 3, "y": 3, "z": 2.118650923318597, "color": "#d7586b", "dx": 0.7, "dy": 0.7, "nx": -0.6363636363636364, "ny": 0.33333333333333326, "nz": 0.11360977727819876, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 4, "y": 3, "z": 2.0507169926058078, "color": "#d04f72", "dx": 0.7, "dy": 0.7, "nx": -0.4545454545454546, "ny": 0.33333333333333326, "nz": 0.0537021262051649, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 5, "y": 3, "z": 2.126288867777659, "color": "#d8596b", "dx": 0.7, "dy": 0.7, "nx": -0.2727272727272727, "ny": 0.33333333333333326, "nz": 0.12034531144746707, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 6, "y": 3, "z": 1.9338114012165764, "color": "#c3407e", "dx": 0.7, "dy": 0.7, "nx": -0.09090909090909094, "ny": 0.33333333333333326, "nz": -0.049391266212275076, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 7, "y": 3, "z": 1.8452618297055599, "color": "#ba3487", "dx": 0.7, "dy": 0.7, "nx": 0.09090909090909083, "ny": 0.33333333333333326, "nz": -0.1274788548014918, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 8, "y": 3, "z": 1.282518266982223, "color": "#6505a4", "dx": 0.7, "dy": 0.7, "nx": 0.2727272727272727, "ny": 0.33333333333333326, "nz": -0.6237352121990316, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 9, "y": 3, "z": 2.2508120615905205, "color": "#e3695f", "dx": 0.7, "dy": 0.7, "nx": 0.4545454545454546, "ny": 0.33333333333333326, "nz": 0.23015629937601179, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 10, "y": 3, "z": 1.952612274780053, "color": "#c5427c", "dx": 0.7, "dy": 0.7, "nx": 0.6363636363636365, "ny": 0.33333333333333326, "nz": -0.03281168423473835, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 11, "y": 3, "z": 2.5965429611720054, "color": "#f89c3d", "dx": 0.7, "dy": 0.7, "nx": 0.8181818181818181, "ny": 0.33333333333333326, "nz": 0.5350396747375747, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 12, "y": 3, "z": 1.8155907657760768, "color": "#b6308a", "dx": 0.7, "dy": 0.7, "nx": 1.0, "ny": 0.33333333333333326, "nz": -0.1536443324384058, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 1, "y": 4, "z": 1.046815060734766, "color": "#360498", "dx": 0.7, "dy": 0.7, "nx": -1.0, "ny": 1.0, "nz": -0.8315904811126806, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 2, "y": 4, "z": 1.9501946840525677, "color": "#c5427d", "dx": 0.7, "dy": 0.7, "nx": -0.8181818181818181, "ny": 1.0, "nz": -0.0349436406844823, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 3, "y": 4, "z": 2.8497686483733404, "color": "#fcc629", "dx": 0.7, "dy": 0.7, "nx": -0.6363636363636364, "ny": 1.0, "nz": 0.7583471729555584, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 4, "y": 4, "z": 1.8082884385342437, "color": "#b5308b", "dx": 0.7, "dy": 0.7, "nx": -0.4545454545454546, "ny": 1.0, "nz": -0.1600839020001078, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 5, "y": 4, "z": 1.5550715694896253, "color": "#9210a1", "dx": 0.7, "dy": 0.7, "nx": -0.2727272727272727, "ny": 1.0, "nz": -0.3833836239117576, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 6, "y": 4, "z": 1.4032040388709084, "color": "#7a08a4", "dx": 0.7, "dy": 0.7, "nx": -0.09090909090909094, "ny": 1.0, "nz": -0.5173082612493789, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 7, "y": 4, "z": 1.4749915944623133, "color": "#8609a5", "dx": 0.7, "dy": 0.7, "nx": 0.09090909090909083, "ny": 1.0, "nz": -0.45400228459482506, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 8, "y": 4, "z": 1.8499031315999184, "color": "#ba3587", "dx": 0.7, "dy": 0.7, "nx": 0.2727272727272727, "ny": 1.0, "nz": -0.12338591491866091, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 9, "y": 4, "z": 1.4100089532708973, "color": "#7b08a4", "dx": 0.7, "dy": 0.7, "nx": 0.4545454545454546, "ny": 1.0, "nz": -0.5113073360389722, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 10, "y": 4, "z": 2.7488195577987917, "color": "#fcb52f", "dx": 0.7, "dy": 0.7, "nx": 0.6363636363636365, "ny": 1.0, "nz": 0.6693250476225157, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 11, "y": 4, "z": 1.8586823819623097, "color": "#bb3686", "dx": 0.7, "dy": 0.7, "nx": 0.8181818181818181, "ny": 1.0, "nz": -0.11564391821871234, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}, {"x": 12, "y": 4, "z": 2.0543241857473653, "color": "#d04f72", "dx": 0.7, "dy": 0.7, "nx": 1.0, "ny": 1.0, "nz": 0.05688313554482893, "ndx": 0.12727272727272726, "ndy": 0.4666666666666666}], "alpha": 0.85, "label": ""}];
+const THEME   = {"bg": "#1e1e1e", "tc": "#ffffff", "axis": "#cccccc", "grid": "#444444"};
+const LABELS  = {"x": [{"norm": -1.0, "label": "1"}, {"norm": -0.5, "label": "3.75"}, {"norm": 0.0, "label": "6.50"}, {"norm": 0.5, "label": "9.25"}, {"norm": 1.0, "label": "12"}], "y": [{"norm": -1.0, "label": "1"}, {"norm": -0.5, "label": "1.75"}, {"norm": 0.0, "label": "2.50"}, {"norm": 0.5, "label": "3.25"}, {"norm": 1.0, "label": "4"}], "z": [{"norm": -1.0, "label": "0.86"}, {"norm": -0.5, "label": "1.42"}, {"norm": 0.0, "label": "1.99"}, {"norm": 0.5, "label": "2.56"}, {"norm": 1.0, "label": "3.12"}], "xlabel": "Month", "ylabel": "Product", "zlabel": "Revenue ($M)"};
+
+function fmtV(v) {
+  const a = Math.abs(v);
+  if (a === 0) return '0';
+  if (a >= 1e6)  return (v/1e6).toFixed(2)+'M';
+  if (a >= 1e3)  return (v/1e3).toFixed(2)+'k';
+  if (Number.isInteger(v)) return String(v);
+  if (a >= 100)  return v.toFixed(1);
+  if (a >= 10)   return v.toFixed(2);
+  return v.toFixed(3);
+}
+
+// =======================================================================
+// Scene setup
+// =======================================================================
+const W = window.innerWidth, H = window.innerHeight;
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(W, H);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setClearColor(new THREE.Color(THEME.bg), 1);
+document.body.appendChild(renderer.domElement);
+const cv = renderer.domElement;
+
+const scene  = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, W/H, 0.01, 1000);
+scene.add(new THREE.DirectionalLight(0xffffff, 0.8).position.set(5,8,5) && new THREE.DirectionalLight(0xffffff, 0.8));
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+
+// Lights properly
+const dLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dLight.position.set(5, 8, 5);
+scene.add(dLight);
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+
+// =======================================================================
+// Camera state & orbit controls
+// =======================================================================
+const CAM_PRESETS = {
+  iso:   { theta:45,  phi:55  },
+  top:   { theta:0,   phi:1   },
+  front: { theta:0,   phi:90  },
+  side:  { theta:90,  phi:90  },
+};
+
+let cam = { theta:45, phi:55, r:6, tx:0, ty:0 };
+let drag = false, rDrag = false, lx = 0, ly = 0;
+let autoRotate = false, rotTimer = null;
+let selectedObj = null;
+
+function updateCamera() {
+  const t = cam.theta * Math.PI/180;
+  const p = cam.phi   * Math.PI/180;
+  camera.position.set(
+    cam.r * Math.sin(p) * Math.cos(t) + cam.tx,
+    cam.r * Math.cos(p)               + cam.ty,
+    cam.r * Math.sin(p) * Math.sin(t) + cam.tx
+  );
+  camera.lookAt(cam.tx, cam.ty, 0);
+}
+
+function setCam(preset) {
+  const p = CAM_PRESETS[preset];
+  if (!p) return;
+  // Smooth tween
+  const t0 = { ...cam };
+  const t1 = { ...cam, theta: p.theta, phi: p.phi };
+  let start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    const prog = Math.min((ts - start) / 500, 1);
+    const ease = 1 - Math.pow(1 - prog, 3);
+    cam.theta = t0.theta + (t1.theta - t0.theta) * ease;
+    cam.phi   = t0.phi   + (t1.phi   - t0.phi)   * ease;
+    updateCamera();
+    if (prog < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function resetView() {
+  cam = { theta:45, phi:55, r:6, tx:0, ty:0 };
+  updateCamera();
+}
+
+function toggleRotate() {
+  autoRotate = !autoRotate;
+  document.getElementById('btn-rotate').classList.toggle('active', autoRotate);
+}
+
+function screenshot() {
+  renderer.render(scene, camera);
+  const url = cv.toDataURL('image/png');
+  const a = document.createElement('a');
+  a.href = url; a.download = 'glyphx_3d.png';
+  a.click();
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement)
+    document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+
+function showHelp() { document.getElementById('glx-help').style.display='flex'; }
+function closeHelp(){ document.getElementById('glx-help').style.display='none'; }
+
+// Mouse orbit
+cv.addEventListener('mousedown', e => {
+  if (e.button === 0 && !e.ctrlKey) { drag=true; }
+  if (e.button === 2 || (e.button===0 && e.ctrlKey)) { rDrag=true; }
+  lx=e.clientX; ly=e.clientY;
+});
+cv.addEventListener('contextmenu', e => e.preventDefault());
+window.addEventListener('mouseup',   () => { drag=false; rDrag=false; });
+window.addEventListener('mousemove', e => {
+  const dx=e.clientX-lx, dy=e.clientY-ly;
+  lx=e.clientX; ly=e.clientY;
+  if (drag)  { cam.theta -= dx*0.35; cam.phi = Math.max(2, Math.min(178, cam.phi - dy*0.35)); updateCamera(); }
+  if (rDrag) { cam.tx -= dx*0.009; cam.ty += dy*0.009; updateCamera(); }
+});
+cv.addEventListener('wheel', e => {
+  cam.r = Math.max(0.5, cam.r * (1 + e.deltaY*0.001));
+  updateCamera();
+}, { passive:true });
+
+// Touch
+let touches = [];
+cv.addEventListener('touchstart',  e => { touches=[...e.touches]; }, { passive:true });
+cv.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (e.touches.length===1) {
+    cam.theta -= (e.touches[0].clientX - touches[0].clientX)*0.45;
+    cam.phi = Math.max(2, Math.min(178, cam.phi - (e.touches[0].clientY - touches[0].clientY)*0.45));
+    updateCamera();
+  }
+  if (e.touches.length===2) {
+    const d0 = Math.hypot(touches[0].clientX-touches[1].clientX, touches[0].clientY-touches[1].clientY);
+    const d1 = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+    cam.r = Math.max(0.5, cam.r*(d0/d1));
+    updateCamera();
+  }
+  touches=[...e.touches];
+}, { passive:false });
+
+updateCamera();
+
+// =======================================================================
+// Keyboard controls
+// =======================================================================
+document.addEventListener('keydown', e => {
+  if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
+  switch(e.key) {
+    case 'ArrowLeft':  cam.theta -= 3; updateCamera(); break;
+    case 'ArrowRight': cam.theta += 3; updateCamera(); break;
+    case 'ArrowUp':    cam.phi = Math.max(2,   cam.phi - 3); updateCamera(); break;
+    case 'ArrowDown':  cam.phi = Math.min(178, cam.phi + 3); updateCamera(); break;
+    case '+': case '=': cam.r = Math.max(0.5, cam.r * 0.92); updateCamera(); break;
+    case '-': case '_': cam.r *= 1.08; updateCamera(); break;
+    case ' ': e.preventDefault(); toggleRotate(); break;
+    case 'r': case 'R': resetView(); break;
+    case 'i': case 'I': setCam('iso');   break;
+    case 't': case 'T': setCam('top');   break;
+    case 'v': case 'V': setCam('front'); break;
+    case 's': case 'S': setCam('side');  break;
+    case 'p': case 'P': screenshot();    break;
+    case 'f': case 'F': toggleFullscreen(); break;
+    case 'h': case 'H': showHelp();      break;
+    case 'Escape': closeHelp(); clearSelection(); break;
+  }
+});
+
+// =======================================================================
+// Axis grid & labels
+// =======================================================================
+const axColor   = new THREE.Color(THEME.axis);
+const gridColor = new THREE.Color(THEME.grid);
+
+function addLine(p1, p2, col, opacity=1) {
+  const g = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(...p1), new THREE.Vector3(...p2)
+  ]);
+  const m = new THREE.LineBasicMaterial({ color:col, transparent: opacity<1, opacity });
+  scene.add(new THREE.Line(g, m));
+}
+
+// Axis box edges
+const S = 1;
+[
+  [[-S,-S,-S],[S,-S,-S]], [[-S,-S,-S],[-S,S,-S]], [[-S,-S,-S],[-S,-S,S]],
+  [[S,S,-S],[S,-S,-S]],   [[S,S,-S],[-S,S,-S]],   [[S,S,-S],[S,S,S]],
+  [[S,-S,S],[-S,-S,S]],   [[S,-S,S],[S,S,S]],      [[S,-S,S],[S,-S,-S]],
+  [[-S,S,S],[-S,-S,S]],   [[-S,S,S],[S,S,S]],      [[-S,S,S],[-S,S,-S]],
+].forEach(([a,b]) => addLine(a, b, axColor, 0.45));
+
+// Floor grid
+for (let k=0; k<=5; k++) {
+  const v = -S + k*(2*S/5);
+  addLine([v,-S,-S],[v,-S,S], gridColor, 0.35);
+  addLine([-S,-S,v],[S,-S,v], gridColor, 0.35);
+}
+
+// Axis labels as canvas sprites
+function makeSprite(text, pos, size=0.5) {
+  const c = document.createElement('canvas');
+  c.width=256; c.height=64;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle = THEME.tc;
+  ctx.font=`bold ${Math.round(256/text.length*0.65 + 18)}px sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(text, 128, 32);
+  const sp = new THREE.Sprite(
+    new THREE.SpriteMaterial({ map:new THREE.CanvasTexture(c), transparent:true })
+  );
+  sp.scale.set(size, size*0.25, 1);
+  sp.position.set(...pos);
+  scene.add(sp);
+}
+
+// Tick labels
+LABELS.x.forEach(t => makeSprite(t.label, [t.norm, -S-0.14, -S-0.12], 0.5));
+LABELS.y.forEach(t => makeSprite(t.label, [-S-0.14, -S-0.14,  t.norm], 0.5));
+LABELS.z.forEach(t => makeSprite(t.label, [-S-0.28,  t.norm, -S],      0.5));
+
+// Axis name labels
+makeSprite(LABELS.xlabel, [ 0,    -S-0.32, -S-0.18], 0.7);
+makeSprite(LABELS.ylabel, [-S-0.3,-S-0.32,  0],      0.7);
+makeSprite(LABELS.zlabel, [-S-0.45, 0,     -S],      0.7);
+
+// =======================================================================
+// Series rendering
+// =======================================================================
+const hitObjects   = [];   // for raycasting
+const seriesGroups = {};   // css_class -> THREE.Group for legend toggle
+const surfaceMeshes = [];  // for surface value probe
+
+DATA.forEach((series, si) => {
+  const group = new THREE.Group();
+  group.userData.seriesIndex = si;
+  group.userData.label = series.label;
+
+  // -- Scatter -------------------------------------------------------
+  if (series.type === 'scatter') {
+    const N = series.x.length;
+    const positions = new Float32Array(N*3);
+    const colors    = new Float32Array(N*3);
+    for (let i=0; i<N; i++) {
+      positions[i*3]   = series.nx[i];
+      positions[i*3+1] = series.nz[i];
+      positions[i*3+2] = series.ny[i];
+      const c = new THREE.Color(series.colors[i]);
+      colors[i*3]=c.r; colors[i*3+1]=c.g; colors[i*3+2]=c.b;
+    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geom.setAttribute('color',    new THREE.BufferAttribute(colors,    3));
+    geom.userData = { xs:series.x, ys:series.y, zs:series.z, label:series.label };
+    const mat = new THREE.PointsMaterial({
+      size: series.size*0.012, vertexColors:true,
+      transparent:true, opacity:series.alpha, sizeAttenuation:true
+    });
+    const pts = new THREE.Points(geom, mat);
+    hitObjects.push(pts);
+    group.add(pts);
+  }
+
+  // -- Line ---------------------------------------------------------
+  if (series.type === 'line') {
+    const pts3 = series.nx.map((nx,i) =>
+      new THREE.Vector3(nx, series.nz[i], series.ny[i]));
+    const g = new THREE.BufferGeometry().setFromPoints(pts3);
+    const m = new THREE.LineBasicMaterial({
+      color: new THREE.Color(series.color), linewidth:series.width
+    });
+    group.add(new THREE.Line(g, m));
+  }
+
+  // -- Surface ------------------------------------------------------
+  if (series.type === 'surface') {
+    const M = series.ny, N = series.nx;
+    const positions = new Float32Array(M*N*3);
+    const colors    = new Float32Array(M*N*3);
+    for (let j=0; j<M; j++) for (let i=0; i<N; i++) {
+      const idx=(j*N+i)*3;
+      positions[idx]   = series.nxArr[i];
+      positions[idx+1] = series.nz[j][i];
+      positions[idx+2] = series.nyArr[j];
+      const c = new THREE.Color(series.face_colors[j][i]);
+      colors[idx]=c.r; colors[idx+1]=c.g; colors[idx+2]=c.b;
+    }
+    const indices=[];
+    for (let j=0; j<M-1; j++) for (let i=0; i<N-1; i++) {
+      const a=j*N+i, b=a+1, c=a+N, d=c+1;
+      indices.push(a,c,b, b,c,d);
+    }
+    const geom = new THREE.BufferGeometry();
+    geom.setAttribute('position', new THREE.BufferAttribute(positions,3));
+    geom.setAttribute('color',    new THREE.BufferAttribute(colors,3));
+    geom.setIndex(indices);
+    geom.computeVertexNormals();
+    geom.userData = {
+      xs:series.xData, ys:series.yData, zs:series.zData,
+      M, N, nxArr:series.nxArr, nyArr:series.nyArr
+    };
+    const mat = new THREE.MeshPhongMaterial({
+      vertexColors:true, transparent:true,
+      opacity:series.alpha, side:THREE.DoubleSide
+    });
+    const mesh = new THREE.Mesh(geom, mat);
+    surfaceMeshes.push(mesh);
+    hitObjects.push(mesh);
+    group.add(mesh);
+    if (series.wireframe) {
+      const wm = new THREE.MeshBasicMaterial({
+        color:0xffffff, wireframe:true, transparent:true, opacity:0.08
+      });
+      group.add(new THREE.Mesh(geom.clone(), wm));
+    }
+  }
+
+  // -- Bar3D --------------------------------------------------------
+  if (series.type === 'bar3d') {
+    series.bars.forEach(bar => {
+      const geom = new THREE.BoxGeometry(bar.ndx*0.88, bar.nz, bar.ndy*0.88);
+      const mat  = new THREE.MeshPhongMaterial({
+        color:new THREE.Color(bar.color), transparent:true, opacity:series.alpha
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.position.set(bar.nx, -1 + bar.nz/2, bar.ny);
+      group.add(mesh);
+    });
+  }
+
+  scene.add(group);
+  seriesGroups[si] = group;
+});
+
+// =======================================================================
+// Legend -- click to toggle series visibility
+// =======================================================================
+document.querySelectorAll('.glx-leg-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const si = parseInt(item.dataset.series);
+    const grp = seriesGroups[si];
+    if (!grp) return;
+    grp.visible = !grp.visible;
+    item.style.opacity = grp.visible ? '1' : '0.35';
+  });
+});
+
+// =======================================================================
+// Selection highlight
+// =======================================================================
+let selectionIdx = null;
+
+function clearSelection() {
+  // Reset all scatter point sizes
+  Object.values(seriesGroups).forEach(grp => {
+    grp.children.forEach(obj => {
+      if (obj.isPoints && obj.material._origSize != null) {
+        obj.material.size = obj.material._origSize;
+        obj.material.opacity = obj.material._origOpacity;
+      }
+    });
+  });
+  selectionIdx = null;
+  document.getElementById('glx-readout').style.display = 'none';
+}
+
+// =======================================================================
+// Raycasting -- tooltip + surface probe + click-select
+// =======================================================================
+const raycaster = new THREE.Raycaster();
+raycaster.params.Points = { threshold: 0.06 };
+const mouse = new THREE.Vector2();
+const tip   = document.getElementById('glx-tip');
+const readout = document.getElementById('glx-readout');
+
+let hoverTimer = null;
+
+cv.addEventListener('mousemove', e => {
+  mouse.x =  (e.clientX/W)*2-1;
+  mouse.y = -(e.clientY/H)*2+1;
+
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(hitObjects, true);
+
+  if (hits.length > 0) {
+    const hit = hits[0];
+    const obj = hit.object;
+
+    // -- Scatter tooltip ------------------------------------------
+    if (obj.isPoints) {
+      const ud  = obj.geometry.userData;
+      const idx = hit.index;
+      if (ud && ud.xs) {
+        const lbl = ud.label ? `<b>${ud.label}</b>
+` : '';
+        tip.innerHTML = lbl +
+          `x: ${fmtV(ud.xs[idx])}
+y: ${fmtV(ud.ys[idx])}
+z: ${fmtV(ud.zs[idx])}`;
+        tip.style.display = 'block';
+        tip.style.left = (e.clientX+14)+'px';
+        tip.style.top  = (e.clientY-20)+'px';
+      }
+    }
+
+    // -- Surface value probe --------------------------------------
+    if (obj.isMesh && surfaceMeshes.includes(obj)) {
+      const ud = obj.geometry.userData;
+      if (ud && ud.xs && ud.ys && ud.zs) {
+        // Find nearest grid vertex to hit point in normalised coords
+        const p = hit.point;   // THREE.Vector3 in normalised space
+        // nxArr/nyArr map column/row indices to normalised coords
+        let bestI=0, bestJ=0, bestDist=Infinity;
+        for (let j=0; j<ud.M; j++) {
+          for (let i=0; i<ud.N; i++) {
+            const nx = ud.nxArr[i], ny = ud.nyArr[j];
+            const d = (nx-p.x)**2 + (ny-p.z)**2;
+            if (d < bestDist) { bestDist=d; bestI=i; bestJ=j; }
+          }
+        }
+        const xv = ud.xs[bestI], yv = ud.ys[bestJ], zv = ud.zs[bestJ][bestI];
+        tip.innerHTML = `x: ${fmtV(xv)}
+y: ${fmtV(yv)}
+z: <b>${fmtV(zv)}</b>`;
+        tip.style.display = 'block';
+        tip.style.left = (e.clientX+14)+'px';
+        tip.style.top  = (e.clientY-20)+'px';
+        readout.textContent = `(${fmtV(xv)}, ${fmtV(yv)}, ${fmtV(zv)})`;
+        readout.style.display = 'block';
+      }
+    }
+  } else {
+    tip.style.display = 'none';
+    readout.style.display = 'none';
+  }
+});
+
+cv.addEventListener('mouseleave', () => {
+  tip.style.display = 'none';
+  readout.style.display = 'none';
+});
+
+// Click to select scatter point
+cv.addEventListener('click', e => {
+  mouse.x =  (e.clientX/W)*2-1;
+  mouse.y = -(e.clientY/H)*2+1;
+  raycaster.setFromCamera(mouse, camera);
+  const hits = raycaster.intersectObjects(hitObjects, true);
+
+  if (!hits.length) { clearSelection(); return; }
+
+  const hit = hits[0];
+  if (!hit.object.isPoints) { clearSelection(); return; }
+
+  const idx = hit.index;
+  const ud  = hit.object.geometry.userData;
+
+  // Toggle selection
+  if (selectionIdx === idx) {
+    clearSelection();
+  } else {
+    selectionIdx = idx;
+    // Show enlarged version of the selected point via readout
+    if (ud && ud.xs) {
+      readout.style.display = 'block';
+      readout.innerHTML =
+        `Selected: x=${fmtV(ud.xs[idx])}, y=${fmtV(ud.ys[idx])}, z=${fmtV(ud.zs[idx])}`;
+    }
+  }
+});
+
+// =======================================================================
+// Resize
+// =======================================================================
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
+// =======================================================================
+// Render loop
+// =======================================================================
+(function animate() {
+  requestAnimationFrame(animate);
+  if (autoRotate) { cam.theta += 0.25; updateCamera(); }
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>

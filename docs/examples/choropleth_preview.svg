@@ -1,0 +1,40 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-5721ad29cc9e-title glyphx-chart-5721ad29cc9e-desc" id="glyphx-chart-5721ad29cc9e" data-glyphx="true" width="740" height="400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 400"><title id="glyphx-chart-5721ad29cc9e-title">Choropleth Map -- SVG Mercator from GeoJSON (no tile server)</title><desc id="glyphx-chart-5721ad29cc9e-desc">Bar chart titled &quot;Choropleth Map -- SVG Mercator from GeoJSON (no tile server)&quot;. X axis: Region. Y axis: GDP per Capita (USD). Series: 5 data points. Ranges from 3.8e+04 (at West) to 6.3e+04 (at North).</desc><rect width="740" height="400" fill="#ffffff"/>
+<text x="370" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Choropleth Map -- SVG Mercator from GeoJSON (no tile server)</text>
+<line x1="50" y1="350" x2="560" y2="350" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="350" stroke="#333" />
+<text x="305" y="390" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Region</text>
+<text x="15" y="200" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 200)">GDP per Capita (USD)</text>
+<line x1="50" x2="560" y1="350.0" y2="350.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="350.0" y2="350.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="354.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="560" y1="290.0" y2="290.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="290.0" y2="290.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="294.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">13,482</text>
+<line x1="50" x2="560" y1="230.0" y2="230.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="230.0" y2="230.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="234.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">26,964</text>
+<line x1="50" x2="560" y1="170.0" y2="170.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="170.0" y2="170.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="174.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">40,446</text>
+<line x1="50" x2="560" y1="110.0" y2="110.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="110.0" y2="110.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="114.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">53,928</text>
+<line x1="50" x2="560" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">67,410</text>
+<line y1="50" y2="350" x1="101.0" x2="101.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="101.0" y="366" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >North</text>
+<line y1="50" y2="350" x1="203.0" x2="203.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="203.0" y="366" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >South</text>
+<line y1="50" y2="350" x1="305.0" x2="305.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="305.0" y="366" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >East</text>
+<line y1="50" y2="350" x1="407.0" x2="407.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="407.0" y="366" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >West</text>
+<line y1="50" y2="350" x1="509.0" x2="509.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="509.0" y="366" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Central</text>
+<rect class="glyphx-point series-86512" tabindex="0" role="graphics-symbol" x="60.199999999999996" y="69.62616822429908" width="81.60000000000001" height="280.3738317757009" fill="#2563eb" stroke="#00000033" data-x="North" data-y="63000" data-label=""/>
+<rect class="glyphx-point series-86512" tabindex="0" role="graphics-symbol" x="162.2" y="163.0841121495327" width="81.60000000000001" height="186.9158878504673" fill="#2563eb" stroke="#00000033" data-x="South" data-y="42000" data-label=""/>
+<rect class="glyphx-point series-86512" tabindex="0" role="graphics-symbol" x="264.2" y="123.03070761014686" width="81.60000000000001" height="226.96929238985314" fill="#2563eb" stroke="#00000033" data-x="East" data-y="51000" data-label=""/>
+<rect class="glyphx-point series-86512" tabindex="0" role="graphics-symbol" x="366.2" y="180.88562527814864" width="81.60000000000001" height="169.11437472185136" fill="#2563eb" stroke="#00000033" data-x="West" data-y="38000" data-label=""/>
+<rect class="glyphx-point series-86512" tabindex="0" role="graphics-symbol" x="468.2" y="96.32843791722297" width="81.60000000000001" height="253.67156208277703" fill="#2563eb" stroke="#00000033" data-x="Central" data-y="57000" data-label=""/>
+</svg>

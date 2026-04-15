@@ -1,0 +1,80 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-375eb38e225e-title glyphx-chart-375eb38e225e-desc" id="glyphx-chart-375eb38e225e" data-glyphx="true" data-has-math="true" width="680" height="420" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 420"><title id="glyphx-chart-375eb38e225e-title">Vega-Lite Export -- fig.to_vega_lite() outputs .vl.json</title><desc id="glyphx-chart-375eb38e225e-desc">Line chart titled &quot;Vega-Lite Export -- fig.to_vega_lite() outputs .vl.json&quot;. X axis: Month. Y axis: Revenue ($M). Series &quot;Revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec). Series &quot;Costs&quot;: 12 data points. Ranges from 0.65 (at Mar) to 1.75 (at Dec).</desc><rect width="680" height="420" fill="#ffffff"/>
+<text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Vega-Lite Export -- fig.to_vega_lite() outputs .vl.json</text>
+<line x1="50" y1="370" x2="500" y2="370" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="370" stroke="#333" />
+<text x="275" y="410" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Month</text>
+<text x="15" y="210" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 210)">Revenue ($M)</text>
+<line x1="50" x2="500" y1="370.0" y2="370.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="370.0" y2="370.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="374.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.49</text>
+<line x1="50" x2="500" y1="306.0" y2="306.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="306.0" y2="306.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="310.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.02</text>
+<line x1="50" x2="500" y1="242.0" y2="242.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="242.0" y2="242.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="246.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.56</text>
+<line x1="50" x2="500" y1="178.0" y2="178.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="178.0" y2="178.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="182.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.09</text>
+<line x1="50" x2="500" y1="114.0" y2="114.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="114.0" y2="114.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="118.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.63</text>
+<line x1="50" x2="500" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.16</text>
+<line y1="50" y2="370" x1="68.75" x2="68.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="68.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jan</text>
+<line y1="50" y2="370" x1="106.25" x2="106.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="106.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Feb</text>
+<line y1="50" y2="370" x1="143.75" x2="143.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="143.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mar</text>
+<line y1="50" y2="370" x1="181.25" x2="181.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="181.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Apr</text>
+<line y1="50" y2="370" x1="218.75" x2="218.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="218.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >May</text>
+<line y1="50" y2="370" x1="256.25" x2="256.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="256.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jun</text>
+<line y1="50" y2="370" x1="293.75" x2="293.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="293.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jul</text>
+<line y1="50" y2="370" x1="331.25" x2="331.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="331.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Aug</text>
+<line y1="50" y2="370" x1="368.75" x2="368.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="368.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Sep</text>
+<line y1="50" y2="370" x1="406.25" x2="406.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="406.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Oct</text>
+<line y1="50" y2="370" x1="443.75" x2="443.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="443.75" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Nov</text>
+<line y1="50" y2="370" x1="481.25" x2="481.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="481.25" y="386" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Dec</text>
+<polyline class="series-14224" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="" points="68.75,284.6547219111609 106.25,266.73758865248226 143.75,310.9331840238895 181.25,224.93094438223218 218.75,254.79283314669652 256.25,201.04143337066068 293.75,177.1519223590892 331.25,218.9585666293393 368.75,153.26241134751777 406.25,183.1243001119821 443.75,117.4281448301605 481.25,69.64912280701753"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="68.75" cy="284.6547219111609" r="4" fill="#2563eb" data-x="0.5" data-y="1.2" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="106.25" cy="266.73758865248226" r="4" fill="#2563eb" data-x="1.5" data-y="1.35" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="143.75" cy="310.9331840238895" r="4" fill="#2563eb" data-x="2.5" data-y="0.98" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="181.25" cy="224.93094438223218" r="4" fill="#2563eb" data-x="3.5" data-y="1.7" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="218.75" cy="254.79283314669652" r="4" fill="#2563eb" data-x="4.5" data-y="1.45" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="256.25" cy="201.04143337066068" r="4" fill="#2563eb" data-x="5.5" data-y="1.9" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="293.75" cy="177.1519223590892" r="4" fill="#2563eb" data-x="6.5" data-y="2.1" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="331.25" cy="218.9585666293393" r="4" fill="#2563eb" data-x="7.5" data-y="1.75" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="368.75" cy="153.26241134751777" r="4" fill="#2563eb" data-x="8.5" data-y="2.3" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="406.25" cy="183.1243001119821" r="4" fill="#2563eb" data-x="9.5" data-y="2.05" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="443.75" cy="117.4281448301605" r="4" fill="#2563eb" data-x="10.5" data-y="2.6" data-label="Revenue"/>
+<circle class="glyphx-point series-14224" tabindex="0" role="graphics-symbol" cx="481.25" cy="69.64912280701753" r="4" fill="#2563eb" data-x="11.5" data-y="3.0" data-label="Revenue"/>
+<polyline class="series-8832" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,3" points="68.75,332.43374393430383 106.25,320.4889884285181 143.75,350.35087719298247 181.25,308.54423292273236 218.75,314.51661067562526 256.25,296.5994774169466 293.75,272.70996640537516 331.25,302.5718551698395 368.75,260.7652108995894 406.25,284.6547219111609 443.75,242.8480776409108 481.25,218.9585666293393"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="68.75" cy="332.43374393430383" r="4" fill="#dc2626" data-x="0.5" data-y="0.8" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="106.25" cy="320.4889884285181" r="4" fill="#dc2626" data-x="1.5" data-y="0.9" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="143.75" cy="350.35087719298247" r="4" fill="#dc2626" data-x="2.5" data-y="0.65" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="181.25" cy="308.54423292273236" r="4" fill="#dc2626" data-x="3.5" data-y="1.0" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="218.75" cy="314.51661067562526" r="4" fill="#dc2626" data-x="4.5" data-y="0.95" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="256.25" cy="296.5994774169466" r="4" fill="#dc2626" data-x="5.5" data-y="1.1" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="293.75" cy="272.70996640537516" r="4" fill="#dc2626" data-x="6.5" data-y="1.3" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="331.25" cy="302.5718551698395" r="4" fill="#dc2626" data-x="7.5" data-y="1.05" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="368.75" cy="260.7652108995894" r="4" fill="#dc2626" data-x="8.5" data-y="1.4" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="406.25" cy="284.6547219111609" r="4" fill="#dc2626" data-x="9.5" data-y="1.2" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="443.75" cy="242.8480776409108" r="4" fill="#dc2626" data-x="10.5" data-y="1.55" data-label="Costs"/>
+<circle class="glyphx-point series-8832" tabindex="0" role="graphics-symbol" cx="481.25" cy="218.9585666293393" r="4" fill="#dc2626" data-x="11.5" data-y="1.75" data-label="Costs"/>
+<g class="glyphx-legend">
+<rect x="558" y="188" width="12" height="12" fill="#2563eb" class="legend-icon" data-target="series-14224" />
+<text x="578" y="198" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-14224">Revenue</text>
+<rect x="558" y="210" width="12" height="12" fill="#dc2626" class="legend-icon" data-target="series-8832" />
+<text x="578" y="220" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-8832">Costs</text>
+</g></svg>

@@ -88,6 +88,11 @@ New 2-D Chart Types
 Bubble Chart
 ~~~~~~~~~~~~~
 
+.. image:: examples/bubble_chart.svg
+   :alt: bubble chart
+   :width: 700px
+   :align: center
+
 .. code-block:: python
 
    from glyphx.bubble import BubbleSeries
@@ -99,6 +104,11 @@ Bubble Chart
 
 Sunburst Chart
 ~~~~~~~~~~~~~~~
+
+.. image:: examples/sunburst_chart.svg
+   :alt: sunburst chart
+   :width: 700px
+   :align: center
 
 .. code-block:: python
 
@@ -118,6 +128,11 @@ Sunburst Chart
 Parallel Coordinates
 ~~~~~~~~~~~~~~~~~~~~~
 
+.. image:: examples/parallel_coords.svg
+   :alt: parallel coords
+   :width: 700px
+   :align: center
+
 .. code-block:: python
 
    from glyphx.parallel_coords import ParallelCoordinatesSeries
@@ -133,6 +148,11 @@ Parallel Coordinates
 Diverging Bar Chart
 ~~~~~~~~~~~~~~~~~~~~
 
+.. image:: examples/diverging_bar.svg
+   :alt: diverging bar
+   :width: 700px
+   :align: center
+
 .. code-block:: python
 
    from glyphx.diverging_bar import DivergingBarSeries
@@ -147,11 +167,28 @@ Diverging Bar Chart
    fig.show()
 
 
+
 3-D Charts
 ----------
 
+``Figure3D`` renders via Three.js WebGL with full mouse, touch, and keyboard
+controls.  Every chart also produces a static SVG fallback for environments
+where JavaScript is unavailable.  Live interactive HTML outputs from these
+examples are in ``docs/examples/11_3d_*.html``.
+
+.. contents::
+   :local:
+   :depth: 1
+
 3-D Scatter
-~~~~~~~~~~~~
+~~~~~~~~~~~
+
+Scatter points with continuous colour encoding on a fourth variable (``c=``).
+
+.. image:: examples/11_3d_scatter_colormap.svg
+   :alt: 3D scatter -- colormap encoding
+   :width: 680px
+   :align: center
 
 .. code-block:: python
 
@@ -160,17 +197,44 @@ Diverging Bar Chart
    import numpy as np
 
    rng = np.random.default_rng(42)
-   xs = rng.normal(0, 1, 500)
-   ys = rng.normal(0, 1, 500)
-   zs = np.sin(xs) + np.cos(ys)
+   xs  = rng.normal(0, 1, 400)
+   ys  = rng.normal(0, 1, 400)
+   zs  = np.sin(xs) + np.cos(ys)
 
-   fig = Figure3D(title="Gaussian Scatter", theme="dark",
+   fig = Figure3D(title="3D Scatter -- Colormap Encoding", theme="dark",
                   azimuth=45, elevation=25)
-   fig.add(Scatter3DSeries(xs, ys, zs, c=zs, cmap="plasma", size=4))
+   fig.scatter(xs, ys, zs,
+               c=zs,          # colour each point by its Z value
+               cmap="plasma",
+               size=5, alpha=0.80,
+               label="sin(x)+cos(y)")
+   fig.show()
+   fig.save("scatter3d.html")  # self-contained interactive HTML
+
+Multiple labelled series -- click the legend to toggle each one:
+
+.. code-block:: python
+
+   fig = Figure3D(title="3D Scatter -- Multiple Series")
+   for label, color, dx in [("Group A", "#2563eb",  0),
+                             ("Group B", "#dc2626",  2),
+                             ("Group C", "#16a34a", -2)]:
+       xs = np.random.randn(80) + dx
+       fig.scatter(xs, np.random.randn(80), np.random.randn(80),
+                   color=color, size=5, label=label)
    fig.show()
 
+
 3-D Surface
-~~~~~~~~~~~~
+~~~~~~~~~~~
+
+Regular ``z = f(x, y)`` grids with optional wireframe overlay.  Large grids
+are automatically decimated and sub-pixel faces culled before rendering.
+
+.. image:: examples/11_3d_surface_sinc.svg
+   :alt: 3D sinc surface
+   :width: 680px
+   :align: center
 
 .. code-block:: python
 
@@ -178,16 +242,44 @@ Diverging Bar Chart
    from glyphx.surface3d import Surface3DSeries
    import numpy as np
 
-   x = np.linspace(-3, 3, 80)
-   y = np.linspace(-3, 3, 80)
-   Z = np.sin(np.sqrt(x[None,:]**2 + y[:,None]**2))
+   # sinc surface  z = sin(r) / r
+   x = np.linspace(-5, 5, 60)
+   y = np.linspace(-5, 5, 60)
+   X, Y = np.meshgrid(x, y)
+   Z = np.sin(np.sqrt(X**2 + Y**2)) / (np.sqrt(X**2 + Y**2) + 0.1)
 
-   fig = Figure3D(title="Sinc Surface", azimuth=30, elevation=35)
-   fig.add(Surface3DSeries(x, y, Z, cmap="viridis", wireframe=True))
+   fig = Figure3D(title="sin(r)/r Surface", theme="dark")
+   fig.surface(x, y, Z, cmap="viridis", alpha=0.92, wireframe=True)
    fig.show()
 
-3-D Line (Helix)
-~~~~~~~~~~~~~~~~~
+.. image:: examples/11_3d_surface_saddle.svg
+   :alt: 3D saddle surface
+   :width: 680px
+   :align: center
+
+.. code-block:: python
+
+   # Saddle  z = x^2 - y^2
+   x = np.linspace(-3, 3, 45)
+   y = np.linspace(-3, 3, 45)
+   X, Y = np.meshgrid(x, y)
+   Z = X**2 - Y**2
+
+   fig = Figure3D(title="Saddle: z = x2 - y2")
+   fig.surface(x, y, Z, cmap="coolwarm", alpha=0.88)
+   fig.show()
+
+
+3-D Line
+~~~~~~~~
+
+Parametric curves in 3-D space.  LTTB downsampling runs in camera-projected
+screen coordinates, so visible detail adapts to the viewing angle.
+
+.. image:: examples/11_3d_line_helix.svg
+   :alt: 3D helix
+   :width: 680px
+   :align: center
 
 .. code-block:: python
 
@@ -195,53 +287,253 @@ Diverging Bar Chart
    from glyphx.line3d import Line3DSeries
    import numpy as np
 
+   # Helix
    t = np.linspace(0, 6 * np.pi, 1_000)
-   fig = Figure3D(title="Helix")
-   fig.add(Line3DSeries(np.cos(t), np.sin(t), t / (6 * np.pi),
-                        color="#dc2626", width=2.5, label="Helix"))
+   fig = Figure3D(title="Parametric Helix", theme="dark")
+   fig.line3d(np.cos(t), np.sin(t), t / (2 * np.pi),
+              color="#7c3aed", width=2.5, label="Helix")
    fig.show()
 
-Contour Plot
+   # Lissajous curve (3:2:1)
+   t = np.linspace(0, 2 * np.pi, 500)
+   fig = Figure3D(title="Lissajous 3:2:1")
+   fig.line3d(np.sin(3*t), np.sin(2*t), np.sin(t), color="#0891b2", width=2)
+   fig.show()
+
+
+3-D Bar Chart
 ~~~~~~~~~~~~~
+
+Vertical bars on a 2-D ``(x, y)`` base grid, useful for cross-tabulations and
+2-D frequency histograms.
+
+.. image:: examples/11_3d_bar3d_grid.svg
+   :alt: 3D bar chart
+   :width: 680px
+   :align: center
 
 .. code-block:: python
 
    from glyphx import Figure3D
+   from glyphx.bar3d import Bar3DSeries
+   import numpy as np
+
+   x_cats  = np.arange(1, 6)
+   y_cats  = np.arange(1, 6)
+   heights = np.abs(np.random.randn(5, 5)) * 3 + 1   # shape (n_y, n_x)
+
+   fig = Figure3D(title="3D Bar Chart")
+   fig.bar3d(x_cats, y_cats, heights, cmap="viridis")
+   fig.show()
+
+   # Monthly revenue by product line (4 products x 12 months)
+   months   = list(range(1, 13))
+   products = list(range(1, 5))
+   revenue  = np.abs(np.random.randn(4, 12) * 0.5 + 2)
+
+   fig = Figure3D(title="Monthly Revenue by Product", theme="dark")
+   fig.set_xlabel("Month").set_ylabel("Product").set_zlabel("Revenue ($M)")
+   fig.bar3d(months, products, revenue, cmap="plasma")
+   fig.show()
+
+
+Surface + Scatter Overlay
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Overlay observed data points on a fitted surface -- a common pattern in
+machine learning and scientific visualisation.
+
+.. image:: examples/11_3d_surface_scatter_overlay.svg
+   :alt: fitted surface with observations
+   :width: 680px
+   :align: center
+
+.. code-block:: python
+
+   import numpy as np
+   from glyphx import Figure3D
+
+   # Fitted surface  z = x^2 + y^2
+   x = np.linspace(-2, 2, 30)
+   y = np.linspace(-2, 2, 30)
+   X, Y = np.meshgrid(x, y)
+   Z_fit = X**2 + Y**2
+
+   # Noisy observations
+   obs_x = np.random.uniform(-2, 2, 80)
+   obs_y = np.random.uniform(-2, 2, 80)
+   obs_z = obs_x**2 + obs_y**2 + np.random.randn(80) * 0.3
+
+   fig = Figure3D(title="Fitted Surface vs Observations", theme="dark")
+   fig.surface(x, y, Z_fit, cmap="viridis", alpha=0.60)
+   fig.scatter(obs_x, obs_y, obs_z,
+               color="#f87171", size=5, label="Observations")
+   fig.show()
+
+
+2-D Contour Plot
+~~~~~~~~~~~~~~~~
+
+``ContourSeries`` uses the marching-squares algorithm to draw filled contours
+on a regular 2-D grid -- a 2-D companion to ``Surface3DSeries``.
+
+.. code-block:: python
+
+   from glyphx import Figure
    from glyphx.contour import ContourSeries
    import numpy as np
 
-   x = np.linspace(-2, 2, 100)
-   y = np.linspace(-2, 2, 100)
-   Z = np.exp(-(x[None,:]**2 + y[:,None]**2))
+   x = np.linspace(-4, 4, 80)
+   y = np.linspace(-4, 4, 80)
+   X, Y = np.meshgrid(x, y)
+   Z = np.exp(-(X**2 + Y**2) / 4) * np.cos(X) * np.cos(Y)
 
-   fig = Figure3D(title="Gaussian Contour")
-   fig.add(ContourSeries(x, y, Z, levels=10, filled=True, cmap="coolwarm"))
+   fig = Figure(width=680, height=560)
+   fig.set_title("2D Contour -- marching squares")
+   fig.add(ContourSeries(x, y, Z, levels=14, cmap="coolwarm",
+                         filled=True, lines=True))
    fig.show()
 
-Large-Data 3-D (auto-downsampled)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   # Rosenbrock function (banana valley)
+   x = np.linspace(-2, 2, 60)
+   y = np.linspace(-1, 3, 60)
+   X, Y = np.meshgrid(x, y)
+   Z = np.log1p((1 - X)**2 + 100*(Y - X**2)**2)
 
-GlyphX automatically downsamples 3-D series; the render stays fast regardless
-of input size:
+   fig = Figure(width=680, height=560)
+   fig.set_title("Rosenbrock Function")
+   fig.add(ContourSeries(x, y, Z, levels=16, cmap="inferno",
+                         filled=True, lines=True))
+   fig.show()
+
+
+Themes
+~~~~~~
+
+The seven 2-D themes all work in 3-D.  ``dark`` is recommended for
+presentations; ``ocean`` suits data-heavy dashboards.
+
+.. code-block:: python
+
+   for theme in ["default", "dark", "ocean", "warm", "colorblind"]:
+       fig = Figure3D(title=f"Surface -- {theme}", theme=theme)
+       fig.surface(x, y, Z, cmap="viridis", alpha=0.88)
+       fig.save(f"surface_{theme}.html")
+
+
+Large-Data Downsampling
+~~~~~~~~~~~~~~~~~~~~~~~
+
+GlyphX automatically downsamples every 3-D series before SVG generation.
+Inspect what happened via ``last_downsample_info``:
 
 .. code-block:: python
 
    import numpy as np
    from glyphx import Figure3D
    from glyphx.scatter3d import Scatter3DSeries
+   from glyphx.surface3d import Surface3DSeries
+   from glyphx.line3d    import Line3DSeries
 
    rng = np.random.default_rng(0)
-   n = 500_000
-   xs, ys, zs = rng.uniform(0, 1, n), rng.uniform(0, 1, n), rng.uniform(0, 1, n)
+   n   = 500_000
 
-   fig = Figure3D(title="500k Points — auto-thinned")
-   s3 = Scatter3DSeries(xs, ys, zs, cmap="plasma")
-   fig.add(s3)
-   fig.render_svg()
-
+   # Scatter -- 3D voxel thinning
+   s3 = Scatter3DSeries(rng.uniform(0,1,n), rng.uniform(0,1,n),
+                         rng.uniform(0,1,n), cmap="plasma")
+   Figure3D().add(s3).render_svg()
    print(s3.last_downsample_info)
    # {'algorithm': 'voxel-3D', 'original_n': 500000, 'thinned_n': 4913}
 
+   # Line -- LTTB in camera-projected screen space
+   t  = np.linspace(0, 10 * np.pi, 200_000)
+   l3 = Line3DSeries(np.cos(t), np.sin(t), t / (10 * np.pi))
+   Figure3D().add(l3).render_svg()
+   print(l3.last_downsample_info)
+   # {'algorithm': 'lttb-3D', 'original_n': 200000, 'thinned_n': 5000}
+
+   # Surface -- grid decimation + sub-pixel face culling
+   x  = np.linspace(-5, 5, 500)
+   y  = np.linspace(-5, 5, 500)
+   Z  = np.sin(np.sqrt(np.meshgrid(x,y)[0]**2 + np.meshgrid(x,y)[1]**2))
+   s3 = Surface3DSeries(x, y, Z)
+   Figure3D().add(s3).render_svg()
+   print(s3.last_downsample_info)
+   # {'algorithm': 'grid-decimate', 'original_n': 249001, 'thinned_n': ...}
+
+Override the budget per series:
+
+.. code-block:: python
+
+   # Keep more detail on this scatter
+   s3 = Scatter3DSeries(xs, ys, zs, threshold=20_000)
+
+   # Fast thumbnail -- aggressive thinning
+   s3 = Scatter3DSeries(xs, ys, zs, threshold=500)
+
+
+Interactive Controls
+~~~~~~~~~~~~~~~~~~~~
+
+Every ``Figure3D`` HTML output ships with the full GlyphX 3-D control set:
+
+.. list-table::
+   :widths: 30 70
+   :header-rows: 1
+
+   * - Input
+     - Action
+   * - Drag
+     - Rotate camera (orbit)
+   * - Right-drag / Ctrl+drag
+     - Pan (translate camera target)
+   * - Scroll wheel
+     - Zoom in / out
+   * - Two-finger pinch (touch)
+     - Zoom
+   * - Arrow keys
+     - Rotate by 3 degrees per press
+   * - ``+`` / ``-``
+     - Zoom in / out
+   * - ``Space``
+     - Toggle auto-rotate
+   * - ``R``
+     - Reset camera to default view
+   * - ``I`` / ``T`` / ``V`` / ``S``
+     - Camera preset: ISO / Top / Front / Side
+   * - ``P``
+     - Save PNG screenshot
+   * - ``F``
+     - Toggle fullscreen
+   * - ``H``
+     - Show keyboard shortcut overlay
+   * - ``Esc``
+     - Deselect / close overlay
+   * - Click scatter point
+     - Highlight and show coordinates in readout strip
+   * - Click legend item
+     - Toggle that series visible / hidden
+
+
+Saving and Sharing
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   fig = Figure3D(title="My Chart")
+   fig.scatter(xs, ys, zs)
+
+   # Interactive HTML (self-contained, zero CDN except Three.js)
+   fig.save("chart3d.html")
+
+   # Static SVG fallback (orthographic projection, painter's sort)
+   svg = fig.render_svg()
+   open("chart3d.svg", "w", encoding="utf-8").write(svg)
+
+   # One-liner shorthand
+   from glyphx import plot3d
+   plot3d(xs, ys, zs, kind="scatter", title="Quick 3D")
+   plot3d(x,  y,  Z,  kind="surface", title="Quick Surface")
 
 Themes
 ------
@@ -504,6 +796,11 @@ Inspect downsampling metadata
 Gantt / Timeline Chart
 -----------------------
 
+.. image:: examples/gantt_chart.svg
+   :alt: gantt chart
+   :width: 700px
+   :align: center
+
 .. code-block:: python
 
    from glyphx import Figure
@@ -532,6 +829,11 @@ Gantt / Timeline Chart
 Stacked Bar Chart
 ------------------
 
+.. image:: examples/stacked_bar.svg
+   :alt: stacked bar
+   :width: 700px
+   :align: center
+
 .. code-block:: python
 
    from glyphx import Figure
@@ -555,6 +857,11 @@ Stacked Bar Chart
 Bump Chart
 -----------
 
+.. image:: examples/bump_chart.svg
+   :alt: bump chart
+   :width: 700px
+   :align: center
+
 Rank-over-time visualization — no native equivalent in Matplotlib, Seaborn, or Plotly:
 
 .. code-block:: python
@@ -576,6 +883,11 @@ Rank-over-time visualization — no native equivalent in Matplotlib, Seaborn, or
 
 Sparklines
 -----------
+
+.. image:: examples/sparkline.svg
+   :alt: sparkline
+   :width: 700px
+   :align: center
 
 Tiny inline charts for dashboards and KPI tables:
 
@@ -623,6 +935,11 @@ with mini preview figures — no external dependencies required:
 Responsive Dark-Mode SVG
 --------------------------
 
+.. image:: examples/responsive_svg.svg
+   :alt: responsive svg
+   :width: 700px
+   :align: center
+
 :meth:`Figure.render_responsive` outputs an SVG that changes colour automatically
 when the operating system switches dark mode — no Python re-render needed:
 
@@ -643,6 +960,11 @@ when the operating system switches dark mode — no Python re-render needed:
 
 Hierarchically Clustered Heatmap (Clustermap)
 ----------------------------------------------
+
+.. image:: examples/clustermap.svg
+   :alt: clustermap
+   :width: 700px
+   :align: center
 
 Seaborn's most distinctive bioinformatics chart, now in pure NumPy — no scipy required:
 
@@ -666,6 +988,11 @@ Seaborn's most distinctive bioinformatics chart, now in pure NumPy — no scipy 
 
 Hue on Statistical Charts
 --------------------------
+
+.. image:: examples/boxplot_hue.svg
+   :alt: boxplot hue
+   :width: 700px
+   :align: center
 
 All statistical chart types now accept ``hue=`` and ``hue_colors=``:
 
@@ -701,6 +1028,11 @@ All statistical chart types now accept ``hue=`` and ``hue_colors=``:
 Vega-Lite JSON Export
 ----------------------
 
+.. image:: examples/vega_lite_source.svg
+   :alt: vega lite source
+   :width: 700px
+   :align: center
+
 Export any GlyphX figure to a Vega-Lite v5 specification — the first Python
 plotting library to produce Vega-Lite output:
 
@@ -732,6 +1064,11 @@ plotting library to produce Vega-Lite output:
 FacetGrid — Small Multiples
 -----------------------------
 
+.. image:: examples/facet_grid.svg
+   :alt: facet grid
+   :width: 700px
+   :align: center
+
 Small-multiples grids with the Seaborn ``.map()`` API:
 
 .. code-block:: python
@@ -759,6 +1096,11 @@ Small-multiples grids with the Seaborn ``.map()`` API:
 Regression Plot
 ----------------
 
+.. image:: examples/regplot_ols.svg
+   :alt: regplot ols
+   :width: 700px
+   :align: center
+
 OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
 
 .. code-block:: python
@@ -775,6 +1117,12 @@ OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
    # LOWESS (no parametric assumption)
    fig = regplot(df, x="gdp_per_cap", y="life_expectancy", lowess=True)
 
+.. image:: examples/regplot_lowess.svg
+   :alt: regplot lowess
+   :width: 700px
+   :align: center
+
+
    # Logistic (binary outcome)
    fig = regplot(df, x="dose_mg", y="responded", logistic=True)
 
@@ -787,6 +1135,11 @@ OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
 
 Choropleth Map
 ---------------
+
+.. image:: examples/choropleth_preview.svg
+   :alt: choropleth preview
+   :width: 700px
+   :align: center
 
 SVG choropleth maps from GeoJSON — no tile server or CDN:
 
@@ -815,6 +1168,11 @@ SVG choropleth maps from GeoJSON — no tile server or CDN:
 
 ScatterSeries — Per-Point Size Encoding
 -----------------------------------------
+
+.. image:: examples/scatter_sizes.svg
+   :alt: scatter sizes
+   :width: 700px
+   :align: center
 
 Encode a fourth variable as marker size (Seaborn ``sizes=`` parity):
 
