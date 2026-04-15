@@ -30,10 +30,10 @@ Quick-start::
     from_prompt("top 10 products by revenue", df=df)
 """
 
-from importlib.metadata import version, PackageNotFoundError
+from ._version import __version__
 
 try:
-    __version__ = version("glyphx")
+    pass  # version already set
 except PackageNotFoundError:
     # Package is not installed (e.g. running from source without install)
     __version__ = "unknown"
@@ -96,11 +96,24 @@ from .bar3d      import Bar3DSeries
 from .contour    import ContourSeries
 
 from .bump_chart       import BumpChartSeries
+from .gantt            import GanttSeries
+from .clustermap       import clustermap
+from .facet_grid       import FacetGrid
+from .regplot          import regplot
+from .choropleth       import ChoroplethSeries
+from .vega_lite        import to_vega_lite, save_vega_lite
+from .suggest          import suggest, Recommendation
 from .sparkline        import SparklineSeries, sparkline_svg
 from .sunburst         import SunburstSeries
 from .parallel_coords  import ParallelCoordinatesSeries
 from .diverging_bar    import DivergingBarSeries
-from .downsample       import lttb, maybe_downsample, AUTO_THRESHOLD
+from .downsample       import (
+    lttb, m4, maybe_downsample, maybe_downsample_line,
+    voxel_thin_2d, voxel_thin_3d, lttb_3d,
+    decimate_grid, cull_faces,
+    enable as ds_enable, disable as ds_disable, is_enabled as ds_is_enabled,
+    AUTO_THRESHOLD,
+)
 
 # ── Seaborn-style composites ──────────────────────────────────────────────
 from .facet_plot   import facet_plot
@@ -137,8 +150,15 @@ __all__ = [
     # New competitive features
     "BubbleSeries", "SunburstSeries",
     "ParallelCoordinatesSeries", "DivergingBarSeries",
-    "lttb", "maybe_downsample", "AUTO_THRESHOLD",
-    "StackedBarSeries", "BumpChartSeries",
+    # Downsampling
+    "lttb", "m4", "maybe_downsample", "maybe_downsample_line",
+    "voxel_thin_2d", "voxel_thin_3d", "lttb_3d",
+    "decimate_grid", "cull_faces",
+    "ds_enable", "ds_disable", "ds_is_enabled", "AUTO_THRESHOLD",
+    "StackedBarSeries", "BumpChartSeries", "GanttSeries",
+    "suggest", "Recommendation",
+    "clustermap", "FacetGrid", "regplot", "ChoroplethSeries",
+    "to_vega_lite", "save_vega_lite",
     "SparklineSeries", "sparkline_svg",
     # 3D
     "Figure3D", "plot3d",

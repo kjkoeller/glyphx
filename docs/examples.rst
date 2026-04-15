@@ -499,3 +499,337 @@ Inspect downsampling metadata
    print(f"Algorithm : {info['algorithm']}")
    print(f"Original  : {info['original_n']:,}")
    print(f"Thinned   : {info['thinned_n']:,}")
+
+
+Gantt / Timeline Chart
+-----------------------
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.gantt import GanttSeries
+   from datetime import date
+
+   tasks = [
+       {"task": "Design",   "start": date(2025,1,6),  "end": date(2025,1,17), "group": "Phase 1"},
+       {"task": "Backend",  "start": date(2025,1,20), "end": date(2025,2,14), "group": "Phase 2"},
+       {"task": "Frontend", "start": date(2025,1,27), "end": date(2025,2,21), "group": "Phase 2"},
+       {"task": "Launch",   "start": date(2025,3,3),  "end": date(2025,3,3),  "group": "Phase 3",
+        "milestone": True},
+   ]
+
+   fig = Figure(width=860, height=360)
+   fig.gantt(tasks, group_colors={"Phase 1": "#2563eb",
+                                   "Phase 2": "#16a34a",
+                                   "Phase 3": "#dc2626"})
+   fig.show()
+
+   # Progress bars and tooltips
+   tasks[0]["progress"] = 0.75   # 75% complete
+   tasks[0]["tooltip"]  = "Design: 3 of 4 tasks done"
+
+
+Stacked Bar Chart
+------------------
+
+.. code-block:: python
+
+   from glyphx import Figure
+
+   fig = Figure()
+   fig.stacked_bar(
+       x=["Q1", "Q2", "Q3", "Q4"],
+       series={
+           "Cloud":  [1.2, 1.5, 1.8, 2.1],
+           "AI/ML":  [0.8, 1.0, 1.3, 1.6],
+           "Mobile": [0.5, 0.6, 0.7, 0.9],
+       },
+   )
+   fig.show()
+
+   # 100% normalized stacked
+   fig.stacked_bar(x=["Q1","Q2","Q3","Q4"], series=revenue_by_segment,
+                   normalize=True)
+
+
+Bump Chart
+-----------
+
+Rank-over-time visualization — no native equivalent in Matplotlib, Seaborn, or Plotly:
+
+.. code-block:: python
+
+   from glyphx import Figure
+
+   fig = Figure(width=820, height=520)
+   fig.bump(
+       x=["2020", "2021", "2022", "2023", "2024"],
+       rankings={
+           "GlyphX":     [5, 4, 2, 1, 1],
+           "Matplotlib": [1, 1, 1, 2, 2],
+           "Plotly":     [2, 2, 3, 3, 3],
+           "Seaborn":    [3, 3, 4, 4, 4],
+       },
+   )
+   fig.show()
+
+
+Sparklines
+-----------
+
+Tiny inline charts for dashboards and KPI tables:
+
+.. code-block:: python
+
+   from glyphx.sparkline import sparkline_svg
+
+   # Returns a raw SVG string — embed directly in HTML tables
+   svg = sparkline_svg([1.2, 1.8, 1.5, 2.3, 2.7, 3.1], width=80, height=28)
+
+   # Bar variant
+   svg = sparkline_svg(data, kind="bar", color="#dc2626")
+
+   # As a Figure series
+   from glyphx import Figure
+   from glyphx.sparkline import SparklineSeries
+   fig = Figure(width=120, height=40)
+   fig.sparkline([1, 3, 2, 5, 4, 6])
+
+
+AI Chart Recommendation
+------------------------
+
+:func:`glyphx.suggest` inspects a DataFrame and returns ranked chart recommendations
+with mini preview figures — no external dependencies required:
+
+.. code-block:: python
+
+   from glyphx import suggest
+   import pandas as pd
+
+   df = pd.read_csv("sales.csv")
+   recs = suggest(df, top_n=5)
+
+   for rec in recs:
+       print(f"{rec.kind:12s}  score={rec.score:.0f}")
+       print(f"  {rec.reason}")
+       rec.preview.show()   # 340×220 mini figure
+
+   # Access recommendation metadata
+   best = recs[0]
+   print(best.kind, best.x_col, best.y_col, best.hue_col)
+
+
+Responsive Dark-Mode SVG
+--------------------------
+
+:meth:`Figure.render_responsive` outputs an SVG that changes colour automatically
+when the operating system switches dark mode — no Python re-render needed:
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.series import LineSeries
+   from pathlib import Path
+
+   fig = Figure()
+   fig.add(LineSeries(months, revenue, label="Revenue"))
+
+   # Embed CSS custom properties; browser swaps them on OS dark mode
+   svg = fig.render_responsive(dark_theme="dark")
+   Path("chart_responsive.svg").write_text(svg)
+   # Open in any modern browser — colours follow prefers-color-scheme
+
+
+Hierarchically Clustered Heatmap (Clustermap)
+----------------------------------------------
+
+Seaborn's most distinctive bioinformatics chart, now in pure NumPy — no scipy required:
+
+.. code-block:: python
+
+   import pandas as pd
+   from glyphx.clustermap import clustermap
+
+   df = pd.read_csv("gene_expression.csv", index_col=0)
+
+   # Basic clustermap with dendrograms on both axes
+   fig = clustermap(df, cmap="viridis", row_cluster=True, col_cluster=True,
+                    title="Gene Expression Heatmap")
+   fig.show()
+
+   # Z-score normalised rows (standard in bioinformatics)
+   fig = clustermap(df, z_score="row", cmap="coolwarm",
+                    title="Z-scored Gene Expression")
+   fig.show()
+
+
+Hue on Statistical Charts
+--------------------------
+
+All statistical chart types now accept ``hue=`` and ``hue_colors=``:
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.series import BoxPlotSeries, HistogramSeries
+   from glyphx.violin_plot import ViolinPlotSeries
+   import numpy as np
+
+   # Box plot with hue
+   data = [control_scores, drug_a_scores, drug_b_scores]
+   fig = Figure()
+   fig.add(BoxPlotSeries(data, categories=["Control","Drug A","Drug B"],
+                         hue=["Placebo","Treatment","Treatment"],
+                         hue_colors=["#2563eb","#dc2626"]))
+   fig.show()
+
+   # Overlapping histograms by group
+   fig = Figure()
+   fig.add(HistogramSeries(all_scores, bins=20,
+                           hue=group_labels,   # list same length as all_scores
+                           alpha=0.55))
+   fig.show()
+
+   # Colour-coded violins
+   fig = Figure()
+   fig.add(ViolinPlotSeries(datasets, hue=["Male","Female","Male","Female"],
+                             cmap="viridis"))
+   fig.show()
+
+
+Vega-Lite JSON Export
+----------------------
+
+Export any GlyphX figure to a Vega-Lite v5 specification — the first Python
+plotting library to produce Vega-Lite output:
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.series import LineSeries
+   from glyphx.vega_lite import to_vega_lite, save_vega_lite
+
+   fig = (Figure()
+          .set_title("Monthly Revenue")
+          .add(LineSeries(months, revenue, label="Revenue")))
+
+   # Get the spec as a Python dict
+   spec = to_vega_lite(fig)
+
+   # Save as a .vl.json file (open in vega-lite.github.io/editor)
+   save_vega_lite(fig, "chart.vl.json")
+
+   # Or use the Figure method directly
+   fig.to_vega_lite("chart.vl.json")
+
+   # Render with Altair (if installed)
+   import altair as alt
+   chart = alt.Chart.from_dict(spec)
+   chart.show()
+
+
+FacetGrid — Small Multiples
+-----------------------------
+
+Small-multiples grids with the Seaborn ``.map()`` API:
+
+.. code-block:: python
+
+   import pandas as pd
+   from glyphx.facet_grid import FacetGrid
+
+   # Each species gets its own scatter subplot
+   g = FacetGrid(penguins_df, col="species", hue="sex",
+                 height=300, aspect=1.4)
+   g.map("scatter", x="bill_length_mm", y="flipper_length_mm")
+   g.show()
+
+   # Histogram per group
+   g = FacetGrid(tips_df, col="day", height=250, aspect=1.2)
+   g.map("hist", x="total_bill")
+   g.show()
+
+   # Wrap into 2 columns
+   g = FacetGrid(df, col="category", col_wrap=2, height=280)
+   g.map("line", x="date", y="value")
+   g.save("facets.svg")
+
+
+Regression Plot
+----------------
+
+OLS, polynomial, logistic, and LOWESS regression — pure NumPy:
+
+.. code-block:: python
+
+   from glyphx.regplot import regplot
+
+   # Ordinary least squares with CI band
+   fig = regplot(df, x="bill_length", y="body_mass")
+   fig.show()
+
+   # Polynomial degree-2
+   fig = regplot(df, x="age", y="income", order=2, color="#dc2626")
+
+   # LOWESS (no parametric assumption)
+   fig = regplot(df, x="gdp_per_cap", y="life_expectancy", lowess=True)
+
+   # Logistic (binary outcome)
+   fig = regplot(df, x="dose_mg", y="responded", logistic=True)
+
+   # From raw arrays
+   import numpy as np
+   x = np.random.randn(200)
+   y = 2*x + np.random.randn(200)*0.5
+   fig = regplot(None, x_vals=x, y_vals=y, title="Correlation")
+
+
+Choropleth Map
+---------------
+
+SVG choropleth maps from GeoJSON — no tile server or CDN:
+
+.. code-block:: python
+
+   import json
+   from glyphx import Figure
+   from glyphx.choropleth import ChoroplethSeries
+
+   geo  = json.load(open("countries.geojson"))
+   data = {"USA": 63000, "GBR": 42000, "DEU": 51000, "FRA": 45000}
+
+   fig = Figure(width=900, height=500)
+   fig.add(ChoroplethSeries(geo, data,
+                             key="iso_a3",          # GeoJSON property name
+                             cmap="viridis",
+                             missing_color="#e0e0e0"))
+   fig.set_title("GDP per Capita (USD)")
+   fig.show()
+
+   # Dark theme
+   fig = Figure(width=900, height=500, theme="dark")
+   fig.choropleth(geo, data, key="iso_a3", cmap="plasma")
+   fig.show()
+
+
+ScatterSeries — Per-Point Size Encoding
+-----------------------------------------
+
+Encode a fourth variable as marker size (Seaborn ``sizes=`` parity):
+
+.. code-block:: python
+
+   from glyphx import Figure
+   from glyphx.series import ScatterSeries
+
+   fig = Figure()
+   fig.add(ScatterSeries(
+       x=gdp_per_cap,
+       y=life_expectancy,
+       sizes=population,      # per-point marker radius array
+       c=continent_code,      # colormap encoding
+       cmap="viridis",
+       label="Countries",
+   ))
+   fig.show()

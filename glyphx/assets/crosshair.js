@@ -13,7 +13,7 @@
 
   const CHARTS_SEL = 'svg[data-glyphx]';
 
-  // ── Helpers ─────────────────────────────────────────────────────────────
+  // -- Helpers -------------------------------------------------------------
 
   /** Convert a MouseEvent to SVG-local coordinates. */
   function svgLocalX(svg, e) {
@@ -60,7 +60,7 @@
     return best;
   }
 
-  // ── Per-chart crosshair line ──────────────────────────────────────────────
+  // -- Per-chart crosshair line ----------------------------------------------
 
   function ensureCrosshair(svg) {
     let line = svg.querySelector('.glyphx-crosshair');
@@ -94,7 +94,7 @@
     if (line) line.style.display = 'none';
   }
 
-  // ── Global tooltip overlay ────────────────────────────────────────────────
+  // -- Global tooltip overlay ------------------------------------------------
 
   function updateTip(svg, frac) {
     const tip = document.getElementById('glyphx-tooltip');
@@ -115,7 +115,7 @@
     tip.style.display = html ? 'block' : 'none';
   }
 
-  // ── Wiring ────────────────────────────────────────────────────────────────
+  // -- Wiring ----------------------------------------------------------------
 
   function init() {
     const charts = Array.from(document.querySelectorAll(CHARTS_SEL));

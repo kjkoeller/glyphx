@@ -11,8 +11,8 @@ import numpy as np
 from .themes import themes as _themes
 from .utils import describe_arc, svg_escape, _format_tick
 from .downsample import (
-    maybe_downsample_line,
-    voxel_thin_2d, AUTO_THRESHOLD, _ds_comment,
+    maybe_downsample_line, voxel_thin_2d,
+    AUTO_THRESHOLD, _ds_comment,
 )
 
 
@@ -89,14 +89,13 @@ class LineSeries(BaseSeries):
         title=None,
         yerr=None,
         xerr=None,
-        threshold=None,
     ):
         super().__init__(x, y, color, label=label or legend, title=title)
-        self.linestyle           = linestyle
-        self.width               = width
-        self.yerr                = yerr
-        self.xerr                = xerr
-        self.threshold           = threshold  # None => use AUTO_THRESHOLD
+        self.linestyle            = linestyle
+        self.width                = width
+        self.yerr                 = yerr
+        self.xerr                 = xerr
+        self.threshold            = None   # override AUTO_THRESHOLD if set
         self.last_downsample_info = None
 
     def to_svg(self, ax, use_y2=False):
@@ -106,23 +105,23 @@ class LineSeries(BaseSeries):
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
 
-        # Auto-downsample large datasets using two-stage M4+LTTB pipeline.
-        # Pass ax.width so M4 buckets align to actual render pixels.
+        # Two-stage M4 → LTTB pipeline — pixel-aligned downsampling
         _thresh  = self.threshold if self.threshold is not None else AUTO_THRESHOLD
         _orig_n  = len(x_vals)
         x_vals, y_plot = maybe_downsample_line(
-            x_vals, self.y, pixel_width=ax.width, threshold=_thresh
+            x_vals, self.y, pixel_width=getattr(ax, 'width', 800), threshold=_thresh
         )
         _downsampled = len(x_vals) < _orig_n
-
-        elements = []
         if _downsampled:
-            elements.append(_ds_comment(_orig_n, len(x_vals), "M4+LTTB"))
             self.last_downsample_info = {
-                "algorithm": "M4+LTTB", "original_n": _orig_n, "thinned_n": len(x_vals)
+                'algorithm': 'M4+LTTB',
+                'original_n': _orig_n,
+                'thinned_n': len(x_vals),
             }
         else:
             self.last_downsample_info = None
+
+        elements = []
 
         if self.title:
             mid_x = (ax.padding + ax.width - ax.padding) // 2
@@ -321,13 +320,17 @@ class ScatterSeries(BaseSeries):
 
     def __init__(self, x, y, color=None, label=None, legend=None,
                  size=5, marker="circle", title=None,
-                 c=None, cmap="viridis", threshold=None):
+                 c=None, cmap="viridis",
+                 sizes=None, style=None, style_order=None):
         super().__init__(x, y, color, label=label or legend, title=title)
-        self.size                = size
-        self.marker              = marker
-        self.c                   = c
-        self.cmap                = cmap
-        self.threshold           = threshold  # None => use AUTO_THRESHOLD
+        self.size                 = size
+        self.marker               = marker
+        self.c                    = c
+        self.cmap                 = cmap
+        self.sizes                = sizes    # per-point size array
+        self.style                = style    # per-point style labels
+        self.style_order          = style_order  # explicit style ordering
+        self.threshold            = None
         self.last_downsample_info = None
 
     def _point_color(self, idx: int, total: int) -> str:
@@ -342,61 +345,40 @@ class ScatterSeries(BaseSeries):
         return self.color
 
     def to_svg(self, ax, use_y2=False):
+        from .downsample import voxel_thin_2d
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
-        x_vals   = getattr(self, "_numeric_x", self.x)
-        elements = []
+        x_vals   = list(getattr(self, "_numeric_x", self.x))
+        orig_x_all = list(self.x)
+        y_all      = list(self.y)
 
-        # Voxel-thin large scatter datasets to keep SVG performant.
-        # Works on unordered points unlike LTTB/M4 (which require monotone x).
-        orig_x_list = self.x
-        c_vals      = self.c
-        _thresh     = self.threshold if self.threshold is not None else AUTO_THRESHOLD
-        _orig_n     = len(x_vals)
-        _categories = getattr(self, "_x_categories", None)
+        # Voxel-thin large scatter datasets to keep SVG performant
+        _thresh = self.threshold if self.threshold is not None else AUTO_THRESHOLD
         if len(x_vals) > _thresh:
-            import numpy as _np
-            _c_arr = _np.asarray(c_vals) if c_vals is not None else None
-            x_thin, _y_thin, _c_thin = voxel_thin_2d(
-                x_vals, self.y, c=_c_arr, max_points=_thresh
+            _orig_n = len(x_vals)
+            x_thin, y_thin, idx_thin = voxel_thin_2d(
+                x_vals, y_all,
+                c=list(range(len(x_vals))),  # use indices to track orig rows
+                max_points=_thresh,
             )
-
-            # Rebuild category labels for thinned indices if categorical x was in use.
-            if _categories is not None:
-                _num_orig  = list(x_vals)
-                _x_to_cat  = {v: k for k, v in zip(_categories, _num_orig)}
-                orig_x_list = [_x_to_cat.get(float(v), v) for v in x_thin]
-            else:
-                orig_x_list = x_thin
-
-            x_vals = x_thin
-            self_y = _y_thin
-            c_vals = _c_thin.tolist() if _c_thin is not None else None
-            elements.append(_ds_comment(_orig_n, len(x_vals), "voxel-2D"))
+            kept_idx  = [int(v) for v in idx_thin.tolist()]
+            x_vals    = x_thin.tolist()
+            orig_x_all = [orig_x_all[k] for k in kept_idx]
+            y_all      = y_thin.tolist()
             self.last_downsample_info = {
-                "algorithm": "voxel-2D", "original_n": _orig_n, "thinned_n": len(x_vals)
+                'algorithm': 'voxel-2D',
+                'original_n': _orig_n,
+                'thinned_n': len(x_vals),
             }
         else:
-            self_y = self.y
+            kept_idx  = list(range(len(x_vals)))
             self.last_downsample_info = None
 
-        # Resolve colormap bounds once from the (possibly thinned) c_vals
-        _c_lo, _c_hi = None, None
-        if c_vals is not None:
-            import numpy as _np2
-            _c_arr2 = _np2.asarray(c_vals, dtype=float)
-            _c_lo, _c_hi = float(_c_arr2.min()), float(_c_arr2.max())
+        elements = []
 
-        for i, (orig_x, x, y) in enumerate(zip(orig_x_list, x_vals, self_y)):
+        for i, (orig_x, x, y) in enumerate(zip(orig_x_all, x_vals, y_all)):
             px      = ax.scale_x(x)
             py      = scale_y(y)
-            # Use thinned c_vals for color lookup so indices stay in sync
-            if c_vals is not None and i < len(c_vals):
-                from .colormaps import apply_colormap as _acm
-                _span = (_c_hi - _c_lo) if _c_hi != _c_lo else 1.0
-                _norm = (float(c_vals[i]) - _c_lo) / _span
-                color = _acm(_norm, self.cmap)
-            else:
-                color = self.color
+            color   = self._point_color(kept_idx[i] if kept_idx else i, len(self.x))
             tooltip = (
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
@@ -416,15 +398,15 @@ class ScatterSeries(BaseSeries):
                     f'fill="{color}" {tooltip}/>'
                 )
 
-        # Colorbar for color-encoded scatter — use thinned range when available
+        # Colorbar for color-encoded scatter
         if self.c is not None:
             import numpy as np
             from .colormaps import render_colorbar_svg
-            _cb_arr = np.asarray(c_vals if c_vals is not None else self.c, dtype=float)
+            c_arr = np.asarray(self.c, dtype=float)
             elements.append(render_colorbar_svg(
                 cmap=self.cmap,
-                vmin=float(_cb_arr.min()),
-                vmax=float(_cb_arr.max()),
+                vmin=float(c_arr.min()),
+                vmax=float(c_arr.max()),
                 x=ax.width - 30,
                 y=ax.padding,
                 width=12,
@@ -665,7 +647,13 @@ class HistogramSeries(BaseSeries):
         label: Legend label.
     """
 
-    def __init__(self, data, bins=10, color=None, label=None):
+    def __init__(self, data, bins=10, color=None, label=None,
+                 hue=None, hue_colors=None, cmap="viridis", alpha=0.65):
+        self.data       = list(data)
+        self.hue        = hue
+        self.hue_colors = hue_colors
+        self.cmap_name  = cmap
+        self.alpha_hist = float(alpha)
         hist, edges = np.histogram(data, bins=bins)
         x = [(edges[i] + edges[i + 1]) / 2 for i in range(len(hist))]
         y = hist.tolist()
@@ -673,9 +661,39 @@ class HistogramSeries(BaseSeries):
         self.edges = edges
 
     def to_svg(self, ax, use_y2=False):
+        from .colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
         width    = (ax.scale_x(self.edges[1]) - ax.scale_x(self.edges[0])) * 0.95
+
+        # Hue mode: render one overlapping translucent histogram per group
+        if self.hue is not None and len(self.hue) == len(self.data):
+            _groups = list(dict.fromkeys(str(h) for h in self.hue))
+            _colors = (self.hue_colors
+                       or colormap_colors(getattr(self, 'cmap_name', 'viridis'),
+                                          max(len(_groups), 2)))
+            for gi, grp in enumerate(sorted(_groups)):
+                mask   = [str(h) == grp for h in self.hue]
+                g_data = [v for v, m in zip(self.data, mask) if m]
+                if not g_data:
+                    continue
+                counts, _ = np.histogram(g_data, bins=self.edges)
+                g_color   = _colors[gi % len(_colors)]
+                alpha     = getattr(self, 'alpha_hist', 0.55)
+                for xi, yi in zip(self.x, counts):
+                    cx  = ax.scale_x(xi)
+                    cy  = scale_y(float(yi))
+                    y0  = scale_y(0)
+                    h_  = abs(y0 - cy)
+                    top = min(y0, cy)
+                    elements.append(
+                        f'<rect class="glyphx-point {self.css_class}" '
+                        f'x="{cx - width/2}" y="{top}" '
+                        f'width="{width}" height="{h_}" '
+                        f'fill="{g_color}" fill-opacity="{alpha}" '
+                        f'data-label="{svg_escape(grp)}"/>'
+                    )
+            return "\n".join(elements)
 
         for x, y in zip(self.x, self.y):
             cx  = ax.scale_x(x)
@@ -713,7 +731,8 @@ class BoxPlotSeries(BaseSeries):
     """
 
     def __init__(self, data, categories=None, color="#1f77b4",
-                 label=None, box_width=20, width=None):
+                 label=None, box_width=20, width=None,
+                 hue=None, hue_colors=None, cmap="viridis"):
         # ``width`` kept for backward-compat; prefer box_width
         self.color      = color
         self.label      = label
@@ -744,11 +763,26 @@ class BoxPlotSeries(BaseSeries):
         # and so BoxPlotSeries.to_svg() suppresses its own inline labels.
         self._x_categories = list(self.categories)
         self._numeric_x    = [i + 0.5 for i in range(len(self.datasets))]
+        # hue support
+        self.hue        = None
+        self.hue_colors = None
+        self.cmap_name  = 'viridis'
 
     def to_svg(self, ax, use_y2=False):
+        from .colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
         n        = len(self.datasets)
+
+        # Resolve per-box colour (flat or hue-assigned)
+        _palette = self.hue_colors
+        if _palette is None and self.hue is not None:
+            _hue_groups = list(dict.fromkeys(str(h) for h in self.hue))
+            _palette    = colormap_colors(getattr(self, 'cmap_name', 'viridis'),
+                                          max(len(_hue_groups), 2))
+            _hue_map = dict(zip(_hue_groups, _palette))
+        else:
+            _hue_map = None
 
         for i, arr in enumerate(self.datasets):
             pos = i + 0.5   # 0-indexed half-slot, aligns with grid label positions
@@ -762,6 +796,14 @@ class BoxPlotSeries(BaseSeries):
             whisker_hi  = float(min(arr.max(), q3 + 1.5 * iqr))
             outliers    = arr[(arr < whisker_lo) | (arr > whisker_hi)]
 
+            # Pick per-box colour from hue mapping or flat colour
+            if _hue_map is not None and self.hue is not None and i < len(self.hue):
+                box_color = _hue_map.get(str(self.hue[i]), self.color)
+            elif _palette is not None and _hue_map is None:
+                box_color = _palette[i % len(_palette)]
+            else:
+                box_color = self.color
+
             hw = self.box_width / 2
             tooltip = (
                 f'data-label="{svg_escape(str(self.categories[i]))}" '
@@ -772,19 +814,19 @@ class BoxPlotSeries(BaseSeries):
             elements.append(
                 f'<line x1="{cx}" x2="{cx}" '
                 f'y1="{scale_y(whisker_lo)}" y2="{scale_y(q1)}" '
-                f'stroke="{self.color}" stroke-width="1.5"/>'
+                f'stroke="{box_color}" stroke-width="1.5"/>'
             )
             elements.append(
                 f'<line x1="{cx}" x2="{cx}" '
                 f'y1="{scale_y(q3)}" y2="{scale_y(whisker_hi)}" '
-                f'stroke="{self.color}" stroke-width="1.5"/>'
+                f'stroke="{box_color}" stroke-width="1.5"/>'
             )
             # Whisker caps
             for cap_y in (whisker_lo, whisker_hi):
                 elements.append(
                     f'<line x1="{cx - hw}" x2="{cx + hw}" '
                     f'y1="{scale_y(cap_y)}" y2="{scale_y(cap_y)}" '
-                    f'stroke="{self.color}" stroke-width="1.5"/>'
+                    f'stroke="{box_color}" stroke-width="1.5"/>'
                 )
             # IQR box
             box_top = min(scale_y(q1), scale_y(q3))
@@ -793,14 +835,14 @@ class BoxPlotSeries(BaseSeries):
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{cx - hw}" y="{box_top}" '
                 f'width="{self.box_width}" height="{box_h}" '
-                f'fill="{self.color}" fill-opacity="0.35" '
-                f'stroke="{self.color}" stroke-width="1.5" {tooltip}/>'
+                f'fill="{box_color}" fill-opacity="0.35" '
+                f'stroke="{box_color}" stroke-width="1.5" {tooltip}/>'
             )
             # Median line
             elements.append(
                 f'<line x1="{cx - hw}" x2="{cx + hw}" '
                 f'y1="{scale_y(q2)}" y2="{scale_y(q2)}" '
-                f'stroke="{self.color}" stroke-width="2.5"/>'
+                f'stroke="{box_color}" stroke-width="2.5"/>'
             )
             # Outlier dots
             for ov in outliers:

@@ -6,19 +6,19 @@
  * across EVERY chart on the page are highlighted; others dim.
  *
  * Keyboard shortcuts:
- *   Shift + drag  — draw selection
- *   Escape        — clear selection
- *   Click outside — clear selection
+ *   Shift + drag  -- draw selection
+ *   Escape        -- clear selection
+ *   Click outside -- clear selection
  */
 (function () {
   'use strict';
 
-  // ── State ──────────────────────────────────────────────────────────────
+  // -- State --------------------------------------------------------------
   let isBrushing = false;
   let startPt    = null;
   let activeSvg  = null;
 
-  // ── Coordinate helper ───────────────────────────────────────────────────
+  // -- Coordinate helper ---------------------------------------------------
   function svgPoint(svg, e) {
     const rect  = svg.getBoundingClientRect();
     const vb    = svg.viewBox.baseVal;
@@ -41,7 +41,7 @@
     } catch (_) { return null; }
   }
 
-  // ── Selection application ───────────────────────────────────────────────
+  // -- Selection application -----------------------------------------------
   function applySelection(selectedKeys) {
     document.querySelectorAll('.glyphx-point').forEach(el => {
       el.style.transition = 'opacity 0.12s, filter 0.12s';
@@ -64,7 +64,7 @@
     });
   }
 
-  // ── Brush rectangle ─────────────────────────────────────────────────────
+  // -- Brush rectangle -----------------------------------------------------
   function ensureBrushRect(svg) {
     let r = svg.querySelector('.glyphx-brush-rect');
     if (r) return r;
@@ -89,7 +89,7 @@
     r.style.display = '';
   }
 
-  // ── Hint badge ──────────────────────────────────────────────────────────
+  // -- Hint badge ----------------------------------------------------------
   function ensureHint(svg) {
     const parent = svg.parentElement;
     let hint = parent.querySelector('.glyphx-brush-hint');
@@ -100,7 +100,7 @@
     }
     hint = document.createElement('div');
     hint.className = 'glyphx-brush-hint';
-    hint.textContent = '⬡ Brush mode  ·  Shift+drag to select  ·  Esc to clear';
+    hint.textContent = '[hex] Brush mode  .  Shift+drag to select  .  Esc to clear';
     Object.assign(hint.style, {
       position:      'absolute',
       top:           '8px',
@@ -124,7 +124,7 @@
     return hint;
   }
 
-  // ── Wire a single chart SVG ─────────────────────────────────────────────
+  // -- Wire a single chart SVG ---------------------------------------------
   function wireChart(svg) {
     svg.addEventListener('mousedown', e => {
       if (!e.shiftKey) return;
@@ -185,7 +185,7 @@
     });
   }
 
-  // ── Global keyboard handlers ─────────────────────────────────────────────
+  // -- Global keyboard handlers ---------------------------------------------
   document.addEventListener('keydown', e => {
     if (e.key === 'Shift') {
       document.querySelectorAll('svg[data-glyphx]').forEach(svg => {
@@ -210,7 +210,7 @@
     }
   });
 
-  // ── Init ──────────────────────────────────────────────────────────────────
+  // -- Init ------------------------------------------------------------------
   function init() {
     document.querySelectorAll('svg[data-glyphx]').forEach(wireChart);
   }
