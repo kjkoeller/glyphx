@@ -1,5 +1,5 @@
 """
-GlyphX FacetGrid — small-multiples grid of the same chart type, faceted
+GlyphX FacetGrid -- small-multiples grid of the same chart type, faceted
 by a categorical column.
 
 Matches the Seaborn ``FacetGrid.map()`` API:
@@ -10,7 +10,7 @@ Matches the Seaborn ``FacetGrid.map()`` API:
     g.map("scatter", x="bill_length", y="bill_depth")
     g.show()
 
-Each cell is a full GlyphX Figure rendered at ``height × aspect`` pixels.
+Each cell is a full GlyphX Figure rendered at ``height x aspect`` pixels.
 The grid wraps into multiple rows when ``col_wrap`` is set.
 """
 from __future__ import annotations

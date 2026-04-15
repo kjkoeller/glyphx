@@ -110,7 +110,7 @@ class Figure:
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
 
-    # ── Fluent setters ───────────────────────────────────────────────────
+    # -- Fluent setters ---------------------------------------------------
 
     def set_title(self, title: str) -> Figure:
         """Set the figure title and return ``self`` for chaining."""
@@ -155,7 +155,7 @@ class Figure:
         self.legend_pos = None if position in (False, None) else str(position)
         return self
 
-    # ── Subplot grid ─────────────────────────────────────────────────────
+    # -- Subplot grid -----------------------------------------------------
 
     def add_axes(self, row: int = 0, col: int = 0) -> Axes:
         """Create or retrieve the Axes at a grid position."""
@@ -170,7 +170,7 @@ class Figure:
             )
         return self.grid[row][col]  # type: ignore[return-value]
 
-    # ── Series management ─────────────────────────────────────────────────
+    # -- Series management -------------------------------------------------
 
     def add(self, series: Any, use_y2: bool = False) -> Figure:
         """
@@ -186,7 +186,7 @@ class Figure:
         return self
 
 
-    # ── Shorthand series methods ──────────────────────────────────────────
+    # -- Shorthand series methods ------------------------------------------
     # These mirror the long-form Figure().add(XxxSeries(...)) API so users
     # can write fig.line(x, y) instead of importing and constructing manually.
     # Every method returns self for chaining and accepts the same kwargs as
@@ -368,7 +368,7 @@ class Figure:
             ymin:  Lower Y bound (data units).
             ymax:  Upper Y bound (data units).
             color: Fill color.
-            alpha: Fill opacity 0–1.
+            alpha: Fill opacity 0-1.
             label: Optional legend label.
 
         Returns:
@@ -394,7 +394,7 @@ class Figure:
             xmin:  Left X bound (data units or category label).
             xmax:  Right X bound.
             color: Fill color.
-            alpha: Fill opacity 0–1.
+            alpha: Fill opacity 0-1.
             label: Optional legend label.
 
         Returns:
@@ -512,7 +512,7 @@ class Figure:
 
         Args:
             x:         X position.  When ``transform='canvas'`` this is
-                       a fraction of canvas width (0–1).  When
+                       a fraction of canvas width (0-1).  When
                        ``transform='data'`` it is a data-space value.
             y:         Y position.  Canvas fraction (0 = top, 1 = bottom)
                        or data-space value depending on ``transform``.
@@ -521,7 +521,7 @@ class Figure:
             color:     Font color.
             font_size: Font size in points.
             anchor:    SVG text-anchor: ``"start"``, ``"middle"``, ``"end"``.
-            transform: ``"canvas"`` (0–1 fractions) or ``"data"`` (data coords).
+            transform: ``"canvas"`` (0-1 fractions) or ``"data"`` (data coords).
 
         Returns:
             ``self`` for chaining.
@@ -684,7 +684,7 @@ class Figure:
                                    color=color, width=width,
                                    linestyle=linestyle, label=label))
 
-    # ── __repr__ ─────────────────────────────────────────────────────────
+    # -- __repr__ ---------------------------------------------------------
 
     def copy(self) -> "Figure":
         """
@@ -746,12 +746,12 @@ class Figure:
         )
         theme_name = getattr(self, "_theme_name", "default")
         return (
-            f"<glyphx.Figure {self.width}×{self.height}"
+            f"<glyphx.Figure {self.width}x{self.height}"
             + (f" [{series_desc}]" if self.series else " [empty]")
             + f" theme={theme_name!r}>"
         )
 
-    # ── Annotations ──────────────────────────────────────────────────────
+    # -- Annotations ------------------------------------------------------
 
     def annotate(
         self,
@@ -795,7 +795,7 @@ class Figure:
         font: str,
     ) -> str:
         elements: list[str] = []
-        # Build a category→numeric map from all registered series
+        # Build a category->numeric map from all registered series
         cat_map: dict = {}
         for s, _ in self.series:
             if hasattr(s, "_x_categories") and s._x_categories:
@@ -841,7 +841,7 @@ class Figure:
             '</marker></defs>'
         )
 
-    # ── Accessibility ─────────────────────────────────────────────────────
+    # -- Accessibility -----------------------------------------------------
 
     def to_alt_text(self) -> str:
         """
@@ -853,7 +853,7 @@ class Figure:
         from .a11y import generate_alt_text
         return generate_alt_text(self)
 
-    # ── Rendering ────────────────────────────────────────────────────────
+    # -- Rendering --------------------------------------------------------
 
     def render_svg(self, viewbox: bool = False) -> str:
         """
@@ -886,7 +886,7 @@ class Figure:
                 f'fill="{color}">{svg_escape(self.title)}</text>'
             )
 
-        # sup[x|y]label — shared axis labels across subplot grids
+        # sup[x|y]label -- shared axis labels across subplot grids
         _font  = self.theme.get("font", "sans-serif")
         _tc    = self.theme.get("text_color", "#000")
         if self._supxlabel:
@@ -914,7 +914,7 @@ class Figure:
                 cx = ct["x"] * self.width
                 cy = ct["y"] * self.height
             else:
-                # data coords — resolve if axes are finalized
+                # data coords -- resolve if axes are finalized
                 try:
                     cx = self.axes.scale_x(ct["x"]) if self.axes.scale_x else ct["x"] * self.width
                     cy = self.axes.scale_y(ct["y"]) if self.axes.scale_y else ct["y"] * self.height
@@ -927,7 +927,7 @@ class Figure:
                 f'fill="{ct["color"]}">{svg_escape(ct["s"])}</text>'
             )
 
-        # ── Subplot grid ──────────────────────────────────────────────────
+        # -- Subplot grid --------------------------------------------------
         if self.grid and any(any(cell for cell in row) for row in self.grid):
             cell_w = self.width  // self.cols
             cell_h = self.height // self.rows
@@ -952,7 +952,7 @@ class Figure:
                     group += "</g>"
                     svg_parts.append(group)
 
-        # ── Single-axes ───────────────────────────────────────────────────
+        # -- Single-axes ---------------------------------------------------
         elif self.series and any(
             hasattr(s, "x") and hasattr(s, "y") and s.x and s.y
             for s, _ in self.series
@@ -989,11 +989,11 @@ class Figure:
                     fig_height=self.height,
                 ))
 
-            # ── Statistical annotations ───────────────────────────────────
+            # -- Statistical annotations -----------------------------------
             for ann in getattr(self, "_stat_annotations", []):
                 svg_parts.append(ann.to_svg(self.axes))
 
-        # ── Axis-free (pie, donut, etc.) ──────────────────────────────────
+        # -- Axis-free (pie, donut, etc.) ----------------------------------
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
@@ -1009,7 +1009,7 @@ class Figure:
             has_math=_has_math,
         )
 
-        # ── Accessibility injection ───────────────────────────────────────
+        # -- Accessibility injection ---------------------------------------
         chart_id = re.search(r'id="(glyphx-chart-[^"]+)"', raw_svg)
         cid      = chart_id.group(1) if chart_id else "glyphx-chart-0"
 
@@ -1021,7 +1021,7 @@ class Figure:
             chart_id=cid,
         )
 
-    # ── Display / export ──────────────────────────────────────────────────
+    # -- Display / export --------------------------------------------------
 
     def _display(self, svg_string: str) -> None:
         try:
@@ -1051,7 +1051,7 @@ class Figure:
 
         The output uses CSS custom properties (``--glyphx-bg``, etc.).
         When the user switches dark mode, the chart recolours without
-        any Python re-render — a capability none of the three competitors
+        any Python re-render -- a capability none of the three competitors
         have.
 
         Args:
@@ -1064,7 +1064,7 @@ class Figure:
 
             svg = fig.render_responsive(dark_theme='dark')
             Path('chart.svg').write_text(svg)
-            # Open in a browser — switches colours with the OS setting
+            # Open in a browser -- switches colours with the OS setting
         """
         from .utils   import wrap_svg_with_css_vars
         from .themes  import themes as _themes
@@ -1250,7 +1250,7 @@ class Figure:
         """
         Generate a fully self-contained, shareable HTML document.
 
-        The output embeds all JavaScript inline — no CDN, no server,
+        The output embeds all JavaScript inline -- no CDN, no server,
         works offline.  Pass ``filename`` to also write it to disk.
 
         Returns:
@@ -1285,7 +1285,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
 
         pip install "glyphx[pptx]"
 
-    The SVG is rasterised to PNG at 2× resolution, then inserted as a
+    The SVG is rasterised to PNG at 2x resolution, then inserted as a
     full-slide picture in a blank 16:9 presentation.
     """
     try:
@@ -1309,11 +1309,11 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
 
     import io
 
-    # ── SVG → PNG at 2× for crisp rendering ──────────────────────────────
+    # -- SVG -> PNG at 2x for crisp rendering ------------------------------
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 
-    # ── Build presentation ────────────────────────────────────────────────
+    # -- Build presentation ------------------------------------------------
     prs    = Presentation()
     blank  = prs.slide_layouts[6]          # completely blank layout
     slide  = prs.slides.add_slide(blank)
@@ -1321,7 +1321,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
     slide_w = prs.slide_width
     slide_h = prs.slide_height
 
-    # ── Optional title text box ───────────────────────────────────────────
+    # -- Optional title text box -------------------------------------------
     top_offset = Inches(0)
     if title:
         txBox = slide.shapes.add_textbox(
@@ -1334,7 +1334,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
         tf.paragraphs[0].runs[0].font.bold = True
         top_offset = Inches(0.65)
 
-    # ── Insert chart PNG ──────────────────────────────────────────────────
+    # -- Insert chart PNG --------------------------------------------------
     pic_h = slide_h - top_offset - Inches(0.1)
     pic_w = min(slide_w - Inches(0.4), pic_h * (slide_w / slide_h))
     left  = (slide_w - pic_w) // 2
@@ -1376,7 +1376,7 @@ class SubplotGrid:
         if not (0 <= row < self.rows and 0 <= col < self.cols):
             raise IndexError(
                 f"Position ({row}, {col}) is out of range for a "
-                f"{self.rows}×{self.cols} grid."
+                f"{self.rows}x{self.cols} grid."
             )
         self.grid[row][col] = figure
         return self

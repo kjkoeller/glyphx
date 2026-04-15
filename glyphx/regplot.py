@@ -1,5 +1,5 @@
 """
-GlyphX regplot — regression plot with multiple fit types.
+GlyphX regplot -- regression plot with multiple fit types.
 
 Extends the basic lmplot stub to support polynomial, logistic, and LOWESS
 regression with confidence intervals, closing the last major gap vs Seaborn's
@@ -31,12 +31,12 @@ from .fill_between import FillBetweenSeries
 
 def _lowess(x: np.ndarray, y: np.ndarray, frac: float = 0.3) -> tuple:
     """
-    LOWESS (locally weighted scatterplot smoothing) — pure NumPy.
+    LOWESS (locally weighted scatterplot smoothing) -- pure NumPy.
 
     Args:
         x:    X values (sorted).
         y:    Y values.
-        frac: Smoothing fraction (0–1).  Larger = smoother.
+        frac: Smoothing fraction (0-1).  Larger = smoother.
 
     Returns:
         ``(x_sorted, y_smooth)``
@@ -70,7 +70,7 @@ def _lowess(x: np.ndarray, y: np.ndarray, frac: float = 0.3) -> tuple:
 def _logistic_fit(x: np.ndarray, y: np.ndarray, n_iter: int = 200
                   ) -> tuple[float, float]:
     """
-    Fit logistic regression via gradient descent — pure NumPy.
+    Fit logistic regression via gradient descent -- pure NumPy.
 
     Returns ``(intercept, slope)`` for σ(intercept + slope * x).
     """
@@ -150,7 +150,7 @@ def regplot(
         order:      Polynomial degree (1 = linear, 2 = quadratic, etc.)
         lowess:     Use LOWESS instead of polynomial.
         logistic:   Fit logistic curve (binary Y assumed).
-        ci:         Confidence interval level (0–100).  0 disables CI band.
+        ci:         Confidence interval level (0-100).  0 disables CI band.
         n_boot:     Bootstrap samples for the CI band.
         scatter_kw: Extra kwargs for :class:`~glyphx.series.ScatterSeries`.
         line_kw:    Extra kwargs for :class:`~glyphx.series.LineSeries`.
@@ -212,7 +212,7 @@ def regplot(
         fig.set_title(title)
     fig.set_xlabel(xlabel).set_ylabel(ylabel)
 
-    # ── Scatter ────────────────────────────────────────────────────────────
+    # -- Scatter ------------------------------------------------------------
     fig.add(ScatterSeries(
         arr_x.tolist(), arr_y.tolist(),
         color=color, size=4,
@@ -220,7 +220,7 @@ def regplot(
         **scatter_kw,
     ))
 
-    # ── Regression line ────────────────────────────────────────────────────
+    # -- Regression line ----------------------------------------------------
     x_eval = np.linspace(arr_x.min(), arr_x.max(), 200)
 
     if lowess:

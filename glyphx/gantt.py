@@ -1,5 +1,5 @@
 """
-GlyphX GanttSeries — project timeline / Gantt chart.
+GlyphX GanttSeries -- project timeline / Gantt chart.
 
 The only Python plotting library with a native Gantt chart is Plotly
 (``px.timeline()``).  Matplotlib requires complex manual assembly.
@@ -7,7 +7,7 @@ Seaborn has nothing.
 
 GlyphX's ``GanttSeries`` renders horizontal task bars from start-to-end
 dates with optional colour-coding by group, milestone markers, and
-dependency arrows — all as pure SVG with zero external dependencies.
+dependency arrows -- all as pure SVG with zero external dependencies.
 
     from glyphx import Figure
     from glyphx.gantt import GanttSeries
@@ -72,13 +72,13 @@ class GanttSeries(BaseSeries):
     Args:
         tasks:          List of task dicts, each with keys:
 
-                        - ``"task"``      (str)  — display label
-                        - ``"start"``     (date|str) — bar left edge
-                        - ``"end"``       (date|str) — bar right edge
-                        - ``"group"``     (str, optional) — colour group
-                        - ``"milestone"`` (bool, optional) — diamond marker
-                        - ``"tooltip"``   (str, optional) — custom tooltip text
-                        - ``"progress"``  (float 0-1, optional) — fill fraction
+                        - ``"task"``      (str)  -- display label
+                        - ``"start"``     (date|str) -- bar left edge
+                        - ``"end"``       (date|str) -- bar right edge
+                        - ``"group"``     (str, optional) -- colour group
+                        - ``"milestone"`` (bool, optional) -- diamond marker
+                        - ``"tooltip"``   (str, optional) -- custom tooltip text
+                        - ``"progress"``  (float 0-1, optional) -- fill fraction
 
         group_colors:   ``{group_name: hex_color}`` mapping.  Auto-assigned
                         from ``cmap`` if not provided.
@@ -137,7 +137,7 @@ class GanttSeries(BaseSeries):
 
         self._default_color = colormap_colors(cmap, 2)[0]
 
-        # BaseSeries stubs — axis-free rendering
+        # BaseSeries stubs -- axis-free rendering
         super().__init__(x=None, y=None, color=self._default_color, label=label)
 
     # ------------------------------------------------------------------
@@ -160,7 +160,7 @@ class GanttSeries(BaseSeries):
                        plot_h // max(n_tasks, 1))
         bar_h    = max(8, row_h - self.row_padding)
 
-        # Date → pixel
+        # Date -> pixel
         epoch_min = _date_to_epoch(self._d_min)
         epoch_max = _date_to_epoch(self._d_max)
         span      = epoch_max - epoch_min or 1
@@ -170,7 +170,7 @@ class GanttSeries(BaseSeries):
 
         elements: list[str] = []
 
-        # ── Grid lines (monthly) ─────────────────────────────────────
+        # -- Grid lines (monthly) -------------------------------------
         if self.show_grid:
             cur = date(self._d_min.year, self._d_min.month, 1)
             while cur <= self._d_max:
@@ -191,7 +191,7 @@ class GanttSeries(BaseSeries):
                 y = cur.year + (m - 1) // 12
                 cur = date(y, (m - 1) % 12 + 1, 1)
 
-        # ── Task bars ────────────────────────────────────────────────
+        # -- Task bars ------------------------------------------------
         for i, task in enumerate(self.tasks):
             row_y   = pad_t + i * row_h
             bar_y   = row_y + (row_h - bar_h) // 2
@@ -206,7 +206,7 @@ class GanttSeries(BaseSeries):
             is_mile = task.get("milestone", False)
             prog    = task.get("progress")
             tip_txt = task.get("tooltip") or (
-                f"{task['task']}: {start.isoformat()} → {end.isoformat()}"
+                f"{task['task']}: {start.isoformat()} -> {end.isoformat()}"
             )
 
             # Task label on left
@@ -256,7 +256,7 @@ class GanttSeries(BaseSeries):
                         f'{int(float(prog)*100)}%</text>'
                     )
 
-        # ── Today line ───────────────────────────────────────────────
+        # -- Today line -----------------------------------------------
         if self.show_today:
             today = date.today()
             if self._d_min <= today <= self._d_max:
@@ -273,7 +273,7 @@ class GanttSeries(BaseSeries):
                     f'fill="{self.today_color}" font-weight="600">Today</text>'
                 )
 
-        # ── Group legend ─────────────────────────────────────────────
+        # -- Group legend ---------------------------------------------
         if self._group_colors:
             lx  = w - pad_r + 12
             ly  = pad_t

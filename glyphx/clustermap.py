@@ -1,10 +1,10 @@
 """
-GlyphX clustermap — hierarchically clustered heatmap with dendrograms.
+GlyphX clustermap -- hierarchically clustered heatmap with dendrograms.
 
 The clustermap is Seaborn's most distinctive chart in bioinformatics and
 machine learning.  Seaborn's ``sns.clustermap()`` requires scipy; GlyphX
 implements the full pipeline (hierarchical clustering, dendrogram layout,
-heatmap rendering) in pure NumPy — no scipy, no matplotlib required.
+heatmap rendering) in pure NumPy -- no scipy, no matplotlib required.
 
     from glyphx.clustermap import clustermap
 
@@ -34,7 +34,7 @@ from .utils    import svg_escape, _format_tick
 # ---------------------------------------------------------------------------
 
 def _pdist(X: np.ndarray) -> np.ndarray:
-    """Pairwise Euclidean distance matrix (n×n)."""
+    """Pairwise Euclidean distance matrix (nxn)."""
     n = len(X)
     D = np.zeros((n, n))
     for i in range(n):
@@ -236,7 +236,7 @@ def clustermap(
     """
     Hierarchically clustered heatmap with row and column dendrograms.
 
-    Equivalent to ``seaborn.clustermap()`` but implemented in pure NumPy —
+    Equivalent to ``seaborn.clustermap()`` but implemented in pure NumPy --
     no scipy, no matplotlib required.
 
     Args:
@@ -246,8 +246,8 @@ def clustermap(
         cmap:             Colormap name (default ``"viridis"``).
         row_cluster:      Cluster and reorder rows (default True).
         col_cluster:      Cluster and reorder columns (default True).
-        standard_scale:   ``"row"`` or ``"col"`` — scale each row/column to [0,1].
-        z_score:          ``"row"`` or ``"col"`` — z-score normalise each row/column.
+        standard_scale:   ``"row"`` or ``"col"`` -- scale each row/column to [0,1].
+        z_score:          ``"row"`` or ``"col"`` -- z-score normalise each row/column.
         show_values:      Overlay the numeric value in each cell.
         figsize:          ``(width, height)`` in pixels.
         title:            Chart title.
@@ -368,7 +368,7 @@ def clustermap(
             f'font-family="{font}" fill="{tc}">{svg_escape(title)}</text>'
         )
 
-    # ── Heatmap cells ─────────────────────────────────────────────────
+    # -- Heatmap cells -------------------------------------------------
     for ri in range(n_rows):
         for ci in range(n_cols):
             v    = float(mat_r[ri, ci])
@@ -393,7 +393,7 @@ def clustermap(
                     f'{_format_tick(v)}</text>'
                 )
 
-    # ── Row labels (right side of row dendrogram, left of heatmap) ───
+    # -- Row labels (right side of row dendrogram, left of heatmap) ---
     for ri, lbl in enumerate(row_lbl_r):
         cy = heat_y + ri * cell_h + cell_h / 2
         parts.append(
@@ -402,7 +402,7 @@ def clustermap(
             f'font-family="{font}" fill="{tc}">{svg_escape(lbl)}</text>'
         )
 
-    # ── Column labels (below heatmap) ────────────────────────────────
+    # -- Column labels (below heatmap) --------------------------------
     for ci, lbl in enumerate(col_lbl_r):
         cx = heat_x + ci * cell_w + cell_w / 2
         cy = heat_y + heat_h + 4
@@ -414,7 +414,7 @@ def clustermap(
             f'{svg_escape(lbl)}</text>'
         )
 
-    # ── Row dendrogram (left panel, growing rightward) ───────────────
+    # -- Row dendrogram (left panel, growing rightward) ---------------
     if row_cluster and row_linkage:
         parts.append(_dendrogram_svg(
             row_linkage, n_rows, list(range(n_rows)),
@@ -424,7 +424,7 @@ def clustermap(
             color=line_color,
         ))
 
-    # ── Column dendrogram (top panel, growing downward) ──────────────
+    # -- Column dendrogram (top panel, growing downward) --------------
     if col_cluster and col_linkage:
         parts.append(_dendrogram_svg(
             col_linkage, n_cols, list(range(n_cols)),
@@ -434,7 +434,7 @@ def clustermap(
             color=line_color,
         ))
 
-    # ── Colorbar ─────────────────────────────────────────────────────
+    # -- Colorbar -----------------------------------------------------
     cb_x  = heat_x + heat_w + 6
     cb_y  = heat_y
     n_steps = 50

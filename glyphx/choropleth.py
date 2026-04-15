@@ -1,8 +1,8 @@
 """
-GlyphX ChoroplethSeries — geographic choropleth map.
+GlyphX ChoroplethSeries -- geographic choropleth map.
 
 Renders SVG path-based choropleth maps from GeoJSON data.  No tile server,
-no CDN dependency — pure SVG paths projected from GeoJSON coordinates.
+no CDN dependency -- pure SVG paths projected from GeoJSON coordinates.
 
     from glyphx import Figure
     from glyphx.choropleth import ChoroplethSeries, load_world_geojson
@@ -11,7 +11,7 @@ no CDN dependency — pure SVG paths projected from GeoJSON coordinates.
     # Load GeoJSON (user-supplied)
     geo = json.load(open("world.geojson"))
 
-    # Attach data: map feature property → numeric value
+    # Attach data: map feature property -> numeric value
     data = {"USA": 63000, "GBR": 42000, "DEU": 51000, "FRA": 45000}
 
     fig = Figure(width=900, height=500, auto_display=False)
@@ -112,7 +112,7 @@ class ChoroplethSeries:
     """
     SVG-path choropleth map from GeoJSON.
 
-    No tiles, no CDN — renders as pure SVG paths projected via Mercator.
+    No tiles, no CDN -- renders as pure SVG paths projected via Mercator.
 
     Args:
         geojson:    GeoJSON FeatureCollection dict (``{"type":"FeatureCollection",

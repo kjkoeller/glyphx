@@ -161,7 +161,7 @@ def wrap_svg_with_template(svg_string: str) -> str:
     </script>
     """
 
-    # MathJax — inject only when the SVG contains $...$ math text
+    # MathJax -- inject only when the SVG contains $...$ math text
     mathjax_script = ""
     if 'data-has-math="true"' in svg_string:
         mathjax_script = (
@@ -431,7 +431,7 @@ def draw_legend(
     height = cell_height if cell_height else fig_height
 
     # Estimate legend box dimensions using per-character width lookup.
-    # Average proportional-font character width ≈ 7px at font-size 12.
+    # Average proportional-font character width ~= 7px at font-size 12.
     max_label_len   = max(len(s.label) for s in normalized)
     label_px_width  = max_label_len * 7
     legend_width    = icon_size + text_gap + label_px_width + 2 * padding
@@ -462,7 +462,7 @@ def draw_legend(
     elif position == "right":
         x = width  - legend_width - padding
         y = (height - legend_height) // 2
-    # default / "top-left" → x=padding, y=padding (already set)
+    # default / "top-left" -> x=padding, y=padding (already set)
 
     items = []
     for i, s in enumerate(normalized):
@@ -549,7 +549,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         p = assets_dir / name
         return p.read_text(encoding="utf-8") if p.exists() else ""
 
-    tooltip_js  = _read_js("tooltip.js")   # legacy path — already in template
+    tooltip_js  = _read_js("tooltip.js")   # legacy path -- already in template
     zoom_js     = _read_js("zoom.js")
     brush_js    = _read_js("brush.js")
     interact_js = _read_js("interact.js")
@@ -579,7 +579,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     meta = (
         f"<!-- GlyphX self-contained export\n"
         f"     Generated : {datetime.datetime.utcnow().isoformat(timespec='seconds')}Z\n"
-        f"     Zero external dependencies — share freely\n-->\n"
+        f"     Zero external dependencies -- share freely\n-->\n"
     )
 
     html = (

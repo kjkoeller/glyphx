@@ -1,11 +1,11 @@
 """
-GlyphX → Vega-Lite JSON export.
+GlyphX -> Vega-Lite JSON export.
 
 Converts a GlyphX :class:`~glyphx.Figure` to a Vega-Lite v5 specification
 dict.  The spec can be used in Observable, any Vega-compatible tool, or
 saved as a portable ``.vl.json`` file.
 
-No Python plotting library currently produces Vega-Lite output — this
+No Python plotting library currently produces Vega-Lite output -- this
 makes GlyphX the first to close the Python ↔ Observable interoperability gap.
 
     from glyphx import Figure
@@ -221,7 +221,7 @@ def to_vega_lite(
             layers.append(layer)
 
     if len(layers) == 1:
-        # Single layer — use flat spec
+        # Single layer -- use flat spec
         spec = layers[0]
     else:
         spec = {"layer": layers}

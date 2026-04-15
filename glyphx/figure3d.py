@@ -1,5 +1,5 @@
 """
-GlyphX Figure3D — interactive 3D chart canvas.
+GlyphX Figure3D -- interactive 3D chart canvas.
 
 Primary output: self-contained HTML with a Three.js WebGL renderer,
 mouse-driven orbit controls, tooltips, and theme-aware axis grids.
@@ -38,7 +38,7 @@ from .utils         import svg_escape
 
 
 # ---------------------------------------------------------------------------
-# Three.js HTML template (all JS is inline — zero CDN except Three.js itself)
+# Three.js HTML template (all JS is inline -- zero CDN except Three.js itself)
 # ---------------------------------------------------------------------------
 
 _THREEJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
@@ -55,7 +55,7 @@ html, body { width:100%; height:100%; overflow:hidden;
   background:{bg}; font-family:{font}; }
 canvas { display:block; }
 
-/* ── Tooltip ── */
+/* -- Tooltip -- */
 #glx-tip {
   position:fixed; pointer-events:none; display:none;
   background:rgba(15,23,42,0.92); color:#f8fafc;
@@ -64,14 +64,14 @@ canvas { display:block; }
   box-shadow:0 4px 18px rgba(0,0,0,0.35); z-index:9999;
 }
 
-/* ── Title ── */
+/* -- Title -- */
 #glx-title {
   position:fixed; top:12px; left:50%; transform:translateX(-50%);
   font-size:17px; font-weight:700; color:{tc};
   pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,0.3);
 }
 
-/* ── Control panel ── */
+/* -- Control panel -- */
 #glx-panel {
   position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
   display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
@@ -90,7 +90,7 @@ canvas { display:block; }
 .glx-btn.active { background:rgba(99,102,241,0.6); border-color:#818cf8; }
 .glx-sep { width:1px; background:rgba(255,255,255,0.15); margin:0 2px; }
 
-/* ── Legend ── */
+/* -- Legend -- */
 #glx-legend {
   position:fixed; right:16px; top:50%; transform:translateY(-50%);
   background:rgba(15,23,42,0.65); border-radius:10px;
@@ -107,7 +107,7 @@ canvas { display:block; }
   width:14px; height:14px; border-radius:3px; flex-shrink:0;
 }
 
-/* ── Help overlay ── */
+/* -- Help overlay -- */
 #glx-help {
   position:fixed; inset:0;
   background:rgba(0,0,0,0.65);
@@ -129,7 +129,7 @@ canvas { display:block; }
   opacity:0.4; font-size:11px;
 }
 
-/* ── Axis value readout (surface probe) ── */
+/* -- Axis value readout (surface probe) -- */
 #glx-readout {
   position:fixed; left:16px; bottom:18px;
   background:rgba(15,23,42,0.7); color:#94a3b8;
@@ -138,7 +138,7 @@ canvas { display:block; }
   backdrop-filter:blur(4px);
 }
 
-/* ── Selection highlight ── */
+/* -- Selection highlight -- */
 .glx-selected { outline:none; }
 </style>
 </head>
@@ -152,23 +152,23 @@ canvas { display:block; }
 
 <!-- Control panel -->
 <div id="glx-panel">
-  <button class="glx-btn" onclick="setCam('iso')"     title="Isometric view (I)">⬡ ISO</button>
-  <button class="glx-btn" onclick="setCam('top')"     title="Top view (T)">⬆ Top</button>
-  <button class="glx-btn" onclick="setCam('front')"   title="Front view (V)">◻ Front</button>
-  <button class="glx-btn" onclick="setCam('side')"    title="Side view (S)">◁ Side</button>
+  <button class="glx-btn" onclick="setCam('iso')"     title="Isometric view (I)"> ISO</button>
+  <button class="glx-btn" onclick="setCam('top')"     title="Top view (T)">^ Top</button>
+  <button class="glx-btn" onclick="setCam('front')"   title="Front view (V)">[] Front</button>
+  <button class="glx-btn" onclick="setCam('side')"    title="Side view (S)">< Side</button>
   <div class="glx-sep"></div>
-  <button class="glx-btn" id="btn-rotate" onclick="toggleRotate()" title="Auto-rotate (Space)">↻ Rotate</button>
-  <button class="glx-btn" onclick="resetView()"       title="Reset camera (R)">⟳ Reset</button>
+  <button class="glx-btn" id="btn-rotate" onclick="toggleRotate()" title="Auto-rotate (Space)"> Rotate</button>
+  <button class="glx-btn" onclick="resetView()"       title="Reset camera (R)">Reset Reset</button>
   <div class="glx-sep"></div>
-  <button class="glx-btn" onclick="screenshot()"      title="Save PNG (P)">📷 PNG</button>
-  <button class="glx-btn" onclick="toggleFullscreen()" title="Fullscreen (F)">⛶ Full</button>
+  <button class="glx-btn" onclick="screenshot()"      title="Save PNG (P)">PNG PNG</button>
+  <button class="glx-btn" onclick="toggleFullscreen()" title="Fullscreen (F)"> Full</button>
   <button class="glx-btn" onclick="showHelp()"        title="Keyboard help (H)">? Help</button>
 </div>
 
 <!-- Help overlay -->
 <div id="glx-help" onclick="closeHelp()">
   <div id="glx-help-box">
-    <h3>⌨️ GlyphX 3D Shortcuts</h3>
+    <h3>KB GlyphX 3D Shortcuts</h3>
     <table>
       <tr><td>Drag</td><td>Rotate camera</td></tr>
       <tr><td>Right-drag / Ctrl+drag</td><td>Pan</td></tr>
@@ -190,9 +190,9 @@ canvas { display:block; }
 
 <script src="{threejs_cdn}"></script>
 <script>
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Data & config
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 const DATA    = {data_json};
 const THEME   = {theme_json};
 const LABELS  = {labels_json};
@@ -208,9 +208,9 @@ function fmtV(v) {
   return v.toFixed(3);
 }
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Scene setup
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 const W = window.innerWidth, H = window.innerHeight;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(W, H);
@@ -230,9 +230,9 @@ dLight.position.set(5, 8, 5);
 scene.add(dLight);
 scene.add(new THREE.AmbientLight(0xffffff, 0.45));
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Camera state & orbit controls
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 const CAM_PRESETS = {
   iso:   { theta:45,  phi:55  },
   top:   { theta:0,   phi:1   },
@@ -342,9 +342,9 @@ cv.addEventListener('touchmove', e => {
 
 updateCamera();
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Keyboard controls
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 document.addEventListener('keydown', e => {
   if (['INPUT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   switch(e.key) {
@@ -367,9 +367,9 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Axis grid & labels
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 const axColor   = new THREE.Color(THEME.axis);
 const gridColor = new THREE.Color(THEME.grid);
 
@@ -424,11 +424,11 @@ makeSprite(LABELS.xlabel, [ 0,    -S-0.32, -S-0.18], 0.7);
 makeSprite(LABELS.ylabel, [-S-0.3,-S-0.32,  0],      0.7);
 makeSprite(LABELS.zlabel, [-S-0.45, 0,     -S],      0.7);
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Series rendering
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 const hitObjects   = [];   // for raycasting
-const seriesGroups = {};   // css_class → THREE.Group for legend toggle
+const seriesGroups = {};   // css_class -> THREE.Group for legend toggle
 const surfaceMeshes = [];  // for surface value probe
 
 DATA.forEach((series, si) => {
@@ -436,7 +436,7 @@ DATA.forEach((series, si) => {
   group.userData.seriesIndex = si;
   group.userData.label = series.label;
 
-  // ── Scatter ───────────────────────────────────────────────────────
+  // -- Scatter -------------------------------------------------------
   if (series.type === 'scatter') {
     const N = series.x.length;
     const positions = new Float32Array(N*3);
@@ -461,7 +461,7 @@ DATA.forEach((series, si) => {
     group.add(pts);
   }
 
-  // ── Line ─────────────────────────────────────────────────────────
+  // -- Line ---------------------------------------------------------
   if (series.type === 'line') {
     const pts3 = series.nx.map((nx,i) =>
       new THREE.Vector3(nx, series.nz[i], series.ny[i]));
@@ -472,7 +472,7 @@ DATA.forEach((series, si) => {
     group.add(new THREE.Line(g, m));
   }
 
-  // ── Surface ──────────────────────────────────────────────────────
+  // -- Surface ------------------------------------------------------
   if (series.type === 'surface') {
     const M = series.ny, N = series.nx;
     const positions = new Float32Array(M*N*3);
@@ -515,7 +515,7 @@ DATA.forEach((series, si) => {
     }
   }
 
-  // ── Bar3D ────────────────────────────────────────────────────────
+  // -- Bar3D --------------------------------------------------------
   if (series.type === 'bar3d') {
     series.bars.forEach(bar => {
       const geom = new THREE.BoxGeometry(bar.ndx*0.88, bar.nz, bar.ndy*0.88);
@@ -532,9 +532,9 @@ DATA.forEach((series, si) => {
   seriesGroups[si] = group;
 });
 
-// ═══════════════════════════════════════════════════════════════════════
-// Legend — click to toggle series visibility
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
+// Legend -- click to toggle series visibility
+// =======================================================================
 document.querySelectorAll('.glx-leg-item').forEach(item => {
   item.addEventListener('click', () => {
     const si = parseInt(item.dataset.series);
@@ -545,9 +545,9 @@ document.querySelectorAll('.glx-leg-item').forEach(item => {
   });
 });
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Selection highlight
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 let selectionIdx = null;
 
 function clearSelection() {
@@ -564,9 +564,9 @@ function clearSelection() {
   document.getElementById('glx-readout').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════════════════════
-// Raycasting — tooltip + surface probe + click-select
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
+// Raycasting -- tooltip + surface probe + click-select
+// =======================================================================
 const raycaster = new THREE.Raycaster();
 raycaster.params.Points = { threshold: 0.06 };
 const mouse = new THREE.Vector2();
@@ -586,7 +586,7 @@ cv.addEventListener('mousemove', e => {
     const hit = hits[0];
     const obj = hit.object;
 
-    // ── Scatter tooltip ──────────────────────────────────────────
+    // -- Scatter tooltip ------------------------------------------
     if (obj.isPoints) {
       const ud  = obj.geometry.userData;
       const idx = hit.index;
@@ -600,7 +600,7 @@ cv.addEventListener('mousemove', e => {
       }
     }
 
-    // ── Surface value probe ──────────────────────────────────────
+    // -- Surface value probe --------------------------------------
     if (obj.isMesh && surfaceMeshes.includes(obj)) {
       const ud = obj.geometry.userData;
       if (ud && ud.xs && ud.ys && ud.zs) {
@@ -664,18 +664,18 @@ cv.addEventListener('click', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Resize
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
 
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 // Render loop
-// ═══════════════════════════════════════════════════════════════════════
+// =======================================================================
 (function animate() {
   requestAnimationFrame(animate);
   if (autoRotate) { cam.theta += 0.25; updateCamera(); }
@@ -872,7 +872,7 @@ class Figure3D:
                 f'{svg_escape(self.title)}</text>'
             )
 
-        # ── Axis box edges ────────────────────────────────────────────────
+        # -- Axis box edges ------------------------------------------------
         box_corners = [(-1,-1,-1),(1,-1,-1),(1,1,-1),(-1,1,-1),
                        (-1,-1,1), (1,-1,1), (1,1,1), (-1,1,1)]
         box_edges   = [(0,1),(1,2),(2,3),(3,0),
@@ -887,7 +887,7 @@ class Figure3D:
                 f'stroke="{ac}" stroke-width="1" opacity="0.5"/>'
             )
 
-        # ── Floor grid ────────────────────────────────────────────────────
+        # -- Floor grid ----------------------------------------------------
         for k in range(6):
             v = -1 + k * 0.4
             for (ax1,bx1,ay1,by1) in [
@@ -906,7 +906,7 @@ class Figure3D:
                     f'stroke="{gc}" stroke-width="0.6" opacity="0.5"/>'
                 )
 
-        # ── Tick labels ────────────────────────────────────────────────────
+        # -- Tick labels ----------------------------------------------------
         NTICKS = 4
         for k in range(NTICKS + 1):
             t = -1 + k * 2 / NTICKS
@@ -948,7 +948,7 @@ class Figure3D:
                     f'{svg_escape(label)}</text>'
                 )
 
-        # ── Series ────────────────────────────────────────────────────────
+        # -- Series --------------------------------------------------------
         for s in self._series:
             if hasattr(s, "to_svg"):
                 parts.append(s.to_svg(cam, x_range, y_range, z_range))
@@ -1026,7 +1026,7 @@ class Figure3D:
             "zlabel": self.zlabel,
         }
 
-        # Legend HTML — uses glx-leg-item for click-to-toggle series
+        # Legend HTML -- uses glx-leg-item for click-to-toggle series
         legend_html = ""
         for si, s in enumerate(self._series):
             lbl = getattr(s, "label", None)
@@ -1097,8 +1097,8 @@ class Figure3D:
         """
         Save the figure to disk.
 
-        ``.html`` → interactive Three.js WebGL viewer (default)
-        ``.svg``  → static orthographic SVG
+        ``.html`` -> interactive Three.js WebGL viewer (default)
+        ``.svg``  -> static orthographic SVG
 
         Returns ``self`` for chaining.
         """

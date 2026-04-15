@@ -1,9 +1,9 @@
 """
-GlyphX glyphx.suggest(df) — AI-powered chart recommendation.
+GlyphX glyphx.suggest(df) -- AI-powered chart recommendation.
 
 Inspects a DataFrame's column types, cardinality, and distribution
 shape, then returns ranked chart suggestions with mini SVG previews.
-No external dependencies — the entire analysis runs in pure Python/NumPy.
+No external dependencies -- the entire analysis runs in pure Python/NumPy.
 
     from glyphx import suggest
     import pandas as pd
@@ -35,13 +35,13 @@ class Recommendation:
 
     Attributes:
         kind:      GlyphX chart kind string  (e.g. ``"line"``, ``"bar"``).
-        score:     Confidence score 0–100.
+        score:     Confidence score 0-100.
         reason:    Human-readable explanation of why this chart suits the data.
         x_col:     Suggested X-axis column (or None).
         y_col:     Suggested Y-axis column (or None for univariate charts).
         hue_col:   Suggested hue/group column (or None).
         extra:     Additional kwargs to pass to the chart constructor.
-        preview:   A :class:`~glyphx.Figure` rendered at 340×220 with
+        preview:   A :class:`~glyphx.Figure` rendered at 340x220 with
                    representative sample data.  Rendered lazily on first access.
     """
     kind:    str
@@ -56,7 +56,7 @@ class Recommendation:
 
     @property
     def preview(self):
-        """Render and cache a 340×220 mini preview figure."""
+        """Render and cache a 340x220 mini preview figure."""
         if self._fig is None:
             self._fig = _render_preview(self)
         return self._fig
@@ -180,7 +180,7 @@ def suggest(
     n_cols = len(sample.columns)
     recs: list[Recommendation] = []
 
-    # ── Line chart ─────────────────────────────────────────────────
+    # -- Line chart -------------------------------------------------
     if dt_cols and num_cols:
         x = dt_cols[0]; y = num_cols[0]
         score = 85
@@ -196,11 +196,11 @@ def suggest(
         y = num_cols[0]
         recs.append(Recommendation(
             kind="line", score=70, x_col=None, y_col=y,
-            reason=f"'{y}' has a monotone trend — a line chart shows it clearly.",
+            reason=f"'{y}' has a monotone trend -- a line chart shows it clearly.",
             _df=sample,
         ))
 
-    # ── Bar chart ──────────────────────────────────────────────────
+    # -- Bar chart --------------------------------------------------
     if cat_cols and num_cols:
         x = cat_cols[0]; y = num_cols[0]
         card = _cardinality(sample[x])
@@ -208,12 +208,12 @@ def suggest(
         hue   = cat_cols[1] if len(cat_cols) > 1 and _cardinality(sample[cat_cols[1]]) <= 6 else None
         recs.append(Recommendation(
             kind="bar", score=score, x_col=x, y_col=y, hue_col=hue,
-            reason=(f"'{x}' has {card} categories and '{y}' is numeric — "
+            reason=(f"'{x}' has {card} categories and '{y}' is numeric -- "
                     "a bar chart compares groups."),
             _df=sample,
         ))
 
-    # ── Scatter chart ──────────────────────────────────────────────
+    # -- Scatter chart ----------------------------------------------
     if len(num_cols) >= 2:
         x = num_cols[0]; y = num_cols[1]
         corr = abs(sample[[x, y]].dropna().corr().iloc[0, 1])
@@ -223,25 +223,25 @@ def suggest(
         recs.append(Recommendation(
             kind="scatter", score=score, x_col=x, y_col=y,
             hue_col=hue,
-            reason=(f"'{x}' and '{y}' are both numeric (r={corr:.2f}) — "
+            reason=(f"'{x}' and '{y}' are both numeric (r={corr:.2f}) -- "
                     "scatter reveals their relationship."),
             extra={"c": c} if c else {},
             _df=sample,
         ))
 
-    # ── Histogram ──────────────────────────────────────────────────
+    # -- Histogram --------------------------------------------------
     if num_cols:
         col   = num_cols[0]
         shape = _distribution_shape(sample[col])
         score = 70 if shape in ("normal", "skewed") else 55
         recs.append(Recommendation(
             kind="hist", score=score, x_col=col, y_col=None,
-            reason=(f"'{col}' is continuous ({shape} distribution) — "
+            reason=(f"'{col}' is continuous ({shape} distribution) -- "
                     "a histogram shows its shape."),
             _df=sample,
         ))
 
-    # ── Box plot ───────────────────────────────────────────────────
+    # -- Box plot ---------------------------------------------------
     if cat_cols and num_cols:
         x = cat_cols[0]; y = num_cols[0]
         card  = _cardinality(sample[x])
@@ -252,17 +252,17 @@ def suggest(
             _df=sample,
         ))
 
-    # ── Heatmap ────────────────────────────────────────────────────
+    # -- Heatmap ----------------------------------------------------
     if len(num_cols) >= 3 and n_rows <= 200:
         score = 60
         recs.append(Recommendation(
             kind="heatmap", score=score, x_col=None, y_col=None,
-            reason=(f"Multiple numeric columns ({len(num_cols)}) with ≤200 rows — "
+            reason=(f"Multiple numeric columns ({len(num_cols)}) with ≤200 rows -- "
                     "a correlation heatmap reveals relationships."),
             _df=sample,
         ))
 
-    # ── Pie / donut ────────────────────────────────────────────────
+    # -- Pie / donut ------------------------------------------------
     if cat_cols and num_cols:
         x = cat_cols[0]; y = num_cols[0]
         card = _cardinality(sample[x])
@@ -270,21 +270,21 @@ def suggest(
             score = 60
             recs.append(Recommendation(
                 kind="donut", score=score, x_col=x, y_col=y,
-                reason=(f"'{x}' has {card} categories — a donut shows part-to-whole."),
+                reason=(f"'{x}' has {card} categories -- a donut shows part-to-whole."),
                 _df=sample,
             ))
 
-    # ── Bubble ─────────────────────────────────────────────────────
+    # -- Bubble -----------------------------------------------------
     if len(num_cols) >= 3:
         x, y, s = num_cols[0], num_cols[1], num_cols[2]
         recs.append(Recommendation(
             kind="bubble", score=58, x_col=x, y_col=y,
-            reason=(f"Three numeric dimensions — bubble encodes '{s}' as size."),
+            reason=(f"Three numeric dimensions -- bubble encodes '{s}' as size."),
             extra={"size": s},
             _df=sample,
         ))
 
-    # ── ECDF ───────────────────────────────────────────────────────
+    # -- ECDF -------------------------------------------------------
     if num_cols and n_rows >= 30:
         recs.append(Recommendation(
             kind="ecdf", score=52, x_col=num_cols[0], y_col=None,
@@ -293,13 +293,13 @@ def suggest(
             _df=sample,
         ))
 
-    # ── Parallel coordinates ────────────────────────────────────────
+    # -- Parallel coordinates ----------------------------------------
     if len(num_cols) >= 4:
         score = 65 if len(num_cols) <= 8 else 50
         hue   = cat_cols[0] if cat_cols else None
         recs.append(Recommendation(
             kind="parallel", score=score,
-            reason=(f"{len(num_cols)} numeric columns — parallel coordinates "
+            reason=(f"{len(num_cols)} numeric columns -- parallel coordinates "
                     "reveals multi-dimensional patterns."),
             extra={"axes": num_cols[:8]},
             hue_col=hue,
@@ -316,7 +316,7 @@ def suggest(
 # ---------------------------------------------------------------------------
 
 def _render_preview(rec: Recommendation):
-    """Build a 340×220 mini Figure from the recommendation."""
+    """Build a 340x220 mini Figure from the recommendation."""
     from .figure import Figure
     from .series import (LineSeries, BarSeries, ScatterSeries,
                          HistogramSeries, BoxPlotSeries, HeatmapSeries,
@@ -331,9 +331,9 @@ def _render_preview(rec: Recommendation):
     fig = Figure(width=340, height=220, auto_display=False)
     title = kind.upper()
     if x_col:
-        title += f" — {x_col}"
+        title += f" -- {x_col}"
         if y_col:
-            title += f" × {y_col}"
+            title += f" x {y_col}"
     fig.set_title(title)
 
     try:
