@@ -1,0 +1,45 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-d19cce590269-title glyphx-chart-d19cce590269-desc" id="glyphx-chart-d19cce590269" data-glyphx="true" data-has-math="true" width="720" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440"><title id="glyphx-chart-d19cce590269-title">Stacked Bar -- Revenue by Segment</title><desc id="glyphx-chart-d19cce590269-desc">Stackedbar chart titled &quot;Stacked Bar -- Revenue by Segment&quot;. X axis: Quarter. Y axis: Revenue ($M). Series: 4 data points. Ranges from 0 (at Q1) to 4.6 (at Q2).</desc><rect width="720" height="440" fill="#ffffff"/>
+<text x="360" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Stacked Bar -- Revenue by Segment</text>
+<line x1="50" y1="390" x2="540" y2="390" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="390" stroke="#333" />
+<text x="295" y="430" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Quarter</text>
+<text x="15" y="220" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 220)">Revenue ($M)</text>
+<line x1="50" x2="540" y1="390.0" y2="390.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="390.0" y2="390.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="394.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-0.32</text>
+<line x1="50" x2="540" y1="322.0" y2="322.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="322.0" y2="322.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="326.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.73</text>
+<line x1="50" x2="540" y1="254.0" y2="254.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="254.0" y2="254.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="258.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.78</text>
+<line x1="50" x2="540" y1="185.99999999999997" y2="185.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="185.99999999999997" y2="185.99999999999997" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="189.99999999999997" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.82</text>
+<line x1="50" x2="540" y1="118.0" y2="118.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="118.0" y2="118.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="122.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.87</text>
+<line x1="50" x2="540" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.92</text>
+<line y1="50" y2="390" x1="111.25" x2="111.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="111.25" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q1</text>
+<line y1="50" y2="390" x1="233.75" x2="233.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="233.75" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q2</text>
+<line y1="50" y2="390" x1="356.25" x2="356.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="356.25" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q3</text>
+<line y1="50" y2="390" x1="478.75" x2="478.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="478.75" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q4</text>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="65.3" y="291.3" width="91.9" height="77.8" fill="#1f77b4" stroke="#fff" stroke-width="0.5" data-x="Q1" data-label="Cloud" data-value="1.2"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="65.3" y="239.5" width="91.9" height="51.9" fill="#ff7f0e" stroke="#fff" stroke-width="0.5" data-x="Q1" data-label="AI/ML" data-value="0.8"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="65.3" y="207.0" width="91.9" height="32.4" fill="#2ca02c" stroke="#fff" stroke-width="0.5" data-x="Q1" data-label="Mobile" data-value="0.5"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="187.8" y="271.9" width="91.9" height="97.3" fill="#1f77b4" stroke="#fff" stroke-width="0.5" data-x="Q2" data-label="Cloud" data-value="1.5"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="187.8" y="207.0" width="91.9" height="64.8" fill="#ff7f0e" stroke="#fff" stroke-width="0.5" data-x="Q2" data-label="AI/ML" data-value="1.0"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="187.8" y="168.1" width="91.9" height="38.9" fill="#2ca02c" stroke="#fff" stroke-width="0.5" data-x="Q2" data-label="Mobile" data-value="0.6"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="310.3" y="252.4" width="91.9" height="116.7" fill="#1f77b4" stroke="#fff" stroke-width="0.5" data-x="Q3" data-label="Cloud" data-value="1.8"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="310.3" y="168.1" width="91.9" height="84.3" fill="#ff7f0e" stroke="#fff" stroke-width="0.5" data-x="Q3" data-label="AI/ML" data-value="1.3"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="310.3" y="122.7" width="91.9" height="45.4" fill="#2ca02c" stroke="#fff" stroke-width="0.5" data-x="Q3" data-label="Mobile" data-value="0.7"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="432.8" y="233.0" width="91.9" height="136.2" fill="#1f77b4" stroke="#fff" stroke-width="0.5" data-x="Q4" data-label="Cloud" data-value="2.1"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="432.8" y="129.2" width="91.9" height="103.7" fill="#ff7f0e" stroke="#fff" stroke-width="0.5" data-x="Q4" data-label="AI/ML" data-value="1.6"/>
+<rect class="glyphx-point series-63104" tabindex="0" role="graphics-symbol" x="432.8" y="70.9" width="91.9" height="58.4" fill="#2ca02c" stroke="#fff" stroke-width="0.5" data-x="Q4" data-label="Mobile" data-value="0.9"/>
+</svg>

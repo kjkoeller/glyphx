@@ -1,0 +1,83 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-c85791c99d3b-title glyphx-chart-c85791c99d3b-desc" id="glyphx-chart-c85791c99d3b" data-glyphx="true" data-has-math="true" width="720" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480"><title id="glyphx-chart-c85791c99d3b-title">Bubble Chart — GDP vs Life Expectancy (size=population)</title><desc id="glyphx-chart-c85791c99d3b-desc">Bubble chart titled &quot;Bubble Chart — GDP vs Life Expectancy (size=population)&quot;. X axis: GDP per capita ($k). Y axis: Life Expectancy (years). Series &quot;Countries&quot;: 10 data points. Ranges from 55 (at 5) to 83 (at 60).</desc><rect width="720" height="480" fill="#ffffff"/>
+<text x="360" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Bubble Chart — GDP vs Life Expectancy (size=population)</text>
+<line x1="50" y1="430" x2="540" y2="430" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="430" stroke="#333" />
+<text x="295" y="470" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">GDP per capita ($k)</text>
+<text x="15" y="240" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 240)">Life Expectancy (years)</text>
+<line x1="50" x2="540" y1="430.0" y2="430.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="430.0" y2="430.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="434.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">53.0</text>
+<line x1="50" x2="540" y1="354.0" y2="354.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="354.0" y2="354.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="358.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">59.4</text>
+<line x1="50" x2="540" y1="278.00000000000006" y2="278.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="278.00000000000006" y2="278.00000000000006" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="282.00000000000006" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">65.8</text>
+<line x1="50" x2="540" y1="202.00000000000003" y2="202.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="202.00000000000003" y2="202.00000000000003" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="206.00000000000003" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">72.2</text>
+<line x1="50" x2="540" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="126.0" y2="126.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">78.6</text>
+<line x1="50" x2="540" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">85.0</text>
+<line y1="50" y2="430" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="50.0" x2="50.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="50.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >4.50</text>
+<line y1="50" y2="430" x1="148.0" x2="148.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="148.0" x2="148.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="148.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >15.7</text>
+<line y1="50" y2="430" x1="246.0" x2="246.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="246.0" x2="246.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="246.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >26.9</text>
+<line y1="50" y2="430" x1="344.0" x2="344.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="344.0" x2="344.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="344.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >38.1</text>
+<line y1="50" y2="430" x1="442.0" x2="442.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="442.0" x2="442.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="442.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >49.3</text>
+<line y1="50" y2="430" x1="540.0" x2="540.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="540.0" x2="540.0" y1="430" y2="434.0" stroke="#000000" stroke-width="1"/>
+<text x="540.0" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >60.5</text>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="141.88" cy="251.90" r="38.00" fill="#24888d" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="15" data-y="68" data-label="Countries" data-size="38"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="535.62" cy="73.33" r="34.62" fill="#fde725" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="60" data-y="83" data-label="Countries" data-size="34.6"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="98.12" cy="204.29" r="26.95" fill="#27aa82" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="10" data-y="72" data-label="Countries" data-size="26.9"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="229.38" cy="180.48" r="25.50" fill="#3fba73" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="25" data-y="74" data-label="Countries" data-size="25.5"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="54.38" cy="406.67" r="23.10" fill="#440154" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="5" data-y="55" data-label="Countries" data-size="23.1"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="273.12" cy="156.67" r="20.31" fill="#5ec962" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="30" data-y="76" data-label="Countries" data-size="20.3"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="80.62" cy="347.14" r="18.09" fill="#423d82" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="8" data-y="60" data-label="Countries" data-size="18.1"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="316.88" cy="85.24" r="15.37" fill="#e6e428" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="35" data-y="82" data-label="Countries" data-size="15.4"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="404.38" cy="109.05" r="11.41" fill="#b8de2e" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="45" data-y="80" data-label="Countries" data-size="11.4"/>
+<circle class="glyphx-point series-39904" tabindex="0" role="graphics-symbol" cx="185.62" cy="132.86" r="6.00" fill="#8bd445" fill-opacity="0.7" stroke="#ffffff" stroke-width="0.8" data-x="20" data-y="78" data-label="Countries" data-size="6"/>
+<rect x="560" y="50.0" width="12" height="16.333333333333336" fill="#fde725"/>
+<rect x="560" y="65.83333333333333" width="12" height="16.333333333333336" fill="#e1e329"/>
+<rect x="560" y="81.66666666666667" width="12" height="16.333333333333336" fill="#c5df2d"/>
+<rect x="560" y="97.5" width="12" height="16.333333333333336" fill="#aadb32"/>
+<rect x="560" y="113.33333333333334" width="12" height="16.333333333333336" fill="#8ed544"/>
+<rect x="560" y="129.16666666666669" width="12" height="16.333333333333336" fill="#73ce55"/>
+<rect x="560" y="145.0" width="12" height="16.333333333333336" fill="#59c765"/>
+<rect x="560" y="160.83333333333334" width="12" height="16.333333333333336" fill="#47bd6f"/>
+<rect x="560" y="176.66666666666669" width="12" height="16.333333333333336" fill="#34b479"/>
+<rect x="560" y="192.5" width="12" height="16.333333333333336" fill="#27aa82"/>
+<rect x="560" y="208.33333333333334" width="12" height="16.333333333333336" fill="#25a086"/>
+<rect x="560" y="224.16666666666669" width="12" height="16.333333333333336" fill="#22968a"/>
+<rect x="560" y="240.0" width="12" height="16.333333333333336" fill="#238c8c"/>
+<rect x="560" y="255.83333333333334" width="12" height="16.333333333333336" fill="#27818d"/>
+<rect x="560" y="271.6666666666667" width="12" height="16.333333333333336" fill="#2b768e"/>
+<rect x="560" y="287.5" width="12" height="16.333333333333336" fill="#2f6b8d"/>
+<rect x="560" y="303.33333333333337" width="12" height="16.333333333333336" fill="#34608c"/>
+<rect x="560" y="319.1666666666667" width="12" height="16.333333333333336" fill="#3a558b"/>
+<rect x="560" y="335.0" width="12" height="16.333333333333336" fill="#3e4887"/>
+<rect x="560" y="350.83333333333337" width="12" height="16.333333333333336" fill="#423b81"/>
+<rect x="560" y="366.6666666666667" width="12" height="16.333333333333336" fill="#462f7c"/>
+<rect x="560" y="382.5" width="12" height="16.333333333333336" fill="#46206f"/>
+<rect x="560" y="398.33333333333337" width="12" height="16.333333333333336" fill="#451062"/>
+<rect x="560" y="414.1666666666667" width="12" height="16.333333333333336" fill="#440154"/>
+<rect x="560" y="50" width="12" height="380" fill="none" stroke="#000000" stroke-width="0.5" opacity="0.4"/>
+<text x="576" y="58" font-size="10" font-family="sans-serif" fill="#000000">83</text>
+<text x="576" y="430" font-size="10" font-family="sans-serif" fill="#000000">55</text>
+<g class="glyphx-legend">
+<rect x="598" y="229" width="12" height="12" fill="#3b82f6" class="legend-icon" data-target="series-39904" />
+<text x="618" y="239" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-39904">Countries</text>
+</g></svg>

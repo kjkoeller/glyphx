@@ -1,0 +1,42 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-b49573e5ccc2-title glyphx-chart-b49573e5ccc2-desc" id="glyphx-chart-b49573e5ccc2" data-glyphx="true" width="860" height="340" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 860 340"><title id="glyphx-chart-b49573e5ccc2-title">Gantt Chart -- Project Timeline</title><desc id="glyphx-chart-b49573e5ccc2-desc">Gantt chart titled &quot;Gantt Chart -- Project Timeline&quot;.</desc><rect width="860" height="340" fill="#ffffff"/>
+<text x="430" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Gantt Chart -- Project Timeline</text>
+<line x1="119.9" x2="119.9" y1="50" y2="290" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="122.9" y="44" font-size="9" font-family="sans-serif" fill="#000000" opacity="0.6">Jan 2025</text>
+<line x1="276.7" x2="276.7" y1="50" y2="290" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="279.7" y="44" font-size="9" font-family="sans-serif" fill="#000000" opacity="0.6">Feb 2025</text>
+<line x1="418.4" x2="418.4" y1="50" y2="290" stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="421.4" y="44" font-size="9" font-family="sans-serif" fill="#000000" opacity="0.6">Mar 2025</text>
+<text x="124.0" y="69.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Requirements</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="145.2" y="53" width="55.7" height="24" fill="#2563eb" rx="3" data-label="Requirements: 2025-01-06 -&gt; 2025-01-17"/>
+<rect x="145.2" y="53" width="55.7" height="24" fill="#ffffff" fill-opacity="0.3" rx="3"/>
+<text x="173.0" y="69.0" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#fff" opacity="0.9">100%</text>
+<text x="124.0" y="99.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Architecture</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="180.6" y="83" width="55.7" height="24" fill="#2563eb" rx="3" data-label="Architecture: 2025-01-13 -&gt; 2025-01-24"/>
+<rect x="180.6" y="83" width="55.7" height="24" fill="#ffffff" fill-opacity="0.3" rx="3"/>
+<text x="208.4" y="99.0" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#fff" opacity="0.9">100%</text>
+<text x="124.0" y="129.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Backend API</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="251.4" y="113" width="126.5" height="24" fill="#16a34a" rx="3" data-label="Backend API: 2025-01-27 -&gt; 2025-02-21"/>
+<rect x="251.4" y="113" width="94.9" height="24" fill="#ffffff" fill-opacity="0.3" rx="3"/>
+<text x="314.7" y="129.0" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#fff" opacity="0.9">75%</text>
+<text x="124.0" y="159.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Database</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="251.4" y="143" width="55.7" height="24" fill="#16a34a" rx="3" data-label="Database: 2025-01-27 -&gt; 2025-02-07"/>
+<rect x="251.4" y="143" width="55.7" height="24" fill="#ffffff" fill-opacity="0.3" rx="3"/>
+<text x="279.3" y="159.0" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#fff" opacity="0.9">100%</text>
+<text x="124.0" y="189.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Frontend</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="286.9" y="173" width="126.5" height="24" fill="#16a34a" rx="3" data-label="Frontend: 2025-02-03 -&gt; 2025-02-28"/>
+<rect x="286.9" y="173" width="63.3" height="24" fill="#ffffff" fill-opacity="0.3" rx="3"/>
+<text x="350.1" y="189.0" text-anchor="middle" font-size="9" font-family="sans-serif" fill="#fff" opacity="0.9">50%</text>
+<text x="124.0" y="219.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Integration</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="393.1" y="203" width="55.7" height="24" fill="#d97706" rx="3" data-label="Integration: 2025-02-24 -&gt; 2025-03-07"/>
+<text x="124.0" y="249.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">UAT Testing</text>
+<rect class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" x="428.6" y="233" width="55.7" height="24" fill="#d97706" rx="3" data-label="UAT Testing: 2025-03-03 -&gt; 2025-03-14"/>
+<text x="124.0" y="279.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">Launch</text>
+<polygon class="glyphx-point series-79520" tabindex="0" role="graphics-symbol" points="534.8,261.8 548.0,275.0 534.8,288.2 521.6,275.0" fill="#dc2626" stroke="#dc2626" stroke-width="1.5" data-label="Launch: 2025-03-24 -&gt; 2025-03-24"/>
+<rect x="562" y="50" width="12" height="12" fill="#2563eb" rx="2"/>
+<text x="578" y="60" font-size="11" font-family="sans-serif" fill="#000000">Phase 1</text>
+<rect x="562" y="70" width="12" height="12" fill="#16a34a" rx="2"/>
+<text x="578" y="80" font-size="11" font-family="sans-serif" fill="#000000">Phase 2</text>
+<rect x="562" y="90" width="12" height="12" fill="#d97706" rx="2"/>
+<text x="578" y="100" font-size="11" font-family="sans-serif" fill="#000000">Phase 3</text>
+<rect x="562" y="110" width="12" height="12" fill="#dc2626" rx="2"/>
+<text x="578" y="120" font-size="11" font-family="sans-serif" fill="#000000">Phase 4</text></svg>
