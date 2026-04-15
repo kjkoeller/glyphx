@@ -4,7 +4,13 @@ Matplotlib, Seaborn, and Plotly.
 """
 from __future__ import annotations
 import numpy as np
-import pytest
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+try:
+    import pytest
+except ImportError:
+    import pytest_shim as pytest  # noqa: F401
+    _sys.modules["pytest"] = pytest
 import glyphx
 from glyphx import Figure
 from glyphx.series import ScatterSeries, LineSeries, BarSeries
@@ -208,8 +214,10 @@ class TestRaincloud:
             #   glyphx-chart-N  — global counter in utils.py
             #   series-NNNNN    — id(self) % 100000 in BaseSeries
             #   aria-labelledby / title / desc ids derived from chart-N
-            svg = _re.sub(r'id="glyphx-chart-\d+[^"]*"', 'id="glyphx-chart-X"', svg)
+            svg = _re.sub(r'id="glyphx-chart-[a-f0-9]+[^"]*"', 'id="glyphx-chart-X"', svg)
             svg = _re.sub(r'aria-labelledby="[^"]*"', 'aria-labelledby="X"', svg)
+            svg = _re.sub(r'aria-describedby="[^"]*"', '', svg)
+            svg = _re.sub(r'id="glyphx-chart-[a-f0-9]+', 'id="glyphx-chart-X', svg)
             svg = _re.sub(r'series-\d+', 'series-X', svg)
             return svg
 

@@ -13,7 +13,13 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import numpy as np
-import pytest
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+try:
+    import pytest
+except ImportError:
+    import pytest_shim as pytest  # noqa: F401
+    _sys.modules["pytest"] = pytest
 
 from glyphx import Figure, from_prompt, plot
 from glyphx.series import LineSeries, BarSeries
@@ -42,8 +48,8 @@ class TestLinkedBrushing:
         fig2.add(BarSeries([1, 2], [5, 6]))
         svg1 = fig1.render_svg()
         svg2 = fig2.render_svg()
-        id1 = re.search(r'id="(glyphx-chart-\d+)"', svg1).group(1)
-        id2 = re.search(r'id="(glyphx-chart-\d+)"', svg2).group(1)
+        id1 = re.search(r'id="(glyphx-chart-[a-f0-9]+)"', svg1).group(1)
+        id2 = re.search(r'id="(glyphx-chart-[a-f0-9]+)"', svg2).group(1)
         assert id1 != id2
 
     def test_glyphx_points_have_data_x(self):
