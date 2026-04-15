@@ -1,8 +1,8 @@
 /**
  * GlyphX Zoom + Pan
  *
- * Mouse wheel  → zoom (centred on cursor)
- * Mouse drag   → pan  (only when Shift is NOT held — Shift+drag = brush)
+ * Mouse wheel  -> zoom (centred on cursor)
+ * Mouse drag   -> pan  (only when Shift is NOT held -- Shift+drag = brush)
  */
 (function () {
   const svgs = document.querySelectorAll('svg[data-glyphx]');

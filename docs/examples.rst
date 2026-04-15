@@ -1024,12 +1024,6 @@ All statistical chart types now accept ``hue=`` and ``hue_colors=``:
                              cmap="viridis"))
    fig.show()
 
-.. image:: examples/violin_hue.svg
-   :alt: violin hue
-   :width: 700px
-   :align: center
-
-
 
 Vega-Lite JSON Export
 ----------------------
