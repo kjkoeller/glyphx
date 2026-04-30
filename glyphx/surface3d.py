@@ -39,7 +39,7 @@ class Surface3DSeries:
         wireframe:   bool  = True,
         wire_color:  str   = "#ffffff44",
         label:       str | None = None,
-    ) -> None:
+        threshold=None) -> None:
         self.x_1d                 = list(x)
         self.y_1d                 = list(y)
         self.z_mat                = [list(row) for row in z]
@@ -48,7 +48,7 @@ class Surface3DSeries:
         self.wireframe            = wireframe
         self.wire_color           = wire_color
         self.label                = label
-        self.threshold            = None
+        self.threshold            = threshold
         self.last_downsample_info = None
         self.css_class            = f"series3d-{id(self) % 100000}"
 

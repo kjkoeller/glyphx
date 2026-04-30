@@ -4,7 +4,6 @@ GlyphX command-line interface.
 After installation, the ``glyphx`` command is available::
 
     glyphx plot sales.csv --x month --y revenue --kind bar --theme dark -o chart.html
-    glyphx suggest data.csv
     glyphx version
 
 Use ``glyphx <command> --help`` for full argument documentation.
@@ -31,7 +30,6 @@ def main(argv: list[str] | None = None) -> int:
             "Examples:\n"
             "  glyphx plot sales.csv --x month --y revenue --kind bar -o chart.html\n"
             "  glyphx plot data.csv --y price --kind hist --bins 20\n"
-            "  glyphx suggest data.csv\n"
             "  glyphx version\n"
         ),
     )
@@ -40,7 +38,6 @@ def main(argv: list[str] | None = None) -> int:
     sub.required = True
 
     _add_plot_parser(sub)
-    _add_suggest_parser(sub)
     _add_version_parser(sub)
 
     args = parser.parse_args(argv)
@@ -222,156 +219,18 @@ def _series_for(kind: str, x: list, y: list, color: str | None, label: str | Non
 
 
 # ---------------------------------------------------------------------------
-# suggest sub-command
-# ---------------------------------------------------------------------------
-
-def _add_suggest_parser(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
-    p = sub.add_parser(
-        "suggest",
-        help="Inspect a data file and suggest chart types.",
-        description=(
-            "Analyse column types, cardinality, and distribution to "
-            "recommend the most appropriate GlyphX chart configurations."
-        ),
-    )
-    p.add_argument("file", help="Input data file")
-    p.add_argument("--sep", default=",", help="CSV delimiter (default: ',')")
-    p.add_argument("--top", type=int, default=5, help="Number of suggestions to show")
-    p.set_defaults(func=_cmd_suggest)
-
-
-def _cmd_suggest(args: argparse.Namespace) -> int:
-    """Execute the ``suggest`` sub-command."""
-    try:
-        import pandas as pd
-    except ImportError:
-        _err("pandas is required: pip install pandas")
-        return 1
-
-    path = Path(args.file)
-    if not path.exists():
-        _err(f"File not found: {path}")
-        return 1
-
-    try:
-        df = _load_file(path, sep=args.sep, sheet=0)
-    except Exception as exc:
-        _err(f"Could not load {path}: {exc}")
-        return 1
-
-    suggestions = _suggest_charts(df)
-    print(f"\nGlyphX chart suggestions for {path.name} ({len(df):,} rows):\n")
-    for i, (rank, s) in enumerate(suggestions[: args.top], 1):
-        print(f"  {i}. [{rank}] {s}")
-    print(
-        "\nGenerate any suggestion with:\n"
-        f"  glyphx plot {path} --kind <kind> --x <col> --y <col> -o chart.html\n"
-    )
-    return 0
-
-
-def _suggest_charts(df) -> list[tuple[str, str]]:
-    """Return ranked list of (confidence, description) chart suggestions."""
-    suggestions: list[tuple[int, str, str]] = []  # (score, rank_label, text)
-
-    num_cols  = df.select_dtypes("number").columns.tolist()
-    cat_cols  = df.select_dtypes(exclude="number").columns.tolist()
-    n_rows    = len(df)
-
-    # ── Date/time column detection ────────────────────────────────────────
-    time_cols: list[str] = []
-    for col in cat_cols:
-        try:
-            import pandas as pd
-            import warnings
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                parsed = pd.to_datetime(df[col], errors="coerce")
-            if parsed.notna().sum() / n_rows > 0.8:
-                time_cols.append(col)
-        except Exception:
-            pass
-
-    if time_cols and num_cols:
-        tc, nc = time_cols[0], num_cols[0]
-        suggestions.append((95, "★★★★★", f"line  --x {tc} --y {nc}  (time-series trend)"))
-
-    if cat_cols and num_cols:
-        cc, nc = cat_cols[0], num_cols[0]
-        card   = df[cc].nunique()
-        if card <= 20:
-            suggestions.append((90, "★★★★★", f"bar   --x {cc} --y {nc}  ({card} categories)"))
-        if card <= 8:
-            suggestions.append((80, "★★★★ ", f"pie   --x {cc} --y {nc}  (proportions, {card} slices)"))
-            suggestions.append((78, "★★★★ ", f"donut --x {cc} --y {nc}  (proportions, {card} slices)"))
-
-    if len(num_cols) >= 2:
-        x, y = num_cols[0], num_cols[1]
-        suggestions.append((85, "★★★★★", f"scatter --x {x} --y {y}  (correlation)"))
-
-    for nc in num_cols[:2]:
-        n_unique = df[nc].nunique()
-        label    = "skewed" if abs(df[nc].skew()) > 1 else "normal"
-        suggestions.append((75, "★★★★ ", f"hist  --y {nc} --bins 20  ({label} distribution, {n_unique} unique values)"))
-
-    for nc in num_cols[:2]:
-        suggestions.append((70, "★★★  ", f"box   --y {nc}  (spread + outliers)"))
-
-    if len(num_cols) >= 3 and n_rows <= 100:
-        suggestions.append((65, "★★★  ", "heatmap  (numeric correlation matrix)"))
-
-    # Sort by score descending
-    suggestions.sort(key=lambda t: t[0], reverse=True)
-    return [(rank, text) for _, rank, text in suggestions]
-
-
-# ---------------------------------------------------------------------------
-# version sub-command
-# ---------------------------------------------------------------------------
 
 def _add_version_parser(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
-    p = sub.add_parser("version", help="Print GlyphX version and exit.")
+    p = sub.add_parser("version", help="Show GlyphX version and exit.")
     p.set_defaults(func=_cmd_version)
 
 
 def _cmd_version(args: argparse.Namespace) -> int:
-    import glyphx
-    print(f"GlyphX {glyphx.__version__}")
+    """Execute the ``version`` sub-command."""
+    try:
+        from importlib.metadata import version
+        v = version("glyphx")
+    except Exception:
+        v = "unknown"
+    print(f"GlyphX {v}")
     return 0
-
-
-# ---------------------------------------------------------------------------
-# File loading
-# ---------------------------------------------------------------------------
-
-def _load_file(path: Path, sep: str = ",", sheet: int | str = 0):
-    """Load CSV, TSV, JSON, JSONL, or Excel into a DataFrame."""
-    import pandas as pd
-
-    suffix = path.suffix.lower()
-    if suffix in {".csv", ".tsv"}:
-        return pd.read_csv(path, sep=sep)
-    if suffix in {".xlsx", ".xls"}:
-        return pd.read_excel(path, sheet_name=sheet)
-    if suffix == ".json":
-        return pd.read_json(path)
-    if suffix == ".jsonl":
-        return pd.read_json(path, lines=True)
-    # Unknown — try CSV as fallback
-    return pd.read_csv(path, sep=sep)
-
-
-# ---------------------------------------------------------------------------
-# Console helpers
-# ---------------------------------------------------------------------------
-
-def _info(msg: str) -> None:
-    print(f"  ✓ {msg}", file=sys.stderr)
-
-
-def _err(msg: str) -> None:
-    print(f"  ✗ {msg}", file=sys.stderr)
-
-
-if __name__ == "__main__":
-    sys.exit(main())

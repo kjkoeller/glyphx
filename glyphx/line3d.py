@@ -25,7 +25,7 @@ class Line3DSeries:
         width:     float        = 2.0,
         linestyle: str          = "solid",
         label:     str | None   = None,
-    ) -> None:
+        threshold=None) -> None:
         self.x                    = list(x)
         self.y                    = list(y)
         self.z                    = list(z)
@@ -33,7 +33,7 @@ class Line3DSeries:
         self.width                = float(width)
         self.linestyle            = linestyle
         self.label                = label
-        self.threshold            = None
+        self.threshold            = threshold
         self.last_downsample_info = None
         self.css_class            = f"series3d-{id(self) % 100000}"
 
