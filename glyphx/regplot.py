@@ -264,7 +264,7 @@ def regplot(
             lo, hi = _bootstrap_ci(arr_x, arr_y, x_eval,
                                    order=order, n_boot=n_boot, ci=ci)
             fig.add(FillBetweenSeries(
-                list(range(len(x_eval))), lo.tolist(), hi.tolist(),
+                x_eval.tolist(), lo.tolist(), hi.tolist(),
                 color=color, alpha=alpha,
                 label=f"{ci}% CI",
             ))

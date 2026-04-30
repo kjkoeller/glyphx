@@ -12,7 +12,6 @@ Beats Matplotlib, Seaborn, and Plotly across three axes:
 
 Quick-start::
 
-    from glyphx import plot, from_prompt
 
     # Classic
     plot([1,2,3],[4,5,6], kind="bar", title="Revenue")
@@ -26,8 +25,6 @@ Quick-start::
     # DataFrame accessor
     df.glyphx.bar(x="month", y="revenue").add_stat_annotation("Jan","Mar",0.01)
 
-    # NLP  (pip install anthropic)
-    from_prompt("top 10 products by revenue", df=df)
 """
 
 from ._version import __version__
@@ -44,7 +41,6 @@ from .layout   import Axes, grid
 from .themes   import themes
 from .utils    import normalize
 from .plot     import plot
-from .nlp      import from_prompt
 from .colormaps import (
     apply_colormap,
     colormap_colors,
@@ -102,7 +98,6 @@ from .facet_grid       import FacetGrid
 from .regplot          import regplot
 from .choropleth       import ChoroplethSeries
 from .vega_lite        import to_vega_lite, save_vega_lite
-from .suggest          import suggest, Recommendation
 from .sparkline        import SparklineSeries, sparkline_svg
 from .sunburst         import SunburstSeries
 from .parallel_coords  import ParallelCoordinatesSeries
@@ -127,7 +122,7 @@ from . import accessor as _accessor  # noqa: F401
 __all__ = [
     # Core
     "Figure", "SubplotGrid", "Axes", "grid", "themes", "normalize",
-    "plot", "from_prompt",
+    "plot",
     # Colormaps
     "apply_colormap", "colormap_colors", "list_colormaps", "get_colormap",
     # Base series
@@ -156,7 +151,6 @@ __all__ = [
     "decimate_grid", "cull_faces",
     "ds_enable", "ds_disable", "ds_is_enabled", "AUTO_THRESHOLD",
     "StackedBarSeries", "BumpChartSeries", "GanttSeries",
-    "suggest", "Recommendation",
     "clustermap", "FacetGrid", "regplot", "ChoroplethSeries",
     "to_vega_lite", "save_vega_lite",
     "SparklineSeries", "sparkline_svg",

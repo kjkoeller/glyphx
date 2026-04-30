@@ -89,13 +89,13 @@ class LineSeries(BaseSeries):
         title=None,
         yerr=None,
         xerr=None,
-    ):
+        threshold=None):
         super().__init__(x, y, color, label=label or legend, title=title)
         self.linestyle            = linestyle
         self.width                = width
         self.yerr                 = yerr
         self.xerr                 = xerr
-        self.threshold            = None   # override AUTO_THRESHOLD if set
+        self.threshold            = threshold
         self.last_downsample_info = None
 
     def to_svg(self, ax, use_y2=False):
@@ -321,7 +321,8 @@ class ScatterSeries(BaseSeries):
     def __init__(self, x, y, color=None, label=None, legend=None,
                  size=5, marker="circle", title=None,
                  c=None, cmap="viridis",
-                 sizes=None, style=None, style_order=None):
+                 sizes=None, style=None, style_order=None,
+                 threshold=None):
         super().__init__(x, y, color, label=label or legend, title=title)
         self.size                 = size
         self.marker               = marker
@@ -330,7 +331,7 @@ class ScatterSeries(BaseSeries):
         self.sizes                = sizes    # per-point size array
         self.style                = style    # per-point style labels
         self.style_order          = style_order  # explicit style ordering
-        self.threshold            = None
+        self.threshold            = threshold
         self.last_downsample_info = None
 
     def _point_color(self, idx: int, total: int) -> str:
@@ -379,22 +380,38 @@ class ScatterSeries(BaseSeries):
             px      = ax.scale_x(x)
             py      = scale_y(y)
             color   = self._point_color(kept_idx[i] if kept_idx else i, len(self.x))
+            # Per-point size and marker from sizes= / style= encoding
+            _raw_idx = kept_idx[i] if kept_idx else i
+            _pt_size = (
+                float(self.sizes[_raw_idx])
+                if self.sizes is not None and _raw_idx < len(self.sizes)
+                else self.size
+            )
+            _STYLE_MARKERS = {
+                "circle": "circle", "o": "circle",
+                "square": "square", "s": "square",
+            }
+            if self.style is not None and _raw_idx < len(self.style):
+                _pt_marker = _STYLE_MARKERS.get(
+                    str(self.style[_raw_idx]), self.marker)
+            else:
+                _pt_marker = self.marker
             tooltip = (
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
                 f'data-label="{svg_escape(self.label or "")}"'
             )
-            if self.marker == "square":
+            if _pt_marker == "square":
                 elements.append(
                     f'<rect class="glyphx-point {self.css_class}" '
-                    f'x="{px - self.size / 2}" y="{py - self.size / 2}" '
-                    f'width="{self.size}" height="{self.size}" '
+                    f'x="{px - _pt_size / 2}" y="{py - _pt_size / 2}" '
+                    f'width="{_pt_size}" height="{_pt_size}" '
                     f'fill="{color}" {tooltip}/>'
                 )
             else:
                 elements.append(
                     f'<circle class="glyphx-point {self.css_class}" '
-                    f'cx="{px}" cy="{py}" r="{self.size}" '
+                    f'cx="{px}" cy="{py}" r="{_pt_size}" '
                     f'fill="{color}" {tooltip}/>'
                 )
 
@@ -648,7 +665,8 @@ class HistogramSeries(BaseSeries):
     """
 
     def __init__(self, data, bins=10, color=None, label=None,
-                 hue=None, hue_colors=None, cmap="viridis", alpha=0.65):
+                 hue=None, hue_colors=None, cmap="viridis", alpha=0.65,
+                 threshold=None):
         self.data       = list(data)
         self.hue        = hue
         self.hue_colors = hue_colors
@@ -659,6 +677,7 @@ class HistogramSeries(BaseSeries):
         y = hist.tolist()
         super().__init__(x, y, color or "#1f77b4", label)
         self.edges = edges
+        self.threshold = threshold
 
     def to_svg(self, ax, use_y2=False):
         from .colormaps import colormap_colors
@@ -732,7 +751,8 @@ class BoxPlotSeries(BaseSeries):
 
     def __init__(self, data, categories=None, color="#1f77b4",
                  label=None, box_width=20, width=None,
-                 hue=None, hue_colors=None, cmap="viridis"):
+                 hue=None, hue_colors=None, cmap="viridis",
+                 threshold=None):
         # ``width`` kept for backward-compat; prefer box_width
         self.color      = color
         self.label      = label
@@ -763,9 +783,12 @@ class BoxPlotSeries(BaseSeries):
         # and so BoxPlotSeries.to_svg() suppresses its own inline labels.
         self._x_categories = list(self.categories)
         self._numeric_x    = [i + 0.5 for i in range(len(self.datasets))]
+        # threshold + downsampling metadata
+        self.threshold            = threshold
+        self.last_downsample_info = None
         # hue support
-        self.hue        = None
-        self.hue_colors = None
+        self.hue        = hue
+        self.hue_colors = hue_colors
         self.cmap_name  = 'viridis'
 
     def to_svg(self, ax, use_y2=False):

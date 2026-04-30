@@ -40,7 +40,7 @@ class Scatter3DSeries:
         size:   float         = 5.0,
         label:  str | None    = None,
         alpha:  float         = 0.85,
-    ) -> None:
+        threshold=None) -> None:
         self.x                    = list(x)
         self.y                    = list(y)
         self.z                    = list(z)
@@ -50,7 +50,7 @@ class Scatter3DSeries:
         self.size                 = float(size)
         self.label                = label
         self.alpha                = float(alpha)
-        self.threshold            = None
+        self.threshold            = threshold
         self.last_downsample_info = None
         self.css_class            = f"series3d-{id(self) % 100000}"
 

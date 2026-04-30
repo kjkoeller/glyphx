@@ -47,7 +47,8 @@ class ViolinPlotSeries:
 
     def __init__(self, data, positions=None, color="#1f77b4",
                  width=50, show_median=True, show_box=True, label=None,
-                 hue=None, hue_colors=None, cmap="viridis", categories=None):
+                 hue=None, hue_colors=None, cmap="viridis", categories=None,
+                 threshold=None):
         self.data        = data
         self.positions   = positions or list(range(len(data)))
         self.color       = color
@@ -55,6 +56,7 @@ class ViolinPlotSeries:
         self.hue_colors  = hue_colors
         self.cmap_name   = cmap
         self.categories  = categories
+        self.threshold   = threshold
         self.width       = width
         self.show_median = show_median
         self.show_box    = show_box
