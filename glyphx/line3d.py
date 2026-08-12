@@ -1,13 +1,13 @@
-"""GlyphX Line3DSeries — connected polyline in 3D space."""
+"""GlyphX Line3DSeries - connected polyline in 3D space."""
 from __future__ import annotations
 
-from .projection3d import Camera3D, normalize, _format_3d_tick
-from .utils         import svg_escape
+from .projection3d import Camera3D, normalize
+from .utils import svg_escape
 
 
 class Line3DSeries:
     """
-    3D line chart — a connected polyline through 3D coordinates.
+    3D line chart - a connected polyline through 3D coordinates.
 
     Args:
         x, y, z:     Path coordinates (same length, connected in order).
@@ -39,7 +39,7 @@ class Line3DSeries:
 
     def to_svg(self, cam: Camera3D,
                x_range, y_range, z_range) -> str:
-        from .downsample import lttb_3d, _ds_comment, AUTO_THRESHOLD
+        from .downsample import AUTO_THRESHOLD, lttb_3d
 
         # LTTB on camera-projected screen coordinates for large 3D lines
         _thresh = self.threshold if self.threshold is not None else AUTO_THRESHOLD

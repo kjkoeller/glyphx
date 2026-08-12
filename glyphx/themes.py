@@ -29,7 +29,7 @@ themes = {
         "background": "#1e1e1e",
         "text_color": "#ffffff",
     },
-    # Okabe-Ito palette — actual scientific standard for colorblind safety.
+    # Okabe-Ito palette - actual scientific standard for colorblind safety.
     # Safe for deuteranopia, protanopia, and tritanopia.
     "colorblind": {
         "colors": ["#E69F00", "#56B4E9", "#009E73", "#F0E442",

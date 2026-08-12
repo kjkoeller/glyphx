@@ -6,7 +6,7 @@ Standard financial chart showing open, high, low, close for each period.
     from glyphx import Figure
     from glyphx.candlestick import CandlestickSeries
 
-    fig = Figure(title="AAPL — Daily", auto_display=False)
+    fig = Figure(title="AAPL - Daily", auto_display=False)
     fig.add(CandlestickSeries(
         dates=["Mon","Tue","Wed","Thu","Fri"],
         open= [150, 153, 149, 155, 158],
@@ -17,8 +17,6 @@ Standard financial chart showing open, high, low, close for each period.
     fig.show()
 """
 from __future__ import annotations
-
-import numpy as np
 
 from .series import BaseSeries
 from .utils import svg_escape

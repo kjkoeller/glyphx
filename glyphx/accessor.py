@@ -44,7 +44,7 @@ class GlyphXAccessor:
     def __init__(self, df: pd.DataFrame) -> None:
         self._df = df
 
-    # ── Internal helpers ─────────────────────────────────────────────────
+    # Internal helpers
 
     def _col(self, name: str | None) -> list | None:
         """Return column as list, or None if name is None / not in df."""
@@ -79,7 +79,7 @@ class GlyphXAccessor:
             fig.axes.ylabel = ylabel
         return fig
 
-    # ── Chart methods ─────────────────────────────────────────────────────
+    # Chart methods
 
     def line(
         self,
@@ -109,7 +109,7 @@ class GlyphXAccessor:
             label: Legend label; defaults to the ``y`` column name.
 
         Returns:
-            :class:`~glyphx.Figure` — fully chainable.
+            :class:`~glyphx.Figure` - fully chainable.
         """
         from .series import LineSeries
 
@@ -179,7 +179,6 @@ class GlyphXAccessor:
                         xlabel or x, ylabel or y, auto_display)
 
         if effective_groupby and effective_groupby in self._df.columns:
-            from .grouped_bar import GroupedBarSeries
             theme_colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c"])
             num_col = str(y or self._df.select_dtypes("number").columns[0])
 
@@ -415,6 +414,82 @@ class GlyphXAccessor:
         ))
         return fig
 
+    def stacked_bar(
+        self,
+        x: str,
+        y: str,
+        stack: str,
+        normalize: bool = False,
+        bar_width: float = 0.75,
+        title: str | None = None,
+        theme: str | dict | None = None,
+        legend: str | bool | None = "top-right",
+        width: int = 640,
+        height: int = 480,
+        xlabel: str | None = None,
+        ylabel: str | None = None,
+        auto_display: bool | None = None,
+        **kwargs,
+    ):
+        """
+        Stacked bar chart from a long-format DataFrame.
+
+        Pivots ``stack`` into one sub-series per distinct value, summing
+        ``y`` within each (``x``, ``stack``) pair.
+
+        Negative values are supported: positive segments stack upward from
+        zero and negative segments stack downward, so a category holding a
+        mix shows both without the two cancelling out.
+
+        Args:
+            x (str): Column holding the category for each bar.
+            y (str): Column holding the numeric value.
+            stack (str): Column whose distinct values become stack segments.
+            normalize (bool): Scale each bar to 100%.  Shares are computed
+                from absolute values, so a bar holding +5 and -5 shows
+                +50% and -50% rather than dividing by a zero total.
+            bar_width (float): Fraction of the slot each bar fills.
+
+        Returns:
+            Figure: The rendered figure.
+
+        Example::
+
+            df.glyphx.stacked_bar(x="quarter", y="revenue", stack="segment")
+        """
+        from .stacked_bar import StackedBarSeries
+
+        for col in (x, y, stack):
+            if col not in self._df.columns:
+                raise KeyError(
+                    f"Column {col!r} not found. "
+                    f"Available columns: {list(self._df.columns)}"
+                )
+
+        pivot = (
+            self._df.pivot_table(
+                index=x, columns=stack, values=y, aggfunc="sum", fill_value=0
+            )
+            .sort_index()
+        )
+        categories = [str(v) for v in pivot.index.tolist()]
+        series = {
+            str(name): [float(v) for v in pivot[name].tolist()]
+            for name in pivot.columns
+        }
+
+        fig = self._fig(title, theme, legend, width, height,
+                        xlabel or x, ylabel or y, auto_display)
+        fig.add(StackedBarSeries(
+            x=categories,
+            series=series,
+            normalize=normalize,
+            bar_width=bar_width,
+            colors=fig.theme.get("colors"),
+            **kwargs,
+        ))
+        return fig
+
     def plot(
         self,
         kind: str = "line",
@@ -423,7 +498,7 @@ class GlyphXAccessor:
         **kwargs: Any,
     ):
         """
-        Unified entry point — mirrors ``glyphx.plot()`` but operates on
+        Unified entry point - mirrors ``glyphx.plot()`` but operates on
         the DataFrame's columns.
 
         Args:

@@ -1,4 +1,3 @@
-<script>
 document.addEventListener("DOMContentLoaded", function () {
   // Create a container div for export buttons
   const buttons = document.createElement("div");
@@ -61,4 +60,3 @@ document.addEventListener("DOMContentLoaded", function () {
   buttons.appendChild(jpgBtn);
   document.body.insertBefore(buttons, document.body.firstChild);
 });
-</script>

@@ -6,19 +6,54 @@ All series inherit from BaseSeries and implement ``to_svg(ax)``.
 """
 
 import math
+
 import numpy as np
 
-from .themes import themes as _themes
-from .utils import describe_arc, svg_escape, _format_tick
 from .downsample import (
-    maybe_downsample_line, voxel_thin_2d,
-    AUTO_THRESHOLD, _ds_comment,
+    AUTO_THRESHOLD,
+    maybe_downsample_line,
+)
+from .mathtext import to_plain_text
+from .utils import (
+    _format_tick,
+    as_seq,
+    check_xy_lengths,
+    describe_arc,
+    has_data,
+    is_finite,
+    stable_id,
+    svg_escape,
 )
 
-
-# ---------------------------------------------------------------------------
 # Base class
-# ---------------------------------------------------------------------------
+
+def _summarise(values, sample: int = 8) -> str:
+    """
+    Build a short, stable fingerprint of a data sequence.
+
+    Hashing every point would be wasteful on large series, so this samples
+    the length plus the first and last few values -- enough to distinguish
+    the series a user is likely to put on one chart.
+
+    Args:
+        values: Any sequence, array, or None.
+        sample (int): How many values to take from each end.
+
+    Returns:
+        str: A short textual fingerprint.
+    """
+    if values is None:
+        return "-"
+    try:
+        n = len(values)
+    except TypeError:
+        return repr(values)[:32]
+    if n == 0:
+        return "0"
+    head = list(values[:sample])
+    tail = list(values[-sample:]) if n > sample else []
+    return f"{n}:{head}:{tail}"
+
 
 class BaseSeries:
     """
@@ -39,20 +74,24 @@ class BaseSeries:
         self.color = color or "#1f77b4"
         self.label = label
         self.title = title
-        self.css_class = f"series-{id(self) % 100000}"
+        # Derived from the series' identity-defining content rather than
+        # id(self): the class name ends up in the SVG, and an address-based
+        # name changed on every run.
+        self.css_class = f"series-{stable_id(type(self).__name__, label, title, self.color, _summarise(x), _summarise(y), length=8)}"
 
     def __repr__(self) -> str:
-        n     = len(self.x) if self.x else 0
+        n     = len(self.x) if self.x is not None else 0
         label = f" label={self.label!r}" if self.label else ""
         rng   = ""
-        if self.x and n > 0:
-            rng = f" x=[{self.x[0]}..{self.x[-1]}] ({n} pts)"
+        if n > 0:
+            # Index positionally: pandas Series treats [-1] as a *label*
+            # lookup and raises KeyError on a default RangeIndex.
+            xs = as_seq(self.x)
+            rng = f" x=[{xs[0]}..{xs[-1]}] ({n} pts)"
         return f"<{self.__class__.__name__}{label}{rng} color={self.color}>"
 
 
-# ---------------------------------------------------------------------------
 # Line chart
-# ---------------------------------------------------------------------------
 
 class LineSeries(BaseSeries):
     """
@@ -68,7 +107,16 @@ class LineSeries(BaseSeries):
         title (str | None): Chart subtitle.
         yerr (list | None): Symmetric Y error bar values (same length as y).
         xerr (list | None): Symmetric X error bar values (same length as x).
+        markers (bool | str): Draw a hoverable circle per data point.
+            ``"auto"`` (default) draws them only when the series has at most
+            ``MARKER_LIMIT`` points, since one DOM node per point dominates
+            document size and stalls the browser on dense series.
     """
+
+    #: Above this many points, "auto" markers are suppressed. 400 is where
+    #: Chrome started dropping frames for me on a 2019 laptop; it is a guess,
+    #: not a measurement anyone should rely on.
+    MARKER_LIMIT = 400
 
     _DASH = {
         "solid":    "",
@@ -89,13 +137,17 @@ class LineSeries(BaseSeries):
         title=None,
         yerr=None,
         xerr=None,
+        markers="auto",
+        threshold=None,
     ):
+        check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.linestyle            = linestyle
         self.width                = width
         self.yerr                 = yerr
         self.xerr                 = xerr
-        self.threshold            = None   # override AUTO_THRESHOLD if set
+        self.markers              = markers
+        self.threshold            = threshold   # overrides AUTO_THRESHOLD
         self.last_downsample_info = None
 
     def to_svg(self, ax, use_y2=False):
@@ -105,7 +157,7 @@ class LineSeries(BaseSeries):
         # Use numeric X mapping if categorical was detected
         x_vals = getattr(self, "_numeric_x", self.x)
 
-        # Two-stage M4 → LTTB pipeline — pixel-aligned downsampling
+        # Two-stage M4 → LTTB pipeline - pixel-aligned downsampling
         _thresh  = self.threshold if self.threshold is not None else AUTO_THRESHOLD
         _orig_n  = len(x_vals)
         x_vals, y_plot = maybe_downsample_line(
@@ -132,34 +184,68 @@ class LineSeries(BaseSeries):
                 f'{svg_escape(self.title)}</text>'
             )
 
-        if self.linestyle == "step":
-            step_pts = []
-            prev_py = None
-            for i, (x, y) in enumerate(zip(x_vals, y_plot)):
-                px, py = ax.scale_x(x), scale_y(y)
-                if i == 0:
-                    step_pts.append(f"{px},{py}")
-                else:
-                    step_pts.append(f"{px},{prev_py}")
-                    step_pts.append(f"{px},{py}")
-                prev_py = py
-            points = " ".join(step_pts)
-        else:
-            points = " ".join(f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, y_plot))
-
-        elements.append(
-            f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '
-            f'stroke-width="{self.width}" stroke-dasharray="{dash}" points="{points}"/>'
-        )
-
-        # Data points with tooltips
+        # Split at missing values. A "nan" in a points attribute is invalid
+        # and browsers drop the whole polyline, so one bad value would blank
+        # the series. Each run of finite points gets its own polyline, which
+        # shows up as a gap the way matplotlib does it.
+        segments: list[list[tuple]] = []
+        current: list[tuple] = []
         for x, y in zip(x_vals, y_plot):
+            px = ax.scale_x(x) if is_finite(x) else math.nan
+            py = scale_y(y) if is_finite(y) else math.nan
+            if is_finite(px) and is_finite(py):
+                current.append((x, y, px, py))
+            elif current:
+                segments.append(current)
+                current = []
+        if current:
+            segments.append(current)
+
+        for seg in segments:
+            if self.linestyle == "step":
+                step_pts = []
+                prev_py = None
+                for i, (_x, _y, px, py) in enumerate(seg):
+                    if i == 0:
+                        step_pts.append(f"{px},{py}")
+                    else:
+                        step_pts.append(f"{px},{prev_py}")
+                        step_pts.append(f"{px},{py}")
+                    prev_py = py
+                points = " ".join(step_pts)
+            else:
+                points = " ".join(f"{px},{py}" for _x, _y, px, py in seg)
+
             elements.append(
-                f'<circle class="glyphx-point {self.css_class}" '
-                f'cx="{ax.scale_x(x)}" cy="{scale_y(y)}" r="4" fill="{self.color}" '
-                f'data-x="{svg_escape(str(x))}" data-y="{svg_escape(str(y))}" '
-                f'data-label="{svg_escape(self.label or "")}"/>'
+                f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '
+                f'stroke-width="{self.width}" stroke-dasharray="{dash}" points="{points}"/>'
             )
+
+        if not segments:
+            # Preserve the empty-polyline element so callers that count
+            # elements (and the legend) still see the series.
+            elements.append(
+                f'<polyline class="{self.css_class}" fill="none" stroke="{self.color}" '
+                f'stroke-width="{self.width}" stroke-dasharray="{dash}" points=""/>'
+            )
+
+        # Data points with tooltips. One <circle> per point is what makes
+        # tooltips and keyboard focus work, but it is also ~90% of the
+        # document on a dense series, so "auto" drops them past a limit.
+        n_plotted = sum(len(seg) for seg in segments)
+        if self.markers == "auto":
+            _draw_markers = n_plotted <= self.MARKER_LIMIT
+        else:
+            _draw_markers = bool(self.markers)
+
+        for seg in (segments if _draw_markers else []):
+            for x, y, px, py in seg:
+                elements.append(
+                    f'<circle class="glyphx-point {self.css_class}" '
+                    f'cx="{px}" cy="{py}" r="4" fill="{self.color}" '
+                    f'data-x="{svg_escape(str(x))}" data-y="{svg_escape(str(y))}" '
+                    f'data-label="{svg_escape(to_plain_text(self.label or ""))}"/>'
+                )
 
         # Y error bars
         if self.yerr is not None:
@@ -205,9 +291,7 @@ class LineSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Bar chart
-# ---------------------------------------------------------------------------
 
 class BarSeries(BaseSeries):
     """
@@ -225,6 +309,7 @@ class BarSeries(BaseSeries):
 
     def __init__(self, x, y, color=None, label=None, legend=None,
                  bar_width=0.8, title=None, yerr=None):
+        check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.bar_width = bar_width
         self.yerr      = yerr
@@ -234,7 +319,7 @@ class BarSeries(BaseSeries):
         x_vals  = getattr(self, "_numeric_x", self.x)
         elements = []
 
-        if not x_vals:
+        if not has_data(x_vals):
             return ""
 
         # Each categorical slot is exactly 1 unit wide in our coordinate system.
@@ -244,8 +329,12 @@ class BarSeries(BaseSeries):
         px_step  = ax.scale_x(x_start + 1) - ax.scale_x(x_start)
         px_width = px_step * self.bar_width
 
+        # Bars grow from zero. Using the domain floor instead drew every bar
+        # from the bottom of the canvas, so a negative value appeared as a
+        # stub sitting on the axis rather than hanging below the zero line.
         y_domain = ax._y2_domain if use_y2 else ax._y_domain
-        y0       = scale_y(min(0, y_domain[0]))
+        baseline = min(max(0.0, y_domain[0]), y_domain[1])
+        y0       = scale_y(baseline)
 
         for i, (x, y) in enumerate(zip(x_vals, self.y)):
             cx  = ax.scale_x(x)
@@ -257,7 +346,7 @@ class BarSeries(BaseSeries):
             tooltip = (
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
-                f'data-label="{svg_escape(self.label or "")}"'
+                f'data-label="{svg_escape(to_plain_text(self.label or ""))}"'
             )
             bar_color = (
                 self.color[i % len(self.color)]
@@ -267,7 +356,7 @@ class BarSeries(BaseSeries):
             elements.append(
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{cx - px_width / 2}" y="{top}" width="{px_width}" height="{h}" '
-                f'fill="{bar_color}" stroke="#00000033" {tooltip}/>' 
+                f'fill="{bar_color}" stroke="#00000033" {tooltip}/>'
             )
 
             # Y error bars
@@ -300,9 +389,7 @@ class BarSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Scatter chart
-# ---------------------------------------------------------------------------
 
 class ScatterSeries(BaseSeries):
     """
@@ -321,7 +408,9 @@ class ScatterSeries(BaseSeries):
     def __init__(self, x, y, color=None, label=None, legend=None,
                  size=5, marker="circle", title=None,
                  c=None, cmap="viridis",
-                 sizes=None, style=None, style_order=None):
+                 sizes=None, style=None, style_order=None,
+                 threshold=None):
+        check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.size                 = size
         self.marker               = marker
@@ -330,14 +419,15 @@ class ScatterSeries(BaseSeries):
         self.sizes                = sizes    # per-point size array
         self.style                = style    # per-point style labels
         self.style_order          = style_order  # explicit style ordering
-        self.threshold            = None
+        self.threshold            = threshold    # overrides AUTO_THRESHOLD
         self.last_downsample_info = None
 
     def _point_color(self, idx: int, total: int) -> str:
         """Return per-point color via colormap encoding or flat color."""
         if self.c is not None and idx < len(self.c):
-            from .colormaps import apply_colormap
             import numpy as np
+
+            from .colormaps import apply_colormap
             c_arr = np.asarray(self.c, dtype=float)
             lo, hi = c_arr.min(), c_arr.max()
             norm = (c_arr[idx] - lo) / (hi - lo) if hi > lo else 0.5
@@ -376,13 +466,18 @@ class ScatterSeries(BaseSeries):
         elements = []
 
         for i, (orig_x, x, y) in enumerate(zip(orig_x_all, x_vals, y_all)):
-            px      = ax.scale_x(x)
-            py      = scale_y(y)
+            px      = ax.scale_x(x) if is_finite(x) else math.nan
+            py      = scale_y(y) if is_finite(y) else math.nan
+            # A missing point is simply not drawn. There is no line to break,
+            # so unlike LineSeries there is nothing to segment -- but the
+            # coordinate must still never reach the output as "nan".
+            if not (is_finite(px) and is_finite(py)):
+                continue
             color   = self._point_color(kept_idx[i] if kept_idx else i, len(self.x))
             tooltip = (
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
-                f'data-label="{svg_escape(self.label or "")}"'
+                f'data-label="{svg_escape(to_plain_text(self.label or ""))}"'
             )
             if self.marker == "square":
                 elements.append(
@@ -401,6 +496,7 @@ class ScatterSeries(BaseSeries):
         # Colorbar for color-encoded scatter
         if self.c is not None:
             import numpy as np
+
             from .colormaps import render_colorbar_svg
             c_arr = np.asarray(self.c, dtype=float)
             elements.append(render_colorbar_svg(
@@ -426,9 +522,7 @@ class ScatterSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Pie chart
-# ---------------------------------------------------------------------------
 
 _DEFAULT_COLORS = [
     "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728",
@@ -455,7 +549,7 @@ class PieSeries(BaseSeries):
         super().__init__(x=None, y=None, color=None, title=title)
         self.values         = values
         self.labels         = labels
-        # BUG FIX: was `self.colors = self.colors or [...]` — self.colors didn't exist yet
+        # BUG FIX: was `self.colors = self.colors or [...]` - self.colors didn't exist yet
         self.colors         = colors or _DEFAULT_COLORS
         self.label_position = label_position
         self.radius         = radius
@@ -530,9 +624,7 @@ class PieSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Donut chart
-# ---------------------------------------------------------------------------
 
 class DonutSeries(BaseSeries):
     """
@@ -563,7 +655,7 @@ class DonutSeries(BaseSeries):
         if total == 0:
             return ""
 
-        # BUG FIX: self.theme was never defined — use ax.theme or fallback
+        # BUG FIX: self.theme was never defined - use ax.theme or fallback
         bg_color = "#ffffff"
         if ax is not None and hasattr(ax, "theme"):
             bg_color = ax.theme.get("background", "#ffffff")
@@ -632,9 +724,7 @@ class DonutSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Histogram
-# ---------------------------------------------------------------------------
 
 class HistogramSeries(BaseSeries):
     """
@@ -659,6 +749,10 @@ class HistogramSeries(BaseSeries):
         y = hist.tolist()
         super().__init__(x, y, color or "#1f77b4", label)
         self.edges = edges
+        # Bars are drawn centred on bin centres but a full bin wide, so the
+        # domain has to cover the outer edges or the first and last bars
+        # spill outside the axes.
+        self.x_extent = (float(edges[0]), float(edges[-1]))
 
     def to_svg(self, ax, use_y2=False):
         from .colormaps import colormap_colors
@@ -706,14 +800,12 @@ class HistogramSeries(BaseSeries):
                 f'x="{cx - width / 2}" y="{top}" width="{width}" height="{h}" '
                 f'fill="{self.color}" stroke="#fff" '
                 f'data-x="{x:.3g}" data-y="{y}" '
-                f'data-label="{svg_escape(self.label or "")}"/>'
+                f'data-label="{svg_escape(to_plain_text(self.label or ""))}"/>'
             )
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Box plot
-# ---------------------------------------------------------------------------
 
 class BoxPlotSeries(BaseSeries):
     """
@@ -763,7 +855,6 @@ class BoxPlotSeries(BaseSeries):
         # and so BoxPlotSeries.to_svg() suppresses its own inline labels.
         self._x_categories = list(self.categories)
         self._numeric_x    = [i + 0.5 for i in range(len(self.datasets))]
-        # hue support
         self.hue        = None
         self.hue_colors = None
         self.cmap_name  = 'viridis'
@@ -772,7 +863,6 @@ class BoxPlotSeries(BaseSeries):
         from .colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
-        n        = len(self.datasets)
 
         # Resolve per-box colour (flat or hue-assigned)
         _palette = self.hue_colors
@@ -850,7 +940,7 @@ class BoxPlotSeries(BaseSeries):
                     f'<circle cx="{cx}" cy="{scale_y(float(ov))}" r="3" '
                     f'fill="none" stroke="{self.color}" stroke-width="1.5"/>'
                 )
-            # Category label below box — skip if _x_categories is set,
+            # Category label below box - skip if _x_categories is set,
             # because render_grid() will draw the labels via the grid pass.
             if self.categories[i] and not getattr(self, "_x_categories", None):
                 elements.append(
@@ -864,9 +954,7 @@ class BoxPlotSeries(BaseSeries):
         return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Heatmap
-# ---------------------------------------------------------------------------
 
 class HeatmapSeries(BaseSeries):
     """
@@ -941,7 +1029,6 @@ class HeatmapSeries(BaseSeries):
                         f'{_format_tick(val)}</text>'
                     )
 
-        # Column labels
         if self.col_labels:
             for j, lbl in enumerate(self.col_labels):
                 cx = pad + (j + 0.5) * cw
@@ -951,7 +1038,6 @@ class HeatmapSeries(BaseSeries):
                     f'{svg_escape(str(lbl))}</text>'
                 )
 
-        # Row labels
         if self.row_labels:
             for i, lbl in enumerate(self.row_labels):
                 ry = pad + (i + 0.5) * ch + 4

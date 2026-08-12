@@ -21,12 +21,11 @@ regression plotting.
 """
 from __future__ import annotations
 
-import math
 import numpy as np
 
-from .figure  import Figure
-from .series  import ScatterSeries, LineSeries
+from .figure import Figure
 from .fill_between import FillBetweenSeries
+from .series import LineSeries, ScatterSeries
 
 
 def _lowess(x: np.ndarray, y: np.ndarray, frac: float = 0.3) -> tuple:
@@ -185,7 +184,6 @@ def regplot(
         y = 2*x + np.random.randn(200)
         regplot(None, x_vals=x, y_vals=y, title="Correlation")
     """
-    import pandas as _pd
 
     scatter_kw = scatter_kw or {}
     line_kw    = line_kw    or {}
@@ -212,7 +210,7 @@ def regplot(
         fig.set_title(title)
     fig.set_xlabel(xlabel).set_ylabel(ylabel)
 
-    # -- Scatter ------------------------------------------------------------
+    # Scatter
     fig.add(ScatterSeries(
         arr_x.tolist(), arr_y.tolist(),
         color=color, size=4,
@@ -220,7 +218,7 @@ def regplot(
         **scatter_kw,
     ))
 
-    # -- Regression line ----------------------------------------------------
+    # Regression line
     x_eval = np.linspace(arr_x.min(), arr_x.max(), 200)
 
     if lowess:

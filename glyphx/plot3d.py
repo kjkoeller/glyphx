@@ -1,12 +1,15 @@
 """
-GlyphX plot3d() — quick 3D chart creation.
+GlyphX plot3d() - quick 3D chart creation.
 """
 from __future__ import annotations
+
+from .utils import as_seq
+
 
 def plot3d(x=None, y=None, z=None, kind="scatter", data=None,
            title="", theme="default", auto_display=True, **kwargs):
     """
-    Unified 3D plotting function — the fast path to any 3D chart type.
+    Unified 3D plotting function - the fast path to any 3D chart type.
 
     Args:
         x, y, z:      Data arrays.  For ``"surface"`` x and y are 1-D grid
@@ -37,6 +40,7 @@ def plot3d(x=None, y=None, z=None, kind="scatter", data=None,
         plot3d(x, x, Z, kind="surface", cmap="plasma", title="sin(r)")
     """
     import difflib
+
     from .figure3d import Figure3D
 
     kind = kind.lower()
@@ -50,7 +54,7 @@ def plot3d(x=None, y=None, z=None, kind="scatter", data=None,
     fig = Figure3D(title=title, theme=theme)
 
     if kind == "scatter":
-        fig.scatter(x, y, z or data or [], **kwargs)
+        fig.scatter(x, y, as_seq(z) or as_seq(data), **kwargs)
     elif kind == "surface":
         _z = z if z is not None else data
         fig.surface(x, y, _z, **kwargs)

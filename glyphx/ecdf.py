@@ -1,7 +1,7 @@
 """
 GlyphX Empirical Cumulative Distribution Function (ECDF) plot.
 
-The ECDF is the step-function version of a CDF — for each value x,
+The ECDF is the step-function version of a CDF - for each value x,
 it shows the proportion of observations ≤ x.  Unlike histograms it
 requires no bin-width choice and reveals the full distribution.
 

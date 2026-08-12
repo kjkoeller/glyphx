@@ -19,19 +19,13 @@ heatmap rendering) in pure NumPy -- no scipy, no matplotlib required.
 """
 from __future__ import annotations
 
-import math
 import numpy as np
-from typing import Any
 
-from .figure   import Figure
-from .series   import HeatmapSeries
-from .colormaps import colormap_colors, apply_colormap
-from .utils    import svg_escape, _format_tick
+from .colormaps import apply_colormap
+from .figure import Figure
+from .utils import _format_tick, svg_escape
 
-
-# ---------------------------------------------------------------------------
 # Pure-NumPy hierarchical clustering (average linkage, Euclidean distance)
-# ---------------------------------------------------------------------------
 
 def _pdist(X: np.ndarray) -> np.ndarray:
     """Pairwise Euclidean distance matrix (nxn)."""
@@ -79,7 +73,7 @@ def _average_linkage(D: np.ndarray) -> list[tuple]:
         # Merge: update distances to the new cluster (average linkage)
         new_row = np.full(dist.shape[0] + 1, np.inf)
         for ak in active:
-            if ak == ai or ak == aj:
+            if ak in (ai, aj):
                 continue
             d_new = (dist[ai, ak] * len(members[ai]) +
                      dist[aj, ak] * len(members[aj])) / len(merged)
@@ -165,13 +159,8 @@ def _dendrogram_svg(
     for left, right, height, _ in linkage:
         h_px = _height_px(height)
 
-        lp = cluster_pos.get(left,  left  if left  < n else left)
-        rp = cluster_pos.get(right, right if right < n else right)
-
-        lx = _leaf_px(lp) if left  < n else cluster_pos.get(left,  0)
-        rx = _leaf_px(rp) if right < n else cluster_pos.get(right, 0)
-
-        # Recalculate using leaf positions correctly
+        # Resolve a node id to its pixel position: leaves use their slot,
+        # internal nodes use the midpoint recorded when they were merged.
         def _node_px(node_id: int) -> float:
             if node_id < n:
                 return _leaf_px(node_id)
@@ -213,9 +202,7 @@ def _dendrogram_svg(
     return "\n".join(elements)
 
 
-# ---------------------------------------------------------------------------
 # Public API
-# ---------------------------------------------------------------------------
 
 def clustermap(
     data,
@@ -360,7 +347,6 @@ def clustermap(
         f'<rect width="{W}" height="{H}" fill="{bg}"/>',
     ]
 
-    # Title
     if title:
         parts.append(
             f'<text x="{W//2}" y="22" text-anchor="middle" '
@@ -368,7 +354,7 @@ def clustermap(
             f'font-family="{font}" fill="{tc}">{svg_escape(title)}</text>'
         )
 
-    # -- Heatmap cells -------------------------------------------------
+    # Heatmap cells
     for ri in range(n_rows):
         for ci in range(n_cols):
             v    = float(mat_r[ri, ci])
@@ -393,7 +379,7 @@ def clustermap(
                     f'{_format_tick(v)}</text>'
                 )
 
-    # -- Row labels (right side of row dendrogram, left of heatmap) ---
+    # Row labels (right side of row dendrogram, left of heatmap)
     for ri, lbl in enumerate(row_lbl_r):
         cy = heat_y + ri * cell_h + cell_h / 2
         parts.append(
@@ -402,7 +388,7 @@ def clustermap(
             f'font-family="{font}" fill="{tc}">{svg_escape(lbl)}</text>'
         )
 
-    # -- Column labels (below heatmap) --------------------------------
+    # Column labels (below heatmap)
     for ci, lbl in enumerate(col_lbl_r):
         cx = heat_x + ci * cell_w + cell_w / 2
         cy = heat_y + heat_h + 4
@@ -414,7 +400,7 @@ def clustermap(
             f'{svg_escape(lbl)}</text>'
         )
 
-    # -- Row dendrogram (left panel, growing rightward) ---------------
+    # Row dendrogram (left panel, growing rightward)
     if row_cluster and row_linkage:
         parts.append(_dendrogram_svg(
             row_linkage, n_rows, list(range(n_rows)),
@@ -424,7 +410,7 @@ def clustermap(
             color=line_color,
         ))
 
-    # -- Column dendrogram (top panel, growing downward) --------------
+    # Column dendrogram (top panel, growing downward)
     if col_cluster and col_linkage:
         parts.append(_dendrogram_svg(
             col_linkage, n_cols, list(range(n_cols)),
@@ -434,7 +420,7 @@ def clustermap(
             color=line_color,
         ))
 
-    # -- Colorbar -----------------------------------------------------
+    # Colorbar
     cb_x  = heat_x + heat_w + 6
     cb_y  = heat_y
     n_steps = 50

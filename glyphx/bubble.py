@@ -1,5 +1,5 @@
 """
-GlyphX BubbleSeries — scatter plot with a fourth size encoding variable.
+GlyphX BubbleSeries - scatter plot with a fourth size encoding variable.
 
 A bubble chart is a scatter plot where each point has an additional
 dimension encoded as circle area.  It beats Matplotlib's awkward
@@ -13,7 +13,7 @@ and Plotly's verbose ``go.Scatter(mode="markers", marker=dict(size=...))``.
     fig.add(BubbleSeries(
         x=gdp,
         y=life_exp,
-        size=population,           # raw values — auto-scaled to pixel radii
+        size=population,           # raw values - auto-scaled to pixel radii
         color="#3b82f6",
         labels=country_names,      # shown in tooltip
         label="Countries",
@@ -22,12 +22,11 @@ and Plotly's verbose ``go.Scatter(mode="markers", marker=dict(size=...))``.
 """
 from __future__ import annotations
 
-import math
 import numpy as np
 
-from .series import BaseSeries
-from .utils import svg_escape, _format_tick
 from .colormaps import apply_colormap
+from .series import BaseSeries
+from .utils import _format_tick, svg_escape
 
 
 class BubbleSeries(BaseSeries):
@@ -87,7 +86,7 @@ class BubbleSeries(BaseSeries):
         # Normalise size array to pixel radii
         size_arr = np.asarray(size, dtype=float)
         if size_arr.ndim == 0:
-            # Scalar — uniform size
+            # Scalar - uniform size
             self._radii = np.full(len(self.x), float(size_arr))
         else:
             s_min, s_max = size_arr.min(), size_arr.max()
@@ -111,7 +110,6 @@ class BubbleSeries(BaseSeries):
         else:
             self._c_norm = None
 
-    # ------------------------------------------------------------------
     def to_svg(self, ax: object, use_y2: bool = False) -> str:
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore
         x_vals   = getattr(self, "_numeric_x", self.x)
@@ -134,7 +132,6 @@ class BubbleSeries(BaseSeries):
             else:
                 fill = self.color
 
-            # Tooltip label
             point_label = (
                 self.labels[idx]
                 if self.labels and idx < len(self.labels)
@@ -180,7 +177,6 @@ class BubbleSeries(BaseSeries):
                                 self.max_radius])
         x_base  = ax.width  - 60      # type: ignore
         y_base  = ax.height - 20      # type: ignore
-        font    = ax.theme.get("font", "sans-serif")  # type: ignore
         tc      = ax.theme.get("text_color", "#000")  # type: ignore
         items: list[str] = []
         for r in size_arr:

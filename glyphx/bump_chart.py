@@ -1,5 +1,5 @@
 """
-GlyphX BumpChartSeries — rank-over-time visualization.
+GlyphX BumpChartSeries - rank-over-time visualization.
 
 Bump charts show how items change rank over time using smooth cubic
 Bézier curves between rank positions.  Seaborn cannot produce them.
@@ -23,10 +23,15 @@ Plotly has no native bump chart.  Matplotlib requires manual assembly.
 """
 from __future__ import annotations
 
-import math
-from .utils  import svg_escape
-from .themes import themes as _themes
 from .colormaps import colormap_colors
+from .utils import svg_escape
+
+#: Space reserved at the left for the "#N" rank labels, before the width of
+#: the longest series name is added on.
+RANK_LABEL_GUTTER = 46
+
+#: Approximate pixel width of a rank label such as "#10" at font-size 10.
+RANK_LABEL_WIDTH = 20
 
 
 class BumpChartSeries:
@@ -75,12 +80,20 @@ class BumpChartSeries:
         self.y = None
 
     def to_svg(self, ax: object = None) -> str:   # type: ignore
+        # The gutter holds both the "#N" rank labels and the series name
+        # anchored to the first dot. At a fixed 30px they landed on top of
+        # each other, so size it to the longest name.
+        _name_px = max(
+            (len(str(name)) for name in self.rankings), default=0
+        ) * 6.5
+        _gutter = int(RANK_LABEL_GUTTER + _name_px)
+
         if ax is None:
-            pad_x, pad_y = 80, 40
+            pad_x, pad_y = 50 + _gutter, 40
             w, h = 780, 480
             font, tc = "sans-serif", "#000"
         else:
-            pad_x = getattr(ax, "padding", 50) + 30   # type: ignore
+            pad_x = getattr(ax, "padding", 50) + _gutter   # type: ignore
             pad_y = getattr(ax, "padding", 50)         # type: ignore
             w     = ax.width    # type: ignore
             h     = ax.height   # type: ignore
@@ -116,10 +129,12 @@ class BumpChartSeries:
                 f'{svg_escape(str(period))}</text>'
             )
 
-        # Rank labels on left (1 = top)
+        # Rank labels sit at the far left of the gutter, clear of the
+        # series names that are right-anchored against the first dot.
+        _rank_x = pad_x - _gutter + RANK_LABEL_WIDTH
         for rank in range(1, n_ranks + 1):
             elements.append(
-                f'<text x="{pad_x - 10}" y="{py(rank) + 4:.1f}" '
+                f'<text x="{_rank_x}" y="{py(rank) + 4:.1f}" '
                 f'text-anchor="end" font-size="10" '
                 f'font-family="{font}" fill="{tc}" opacity="0.5">#{rank}</text>'
             )
@@ -133,7 +148,6 @@ class BumpChartSeries:
                 f'stroke="#ddd" stroke-width="1" stroke-dasharray="3,3"/>'
             )
 
-        # Draw each series
         for series_i, (name, ranks) in enumerate(self.rankings.items()):
             color = self.colors[series_i % len(self.colors)]
 

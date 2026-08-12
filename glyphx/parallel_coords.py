@@ -1,5 +1,5 @@
 """
-GlyphX ParallelCoordinatesSeries — high-dimensional data visualization.
+GlyphX ParallelCoordinatesSeries - high-dimensional data visualization.
 
 Each row of data becomes a polyline drawn across a set of parallel
 vertical axes, one axis per variable.  This beats Plotly's verbose
@@ -23,12 +23,10 @@ vertical axes, one axis per variable.  This beats Plotly's verbose
 """
 from __future__ import annotations
 
-import math
 import numpy as np
-from typing import Any
 
-from .colormaps import colormap_colors, apply_colormap
-from .utils import svg_escape, _format_tick, LEGEND_GUTTER
+from .colormaps import apply_colormap, colormap_colors
+from .utils import LEGEND_GUTTER, _format_tick, svg_escape
 
 
 class ParallelCoordinatesSeries:
@@ -107,7 +105,7 @@ class ParallelCoordinatesSeries:
                 # Categorical
                 unique_groups = list(dict.fromkeys(str(v) for v in hue))
                 if isinstance(colors, dict):
-                    group_color = {k: v for k, v in colors.items()}
+                    group_color = dict(colors)
                 elif isinstance(colors, list):
                     group_color = dict(zip(unique_groups, colors))
                 else:
@@ -131,7 +129,6 @@ class ParallelCoordinatesSeries:
             pad_x, pad_y = 60, 50
             w, h = 740, 400
             font, tc = "sans-serif", "#000"
-            grid_color = "#ddd"
         else:
             pad_x = ax.padding * 2    # type: ignore
             pad_y = ax.padding        # type: ignore
@@ -139,7 +136,6 @@ class ParallelCoordinatesSeries:
             h     = ax.height         # type: ignore
             font  = ax.theme.get("font", "sans-serif")  # type: ignore
             tc    = ax.theme.get("text_color", "#000")  # type: ignore
-            grid_color = ax.theme.get("grid_color", "#ddd")  # type: ignore
 
         n_axes   = len(self.axes_names)
         n_rows   = self.matrix.shape[0]
@@ -149,7 +145,6 @@ class ParallelCoordinatesSeries:
         plot_h   = h - 2 * pad_y
         ax_step  = plot_w / (n_axes - 1) if n_axes > 1 else plot_w
 
-        # Axis X positions
         ax_x = [pad_x + i * ax_step for i in range(n_axes)]
 
         elements: list[str] = []
@@ -205,7 +200,7 @@ class ParallelCoordinatesSeries:
                 f'stroke-width="{self.line_width}" opacity="{self.alpha}"/>'
             )
 
-        # Categorical legend — always rendered in the right gutter
+        # Categorical legend - always rendered in the right gutter
         if self._groups:
             legend_x = w - _gutter + 8 if _gutter else w - 110
             n_groups  = len(self._groups)

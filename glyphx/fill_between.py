@@ -1,5 +1,5 @@
 """
-GlyphX FillBetweenSeries — shaded area between two lines or between
+GlyphX FillBetweenSeries - shaded area between two lines or between
 a line and a baseline (zero or a constant).
 
     from glyphx import Figure
@@ -14,8 +14,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .series import BaseSeries, LineSeries
-from .utils  import svg_escape
+from .series import BaseSeries
 
 
 class FillBetweenSeries(BaseSeries):

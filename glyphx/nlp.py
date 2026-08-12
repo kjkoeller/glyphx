@@ -30,7 +30,7 @@ import re
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import pandas as pd
+    pass
 
 # JSON schema the LLM must return
 _SCHEMA_DOC = """\
@@ -84,7 +84,7 @@ def from_prompt(
     api_key: str = None,
     model: str = "claude-sonnet-4-20250514",
     auto_display: bool = True,
-) -> "Figure":  # noqa: F821
+) -> Figure:  # noqa: F821
     """
     Generate a GlyphX Figure from a plain-English description.
 
@@ -212,11 +212,12 @@ def _build_figure(config: dict, df, auto_display: bool = True):
     - Multi-series (groupby without aggregation)
     - All supported chart kinds
     """
-    import numpy as np
     from .figure import Figure
     from .series import (
-        LineSeries, BarSeries, ScatterSeries,
-        PieSeries, DonutSeries, HistogramSeries, BoxPlotSeries,
+        BoxPlotSeries,
+        DonutSeries,
+        HistogramSeries,
+        PieSeries,
     )
 
     kind    = config.get("kind", "line").lower()
@@ -328,7 +329,7 @@ def _build_figure(config: dict, df, auto_display: bool = True):
 
 def _make_series(kind, x, y, color, label):
     """Instantiate the right series class."""
-    from .series import LineSeries, BarSeries, ScatterSeries
+    from .series import BarSeries, LineSeries, ScatterSeries
     if kind == "bar":     return BarSeries(x, y, color=color, label=label)
     if kind == "scatter": return ScatterSeries(x, y, color=color, label=label)
     return LineSeries(x, y, color=color, label=label)  # default / "line"
@@ -361,7 +362,16 @@ def _apply_sort_top(df, x_col, y_col, sort_by, sort_desc, top_n):
 def _build_sample_figure(kind, title, theme, color, label, fig):
     """Return a figure with illustrative data when no DataFrame is given."""
     import math
-    from .series import LineSeries, BarSeries, ScatterSeries, PieSeries, DonutSeries, HistogramSeries, BoxPlotSeries
+
+    from .series import (
+        BarSeries,
+        BoxPlotSeries,
+        DonutSeries,
+        HistogramSeries,
+        LineSeries,
+        PieSeries,
+        ScatterSeries,
+    )
 
     color = color or "#1f77b4"
 
@@ -369,7 +379,8 @@ def _build_sample_figure(kind, title, theme, color, label, fig):
         fig.add(BarSeries(["A", "B", "C", "D", "E"], [23, 47, 31, 56, 38],
                           color=color, label=label or "Sample"))
     elif kind == "scatter":
-        import random, math
+        import math
+        import random
         random.seed(42)
         x = [random.gauss(0, 1) for _ in range(60)]
         y = [v + random.gauss(0, 0.5) for v in x]

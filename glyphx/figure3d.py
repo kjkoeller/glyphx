@@ -24,7 +24,6 @@ Usage::
 from __future__ import annotations
 
 import json
-import math
 import tempfile
 import webbrowser
 from pathlib import Path
@@ -32,16 +31,30 @@ from typing import Any
 
 import numpy as np
 
-from .projection3d import Camera3D, normalize, axis_ticks, _format_3d_tick
-from .themes        import themes as _themes
-from .utils         import svg_escape
+from .projection3d import Camera3D, _format_3d_tick, normalize
+from .themes import themes as _themes
+from .utils import as_seq, svg_escape
 
-
-# ---------------------------------------------------------------------------
 # Three.js HTML template (all JS is inline -- zero CDN except Three.js itself)
-# ---------------------------------------------------------------------------
 
-_THREEJS_CDN = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
+#: three.js is served from jsDelivr's npm mirror rather than cdnjs so that the
+#: bytes are pinned to an immutable published package version -- which is what
+#: makes the Subresource Integrity hash below verifiable and stable.
+# TODO: bump three.js. r128 is from 2021 and we pin it only because the SRI
+# hash is verified against that exact tarball. Bumping means regenerating
+# the hash and re-checking the OrbitControls import path, which moved.
+_THREEJS_VERSION = "0.128.0"   # r128
+_THREEJS_CDN = (
+    f"https://cdn.jsdelivr.net/npm/three@{_THREEJS_VERSION}/build/three.min.js"
+)
+
+#: SRI hash for the pinned build. Without it, a compromised or swapped CDN
+#: asset executes with full page privileges in every exported chart.
+#: Regenerate after a version bump with:
+#:     curl -sL <url> | openssl dgst -sha384 -binary | openssl base64 -A
+#: Verified against the npm tarball for three@0.128.0 (build/three.min.js,
+#: sha256 9274bbcec8d96168626c732b5d31c775aa8cfb7eaa0599bec0c175908a2c1ce2).
+_THREEJS_SRI = "sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu"
 
 _HTML_TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
@@ -188,7 +201,22 @@ canvas { display:block; }
   </div>
 </div>
 
-<script src="{threejs_cdn}"></script>
+<script src="{threejs_cdn}" integrity="{threejs_sri}" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+<script>
+// Exported charts are often opened offline or from a locked-down network.
+// Fail loudly with an explanation instead of rendering a blank page.
+if (typeof THREE === "undefined") {{
+  document.addEventListener("DOMContentLoaded", function () {{
+    var msg = document.createElement("div");
+    msg.style.cssText = "font:14px sans-serif;padding:24px;color:#b00";
+    msg.textContent = "This 3D chart needs three.js from a CDN, which could "
+      + "not be loaded. Check your network connection, or re-export with "
+      + "Figure3D(..., inline_threejs=True) for a self-contained file.";
+    document.body.appendChild(msg);
+  }});
+}}
+</script>
 <script>
 // =======================================================================
 // Data & config
@@ -697,9 +725,7 @@ _FORMAT_TICK_JS = """function(v){
 }"""
 
 
-# ---------------------------------------------------------------------------
 # Figure3D
-# ---------------------------------------------------------------------------
 
 class Figure3D:
     """
@@ -761,68 +787,64 @@ class Figure3D:
 
         self._series: list[Any] = []
 
-    # ------------------------------------------------------------------
     # Series management
-    # ------------------------------------------------------------------
 
-    def add(self, series: Any) -> "Figure3D":
+    def add(self, series: Any) -> Figure3D:
         """Add a 3D series and return ``self`` for chaining."""
         self._series.append(series)
         return self
 
     def scatter(self, x, y, z, color="#2563eb", c=None,
-                cmap="viridis", size=5, label=None, alpha=0.85) -> "Figure3D":
+                cmap="viridis", size=5, label=None, alpha=0.85) -> Figure3D:
         """Add a :class:`~glyphx.scatter3d.Scatter3DSeries`. Returns ``self``."""
         from .scatter3d import Scatter3DSeries
         return self.add(Scatter3DSeries(x, y, z, color=color, c=c, cmap=cmap,
                                          size=size, label=label, alpha=alpha))
 
     def surface(self, x, y, z, cmap="viridis", alpha=0.90,
-                wireframe=True) -> "Figure3D":
+                wireframe=True) -> Figure3D:
         """Add a :class:`~glyphx.surface3d.Surface3DSeries`. Returns ``self``."""
         from .surface3d import Surface3DSeries
         return self.add(Surface3DSeries(x, y, z, cmap=cmap, alpha=alpha,
                                          wireframe=wireframe))
 
     def line3d(self, x, y, z, color="#dc2626", width=2,
-               linestyle="solid", label=None) -> "Figure3D":
+               linestyle="solid", label=None) -> Figure3D:
         """Add a :class:`~glyphx.line3d.Line3DSeries`. Returns ``self``."""
         from .line3d import Line3DSeries
         return self.add(Line3DSeries(x, y, z, color=color, width=width,
                                       linestyle=linestyle, label=label))
 
     def bar3d(self, x, y, z, cmap="viridis", alpha=0.85,
-              label=None) -> "Figure3D":
+              label=None) -> Figure3D:
         """Add a :class:`~glyphx.bar3d.Bar3DSeries`. Returns ``self``."""
         from .bar3d import Bar3DSeries
         return self.add(Bar3DSeries(x, y, z, cmap=cmap, alpha=alpha,
                                      label=label))
 
-    def set_xlabel(self, label: str) -> "Figure3D":
+    def set_xlabel(self, label: str) -> Figure3D:
         self.xlabel = label; return self
 
-    def set_ylabel(self, label: str) -> "Figure3D":
+    def set_ylabel(self, label: str) -> Figure3D:
         self.ylabel = label; return self
 
-    def set_zlabel(self, label: str) -> "Figure3D":
+    def set_zlabel(self, label: str) -> Figure3D:
         self.zlabel = label; return self
 
-    def set_view(self, azimuth: float, elevation: float) -> "Figure3D":
+    def set_view(self, azimuth: float, elevation: float) -> Figure3D:
         """Set the initial camera angle for SVG output."""
         self.azimuth = azimuth
         self.elevation = elevation
         return self
 
-    # ------------------------------------------------------------------
     # Rendering
-    # ------------------------------------------------------------------
 
     def _all_xyz(self):
         """Collect all X, Y, Z values across all series."""
         xs, ys, zs = [], [], []
         for s in self._series:
             if hasattr(s, "x"): xs.extend(s.x if s.x else [])
-            if hasattr(s, "y"): ys.extend(s.y if s.y else [])
+            if hasattr(s, "y"): ys.extend(as_seq(s.y))
             if hasattr(s, "z"): zs.extend(s.z if s.z else [])
             if hasattr(s, "x_1d"): xs.extend(s.x_1d)
             if hasattr(s, "y_1d"): ys.extend(s.y_1d)
@@ -835,7 +857,6 @@ class Figure3D:
     def render_svg(self) -> str:
         """Render a static orthographic SVG projection."""
         W, H   = self.width, self.height
-        pad    = 60
         cx, cy = W // 2, H // 2
         scale  = min(W, H) * 0.34
 
@@ -872,7 +893,7 @@ class Figure3D:
                 f'{svg_escape(self.title)}</text>'
             )
 
-        # -- Axis box edges ------------------------------------------------
+        # Axis box edges
         box_corners = [(-1,-1,-1),(1,-1,-1),(1,1,-1),(-1,1,-1),
                        (-1,-1,1), (1,-1,1), (1,1,1), (-1,1,1)]
         box_edges   = [(0,1),(1,2),(2,3),(3,0),
@@ -887,7 +908,7 @@ class Figure3D:
                 f'stroke="{ac}" stroke-width="1" opacity="0.5"/>'
             )
 
-        # -- Floor grid ----------------------------------------------------
+        # Floor grid
         for k in range(6):
             v = -1 + k * 0.4
             for (ax1,bx1,ay1,by1) in [
@@ -906,7 +927,7 @@ class Figure3D:
                     f'stroke="{gc}" stroke-width="0.6" opacity="0.5"/>'
                 )
 
-        # -- Tick labels ----------------------------------------------------
+        # Tick labels
         NTICKS = 4
         for k in range(NTICKS + 1):
             t = -1 + k * 2 / NTICKS
@@ -948,7 +969,7 @@ class Figure3D:
                     f'{svg_escape(label)}</text>'
                 )
 
-        # -- Series --------------------------------------------------------
+        # Series
         for s in self._series:
             if hasattr(s, "to_svg"):
                 parts.append(s.to_svg(cam, x_range, y_range, z_range))
@@ -974,11 +995,7 @@ class Figure3D:
         data_list = []
         for s in self._series:
             d = s.to_threejs_data()
-            if d["type"] == "scatter":
-                d["nx"] = [nx(v) for v in s.x]
-                d["ny"] = [ny(v) for v in s.y]
-                d["nz"] = [nz(v) for v in s.z]
-            elif d["type"] == "line":
+            if d["type"] == "scatter" or d["type"] == "line":
                 d["nx"] = [nx(v) for v in s.x]
                 d["ny"] = [ny(v) for v in s.y]
                 d["nz"] = [nz(v) for v in s.z]
@@ -1002,7 +1019,8 @@ class Figure3D:
                     for row in z_arr
                 ]
             elif d["type"] == "bar3d":
-                sx = xhi - xlo or 1; sy = yhi - ylo or 1; sz = zhi - zlo or 1
+                sx = xhi - xlo or 1
+                sy = yhi - ylo or 1
                 for bar in d["bars"]:
                     bar["nx"]  = nx(bar["x"])
                     bar["ny"]  = ny(bar["y"])
@@ -1048,6 +1066,7 @@ class Figure3D:
             "{tc}":             theme.get("text_color",  "#000000"),
             "{font}":           theme.get("font", "sans-serif"),
             "{threejs_cdn}":    _THREEJS_CDN,
+            "{threejs_sri}":    _THREEJS_SRI,
             "{data_json}":      json.dumps(data_list),
             "{theme_json}":     json.dumps({
                 "bg":   theme.get("background", "#ffffff"),
@@ -1065,18 +1084,17 @@ class Figure3D:
             html = html.replace(key, val)
         return html
 
-    # ------------------------------------------------------------------
     # Display / export
-    # ------------------------------------------------------------------
 
-    def show(self) -> "Figure3D":
+    def show(self) -> Figure3D:
         """Render and display.  Uses Jupyter if available, else browser."""
         html = self.render_html()
         try:
             from IPython import get_ipython
             ip = get_ipython()
             if ip and "IPKernelApp" in ip.config:
-                from IPython.display import IFrame, display as jd
+                from IPython.display import IFrame
+                from IPython.display import display as jd
                 tmp = tempfile.NamedTemporaryFile(
                     delete=False, suffix=".html", mode="w", encoding="utf-8"
                 )
@@ -1093,7 +1111,7 @@ class Figure3D:
         webbrowser.open(f"file://{tmp.name}")
         return self
 
-    def save(self, filename: str = "glyphx3d.html") -> "Figure3D":
+    def save(self, filename: str = "glyphx3d.html") -> Figure3D:
         """
         Save the figure to disk.
 

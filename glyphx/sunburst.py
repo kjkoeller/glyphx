@@ -1,5 +1,5 @@
 """
-GlyphX SunburstSeries — multi-ring hierarchical pie chart.
+GlyphX SunburstSeries - multi-ring hierarchical pie chart.
 
 A sunburst shows hierarchical data as concentric rings, each ring
 representing one level of the hierarchy.  It is the natural companion
@@ -21,8 +21,8 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 
-from .colormaps import apply_colormap, colormap_colors
-from .utils import svg_escape, _format_tick
+from .colormaps import colormap_colors
+from .utils import _format_tick, svg_escape
 
 
 class SunburstSeries:
@@ -36,7 +36,7 @@ class SunburstSeries:
         labels:         Node labels (unique identifiers).
         parents:        Parent label for each node.  Root node has ``""``.
         values:         Numeric value for each leaf node.  Internal nodes
-                        can be 0 — their size is auto-summed from children.
+                        can be 0 - their size is auto-summed from children.
         colors:         Per-label hex colors.  If ``None``, ``cmap`` is used.
         cmap:           Colormap for auto-coloring (default ``"viridis"``).
         inner_radius:   Inner radius of the first ring (default 40 px).
@@ -87,7 +87,6 @@ class SunburstSeries:
             self._children[par].append(lbl)
             self._value[lbl] = float(val)
 
-        # Find root
         self._root = next(lbl for lbl, par in zip(labels, parents) if par == "")
 
         # Sum internal node values bottom-up
@@ -230,7 +229,7 @@ class SunburstSeries:
                 f'{tooltip}/>'
             )
 
-            # Label — only if arc is wide enough
+            # Label - only if arc is wide enough
             arc_len = math.radians(a_end - a_start) * (r_inner + r_outer) / 2
             if self.show_labels and arc_len >= self.min_label_arc:
                 mid_rad = math.radians((a_start + a_end) / 2)
@@ -248,7 +247,6 @@ class SunburstSeries:
                     f'{svg_escape(display_lbl)}</text>'
                 )
 
-            # Enqueue children
             children = self._children.get(node, [])
             if children and val > 0:
                 child_angle_per = (

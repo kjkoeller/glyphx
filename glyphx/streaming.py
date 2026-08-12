@@ -2,7 +2,7 @@
 GlyphX Streaming / Real-time series.
 
 Accepts a Python generator or callable that yields new values,
-and re-renders the chart in place — in Jupyter via IPython display,
+and re-renders the chart in place - in Jupyter via IPython display,
 or in any environment by returning the latest SVG string.
 
 No server, no Dash, no external process.
@@ -28,12 +28,11 @@ from __future__ import annotations
 
 import time
 from collections import deque
-from typing import Iterator
 
 import numpy as np
 
 from .series import BaseSeries
-from .utils import svg_escape
+from .utils import has_data, svg_escape
 
 
 class StreamingSeries(BaseSeries):
@@ -64,7 +63,7 @@ class StreamingSeries(BaseSeries):
 
         super().__init__(x=[], y=[], color=color or "#1f77b4", label=label)
 
-    # ── Data push ──────────────────────────────────────────────────────────
+    # Data push
 
     def push(self, value: float) -> StreamingSeries:
         """
@@ -107,10 +106,10 @@ class StreamingSeries(BaseSeries):
         self.y = []
         return self
 
-    # ── SVG rendering ─────────────────────────────────────────────────────
+    # SVG rendering
 
     def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        if not self.x or not self.y:
+        if not has_data(self.x) or not has_data(self.y):
             return ""
 
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore[union-attr]
@@ -138,7 +137,7 @@ class StreamingSeries(BaseSeries):
 
         return "\n".join(elements)
 
-    # ── Live display context manager ───────────────────────────────────────
+    # Live display context manager
 
     def live(self, fig: object, fps: float = 10.0) -> _LiveContext:
         """
@@ -169,7 +168,7 @@ class _LiveContext:
         self._interval  = 1.0 / fps
         self._last_draw = 0.0
 
-    def __enter__(self) -> "_LiveContext":
+    def __enter__(self) -> _LiveContext:
         return self
 
     def push(self, value: float) -> None:
@@ -182,7 +181,7 @@ class _LiveContext:
 
     def _render(self) -> None:
         try:
-            from IPython.display import clear_output, display, SVG
+            from IPython.display import SVG, clear_output, display
             clear_output(wait=True)
             display(SVG(self._fig.render_svg()))  # type: ignore[union-attr]
         except Exception:

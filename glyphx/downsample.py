@@ -22,9 +22,9 @@ All hot paths are fully vectorised with NumPy:
            no Python loop inside the bucket scan.
 - M4     : column assignment via np.digitize; min/max/first/last per
            column via np.minimum.reduceat / np.maximum.reduceat after a
-           single argsort by column — no per-column Python list.
+           single argsort by column - no per-column Python list.
 - Voxel  : nearest-centroid selection via np.minimum.reduceat after
-           sorting by cell_id — avoids a full argsort on distance.
+           sorting by cell_id - avoids a full argsort on distance.
 
 Global kill-switch
 ------------------
@@ -33,12 +33,13 @@ The flag lives in a threading.local so threads are independent.
 
 Per-series control
 ------------------
-Pass ``threshold=N`` to any series constructor to override AUTO_THRESHOLD.
+Pass ``threshold=N`` to LineSeries or ScatterSeries, or set
+``series.threshold`` afterwards, to override AUTO_THRESHOLD.
 
 Downsampling metadata
 ---------------------
 After rendering each series exposes ``series.last_downsample_info``
-— a dict with keys ``algorithm``, ``original_n``, ``thinned_n``.
+- a dict with keys ``algorithm``, ``original_n``, ``thinned_n``.
 """
 from __future__ import annotations
 
@@ -46,15 +47,14 @@ import math
 import threading
 import warnings
 import weakref
-import numpy as np
 from typing import TYPE_CHECKING
+
+import numpy as np
 
 if TYPE_CHECKING:
     from .projection3d import Camera3D
 
-# ---------------------------------------------------------------------------
 # Thread-safe global kill-switch
-# ---------------------------------------------------------------------------
 
 _local = threading.local()
 
@@ -78,18 +78,14 @@ def is_enabled() -> bool:
     return _enabled()
 
 
-# ---------------------------------------------------------------------------
 # Thresholds
-# ---------------------------------------------------------------------------
 
 AUTO_THRESHOLD: int = 5_000
 M4_THRESHOLD:   int = 50_000
 MIN_FACE_AREA:  float = 0.5
 
 
-# ---------------------------------------------------------------------------
 # LTTB -- fully vectorised inner loop
-# ---------------------------------------------------------------------------
 
 def lttb(
     x: list | np.ndarray,
@@ -101,7 +97,7 @@ def lttb(
 
     The per-bucket triangle-area scan is vectorised: for each bucket the
     areas of all candidate points are computed as a NumPy slice expression
-    and ``np.argmax`` selects the winner — no Python loop inside the bucket.
+    and ``np.argmax`` selects the winner - no Python loop inside the bucket.
 
     Args:
         x:          X values (1-D, numeric).
@@ -168,7 +164,7 @@ def lttb(
 
         # Vectorised triangle area for all points in [bs, be)
         if bs >= be:
-            # Degenerate bucket (can occur near end of data) — keep current a
+            # Degenerate bucket (can occur near end of data) - keep current a
             kept[k + 1] = a
             continue
         xi = x_arr[bs:be]
@@ -184,9 +180,7 @@ def lttb(
     return x_arr[kept], y_arr[kept]
 
 
-# ---------------------------------------------------------------------------
 # M4 -- fully vectorised via np.digitize + reduceat
-# ---------------------------------------------------------------------------
 
 def m4(
     x: list | np.ndarray,
@@ -198,7 +192,7 @@ def m4(
 
     Fully vectorised: column assignment uses ``np.digitize``; per-column
     first/last/min/max are found with ``np.minimum.reduceat`` and
-    ``np.maximum.reduceat`` after a single argsort by column — no
+    ``np.maximum.reduceat`` after a single argsort by column - no
     per-column Python list or loop.
 
     Requires monotone X values.  Non-monotone input is auto-sorted with
@@ -235,7 +229,6 @@ def m4(
 
     n_buckets = max(1, pixel_width)
     x_min, x_max = x_arr[0], x_arr[-1]
-    x_span = x_max - x_min or 1.0
 
     # Assign each point to a pixel column [0, n_buckets-1]
     # np.digitize with evenly-spaced bins avoids the Python loop entirely.
@@ -246,14 +239,9 @@ def m4(
     # Sort everything by column so reduceat can process columns in one pass
     col_order  = np.argsort(cols, kind="stable")
     cols_sorted = cols[col_order]
-    y_sorted    = y_arr[col_order]
 
     # Find the start index of each unique column in the sorted array
     unique_cols, col_starts = np.unique(cols_sorted, return_index=True)
-
-    # reduceat gives per-segment min/max in one vectorised call
-    y_min_per_col = np.minimum.reduceat(y_sorted, col_starts)
-    y_max_per_col = np.maximum.reduceat(y_sorted, col_starts)
 
     # First and last index within each column (in col_order space)
     col_ends = np.empty_like(col_starts)
@@ -284,9 +272,7 @@ def m4(
     return x_arr[idx_arr], y_arr[idx_arr]
 
 
-# ---------------------------------------------------------------------------
 # Two-stage pipeline for Line2D
-# ---------------------------------------------------------------------------
 
 def maybe_downsample_line(
     x: list | np.ndarray,
@@ -322,9 +308,7 @@ def maybe_downsample_line(
     return x_arr, y_arr
 
 
-# ---------------------------------------------------------------------------
 # Legacy wrapper -- deprecated
-# ---------------------------------------------------------------------------
 
 def maybe_downsample(
     x: list | np.ndarray,
@@ -350,9 +334,7 @@ def maybe_downsample(
     return lttb(x, y, threshold)
 
 
-# ---------------------------------------------------------------------------
 # Voxel thinning -- 2-D  (reduceat-based, no full distance sort)
-# ---------------------------------------------------------------------------
 
 def voxel_thin_2d(
     x: list | np.ndarray,
@@ -439,9 +421,7 @@ def voxel_thin_2d(
     return x_arr[kept], y_arr[kept], c_out
 
 
-# ---------------------------------------------------------------------------
 # LTTB-3D cache
-# ---------------------------------------------------------------------------
 
 _lttb3d_cache: weakref.WeakKeyDictionary = weakref.WeakKeyDictionary()
 
@@ -461,15 +441,13 @@ def _data_fingerprint(
     return (_sig(x), _sig(y), _sig(z), threshold)
 
 
-# ---------------------------------------------------------------------------
 # Vectorised projection helper
-# ---------------------------------------------------------------------------
 
 def _project_vectorised(
     xn: np.ndarray,
     yn: np.ndarray,
     zn: np.ndarray,
-    cam: "Camera3D",
+    cam: Camera3D,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Vectorised orthographic projection matching Camera3D.project()."""
     cos_az, sin_az = cam._cos_az, cam._sin_az
@@ -482,15 +460,13 @@ def _project_vectorised(
     return cam.cx + rx * cam.scale, cam.cy - fz * cam.scale
 
 
-# ---------------------------------------------------------------------------
 # LTTB on projected coordinates -- 3-D line  (vectorised inner loop)
-# ---------------------------------------------------------------------------
 
 def lttb_3d(
     x: list | np.ndarray,
     y: list | np.ndarray,
     z: list | np.ndarray,
-    cam: "Camera3D",
+    cam: Camera3D,
     threshold: int = AUTO_THRESHOLD,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
@@ -535,7 +511,7 @@ def lttb_3d(
     zn = np.asarray(normalize(z_arr)[0], dtype=float)
     px, py = _project_vectorised(xn, yn, zn, cam)
 
-    # Reuse vectorised LTTB on (px, py) — same algorithm, screen coords
+    # Reuse vectorised LTTB on (px, py) - same algorithm, screen coords
     _threshold  = max(threshold, 3)
     n_buckets   = _threshold - 2
     bucket_size = (n - 2) / n_buckets
@@ -588,9 +564,7 @@ def lttb_3d(
     return result
 
 
-# ---------------------------------------------------------------------------
 # Voxel thinning -- 3-D  (reduceat-based)
-# ---------------------------------------------------------------------------
 
 def voxel_thin_3d(
     x: list | np.ndarray,
@@ -665,9 +639,7 @@ def voxel_thin_3d(
     return x_arr[kept], y_arr[kept], z_arr[kept], colors_out
 
 
-# ---------------------------------------------------------------------------
 # Grid decimation -- Surface3D
-# ---------------------------------------------------------------------------
 
 def decimate_grid(
     x_1d: list | np.ndarray,
@@ -709,9 +681,7 @@ def decimate_grid(
     return x_arr[::step_x], y_arr[::step_y], z_arr[::step_y, ::step_x]
 
 
-# ---------------------------------------------------------------------------
 # Face culling -- Surface3D  (vectorised shoelace)
-# ---------------------------------------------------------------------------
 
 def cull_faces(
     faces: list[tuple],
@@ -741,9 +711,7 @@ def cull_faces(
     return [f for f, keep in zip(faces, mask) if keep]
 
 
-# ---------------------------------------------------------------------------
 # SVG annotation helper
-# ---------------------------------------------------------------------------
 
 def _ds_comment(original_n: int, thinned_n: int, algorithm: str) -> str:
     return (
