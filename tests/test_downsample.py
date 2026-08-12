@@ -10,31 +10,42 @@ Usage:
 """
 from __future__ import annotations
 
-import sys
 import math
-import time
-import timeit
-import unittest
-import warnings
-import threading
-import numpy as np
 
 # ---------------------------------------------------------------------------
 # Bootstrap: point sys.path at the patched glyphx package
 # ---------------------------------------------------------------------------
-
 import os
+import sys
+import threading
+import time
+import timeit
+import unittest
+import warnings
+
+import numpy as np
+
 _HERE = os.path.dirname(os.path.abspath(__file__))
 # The test file lives alongside downsample.py inside the glyphx package dir.
 # Walk up one level to get the package root on the path.
 sys.path.insert(0, os.path.dirname(_HERE))
 
 from glyphx.downsample import (
-    lttb, m4, maybe_downsample_line, maybe_downsample,
-    voxel_thin_2d, voxel_thin_3d,
-    lttb_3d, decimate_grid, cull_faces,
-    enable, disable, is_enabled,
-    AUTO_THRESHOLD, _lttb3d_cache, _data_fingerprint,
+    AUTO_THRESHOLD,
+    _data_fingerprint,
+    _lttb3d_cache,
+    cull_faces,
+    decimate_grid,
+    disable,
+    enable,
+    is_enabled,
+    lttb,
+    lttb_3d,
+    m4,
+    maybe_downsample,
+    maybe_downsample_line,
+    voxel_thin_2d,
+    voxel_thin_3d,
 )
 from glyphx.projection3d import Camera3D
 
@@ -399,13 +410,21 @@ class TestCullFaces(unittest.TestCase):
         self.assertEqual(len(kept), 10)
 
     def test_large_batch_vectorised(self):
-        """50 000 faces should complete in under 500 ms."""
+        """50 000 faces should cull in one vectorised pass, not a Python loop.
+
+        The bound is deliberately loose.  A wall-clock assertion is a proxy
+        for "this is still vectorised", and a tight threshold turns shared CI
+        runners, coverage instrumentation, and a noisy neighbour into
+        spurious failures.  A genuine regression to a per-face Python loop
+        costs seconds, not milliseconds, so 5 s still catches it while
+        surviving a machine having a bad day.
+        """
         faces = _make_faces(50_000, size=10.0)
         t0 = time.perf_counter()
         kept = cull_faces(faces)
         elapsed = time.perf_counter() - t0
         self.assertEqual(len(kept), 50_000)
-        self.assertLess(elapsed, 0.5)
+        self.assertLess(elapsed, 5.0)
 
 
 class TestThreadSafety(unittest.TestCase):

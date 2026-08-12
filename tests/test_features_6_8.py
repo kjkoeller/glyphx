@@ -1,31 +1,13 @@
 """
-Tests for the three new GlyphX features:
-  Feature 6  – Linked Brushing (SVG data-glyphx tags, brush.js present)
-  Feature 7  – Natural Language chart generation (from_prompt)
-  Feature 8 – Self-contained shareable HTML (fig.share())
+Linked brushing and self-contained shareable HTML.
 """
 
-import json
-import os
 import re
-import tempfile
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
-import numpy as np
-import sys as _sys, os as _os
-_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
-try:
-    import pytest
-except ImportError:
-    import pytest_shim as pytest  # noqa: F401
-    _sys.modules["pytest"] = pytest
-
-from glyphx import Figure, from_prompt, plot
-from glyphx.series import LineSeries, BarSeries
-from glyphx.utils import make_shareable_html, wrap_svg_canvas
-from glyphx.nlp import _build_figure, _parse_json
-
+from glyphx import Figure
+from glyphx.series import BarSeries, LineSeries
+from glyphx.utils import make_shareable_html
 
 # ============================================================
 # Feature 6 — Linked Brushing
@@ -113,223 +95,6 @@ class TestLinkedBrushing:
 
 
 # ============================================================
-# Feature 7 — Natural Language Chart Generation
-# ============================================================
-
-class TestFromPrompt:
-
-    # ── JSON parsing ─────────────────────────────────────────────
-
-    def test_parse_json_clean(self):
-        raw = '{"kind": "bar", "x": "month", "y": "sales"}'
-        cfg = _parse_json(raw)
-        assert cfg["kind"] == "bar"
-
-    def test_parse_json_strips_fences(self):
-        raw = '```json\n{"kind": "line"}\n```'
-        cfg = _parse_json(raw)
-        assert cfg["kind"] == "line"
-
-    def test_parse_json_strips_fences_no_lang(self):
-        raw = '```\n{"kind": "scatter"}\n```'
-        cfg = _parse_json(raw)
-        assert cfg["kind"] == "scatter"
-
-    def test_parse_json_invalid_raises(self):
-        with pytest.raises(json.JSONDecodeError):
-            _parse_json("not json at all")
-
-    # ── _build_figure without DataFrame ─────────────────────────
-
-    def test_build_figure_line_no_df(self):
-        cfg = {"kind": "line", "title": "Test"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        assert isinstance(fig, Figure)
-        svg = fig.render_svg()
-        assert "<svg" in svg
-
-    def test_build_figure_bar_no_df(self):
-        cfg = {"kind": "bar"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-
-    def test_build_figure_scatter_no_df(self):
-        cfg = {"kind": "scatter"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "circle" in svg
-
-    def test_build_figure_pie_no_df(self):
-        cfg = {"kind": "pie"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "<path" in svg
-
-    def test_build_figure_donut_no_df(self):
-        cfg = {"kind": "donut"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "<path" in svg
-
-    def test_build_figure_hist_no_df(self):
-        cfg = {"kind": "hist", "bins": 8}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-
-    def test_build_figure_box_no_df(self):
-        cfg = {"kind": "box"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "<svg" in svg
-
-    # ── _build_figure with DataFrame ────────────────────────────
-
-    def _sample_df(self):
-        import pandas as pd
-        return pd.DataFrame({
-            "month":   ["Jan", "Feb", "Mar", "Apr", "May"],
-            "sales":   [120, 135, 98, 170, 145],
-            "region":  ["North", "South", "North", "South", "North"],
-        })
-
-    def test_build_figure_line_with_df(self):
-        df  = self._sample_df()
-        cfg = {"kind": "line", "x": "month", "y": "sales"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "polyline" in svg
-
-    def test_build_figure_bar_with_df(self):
-        df  = self._sample_df()
-        cfg = {"kind": "bar", "x": "month", "y": "sales"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-
-    def test_build_figure_scatter_with_df(self):
-        import pandas as pd
-        df  = pd.DataFrame({"x": [1.0, 2.0, 3.0], "y": [4.0, 5.0, 6.0]})
-        cfg = {"kind": "scatter", "x": "x", "y": "y"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "circle" in svg
-
-    def test_build_figure_groupby(self):
-        df  = self._sample_df()
-        cfg = {"kind": "bar", "groupby": "region", "y": "sales", "agg": "sum"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-
-    def test_build_figure_groupby_multi_series(self):
-        df  = self._sample_df()
-        cfg = {"kind": "line", "x": "month", "y": "sales", "groupby": "region"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        # Should add one LineSeries per region
-        assert len(fig.series) == 2
-
-    def test_build_figure_top_n(self):
-        import pandas as pd
-        df  = pd.DataFrame({
-            "product": [f"P{i}" for i in range(20)],
-            "revenue": list(range(20)),
-        })
-        cfg = {"kind": "bar", "x": "product", "y": "revenue",
-               "top_n": 5, "sort_by": "y", "sort_desc": True}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        # Should have exactly 5 bars
-        from glyphx.series import BarSeries
-        bar = next(s for s, _ in fig.series if isinstance(s, BarSeries))
-        assert len(bar.x) == 5
-
-    def test_build_figure_theme_applied(self):
-        cfg = {"kind": "line", "theme": "dark"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        assert fig.theme.get("background") == "#1e1e1e"
-
-    def test_build_figure_title_propagated(self):
-        cfg = {"kind": "bar", "title": "My NLP Chart"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "My NLP Chart" in svg
-
-    def test_build_figure_xlabel_ylabel(self):
-        cfg = {"kind": "line", "xlabel": "Time", "ylabel": "Value"}
-        fig = _build_figure(cfg, df=None, auto_display=False)
-        svg = fig.render_svg()
-        assert "Time" in svg
-        assert "Value" in svg
-
-    def test_build_figure_hist_with_df(self):
-        import pandas as pd
-        df  = pd.DataFrame({"score": list(range(100))})
-        cfg = {"kind": "hist", "y": "score", "bins": 10}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-
-    def test_build_figure_pie_with_df(self):
-        import pandas as pd
-        df  = pd.DataFrame({"cat": ["A", "B", "C"], "val": [10, 20, 30]})
-        cfg = {"kind": "pie", "x": "cat", "y": "val"}
-        fig = _build_figure(cfg, df=df, auto_display=False)
-        svg = fig.render_svg()
-        assert "<path" in svg
-
-    # ── from_prompt() API surface ────────────────────────────────
-
-    def test_from_prompt_missing_anthropic_raises(self):
-        with patch.dict("sys.modules", {"anthropic": None}):
-            with pytest.raises((ImportError, TypeError)):
-                from_prompt("bar chart", api_key="fake")
-
-    def test_from_prompt_no_api_key_raises(self):
-        # Ensure env var is absent
-        env = {k: v for k, v in os.environ.items() if k != "ANTHROPIC_API_KEY"}
-        with patch.dict("os.environ", env, clear=True):
-            # Only raises if anthropic IS importable; skip otherwise
-            try:
-                import anthropic  # noqa: F401
-            except ImportError:
-                pytest.skip("anthropic not installed")
-            with pytest.raises(ValueError, match="API key"):
-                from_prompt("bar chart", api_key=None)
-
-    def test_from_prompt_mocked_api(self):
-        """Full from_prompt() call with mocked Anthropic response."""
-        try:
-            import anthropic  # noqa: F401
-        except ImportError:
-            pytest.skip("anthropic not installed")
-
-        fake_config = {
-            "kind": "bar", "x": "month", "y": "sales",
-            "title": "Sales by Month", "theme": "default",
-            "reasoning": "Bar chart suits monthly comparisons",
-        }
-        mock_text    = MagicMock()
-        mock_text.text = json.dumps(fake_config)
-        mock_resp    = MagicMock()
-        mock_resp.content = [mock_text]
-        mock_client  = MagicMock()
-        mock_client.messages.create.return_value = mock_resp
-
-        import pandas as pd
-        df = pd.DataFrame({"month": ["Jan", "Feb", "Mar"], "sales": [100, 200, 150]})
-
-        with patch("anthropic.Anthropic", return_value=mock_client):
-            fig = from_prompt("bar chart of monthly sales", df=df,
-                              api_key="test_key", auto_display=False)
-
-        assert isinstance(fig, Figure)
-        svg = fig.render_svg()
-        assert "<rect" in svg
-        assert "Sales by Month" in svg
-
-
-# ============================================================
 # Feature 8 — Self-Contained Shareable HTML
 # ============================================================
 
@@ -403,10 +168,10 @@ class TestShareableHTML:
 
     def test_figure_share_saves_file(self, tmp_path):
         fig  = self._basic_figure()
-        path = str(tmp_path / "shared.html")
-        fig.share(path)
-        assert os.path.exists(path)
-        content = open(path, encoding="utf-8").read()
+        target = tmp_path / "shared.html"
+        fig.share(str(target))
+        assert target.exists()
+        content = target.read_text(encoding="utf-8")
         assert "<svg" in content
         assert "<!DOCTYPE" in content or "<!--" in content
 

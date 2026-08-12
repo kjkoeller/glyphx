@@ -2,22 +2,22 @@
 Tests for Features 1–5:
   1 – DataFrame accessor (df.glyphx.*)
   2 – Type annotations + py.typed
-  3 – CLI tool (glyphx plot / suggest / version)
+  3 – CLI tool (glyphx plot / version)
   4 – PPTX export (fig.save("*.pptx"))
   5 – Accessibility (ARIA, alt text, keyboard nav, tabindex)
 """
 from __future__ import annotations
 
 import os
+import os as _os
 import re
 import sys
-import tempfile
+import sys as _sys
 from pathlib import Path
-from io import StringIO
 
 import numpy as np
 import pandas as pd
-import sys as _sys, os as _os
+
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 try:
     import pytest
@@ -27,8 +27,7 @@ except ImportError:
 
 import glyphx
 from glyphx import Figure
-from glyphx.series import LineSeries, BarSeries, ScatterSeries
-
+from glyphx.series import BarSeries, LineSeries, ScatterSeries
 
 # ── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -293,8 +292,9 @@ class TestCLI:
 
     def _run(self, args: list[str]) -> tuple[int, str, str]:
         """Run CLI in-process, capture stderr, return (exit_code, stdout, stderr)."""
-        from glyphx.cli import main
         import io
+
+        from glyphx.cli import main
         old_err = sys.stderr
         sys.stderr = io.StringIO()
         try:
@@ -384,37 +384,6 @@ class TestCLI:
         code, _, _ = self._run(["plot", "/nonexistent/data.csv", "-o", "/tmp/x.svg"])
         assert code != 0
 
-    def test_suggest_subcommand(self, tmp_path):
-        csv = self._csv(tmp_path)
-        from glyphx.cli import main
-        import io
-        old_out = sys.stdout
-        sys.stdout = io.StringIO()
-        try:
-            code = main(["suggest", csv])
-            out  = sys.stdout.getvalue()
-        finally:
-            sys.stdout = old_out
-        assert code == 0
-        assert "bar" in out or "line" in out or "scatter" in out
-
-    def test_suggest_shows_column_names(self, tmp_path):
-        csv = self._csv(tmp_path)
-        from glyphx.cli import main
-        import io
-        old_out = sys.stdout
-        sys.stdout = io.StringIO()
-        try:
-            main(["suggest", csv])
-            out = sys.stdout.getvalue()
-        finally:
-            sys.stdout = old_out
-        assert "revenue" in out or "month" in out
-
-
-# ============================================================
-# Feature 4 — PPTX Export
-# ============================================================
 
 class TestPPTXExport:
 
@@ -426,8 +395,8 @@ class TestPPTXExport:
         # cairosvg raises OSError (not ImportError) when the system libcairo
         # C library is absent (e.g. on bare macOS CI runners).
         try:
-            import pptx   # noqa: F401
-            import cairosvg  # noqa: F401
+            import cairosvg  # noqa: F401  -- availability probe  # noqa: F401
+            import pptx  # noqa: F401
             pytest.skip("python-pptx and cairosvg are installed — skipping error path test")
         except (ImportError, OSError):
             with pytest.raises(RuntimeError, match="pptx|cairosvg|pip"):
@@ -436,8 +405,8 @@ class TestPPTXExport:
     def test_pptx_creates_file_when_deps_available(self, tmp_path, basic_fig):
         """If optional deps are present, a valid .pptx file is produced."""
         try:
-            import pptx      # noqa: F401
             import cairosvg  # noqa: F401
+            import pptx  # noqa: F401
         except (ImportError, OSError):
             pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
@@ -457,8 +426,8 @@ class TestPPTXExport:
     def test_pptx_with_title(self, tmp_path):
         """Title should appear as a text box on the slide."""
         try:
+            import cairosvg  # noqa: F401  -- availability probe
             import pptx
-            import cairosvg
         except (ImportError, OSError):
             pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
@@ -479,8 +448,8 @@ class TestPPTXExport:
     def test_save_returns_figure_for_pptx(self, tmp_path):
         """fig.save() must return self even for .pptx so chaining works."""
         try:
-            import pptx      # noqa: F401
             import cairosvg  # noqa: F401
+            import pptx  # noqa: F401
         except (ImportError, OSError):
             pytest.skip("python-pptx or cairosvg not installed / libcairo absent")
 
