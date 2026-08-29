@@ -22,7 +22,6 @@ View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index
 | Auto-display (no `show()`) | ✅ | ❌ | ❌ | ❌ |
 | Method chaining API | ✅ | ❌ | ❌ | Partial |
 | DataFrame accessor (`df.glyphx.*`) | ✅ | ❌ | Partial | ❌ |
-| Natural language chart generation | ✅ | ❌ | ❌ | ❌ |
 | Linked interactive brushing | ✅ | ❌ | ❌ | ✅ (needs server) |
 | Self-contained shareable HTML | ✅ | ❌ | ❌ | ❌ |
 | Statistical significance brackets | ✅ | ❌ | ❌ | ❌ |
@@ -58,13 +57,13 @@ View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index
 pip install glyphx
 
 # Optional extras
-pip install "glyphx[export]"  # PNG/JPG raster export   (cairosvg)
+pip install "glyphx[export]"  # PNG/JPG raster export   (resvg-py + pillow)
+pip install "glyphx[cairo]"   # PDF export              (cairosvg)
 pip install "glyphx[pptx]"    # PowerPoint export        (python-pptx + cairosvg)
-pip install "glyphx[nlp]"     # Natural language charts  (anthropic)
 pip install "glyphx[all]"     # Everything
 ```
 
-**Requirements:** Python 3.12+ · NumPy ≥ 1.26 · pandas ≥ 2.1
+**Requirements:** Python 3.10+ · NumPy ≥ 1.26 · pandas ≥ 2.1
 
 ---
 
@@ -183,32 +182,6 @@ df.glyphx.bar(x="month", y="revenue", hue="region",
    .add_stat_annotation("Jan", "Jun", p_value=0.002)
    .share("report.html"))
 ```
-
-### Natural Language Charts
-
-Describe a chart in plain English; GlyphX builds it.  
-Requires `pip install "glyphx[nlp]"` and `ANTHROPIC_API_KEY`.
-
-```python
-from glyphx import from_prompt
-import pandas as pd
-
-df = pd.read_csv("sales.csv")
-
-# GlyphX infers chart type, axis mapping, grouping, theme, and title
-fig = from_prompt("bar chart of total revenue by region, dark theme", df=df)
-
-# Without a DataFrame — generates illustrative sample data
-fig = from_prompt("scatter plot showing a strong positive correlation")
-
-# Complex intent
-fig = from_prompt(
-    "top 10 products by revenue this quarter, sorted descending",
-    df=df,
-)
-```
-
----
 
 ## Chart Types
 
@@ -615,9 +588,6 @@ glyphx plot data.csv \
     -o report.html \
     --open          # auto-open in browser after rendering
 
-# Column and chart suggestions for any dataset
-glyphx suggest data.csv
-
 # Print version
 glyphx version
 ```
@@ -787,7 +757,6 @@ All accessor methods return `Figure` for chaining.
 | Command | Description |
 |---|---|
 | `glyphx plot <file> [options]` | Render a chart from a data file |
-| `glyphx suggest <file>` | Recommend chart types for a dataset |
 | `glyphx version` | Print version and exit |
 
 ---
@@ -843,7 +812,6 @@ The items below are planned for upcoming releases. Contributions and feedback on
 - **Hue / palette API** — `df.glyphx.bar(x="month", y="revenue", hue="region")` auto-splits into color-coded series with theme-aligned colors; closes Seaborn's biggest advantage
 - **Fluent method chaining** — every Figure method returns `self`
 - **DataFrame accessor** (`df.glyphx.*`) with `hue=` support
-- **Natural language charts** (`from_prompt`) via Claude API
 - **Statistical significance brackets** (`add_stat_annotation`)
 - **Raincloud plot**, **ECDF**, **KDE**, **FillBetween**, **Candlestick**, **Waterfall**, **Treemap**, **Streaming**
 - **PPTX export**, **CLI tool**, **ARIA accessibility**, **full type annotations**

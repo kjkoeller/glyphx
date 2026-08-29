@@ -37,7 +37,7 @@ Architecture Overview
 
 ::
 
-   plot() / df.glyphx.* / from_prompt()
+   plot() / df.glyphx.*
               │
               ▼
            Figure
