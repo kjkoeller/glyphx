@@ -76,7 +76,7 @@ class GroupedBarSeries(BaseSeries):
         elements: list[str] = []
 
         for gi, gname in enumerate(self.groups):
-            cx_group = ax.scale_x(gi + 1)   # type: ignore  group centre pixel
+            cx_group = ax.scale_x(gi + 1)   # type: ignore  # group centre pixel
 
             for ci, (cat, color) in enumerate(zip(self.categories, self.group_colors)):
                 val    = self.values[gi][ci]
