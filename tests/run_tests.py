@@ -16,6 +16,7 @@ import traceback
 # Install shim before anything else
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pytest_shim as _pytest_shim
+
 sys.modules["pytest"] = _pytest_shim
 
 # Add project root to path
@@ -80,9 +81,12 @@ def run_file(path: str) -> tuple[int, int, int]:
             instance = obj()
             for mname in dir(instance):
                 mobj = getattr(instance, mname)
-                if mname.startswith("test_") and callable(mobj):
-                    if not getattr(mobj, "_shim_skip", False):
-                        candidates.append((f"{name}.{mname}", mobj))
+                if (
+                    mname.startswith("test_")
+                    and callable(mobj)
+                    and not getattr(mobj, "_shim_skip", False)
+                ):
+                    candidates.append((f"{name}.{mname}", mobj))
 
     passed = failed = skipped = 0
     for tname, fn in candidates:
