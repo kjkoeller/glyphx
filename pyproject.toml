@@ -147,7 +147,12 @@ ignore = [
 "tests/*"            = ["E402"]
 
 [tool.mypy]
-python_version = "3.10"
+# Pinned to 3.12 rather than the 3.10 floor in requires-python: numpy >= 2.5
+# ships stubs written with PEP 695 `type X = ...` statements, which mypy
+# refuses to parse when told to target 3.10, aborting the whole run with a
+# syntax error before it reaches any glyphx source.  Ruff still enforces the
+# real 3.10 floor via target-version = "py310".
+python_version = "3.12"
 ignore_missing_imports = true
 # Start permissive: the goal is to keep py.typed honest, then tighten.
 disallow_untyped_defs = false
