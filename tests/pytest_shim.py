@@ -24,7 +24,6 @@ from __future__ import annotations
 import sys
 import unittest
 import warnings
-import contextlib
 from typing import Any
 
 # ---------------------------------------------------------------------------
@@ -78,6 +77,10 @@ class _WarnsCtx:
         return self
 
     def __exit__(self, *args):
+        # Snapshot before catch_warnings tears the recorder down, so the
+        # records stay readable after the block -- pytest.warns callers
+        # routinely inspect record[0].message once the block has exited.
+        self._records = list(self._records)
         self._mgr.__exit__(*args)
         matched = [r for r in self._records if issubclass(r.category, self._cls)]
         if not matched:
@@ -85,6 +88,16 @@ class _WarnsCtx:
                 f"Expected {self._cls.__name__} warning but none was raised."
             )
         return False
+
+    # pytest's WarningsChecker is a sequence over the recorded warnings.
+    def __len__(self):
+        return len(self._records)
+
+    def __getitem__(self, index):
+        return self._records[index]
+
+    def __iter__(self):
+        return iter(self._records)
 
 
 def warns(warning_class, *args, **kwargs):
