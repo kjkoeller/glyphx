@@ -96,6 +96,7 @@ Contents
    :maxdepth: 2
    :caption: User Guide
 
+   intro
    getting_started
    usage
    customization

@@ -130,6 +130,7 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
     Inject ARIA attributes and landmark elements into a rendered SVG string.
 
     Changes made:
+
     - Adds ``role="img"`` and ``aria-labelledby`` to the root ``<svg>``
       (only if not already present)
     - Injects ``<title>`` and ``<desc>`` as the first children of the SVG

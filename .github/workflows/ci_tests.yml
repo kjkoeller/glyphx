@@ -28,6 +28,21 @@ jobs:
       - name: Ruff
         run: tox -e lint
 
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # setuptools_scm needs the tag history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install tox
+        run: python -m pip install --upgrade pip tox
+      - name: Sphinx
+        run: tox -e docs
+
   typing:
     name: typing (advisory)
     runs-on: ubuntu-latest
