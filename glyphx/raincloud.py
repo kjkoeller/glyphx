@@ -6,7 +6,7 @@ The raincloud combines three views of a distribution in one:
   • A half-violin (KDE density curve)
   • A box-and-whisker summary
 
-It is the modern replacement for the plain box plot — you see
+It is the modern replacement for the plain box plot - you see
 every data point AND the full density shape AND quantile summary.
 
     from glyphx import Figure
@@ -23,9 +23,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from .violin_plot import _numpy_kde
 from .colormaps import colormap_colors
 from .utils import svg_escape
+from .violin_plot import _numpy_kde
 
 
 class RaincloudSeries:
@@ -71,7 +71,7 @@ class RaincloudSeries:
         if len(self.colors) < n_cats:
             self.colors = (self.colors * ((n_cats // len(self.colors)) + 1))[:n_cats]
 
-        # Expose x/y for domain computation — 0.5-indexed to align with grid label mapping
+        # Expose x/y for domain computation - 0.5-indexed to align with grid label mapping
         self.x = [i + 0.5 for i in range(n_cats)]
         all_vals = np.concatenate(self.datasets)
         self.y   = [float(all_vals.min()), float(all_vals.max())]
@@ -89,7 +89,7 @@ class RaincloudSeries:
 
             cx = ax.scale_x(i + 0.5)  # 0-indexed, matches domain x positions  # type: ignore[union-attr]
 
-            # ── 1. Jittered raw points (left side) ───────────────────────
+            # 1. Jittered raw points (left side)
             jitter = rng.uniform(-self.jitter_width, 0, size=len(arr))
             for val, jit in zip(arr, jitter):
                 py = scale_y(float(val))
@@ -103,7 +103,7 @@ class RaincloudSeries:
                     f'data-label="{svg_escape(self.label or cat)}"/>'
                 )
 
-            # ── 2. Half-violin (right side) ───────────────────────────────
+            # 2. Half-violin (right side)
             kde    = _numpy_kde(arr)
             y_vals = np.linspace(arr.min(), arr.max(), 100)
             dens   = kde(y_vals)
@@ -120,7 +120,7 @@ class RaincloudSeries:
                 f'stroke="{color}" stroke-width="1.5"/>'
             )
 
-            # ── 3. Box plot (centre) ──────────────────────────────────────
+            # 3. Box plot (centre)
             q1          = float(np.percentile(arr, 25))
             q2          = float(np.median(arr))
             q3          = float(np.percentile(arr, 75))
@@ -156,7 +156,7 @@ class RaincloudSeries:
                 f'y1="{scale_y(q2)}" y2="{scale_y(q2)}" '
                 f'stroke="#fff" stroke-width="2.5"/>'
             )
-            # Category label — skip if _x_categories is set, grid handles it
+            # Category label - skip if _x_categories is set, grid handles it
             if not getattr(self, "_x_categories", None):
                 elements.append(
                     f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]

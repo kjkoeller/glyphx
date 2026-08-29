@@ -1,7 +1,7 @@
 """
-GlyphX KDESeries — standalone kernel density estimate curve.
+GlyphX KDESeries - standalone kernel density estimate curve.
 
-Uses the pure-NumPy Gaussian KDE from violin_plot.py — no scipy required.
+Uses the pure-NumPy Gaussian KDE from violin_plot.py - no scipy required.
 
     from glyphx import Figure
     from glyphx.kde import KDESeries
@@ -15,8 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .series   import BaseSeries
-from .utils    import svg_escape
+from .series import BaseSeries
 from .violin_plot import _numpy_kde
 
 

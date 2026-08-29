@@ -12,8 +12,11 @@ Matplotlib, Seaborn, and Plotly:
 from __future__ import annotations
 
 import math
+import os as _os
+import sys as _sys
+
 import numpy as np
-import sys as _sys, os as _os
+
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 try:
     import pytest
@@ -23,15 +26,14 @@ except ImportError:
 import pandas as pd
 
 from glyphx import Figure
-from glyphx.series import LineSeries, BarSeries, ScatterSeries
 from glyphx.bubble import BubbleSeries
-from glyphx.sunburst import SunburstSeries
-from glyphx.parallel_coords import ParallelCoordinatesSeries
 from glyphx.diverging_bar import DivergingBarSeries
-from glyphx.downsample import lttb, maybe_downsample, AUTO_THRESHOLD
+from glyphx.downsample import AUTO_THRESHOLD, lttb, maybe_downsample
 from glyphx.layout import Axes
+from glyphx.parallel_coords import ParallelCoordinatesSeries
+from glyphx.series import LineSeries
+from glyphx.sunburst import SunburstSeries
 from glyphx.themes import themes
-
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -342,7 +344,6 @@ def test_line_series_auto_downsamples_svg():
     svg = s.to_svg(ax)
     assert "polyline" in svg
     # Should be downsampled — points string should NOT contain 20k entries
-    point_count = svg.count(" ") // 1   # rough proxy
     assert len(svg) < 2_000_000   # well under raw 20k point budget
 
 def test_lttb_shape_preservation():
@@ -369,7 +370,6 @@ def sales_df():
     })
 
 def test_accessor_bar_hue_creates_multiple_series(sales_df):
-    import glyphx  # ensure accessor registered
     fig = sales_df.glyphx.bar(x="month", y="revenue", hue="region",
                                auto_display=False)
     # Should have one BarSeries per unique region value
@@ -377,14 +377,12 @@ def test_accessor_bar_hue_creates_multiple_series(sales_df):
     assert n_series == sales_df["region"].nunique()
 
 def test_accessor_bar_hue_different_colors(sales_df):
-    import glyphx
     fig = sales_df.glyphx.bar(x="month", y="revenue", hue="region",
                                auto_display=False)
     colors = [s.color for s, _ in fig.series if hasattr(s, "color")]
     assert len(set(colors)) > 1   # distinct colors per group
 
 def test_accessor_bar_hue_legend_labels(sales_df):
-    import glyphx
     fig = sales_df.glyphx.bar(x="month", y="revenue", hue="region",
                                auto_display=False)
     svg = fig.render_svg()
@@ -392,7 +390,6 @@ def test_accessor_bar_hue_legend_labels(sales_df):
     assert "South" in svg
 
 def test_accessor_line_hue(sales_df):
-    import glyphx
     fig = sales_df.glyphx.line(x="month", y="revenue", hue="region",
                                 auto_display=False)
     assert len(fig.series) == sales_df["region"].nunique()
@@ -400,7 +397,6 @@ def test_accessor_line_hue(sales_df):
     assert "polyline" in svg
 
 def test_accessor_scatter_hue(sales_df):
-    import glyphx
     fig = sales_df.glyphx.scatter(x="spend", y="revenue", hue="region",
                                    auto_display=False)
     assert len(fig.series) == sales_df["region"].nunique()
@@ -409,7 +405,6 @@ def test_accessor_scatter_hue(sales_df):
 
 def test_accessor_bar_no_hue_unchanged(sales_df):
     """Without hue, bar() should produce a single series as before."""
-    import glyphx
     fig = sales_df[sales_df["region"] == "North"].glyphx.bar(
         x="month", y="revenue", auto_display=False
     )
@@ -417,7 +412,6 @@ def test_accessor_bar_no_hue_unchanged(sales_df):
 
 def test_hue_theme_colors_used(sales_df):
     """Hue groups should pick colors from the active theme palette."""
-    import glyphx
     fig = sales_df.glyphx.bar(x="month", y="revenue", hue="region",
                                theme="dark", auto_display=False)
     dark_palette = fig.theme["colors"]
@@ -427,7 +421,6 @@ def test_hue_theme_colors_used(sales_df):
 
 def test_hue_three_groups():
     """Hue with three unique values should produce three distinct series."""
-    import glyphx
     df = pd.DataFrame({
         "x": list(range(9)),
         "y": list(range(9)),

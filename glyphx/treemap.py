@@ -17,15 +17,10 @@ ratios so rectangles are as square as possible.
 """
 from __future__ import annotations
 
-import math
+from .colormaps import apply_colormap
+from .utils import _format_tick, svg_escape
 
-from .colormaps import colormap_colors, apply_colormap
-from .utils import svg_escape, _format_tick
-
-
-# ---------------------------------------------------------------------------
 # Squarification algorithm
-# ---------------------------------------------------------------------------
 
 def _worst_ratio(row: list[float], side: float) -> float:
     """Worst (max) aspect ratio in a current candidate row."""
@@ -110,9 +105,7 @@ def _squarify_normed(
         _squarify_normed(remaining, x + row_w, y, w - row_w, h, rects)
 
 
-# ---------------------------------------------------------------------------
 # Series class
-# ---------------------------------------------------------------------------
 
 class TreemapSeries:
     """
@@ -198,7 +191,6 @@ class TreemapSeries:
         for (rx, ry, rw, rh), lbl, val, color in zip(
             rects, self.labels, self.values, self.colors
         ):
-            # Apply padding
             p      = self.padding
             rx, ry = rx + p, ry + p
             rw, rh = rw - 2 * p, rh - 2 * p
@@ -218,7 +210,7 @@ class TreemapSeries:
                 f'fill="{color}" rx="3" {tooltip}/>'
             )
 
-            # Label — only if rect is large enough
+            # Label - only if rect is large enough
             font_size = min(14, max(self.min_font, int(rh * 0.22)))
             if rw > 30 and rh > font_size * 2:
                 elements.append(

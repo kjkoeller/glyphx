@@ -2,13 +2,13 @@
 GlyphX layout module: Axes scaling, tick/grid rendering, and multi-figure grid layout.
 """
 
-import math
+from __future__ import annotations
+
 import datetime as _dt
+import math
+import warnings
 
-
-# ---------------------------------------------------------------------------
 # Datetime helpers
-# ---------------------------------------------------------------------------
 
 def _is_datetime(val) -> bool:
     """Return True if val is any date/datetime/Timestamp type."""
@@ -53,7 +53,7 @@ def _format_datetime_tick(ts: float, span_seconds: float) -> str:
     return dt.strftime("%Y")              # > 2 years → 2024
 
 
-from .utils import _format_tick, svg_escape
+from .utils import SVG_PRECISION, _format_tick, has_data, is_finite, svg_label
 
 
 class Axes:
@@ -89,6 +89,7 @@ class Axes:
         legend=None,
         xscale="linear",
         yscale="linear",
+        precision=SVG_PRECISION,
     ):
         self.width    = width
         self.height   = height
@@ -98,6 +99,10 @@ class Axes:
         self.legend_pos = legend
         self.xscale   = xscale
         self.yscale   = yscale
+        # Decimal places kept in emitted pixel coordinates. Sub-pixel
+        # precision beyond ~2 dp is invisible at any realistic display
+        # density but inflates every path in the document.
+        self.precision = precision
 
         self.title  = None
         self.xlabel = None
@@ -114,7 +119,7 @@ class Axes:
         # Categorical label mapping (populated by compute_domain)
         self._x_categories = None
 
-        # ── Custom tick overrides (Matplotlib parity) ──────────────────────
+        # Custom tick overrides (Matplotlib parity)
         # When set, these override the auto-computed tick values in render_grid.
         self._xticks:       list | None        = None   # explicit x positions
         self._yticks:       list | None        = None   # explicit y positions
@@ -125,20 +130,18 @@ class Axes:
         self._tick_length:  float              = 4.0    # tick mark length px
         self._minor_length: float              = 2.0    # minor tick length px
 
-        # ── Spine visibility ───────────────────────────────────────────────
+        # Spine visibility
         self._spines: dict[str, bool] = {
             "left": True, "right": True, "top": False, "bottom": True
         }
 
-        # ── Shaded bands (axhspan / axvspan) ──────────────────────────────
+        # Shaded bands (axhspan / axvspan)
         self._hspans: list[dict] = []   # horizontal shaded regions
         self._vspans: list[dict] = []   # vertical shaded regions
 
-    # ------------------------------------------------------------------
     # Matplotlib-parity: custom ticks, formatters, spines, spans
-    # ------------------------------------------------------------------
 
-    def set_xticks(self, ticks: list, labels: list[str] | None = None) -> "Axes":
+    def set_xticks(self, ticks: list, labels: list[str] | None = None) -> Axes:
         """
         Set explicit X-axis tick positions.
 
@@ -160,7 +163,7 @@ class Axes:
             self._xticklabels = [str(l) for l in labels]
         return self
 
-    def set_yticks(self, ticks: list, labels: list[str] | None = None) -> "Axes":
+    def set_yticks(self, ticks: list, labels: list[str] | None = None) -> Axes:
         """
         Set explicit Y-axis tick positions.
 
@@ -180,17 +183,17 @@ class Axes:
             self._yticklabels = [str(l) for l in labels]
         return self
 
-    def set_xticklabels(self, labels: list[str]) -> "Axes":
+    def set_xticklabels(self, labels: list[str]) -> Axes:
         """Override X-tick display strings without changing positions."""
         self._xticklabels = [str(l) for l in labels]
         return self
 
-    def set_yticklabels(self, labels: list[str]) -> "Axes":
+    def set_yticklabels(self, labels: list[str]) -> Axes:
         """Override Y-tick display strings without changing positions."""
         self._yticklabels = [str(l) for l in labels]
         return self
 
-    def set_tick_format(self, formatter) -> "Axes":
+    def set_tick_format(self, formatter) -> Axes:
         """
         Apply a callable formatter to all numeric tick labels.
 
@@ -212,7 +215,7 @@ class Axes:
         self._tick_formatter = formatter
         return self
 
-    def set_minor_ticks(self, n: int, length: float = 2.0) -> "Axes":
+    def set_minor_ticks(self, n: int, length: float = 2.0) -> Axes:
         """
         Draw ``n`` minor tick subdivisions between each pair of major ticks.
 
@@ -232,7 +235,7 @@ class Axes:
         self._minor_length = float(length)
         return self
 
-    def set_tick_length(self, length: float) -> "Axes":
+    def set_tick_length(self, length: float) -> Axes:
         """Set the major tick mark length in pixels (default: 4)."""
         self._tick_length = float(length)
         return self
@@ -243,7 +246,7 @@ class Axes:
         right:  bool = True,
         top:    bool = False,
         bottom: bool = True,
-    ) -> "Axes":
+    ) -> Axes:
         """
         Control which axis spines (border lines) are visible.
 
@@ -273,7 +276,7 @@ class Axes:
         color: str   = "#ffff00",
         alpha: float = 0.20,
         label: str | None = None,
-    ) -> "Axes":
+    ) -> Axes:
         """
         Add a horizontal shaded band spanning the full plot width.
 
@@ -305,7 +308,7 @@ class Axes:
         color: str   = "#a855f7",
         alpha: float = 0.20,
         label: str | None = None,
-    ) -> "Axes":
+    ) -> Axes:
         """
         Add a vertical shaded band spanning the full plot height.
 
@@ -361,7 +364,6 @@ class Axes:
 
         # Vertical bands
         for span in self._vspans:
-            # Resolve categorical x values
             def _resolve_x(v):
                 if isinstance(v, str):
                     for s in self.series + self.y2_series:
@@ -392,9 +394,7 @@ class Axes:
 
         return "\n".join(elements)
 
-    # ------------------------------------------------------------------
     # Series registration
-    # ------------------------------------------------------------------
 
     def add(self, series, use_y2=False):
         """Proxy for add_series; allows Figure/Axes to share call syntax."""
@@ -413,9 +413,7 @@ class Axes:
         else:
             self.series.append(series)
 
-    # ------------------------------------------------------------------
     # Domain computation (non-mutating)
-    # ------------------------------------------------------------------
 
     def compute_domain(self, series_list):
         """
@@ -444,7 +442,7 @@ class Axes:
         # receive unique, non-overlapping x positions.
         global_cats: list = []
         for s in series_list:
-            if not hasattr(s, "x") or not s.x:
+            if not hasattr(s, "x") or not has_data(s.x):
                 continue
             if isinstance(s.x[0], str) and not _is_datetime(s.x[0]):
                 for cat in s.x:
@@ -456,7 +454,7 @@ class Axes:
         for s in series_list:
             if not hasattr(s, "x") or not hasattr(s, "y"):
                 continue
-            if not s.x or not s.y:
+            if not has_data(s.x) or not has_data(s.y):
                 continue
 
             # Handle categorical X: store numeric mapping without mutation
@@ -473,10 +471,29 @@ class Axes:
             else:
                 numeric_x = s.x
 
-            x_vals.extend(numeric_x)
-            y_vals.extend(s.y)
+            # Missing values (None/NaN/inf) must not participate in the
+            # domain: min()/max() would either raise TypeError or stretch
+            # the axis to infinity. They are rendered as gaps instead.
+            x_vals.extend(v for v in numeric_x if is_finite(v))
+            y_vals.extend(v for v in s.y if is_finite(v))
 
-        if not x_vals or not y_vals:
+            # Series whose marks have width -- histogram bars span a bin,
+            # not a point -- report the extent they actually occupy. Using
+            # only the centres lets half the outermost bar hang outside the
+            # plot area and over the tick labels.
+            extent = getattr(s, "x_extent", None)
+            if extent:
+                x_vals.extend(v for v in extent if is_finite(v))
+
+        # A log axis is undefined at and below zero. Masking those values
+        # (matplotlib's behaviour) keeps the axis range honest; leaving them
+        # in silently collapses the real data into a fraction of the canvas.
+        if self.xscale == "log":
+            x_vals = self._mask_nonpositive(x_vals, "x")
+        if self.yscale == "log":
+            y_vals = self._mask_nonpositive(y_vals, "y")
+
+        if not has_data(x_vals) or not has_data(y_vals):
             return None, None
 
         x_domain = (min(x_vals) - 0.5, max(x_vals) + 0.5)
@@ -484,13 +501,26 @@ class Axes:
         y_min = min(y_vals)
         y_max = max(y_vals)
 
-        # Detect which series types anchor the Y baseline at zero
+        # Series drawn from a zero baseline need 0 inside the domain, or
+        # their bars start at a pixel outside the canvas and get clipped.
+        # Series opt in with `zero_anchored = True`; the name list is a
+        # fallback for third-party series that predate the attribute.
         _zero_anchor_types = ("BarSeries", "HistogramSeries",
                                "BoxPlotSeries", "GroupedBarSeries",
-                               "WaterfallSeries")
+                               "WaterfallSeries", "CountPlotSeries",
+                               "StackedBarSeries", "DivergingBarSeries")
         _has_zero_anchor = any(
-            s.__class__.__name__ in _zero_anchor_types for s in series_list
+            getattr(s, "zero_anchored", False)
+            or s.__class__.__name__ in _zero_anchor_types
+            for s in series_list
         )
+        # Bars measure from zero, so zero has to be in the domain whichever
+        # way the data runs. Otherwise the baseline sits off-canvas and the
+        # bars grow from the wrong edge.
+        if _has_zero_anchor:
+            y_min = min(y_min, 0.0)
+            y_max = max(y_max, 0.0)
+
         _bottom_is_zero = _has_zero_anchor and y_min >= 0
 
         # Force zero-anchored series to include 0
@@ -505,25 +535,68 @@ class Axes:
 
         # Add 7% breathing room so data never butts against the axis edge.
         # Bottom pad is skipped when the baseline is zero (bars, histograms).
-        _span = y_max - y_min
-        PAD   = 0.07
-        y_max += _span * PAD
-        if not _bottom_is_zero:
-            y_min -= _span * PAD
+        if self.yscale == "log":
+            # Linear padding takes 1..100 down to -5.93, which log10() can't
+            # represent. Pad in log space instead: a fixed fraction of a
+            # decade at each end.
+            log_lo, log_hi = math.log10(y_min), math.log10(y_max)
+            if log_lo == log_hi:
+                log_lo -= 0.5
+                log_hi += 0.5
+            log_pad = (log_hi - log_lo) * 0.07
+            y_min = 10 ** (log_lo - log_pad)
+            y_max = 10 ** (log_hi + log_pad)
+        else:
+            _span = y_max - y_min
+            PAD   = 0.07
+            y_max += _span * PAD
+            if not _bottom_is_zero:
+                y_min -= _span * PAD
 
         return x_domain, (y_min, y_max)
 
-    # ------------------------------------------------------------------
     # Scale functions
-    # ------------------------------------------------------------------
 
     def _scale_linear(self, domain_min, domain_max, range_min, range_max):
         """Return a callable that linearly maps domain → pixel range."""
+        ndigits = self.precision
+
         def scaler(value):
             if domain_max == domain_min:
-                return (range_min + range_max) / 2
-            return range_min + (value - domain_min) * (range_max - range_min) / (domain_max - domain_min)
+                return round((range_min + range_max) / 2, ndigits)
+            return round(
+                range_min
+                + (value - domain_min) * (range_max - range_min) / (domain_max - domain_min),
+                ndigits,
+            )
         return scaler
+
+    # TODO: symlog scale. Masking is right for a plain log axis but it
+    # throws data away, and people plotting residuals want to see the
+    # negatives.
+    @staticmethod
+    def _mask_nonpositive(values: list, axis: str) -> list:
+        """
+        Drop values that a log axis cannot represent, warning once.
+
+        Args:
+            values (list): Numeric values destined for a log axis.
+            axis (str): ``"x"`` or ``"y"``, used in the warning message.
+
+        Returns:
+            list: Only the strictly positive values.
+        """
+        kept = [v for v in values if v > 0]
+        dropped = len(values) - len(kept)
+        if dropped:
+            warnings.warn(
+                f"{dropped} non-positive value(s) masked from the log-scaled "
+                f"{axis}-axis; log10 is undefined at and below zero. "
+                f"Use a linear scale to show them.",
+                UserWarning,
+                stacklevel=3,
+            )
+        return kept
 
     def _scale_log(self, domain_min, domain_max, range_min, range_max):
         """Return a callable that log-maps domain → pixel range."""
@@ -531,14 +604,22 @@ class Axes:
             domain_min = 1e-10  # guard against log(0)
         log_min = math.log10(domain_min)
         log_max = math.log10(max(domain_max, domain_min * 10))
+        ndigits = self.precision
 
         def scaler(value):
-            if value <= 0:
-                return range_max  # push non-positive values off canvas
+            if value is None or value <= 0:
+                # Undefined on a log axis. Returning NaN routes the value
+                # through the same is_finite() gates that handle missing
+                # data, so it becomes a gap rather than a point silently
+                # placed at the wrong end of the axis.
+                return math.nan
             lv = math.log10(value)
             if log_max == log_min:
-                return (range_min + range_max) / 2
-            return range_min + (lv - log_min) * (range_max - range_min) / (log_max - log_min)
+                return round((range_min + range_max) / 2, ndigits)
+            return round(
+                range_min + (lv - log_min) * (range_max - range_min) / (log_max - log_min),
+                ndigits,
+            )
         return scaler
 
     def _make_scale(self, domain_min, domain_max, range_min, range_max, scale_type):
@@ -581,9 +662,7 @@ class Axes:
         else:
             self.scale_y2 = self.scale_y  # fallback
 
-    # ------------------------------------------------------------------
     # SVG rendering
-    # ------------------------------------------------------------------
 
     def render_axes(self):
         """
@@ -592,9 +671,6 @@ class Axes:
         Returns:
             str: SVG elements for axes.
         """
-        if self._x_domain is None or self._y_domain is None:
-            return ""
-
         elements = []
         stroke     = self.theme.get("axis_color", "#333")
         text_color = self.theme.get("text_color", "#000")
@@ -612,11 +688,22 @@ class Axes:
             f'x2="{pad}" y2="{self.height - pad}" stroke="{stroke}" />'
         )
 
+        # No domain means no plottable data. Draw the empty frame with a
+        # notice rather than returning nothing: a blank canvas is
+        # indistinguishable from a rendering failure.
+        if self._x_domain is None or self._y_domain is None:
+            elements.append(
+                f'<text x="{self.width // 2}" y="{self.height // 2}" '
+                f'text-anchor="middle" font-size="13" font-family="{font}" '
+                f'fill="{text_color}" opacity="0.55">No data to display</text>'
+            )
+            return "\n".join(elements)
+
         if self.xlabel:
             elements.append(
                 f'<text x="{self.width // 2}" y="{self.height - 10}" '
                 f'text-anchor="middle" font-size="13" font-family="{font}" '
-                f'fill="{text_color}">{svg_escape(self.xlabel)}</text>'
+                f'fill="{text_color}">{svg_label(self.xlabel)}</text>'
             )
 
         if self.ylabel:
@@ -624,7 +711,7 @@ class Axes:
                 f'<text x="15" y="{self.height // 2}" text-anchor="middle" '
                 f'font-size="13" font-family="{font}" fill="{text_color}" '
                 f'transform="rotate(-90, 15, {self.height // 2})">'
-                f'{svg_escape(self.ylabel)}</text>'
+                f'{svg_label(self.ylabel)}</text>'
             )
 
         if self.y2_series:
@@ -658,9 +745,21 @@ class Axes:
         text_color = self.theme.get("text_color", "#000")
         pad        = self.padding
 
-        # ------------------------------------------------------------------
+        # When the data crosses zero, draw the baseline darker than the other
+        # gridlines. Bars above and below it are only readable against a
+        # visible zero, and without one a diverging chart looks like an
+        # ordinary chart with a strange axis.
+        y_lo, y_hi = self._y_domain
+        if y_lo < 0 < y_hi and self.scale_y is not None:
+            zero_px = self.scale_y(0)
+            elements.append(
+                f'<line class="glyphx-zero-line" x1="{pad}" y1="{zero_px}" '
+                f'x2="{self.width - pad}" y2="{zero_px}" '
+                f'stroke="{self.theme.get("axis_color", "#333")}" '
+                f'stroke-width="1" opacity="0.6"/>'
+            )
+
         # Collect category labels for X axis from primary and Y2 series
-        # ------------------------------------------------------------------
         all_categories: dict = {}
         for s in list(self.series) + list(self.y2_series):
             if hasattr(s, "_x_categories") and s._x_categories:
@@ -669,9 +768,7 @@ class Axes:
                 for pos, cat in zip(nx, s._x_categories):
                     all_categories[pos] = cat
 
-        # ------------------------------------------------------------------
         # Helper: generate tick values for a numeric domain
-        # ------------------------------------------------------------------
         def _tick_vals(d_min: float, d_max: float, n: int, is_log: bool) -> list:
             if is_log and d_min > 0:
                 lo = int(_math.floor(_math.log10(d_min)))
@@ -683,17 +780,13 @@ class Axes:
                 return vals or [d_min + i * (d_max - d_min) / n for i in range(n + 1)]
             return [d_min + i * (d_max - d_min) / n for i in range(n + 1)]
 
-        # ------------------------------------------------------------------
-        # Shaded spans (axhspan / axvspan) — drawn before grid so they sit behind
-        # ------------------------------------------------------------------
+        # Shaded spans (axhspan / axvspan) - drawn before grid so they sit behind
         _span_svg = self._render_spans()
         if _span_svg:
             elements.append(_span_svg)
 
-        # ------------------------------------------------------------------
-        # Y1 ticks — left side, horizontal grid lines across full plot width
+        # Y1 ticks - left side, horizontal grid lines across full plot width
         # Use custom tick positions if set, otherwise auto-compute.
-        # ------------------------------------------------------------------
         def _fmt(val: float, label_override: str | None = None) -> str:
             if label_override is not None:
                 return label_override
@@ -744,9 +837,7 @@ class Axes:
                         f'y1="{mp}" y2="{mp}" stroke="{text_color}" '
                         f'stroke-width="0.7" opacity="0.5"/>')
 
-        # ------------------------------------------------------------------
-        # Y2 ticks — right side, own independent scale, no extra grid lines
-        # ------------------------------------------------------------------
+        # Y2 ticks - right side, own independent scale, no extra grid lines
         _has_y2 = (
             bool(self.y2_series)
             and self._y2_domain is not None
@@ -770,9 +861,7 @@ class Axes:
                     f'{_format_tick(y2_v)}</text>'
                 )
 
-        # ------------------------------------------------------------------
-        # X ticks — bottom, vertical grid lines
-        # ------------------------------------------------------------------
+        # X ticks - bottom, vertical grid lines
         rotate      = getattr(self, "_auto_rotate", False)
         anchor      = "end" if rotate else "middle"
         rot_tfm     = "rotate(-40, {x_p}, {y_label})" if rotate else ""
@@ -791,7 +880,7 @@ class Axes:
                 elements.append(
                     f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{svg_escape(str(label))}</text>'
+                    f'{svg_label(label)}</text>'
                 )
         else:
             _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
@@ -852,9 +941,9 @@ class Axes:
         return "\n".join(elements)
 
 
-    # ── Tight layout ────────────────────────────────────────────────────────
+    # Tight layout
 
-    def tight_layout(self) -> "Axes":
+    def tight_layout(self) -> Axes:
         """
         Auto-adjust padding so tick labels, axis labels, and titles
         don't clip or overlap.
@@ -912,9 +1001,7 @@ class Axes:
         return max_len * 6.5 > tick_spacing * 0.85
 
 
-# ---------------------------------------------------------------------------
 # Multi-figure grid layout
-# ---------------------------------------------------------------------------
 
 def grid(figures, rows=1, cols=1, gap=20):
     """

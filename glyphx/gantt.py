@@ -30,15 +30,12 @@ dependency arrows -- all as pure SVG with zero external dependencies.
 """
 from __future__ import annotations
 
-import math
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 from typing import Any
 
-import numpy as np
-
-from .series    import BaseSeries
 from .colormaps import colormap_colors
-from .utils     import svg_escape, _format_tick
+from .series import BaseSeries
+from .utils import svg_escape
 
 
 def _to_date(v) -> date:
@@ -119,7 +116,6 @@ class GanttSeries(BaseSeries):
         self._d_min = min(self._starts)
         self._d_max = max(self._ends)
         # Add 5% padding on each side
-        span_days   = max((_to_date(t["end"]) - _to_date(t["start"])).days for t in tasks)
         pad         = max(3, int((_date_to_epoch(self._d_max) - _date_to_epoch(self._d_min)) * 0.04))
         self._d_min = date.fromordinal(self._d_min.toordinal() - pad)
         self._d_max = date.fromordinal(self._d_max.toordinal() + pad)
@@ -140,7 +136,6 @@ class GanttSeries(BaseSeries):
         # BaseSeries stubs -- axis-free rendering
         super().__init__(x=None, y=None, color=self._default_color, label=label)
 
-    # ------------------------------------------------------------------
     def to_svg(self, ax: object, use_y2: bool = False) -> str:  # type: ignore
         w     = getattr(ax, "width",   800)
         h     = getattr(ax, "height",  400)
@@ -160,7 +155,6 @@ class GanttSeries(BaseSeries):
                        plot_h // max(n_tasks, 1))
         bar_h    = max(8, row_h - self.row_padding)
 
-        # Date -> pixel
         epoch_min = _date_to_epoch(self._d_min)
         epoch_max = _date_to_epoch(self._d_max)
         span      = epoch_max - epoch_min or 1
@@ -170,10 +164,19 @@ class GanttSeries(BaseSeries):
 
         elements: list[str] = []
 
-        # -- Grid lines (monthly) -------------------------------------
+        # Grid lines (monthly)
         if self.show_grid:
             cur = date(self._d_min.year, self._d_min.month, 1)
             while cur <= self._d_max:
+                # The loop starts at the first of the month *containing*
+                # d_min, which is by definition on or before it -- and since
+                # d_min is itself padded backwards, that month boundary is
+                # usually outside the plot, drawing a gridline and label off
+                # the left edge of the canvas.
+                if cur < self._d_min:
+                    m = cur.month + 1
+                    cur = date(cur.year + (m - 1) // 12, (m - 1) % 12 + 1, 1)
+                    continue
                 gx = dx(cur)
                 elements.append(
                     f'<line x1="{gx:.1f}" x2="{gx:.1f}" '
@@ -191,7 +194,7 @@ class GanttSeries(BaseSeries):
                 y = cur.year + (m - 1) // 12
                 cur = date(y, (m - 1) % 12 + 1, 1)
 
-        # -- Task bars ------------------------------------------------
+        # Task bars
         for i, task in enumerate(self.tasks):
             row_y   = pad_t + i * row_h
             bar_y   = row_y + (row_h - bar_h) // 2
@@ -256,7 +259,7 @@ class GanttSeries(BaseSeries):
                         f'{int(float(prog)*100)}%</text>'
                     )
 
-        # -- Today line -----------------------------------------------
+        # Today line
         if self.show_today:
             today = date.today()
             if self._d_min <= today <= self._d_max:
@@ -273,7 +276,7 @@ class GanttSeries(BaseSeries):
                     f'fill="{self.today_color}" font-weight="600">Today</text>'
                 )
 
-        # -- Group legend ---------------------------------------------
+        # Group legend
         if self._group_colors:
             lx  = w - pad_r + 12
             ly  = pad_t

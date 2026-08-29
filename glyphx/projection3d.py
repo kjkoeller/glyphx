@@ -28,9 +28,9 @@ class Camera3D:
     Orthographic camera for projecting 3D data to 2D SVG.
 
     Angles follow the geographic convention:
-      azimuth  — rotation around the vertical (Z) axis, degrees.
+      azimuth  - rotation around the vertical (Z) axis, degrees.
                  0° = looking from +Y; 90° = looking from +X.
-      elevation — tilt above the horizontal plane, degrees.
+      elevation - tilt above the horizontal plane, degrees.
                   0° = side view; 90° = top-down.
 
     The right-hand coordinate system uses:

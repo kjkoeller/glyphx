@@ -1,15 +1,15 @@
-"""GlyphX Bar3DSeries — 3D bar chart."""
+"""GlyphX Bar3DSeries - 3D bar chart."""
 from __future__ import annotations
 
 import numpy as np
-from .projection3d import Camera3D, normalize, _format_3d_tick
-from .colormaps     import apply_colormap, colormap_colors
-from .utils         import svg_escape
+
+from .colormaps import apply_colormap
+from .projection3d import Camera3D, normalize
 
 
 class Bar3DSeries:
     """
-    3D bar chart — one rectangular bar per (x, y) grid cell, height = z.
+    3D bar chart - one rectangular bar per (x, y) grid cell, height = z.
 
     Args:
         x:     1-D X positions (bar centres).
@@ -72,9 +72,9 @@ class Bar3DSeries:
         dx_n = self._dx / x_span
         dy_n = self._dy / y_span
 
-        all_z = self.z_vals
-        z_max = max(all_z)
-        zn_scale = lambda z: z / (self._z_max or 1) * 1.8 - 0.9
+        def zn_scale(z):
+            return z / (self._z_max or 1) * 1.8 - 0.9
+
 
         bars = []
         if self.paired:

@@ -1,5 +1,5 @@
 """
-GlyphX SparklineSeries — tiny inline charts for dashboards and tables.
+GlyphX SparklineSeries - tiny inline charts for dashboards and tables.
 
 A sparkline is a miniature line or bar chart, typically 60-120px wide and
 20-40px tall, suitable for embedding beside KPI numbers in tables, cards,
@@ -8,7 +8,7 @@ Plotly's require full Figure scaffolding.
 
     from glyphx.sparkline import sparkline_svg
 
-    # Returns a raw SVG string — embed anywhere
+    # Returns a raw SVG string - embed anywhere
     svg = sparkline_svg([1, 3, 2, 5, 4, 6], width=80, height=28, color="#2563eb")
 
     # Or as a Figure series for a standalone chart
@@ -20,14 +20,9 @@ Plotly's require full Figure scaffolding.
 """
 from __future__ import annotations
 
-import math
 from .series import BaseSeries
-from .utils  import svg_escape
 
-
-# ---------------------------------------------------------------------------
-# Standalone helper — returns a raw SVG string with no Figure overhead
-# ---------------------------------------------------------------------------
+# Standalone helper - returns a raw SVG string with no Figure overhead
 
 def sparkline_svg(
     data: list[float],
@@ -125,9 +120,7 @@ def sparkline_svg(
     return "".join(parts)
 
 
-# ---------------------------------------------------------------------------
 # Series wrapper for use inside a Figure
-# ---------------------------------------------------------------------------
 
 class SparklineSeries(BaseSeries):
     """
@@ -179,7 +172,7 @@ class SparklineSeries(BaseSeries):
         if n < 2:
             return ""
 
-        lo, hi = min(self.data), max(self.data)
+        lo = min(self.data)
 
         if self.kind == "bar":
             y0       = scale_y(max(lo, 0))

@@ -16,13 +16,11 @@ No external dependencies -- the entire analysis runs in pure Python/NumPy.
 """
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass, field
 from typing import Any
 
 import numpy as np
 import pandas as pd
-
 
 # ---------------------------------------------------------------------------
 # Recommendation dataclass
@@ -174,10 +172,8 @@ def suggest(
     num_cols  = [c for c in sample.columns if _is_numeric(sample[c])]
     cat_cols  = [c for c in sample.columns if _is_categorical(sample[c])]
     dt_cols   = [c for c in sample.columns if _is_datetime_col(sample[c])]
-    str_cols  = [c for c in sample.columns if sample[c].dtype == object]
 
     n_rows = len(sample)
-    n_cols = len(sample.columns)
     recs: list[Recommendation] = []
 
     # -- Line chart -------------------------------------------------
@@ -318,9 +314,16 @@ def suggest(
 def _render_preview(rec: Recommendation):
     """Build a 340x220 mini Figure from the recommendation."""
     from .figure import Figure
-    from .series import (LineSeries, BarSeries, ScatterSeries,
-                         HistogramSeries, BoxPlotSeries, HeatmapSeries,
-                         PieSeries, DonutSeries)
+    from .series import (
+        BarSeries,
+        BoxPlotSeries,
+        DonutSeries,
+        HeatmapSeries,
+        HistogramSeries,
+        LineSeries,
+        PieSeries,
+        ScatterSeries,
+    )
 
     df    = rec._df
     kind  = rec.kind

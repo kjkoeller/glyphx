@@ -9,7 +9,8 @@ no CDN dependency -- pure SVG paths projected from GeoJSON coordinates.
     import json
 
     # Load GeoJSON (user-supplied)
-    geo = json.load(open("world.geojson"))
+    with open("world.geojson", encoding="utf-8") as fh:
+        geo = json.load(fh)
 
     # Attach data: map feature property -> numeric value
     data = {"USA": 63000, "GBR": 42000, "DEU": 51000, "FRA": 45000}
@@ -22,17 +23,11 @@ no CDN dependency -- pure SVG paths projected from GeoJSON coordinates.
 from __future__ import annotations
 
 import math
-from typing import Any
 
-import numpy as np
+from .colormaps import apply_colormap
+from .utils import _format_tick, has_data, svg_escape
 
-from .colormaps import apply_colormap, colormap_colors
-from .utils     import svg_escape, _format_tick
-
-
-# ---------------------------------------------------------------------------
 # Mercator projection
-# ---------------------------------------------------------------------------
 
 def _mercator_xy(lon: float, lat: float) -> tuple[float, float]:
     """Convert (lon, lat) degrees to Mercator (x, y) in [-π, π]."""
@@ -104,10 +99,11 @@ def _coords_to_path(ring: list[tuple[float, float]]) -> str:
     return " ".join(parts)
 
 
-# ---------------------------------------------------------------------------
 # ChoroplethSeries
-# ---------------------------------------------------------------------------
 
+# TODO: real map projections. Everything here is plain lat/lon treated as
+# x/y, which stretches badly away from the equator. Anything north of about
+# 60 degrees looks wrong. Albers or Mercator would fix it.
 class ChoroplethSeries:
     """
     SVG-path choropleth map from GeoJSON.
@@ -227,7 +223,7 @@ class ChoroplethSeries:
                 )
 
         # Colorbar
-        if self.data:
+        if has_data(self.data):
             cb_x  = W - 28
             cb_y  = H // 4
             cb_h  = H // 2

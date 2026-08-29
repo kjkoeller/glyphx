@@ -17,7 +17,7 @@ Essential for financial P&L analysis, budget variance, and change attribution.
 from __future__ import annotations
 
 from .series import BaseSeries
-from .utils import svg_escape, _format_tick
+from .utils import _format_tick, svg_escape
 
 
 class WaterfallSeries(BaseSeries):
@@ -67,7 +67,7 @@ class WaterfallSeries(BaseSeries):
         running = 0.0
         for v in values:
             if v is None:
-                # Total bar — spans from 0 to current running total
+                # Total bar - spans from 0 to current running total
                 self._bases.append(0.0)
                 self._tops.append(running)
                 self._colors.append(total_color)

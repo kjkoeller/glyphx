@@ -10,11 +10,12 @@ from typing import Any
 
 from .layout import Axes
 from .utils import (
+    as_seq,
+    draw_legend,
+    svg_label,
+    wrap_svg_canvas,
     wrap_svg_with_template,
     write_svg_file,
-    wrap_svg_canvas,
-    draw_legend,
-    svg_escape,
 )
 
 
@@ -68,6 +69,9 @@ class Figure:
         self.rows         = rows
         self.cols         = cols
         self.auto_display = auto_display
+        # Set when show() displays the figure, so the value it returns is not
+        # rendered a second time in the same cell.
+        self._shown_at = None
         self.xscale       = xscale
         self.yscale       = yscale
 
@@ -90,7 +94,7 @@ class Figure:
             [None] * self.cols for _ in range(self.rows)
         ]
         # When the legend sits to the right of the chart area, shrink the
-        # axes so the chart data never overlaps the legend.  The legend
+        # axes so the chart data never overlaps the legend. The legend
         # occupies the right margin within the same total canvas width.
         from .utils import LEGEND_GUTTER
         # Reserve right gutter for legend regardless of position string.
@@ -110,7 +114,7 @@ class Figure:
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
 
-    # -- Fluent setters ---------------------------------------------------
+    # Fluent setters
 
     def set_title(self, title: str) -> Figure:
         """Set the figure title and return ``self`` for chaining."""
@@ -155,10 +159,28 @@ class Figure:
         self.legend_pos = None if position in (False, None) else str(position)
         return self
 
-    # -- Subplot grid -----------------------------------------------------
+    # Subplot grid
 
     def add_axes(self, row: int = 0, col: int = 0) -> Axes:
-        """Create or retrieve the Axes at a grid position."""
+        """
+        Create or retrieve the Axes at a grid position.
+
+        Args:
+            row (int): Zero-based grid row.
+            col (int): Zero-based grid column.
+
+        Returns:
+            Axes: The axes at that position, created on first access.
+
+        Raises:
+            IndexError: If the position is outside the figure's grid.
+        """
+        if not (0 <= row < self.rows and 0 <= col < self.cols):
+            raise IndexError(
+                f"add_axes({row}, {col}) is outside this figure's "
+                f"{self.rows}x{self.cols} grid. Construct the figure with "
+                f"Figure(rows=..., cols=...) to make room for it."
+            )
         if self.grid[row][col] is None:
             self.grid[row][col] = Axes(
                 width=self.width  // self.cols,
@@ -170,7 +192,7 @@ class Figure:
             )
         return self.grid[row][col]  # type: ignore[return-value]
 
-    # -- Series management -------------------------------------------------
+    # Series management
 
     def add(self, series: Any, use_y2: bool = False) -> Figure:
         """
@@ -180,20 +202,44 @@ class Figure:
 
             fig.add(LineSeries(...)).add(BarSeries(...)).show()
         """
+        self._disambiguate_css_class(series)
         self.series.append((series, use_y2))
         if hasattr(series, "x") and hasattr(series, "y"):
             self.axes.add_series(series, use_y2)
         return self
 
+    def _disambiguate_css_class(self, series: Any) -> None:
+        """
+        Ensure this series' CSS class is unique within the figure.
 
-    # -- Shorthand series methods ------------------------------------------
+        Class names are derived from series content, so two series holding
+        identical data and labels hash to the same name -- and the legend
+        would then toggle both at once.  Appending the index of the colliding
+        series keeps the name deterministic while making it unique.
+        """
+        css_class = getattr(series, "css_class", None)
+        if not css_class:
+            return
+        taken = {
+            getattr(existing, "css_class", None) for existing, _ in self.series
+        }
+        if css_class not in taken:
+            return
+        for suffix in range(1, len(self.series) + 2):
+            candidate = f"{css_class}-{suffix}"
+            if candidate not in taken:
+                series.css_class = candidate
+                return
+
+
+    # Shorthand series methods
     # These mirror the long-form Figure().add(XxxSeries(...)) API so users
     # can write fig.line(x, y) instead of importing and constructing manually.
     # Every method returns self for chaining and accepts the same kwargs as
     # the underlying series class.
 
     def line(self, x, y, color=None, label=None, linestyle="solid",
-             width=2, yerr=None, xerr=None, use_y2=False, **kwargs) -> "Figure":
+             width=2, yerr=None, xerr=None, use_y2=False, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.LineSeries`.  Returns ``self``."""
         from .series import LineSeries
         return self.add(LineSeries(x, y, color=color, label=label,
@@ -201,27 +247,27 @@ class Figure:
                                    yerr=yerr, xerr=xerr, **kwargs), use_y2)
 
     def bar(self, x, y, color=None, label=None, bar_width=0.8,
-            yerr=None, use_y2=False, **kwargs) -> "Figure":
+            yerr=None, use_y2=False, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.BarSeries`.  Returns ``self``."""
         from .series import BarSeries
         return self.add(BarSeries(x, y, color=color, label=label,
                                   bar_width=bar_width, yerr=yerr, **kwargs), use_y2)
 
     def scatter(self, x, y, color=None, label=None, size=5,
-                c=None, cmap="viridis", use_y2=False, **kwargs) -> "Figure":
+                c=None, cmap="viridis", use_y2=False, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.ScatterSeries`.  Returns ``self``."""
         from .series import ScatterSeries
         return self.add(ScatterSeries(x, y, color=color, label=label,
                                       size=size, c=c, cmap=cmap, **kwargs), use_y2)
 
-    def hist(self, data, bins=20, color=None, label=None, **kwargs) -> "Figure":
+    def hist(self, data, bins=20, color=None, label=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.HistogramSeries`.  Returns ``self``."""
         from .series import HistogramSeries
         return self.add(HistogramSeries(data, bins=bins,
                                         color=color, label=label, **kwargs))
 
     def box(self, data, categories=None, color=None, box_width=20,
-            **kwargs) -> "Figure":
+            **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.BoxPlotSeries`.  Returns ``self``."""
         from .series import BoxPlotSeries
         return self.add(BoxPlotSeries(data, categories=categories,
@@ -229,7 +275,7 @@ class Figure:
                                       box_width=box_width, **kwargs))
 
     def heatmap(self, matrix, row_labels=None, col_labels=None,
-                show_values=False, cmap=None, **kwargs) -> "Figure":
+                show_values=False, cmap=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.HeatmapSeries`.  Returns ``self``."""
         from .series import HeatmapSeries
         return self.add(HeatmapSeries(matrix, row_labels=row_labels,
@@ -237,20 +283,20 @@ class Figure:
                                       show_values=show_values,
                                       cmap=cmap, **kwargs))
 
-    def pie(self, values, labels=None, colors=None, **kwargs) -> "Figure":
+    def pie(self, values, labels=None, colors=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.PieSeries`.  Returns ``self``."""
         from .series import PieSeries
         return self.add(PieSeries(values=values, labels=labels,
                                   colors=colors, **kwargs))
 
-    def donut(self, values, labels=None, colors=None, **kwargs) -> "Figure":
+    def donut(self, values, labels=None, colors=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.series.DonutSeries`.  Returns ``self``."""
         from .series import DonutSeries
         return self.add(DonutSeries(values=values, labels=labels,
                                     colors=colors, **kwargs))
 
     def area(self, x, y1, y2=0, color=None, alpha=0.25,
-             line_width=1, label=None, **kwargs) -> "Figure":
+             line_width=1, label=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.fill_between.FillBetweenSeries`.  Returns ``self``."""
         from .fill_between import FillBetweenSeries
         return self.add(FillBetweenSeries(x, y1, y2, color=color or "#1f77b4",
@@ -258,7 +304,7 @@ class Figure:
                                           label=label, **kwargs))
 
     def kde(self, data, filled=False, alpha=0.20, color=None,
-            width=2, label=None, **kwargs) -> "Figure":
+            width=2, label=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.kde.KDESeries`.  Returns ``self``."""
         from .kde import KDESeries
         return self.add(KDESeries(data, filled=filled, alpha=alpha,
@@ -266,14 +312,14 @@ class Figure:
                                   label=label, **kwargs))
 
     def ecdf(self, data, color=None, label=None,
-             complementary=False, **kwargs) -> "Figure":
+             complementary=False, **kwargs) -> Figure:
         """Add a :class:`~glyphx.ecdf.ECDFSeries`.  Returns ``self``."""
         from .ecdf import ECDFSeries
         return self.add(ECDFSeries(data, color=color, label=label,
                                    complementary=complementary, **kwargs))
 
     def raincloud(self, data, categories=None, seed=42,
-                  violin_width=40, **kwargs) -> "Figure":
+                  violin_width=40, **kwargs) -> Figure:
         """Add a :class:`~glyphx.raincloud.RaincloudSeries`.  Returns ``self``."""
         from .raincloud import RaincloudSeries
         series = RaincloudSeries(data, categories=categories,
@@ -282,20 +328,20 @@ class Figure:
         return self.add(series)
 
     def candlestick(self, dates, open, high, low, close,
-                    label=None, **kwargs) -> "Figure":
+                    label=None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.candlestick.CandlestickSeries`.  Returns ``self``."""
         from .candlestick import CandlestickSeries
         return self.add(CandlestickSeries(dates, open, high, low, close,
                                           label=label, **kwargs))
 
-    def waterfall(self, labels, values, show_values=True, **kwargs) -> "Figure":
+    def waterfall(self, labels, values, show_values=True, **kwargs) -> Figure:
         """Add a :class:`~glyphx.waterfall.WaterfallSeries`.  Returns ``self``."""
         from .waterfall import WaterfallSeries
         return self.add(WaterfallSeries(labels=labels, values=values,
                                         show_values=show_values, **kwargs))
 
     def treemap(self, labels, values, cmap="viridis",
-                show_values=True, **kwargs) -> "Figure":
+                show_values=True, **kwargs) -> Figure:
         """Add a :class:`~glyphx.treemap.TreemapSeries`.  Returns ``self``."""
         from .treemap import TreemapSeries
         return self.add(TreemapSeries(labels=labels, values=values,
@@ -304,7 +350,7 @@ class Figure:
 
     def bubble(self, x, y, size, color=None, c=None, cmap="viridis",
                alpha=0.65, min_radius=4, max_radius=40,
-               labels=None, label=None, use_y2=False, **kwargs) -> "Figure":
+               labels=None, label=None, use_y2=False, **kwargs) -> Figure:
         """Add a :class:`~glyphx.bubble.BubbleSeries`.  Returns ``self``."""
         from .bubble import BubbleSeries
         return self.add(BubbleSeries(x, y, size, color=color, c=c, cmap=cmap,
@@ -313,14 +359,14 @@ class Figure:
                                      label=label, **kwargs), use_y2)
 
     def sunburst(self, labels, parents, values, cmap="viridis",
-                 **kwargs) -> "Figure":
+                 **kwargs) -> Figure:
         """Add a :class:`~glyphx.sunburst.SunburstSeries`.  Returns ``self``."""
         from .sunburst import SunburstSeries
         return self.add(SunburstSeries(labels=labels, parents=parents,
                                        values=values, cmap=cmap, **kwargs))
 
     def parallel_coords(self, data, axes, hue=None, cmap="viridis",
-                        alpha=0.45, **kwargs) -> "Figure":
+                        alpha=0.45, **kwargs) -> Figure:
         """Add a :class:`~glyphx.parallel_coords.ParallelCoordinatesSeries`.
         Returns ``self``."""
         from .parallel_coords import ParallelCoordinatesSeries
@@ -330,7 +376,7 @@ class Figure:
 
     def diverging_bar(self, categories, values, pos_color="#2563eb",
                       neg_color="#dc2626", show_values=True,
-                      **kwargs) -> "Figure":
+                      **kwargs) -> Figure:
         """Add a :class:`~glyphx.diverging_bar.DivergingBarSeries`.
         Returns ``self``."""
         from .diverging_bar import DivergingBarSeries
@@ -339,7 +385,7 @@ class Figure:
                                            show_values=show_values, **kwargs))
 
     def stream(self, max_points=100, color=None, label=None,
-               **kwargs) -> "Figure":
+               **kwargs) -> Figure:
         """Add a :class:`~glyphx.streaming.StreamingSeries` and return it.
 
         Unlike other shorthand methods, this returns the *series* (not self)
@@ -357,7 +403,7 @@ class Figure:
 
     def axhspan(self, ymin: float, ymax: float,
                 color: str = "#facc15", alpha: float = 0.20,
-                label: str | None = None) -> "Figure":
+                label: str | None = None) -> Figure:
         """
         Add a horizontal shaded band across the full chart width.
 
@@ -383,7 +429,7 @@ class Figure:
 
     def axvspan(self, xmin, xmax,
                 color: str = "#a855f7", alpha: float = 0.20,
-                label: str | None = None) -> "Figure":
+                label: str | None = None) -> Figure:
         """
         Add a vertical shaded band across the full chart height.
 
@@ -408,7 +454,7 @@ class Figure:
         return self
 
     def set_xticks(self, ticks: list,
-                   labels: list | None = None) -> "Figure":
+                   labels: list | None = None) -> Figure:
         """
         Set explicit X-axis tick positions (and optionally their labels).
 
@@ -426,7 +472,7 @@ class Figure:
         return self
 
     def set_yticks(self, ticks: list,
-                   labels: list | None = None) -> "Figure":
+                   labels: list | None = None) -> Figure:
         """
         Set explicit Y-axis tick positions (and optionally their labels).
 
@@ -440,7 +486,7 @@ class Figure:
         self.axes.set_yticks(ticks, labels)
         return self
 
-    def set_tick_format(self, formatter) -> "Figure":
+    def set_tick_format(self, formatter) -> Figure:
         """
         Apply a callable formatter to all numeric tick labels on both axes.
 
@@ -460,7 +506,7 @@ class Figure:
         self.axes.set_tick_format(formatter)
         return self
 
-    def set_minor_ticks(self, n: int = 4) -> "Figure":
+    def set_minor_ticks(self, n: int = 4) -> Figure:
         """
         Draw minor tick subdivisions between each pair of major ticks.
 
@@ -478,7 +524,7 @@ class Figure:
         return self
 
     def set_spine_visible(self, left: bool = True, right: bool = True,
-                          top: bool = False, bottom: bool = True) -> "Figure":
+                          top: bool = False, bottom: bool = True) -> Figure:
         """
         Control axis spine (border line) visibility.
 
@@ -504,7 +550,7 @@ class Figure:
     def text(self, x: float, y: float, s: str,
              color: str = "#333", font_size: int = 12,
              anchor: str = "middle",
-             transform: str = "canvas") -> "Figure":
+             transform: str = "canvas") -> Figure:
         """
         Add free-form text anywhere on the canvas.
 
@@ -538,7 +584,7 @@ class Figure:
         return self
 
     def supxlabel(self, label: str, font_size: int = 13,
-                  color: str | None = None) -> "Figure":
+                  color: str | None = None) -> Figure:
         """
         Set a shared X-axis label below all subplots.
 
@@ -557,7 +603,7 @@ class Figure:
         return self
 
     def supylabel(self, label: str, font_size: int = 13,
-                  color: str | None = None) -> "Figure":
+                  color: str | None = None) -> Figure:
         """
         Set a shared Y-axis label beside all subplots.
 
@@ -593,14 +639,15 @@ class Figure:
             spec = fig.to_vega_lite()
             fig.to_vega_lite("chart.vl.json")  # saves to file
         """
-        from .vega_lite import to_vega_lite as _to_vl, save_vega_lite
+        from .vega_lite import save_vega_lite
+        from .vega_lite import to_vega_lite as _to_vl
         spec = _to_vl(self, **kwargs)
         if path is not None:
             save_vega_lite(self, path, **kwargs)
         return spec
 
     def regplot(self, data=None, x=None, y=None,
-                x_vals=None, y_vals=None, **kwargs) -> 'Figure':
+                x_vals=None, y_vals=None, **kwargs) -> Figure:
         """Add a regression plot series to this figure. Returns ``self``."""
         from .regplot import regplot as _regplot
         reg_fig = _regplot(data, x=x, y=y,
@@ -611,7 +658,7 @@ class Figure:
         return self
 
     def choropleth(self, geojson, data, key='name', cmap='viridis',
-                   **kwargs) -> 'Figure':
+                   **kwargs) -> Figure:
         """Add a :class:`~glyphx.choropleth.ChoroplethSeries`. Returns ``self``."""
         from .choropleth import ChoroplethSeries
         return self.add(ChoroplethSeries(geojson, data, key=key,
@@ -619,7 +666,7 @@ class Figure:
 
     def gantt(self, tasks: list, group_colors: dict | None = None,
               cmap: str = 'viridis', bar_height: int = 20,
-              show_today: bool = True, **kwargs) -> 'Figure':
+              show_today: bool = True, **kwargs) -> Figure:
         """Add a :class:`~glyphx.gantt.GanttSeries`.  Returns ``self``."""
         from .gantt import GanttSeries
         return self.add(GanttSeries(tasks=tasks, group_colors=group_colors,
@@ -628,7 +675,7 @@ class Figure:
 
     def stacked_bar(self, x: list, series: dict,
                     normalize: bool = False, colors: list | None = None,
-                    bar_width: float = 0.75, **kwargs) -> "Figure":
+                    bar_width: float = 0.75, **kwargs) -> Figure:
         """Add a :class:`~glyphx.stacked_bar.StackedBarSeries`.  Returns ``self``."""
         from .stacked_bar import StackedBarSeries
         return self.add(StackedBarSeries(x=x, series=series,
@@ -637,7 +684,7 @@ class Figure:
 
     def bump(self, x: list, rankings: dict,
              colors: list | None = None, show_labels: bool = True,
-             **kwargs) -> "Figure":
+             **kwargs) -> Figure:
         """Add a :class:`~glyphx.bump_chart.BumpChartSeries`.  Returns ``self``."""
         from .bump_chart import BumpChartSeries
         return self.add(BumpChartSeries(x=x, rankings=rankings,
@@ -646,7 +693,7 @@ class Figure:
 
     def sparkline(self, data: list, color: str = "#2563eb",
                   kind: str = "line", fill: bool = True,
-                  label: str | None = None, **kwargs) -> "Figure":
+                  label: str | None = None, **kwargs) -> Figure:
         """Add a :class:`~glyphx.sparkline.SparklineSeries`.  Returns ``self``."""
         from .sparkline import SparklineSeries
         return self.add(SparklineSeries(data=data, color=color,
@@ -654,14 +701,14 @@ class Figure:
                                          label=label, **kwargs))
 
     def vline(self, x, color="#888", width=1,
-              linestyle="dashed", label=None) -> "Figure":
+              linestyle="dashed", label=None) -> Figure:
         """Draw a vertical reference line at data coordinate ``x``.  Returns ``self``."""
         from .series import LineSeries
         # Compute domain from existing series if not yet finalized
         if self.axes._y_domain:
             ymin, ymax = self.axes._y_domain
         elif self.series:
-            all_y = [v for s, _ in self.series for v in (s.y or []) if v is not None]
+            all_y = [v for s, _ in self.series for v in as_seq(s.y) if v is not None]
             ymin, ymax = (min(all_y), max(all_y)) if all_y else (0, 1)
         else:
             ymin, ymax = 0, 1
@@ -670,13 +717,13 @@ class Figure:
                                    linestyle=linestyle, label=label))
 
     def hline(self, y, color="#888", width=1,
-              linestyle="dashed", label=None) -> "Figure":
+              linestyle="dashed", label=None) -> Figure:
         """Draw a horizontal reference line at data coordinate ``y``.  Returns ``self``."""
         from .series import LineSeries
         if self.axes._x_domain:
             xmin, xmax = self.axes._x_domain
         elif self.series:
-            all_x = [v for s, _ in self.series for v in (getattr(s, "_numeric_x", None) or s.x or []) if v is not None]
+            all_x = [v for s, _ in self.series for v in (as_seq(getattr(s, "_numeric_x", None)) or as_seq(s.x)) if v is not None]
             xmin, xmax = (min(all_x), max(all_x)) if all_x else (0, 1)
         else:
             xmin, xmax = 0, 1
@@ -684,9 +731,9 @@ class Figure:
                                    color=color, width=width,
                                    linestyle=linestyle, label=label))
 
-    # -- __repr__ ---------------------------------------------------------
+    # __repr__
 
-    def copy(self) -> "Figure":
+    def copy(self) -> Figure:
         """
         Return a deep copy of this figure.
 
@@ -696,9 +743,7 @@ class Figure:
             dark = base.copy().set_theme("dark")
             light = base.copy().set_theme("default")
 
-        Returns:
-            A new :class:`Figure` with all series, annotations, and settings
-            duplicated.
+        Series, annotations, and settings are all duplicated.
         """
         import copy as _copy
         return _copy.deepcopy(self)
@@ -719,14 +764,10 @@ class Figure:
         """
         if not isinstance(other, Figure):
             return NotImplemented
-        import re as _re
-        # Pattern strips any XML attribute whose value contains a glyphx UUID
-        _UUID_ATTR = _re.compile(r'\s[\w:-]+="[^"]*glyphx-chart-[a-f0-9]{12}[^"]*"')
-
-        def _strip_ids(s: str) -> str:
-            return _UUID_ATTR.sub("", s)
-
-        return _strip_ids(self.render_svg()) == _strip_ids(other.render_svg())
+        # Rendering is deterministic -- chart ids and series class names are
+        # content-derived hashes, not UUIDs -- so identical figures produce
+        # byte-identical SVG and no id-stripping is needed.
+        return self.render_svg() == other.render_svg()
 
     def __hash__(self) -> int:
         """
@@ -751,7 +792,7 @@ class Figure:
             + f" theme={theme_name!r}>"
         )
 
-    # -- Annotations ------------------------------------------------------
+    # Annotations
 
     def annotate(
         self,
@@ -828,7 +869,7 @@ class Figure:
                 f'<text x="{px + ox}" y="{py + oy - 2}" '
                 f'text-anchor="{ann["anchor"]}" font-size="{ann["font_size"]}" '
                 f'font-family="{font}" fill="{ann["color"]}">'
-                f'{svg_escape(ann["text"])}</text>'
+                f'{svg_label(ann["text"])}</text>'
             )
         return "\n".join(elements)
 
@@ -841,7 +882,7 @@ class Figure:
             '</marker></defs>'
         )
 
-    # -- Accessibility -----------------------------------------------------
+    # Accessibility
 
     def to_alt_text(self) -> str:
         """
@@ -853,7 +894,7 @@ class Figure:
         from .a11y import generate_alt_text
         return generate_alt_text(self)
 
-    # -- Rendering --------------------------------------------------------
+    # Rendering
 
     def render_svg(self, viewbox: bool = False) -> str:
         """
@@ -883,7 +924,7 @@ class Figure:
             svg_parts.append(
                 f'<text x="{self.width // 2}" y="28" text-anchor="middle" '
                 f'font-size="20" font-weight="bold" font-family="{font}" '
-                f'fill="{color}">{svg_escape(self.title)}</text>'
+                f'fill="{color}">{svg_label(self.title)}</text>'
             )
 
         # sup[x|y]label -- shared axis labels across subplot grids
@@ -895,7 +936,7 @@ class Figure:
             svg_parts.append(
                 f'<text x="{self.width // 2}" y="{self.height - 4}" '
                 f'text-anchor="middle" font-size="{sx["font_size"]}" '
-                f'font-family="{_font}" fill="{c}">{svg_escape(sx["label"])}</text>'
+                f'font-family="{_font}" fill="{c}">{svg_label(sx["label"])}</text>'
             )
         if self._supylabel:
             sy = self._supylabel
@@ -905,7 +946,7 @@ class Figure:
             svg_parts.append(
                 f'<text x="{cx}" y="{cy}" text-anchor="middle" '
                 f'font-size="{sy["font_size"]}" font-family="{_font}" fill="{c}" '
-                f'transform="rotate(-90, {cx}, {cy})">{svg_escape(sy["label"])}</text>'
+                f'transform="rotate(-90, {cx}, {cy})">{svg_label(sy["label"])}</text>'
             )
 
         # Free-form canvas text (fig.text())
@@ -924,10 +965,10 @@ class Figure:
                 f'<text x="{cx:.1f}" y="{cy:.1f}" '
                 f'text-anchor="{ct["anchor"]}" '
                 f'font-size="{ct["font_size"]}" font-family="{_font}" '
-                f'fill="{ct["color"]}">{svg_escape(ct["s"])}</text>'
+                f'fill="{ct["color"]}">{svg_label(ct["s"])}</text>'
             )
 
-        # -- Subplot grid --------------------------------------------------
+        # Subplot grid
         if self.grid and any(any(cell for cell in row) for row in self.grid):
             cell_w = self.width  // self.cols
             cell_h = self.height // self.rows
@@ -952,9 +993,10 @@ class Figure:
                     group += "</g>"
                     svg_parts.append(group)
 
-        # -- Single-axes ---------------------------------------------------
+        # Single-axes
         elif self.series and any(
-            hasattr(s, "x") and hasattr(s, "y") and s.x and s.y
+            hasattr(s, "x") and hasattr(s, "y")
+            and s.x is not None and s.y is not None
             for s, _ in self.series
         ):
             if not self.axes.series:
@@ -965,8 +1007,16 @@ class Figure:
             svg_parts.append(self.axes.render_axes())
             svg_parts.append(self.axes.render_grid())
 
-            for series, use_y2 in self.series:
-                svg_parts.append(series.to_svg(self.axes, use_y2=use_y2))
+            # With no plottable data there is no domain and therefore no
+            # scale functions. Draw the empty frame rather than handing
+            # None to every series' to_svg().
+            _has_scales = (
+                self.axes.scale_x is not None and self.axes.scale_y is not None
+            )
+
+            if _has_scales:
+                for series, use_y2 in self.series:
+                    svg_parts.append(series.to_svg(self.axes, use_y2=use_y2))
 
             if self._annotations and self.axes.scale_x and self.axes.scale_y:
                 svg_parts.append(self._render_annotations(
@@ -989,18 +1039,18 @@ class Figure:
                     fig_height=self.height,
                 ))
 
-            # -- Statistical annotations -----------------------------------
             for ann in getattr(self, "_stat_annotations", []):
                 svg_parts.append(ann.to_svg(self.axes))
 
-        # -- Axis-free (pie, donut, etc.) ----------------------------------
+        # Axis-free (pie, donut, etc.)
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
 
-        # Detect math text ($...$) in the rendered SVG content for MathJax
         _svg_content = "\n".join(svg_parts)
-        _has_math    = "$" in _svg_content
+        # Math is rendered to tspans before this point, so a surviving "$" is
+        # literal currency, not markup awaiting a typesetter.
+        _has_math    = False
 
         raw_svg = wrap_svg_canvas(
             _svg_content,
@@ -1009,30 +1059,157 @@ class Figure:
             has_math=_has_math,
         )
 
-        # -- Accessibility injection ---------------------------------------
+        # Accessibility injection
         chart_id = re.search(r'id="(glyphx-chart-[^"]+)"', raw_svg)
         cid      = chart_id.group(1) if chart_id else "glyphx-chart-0"
 
         from .a11y import inject_aria
+        from .mathtext import to_plain_text
         return inject_aria(
             svg=raw_svg,
-            title=self.title or "GlyphX Chart",
+            title=to_plain_text(self.title) if self.title else "GlyphX Chart",
             desc=self.to_alt_text(),
             chart_id=cid,
         )
 
-    # -- Display / export --------------------------------------------------
+    # Display / export
 
-    def _display(self, svg_string: str) -> None:
+    def _chart_id(self, svg_string: str) -> str:
+        """Return the ``id`` of the rendered SVG root."""
+        found = re.search(r'id="(glyphx-chart-[^"]+)"', svg_string)
+        return found.group(1) if found else "glyphx-chart-0"
+
+    def to_html_fragment(self, interactive: bool = True) -> str:
+        """
+        Render an HTML fragment suitable for embedding in a page.
+
+        Unlike :meth:`save` with an ``.html`` path, this returns a fragment
+        with no ``<html>`` wrapper, so it can be dropped into a notebook
+        output cell, a Jinja template, or a dashboard.
+
+        Args:
+            interactive (bool): Attach tooltips and legend toggling.
+
+        Returns:
+            str: An HTML fragment containing the chart.
+        """
+        from .notebook import in_marimo, inline_html, isolate_in_iframe
+
+        svg = self.render_svg()
+        fragment = inline_html(svg, self._chart_id(svg), interactive=interactive)
+
+        if interactive and in_marimo():
+            # marimo would otherwise sandbox this itself, at a fixed 400px.
+            fragment = isolate_in_iframe(fragment, height=self.height)
+        return fragment
+
+    def _current_execution(self):
+        """
+        Return a marker identifying the host's current cell execution.
+
+        Used to tell "this figure was just displayed by ``show()`` in this
+        cell" from "this figure is being displayed again later".
+        """
         try:
             from IPython import get_ipython
+
             ip = get_ipython()
-            if ip is not None and "IPKernelApp" in ip.config:
-                from IPython.display import SVG, display as jup_display
-                jup_display(SVG(svg_string))
-                return
+            if ip is not None:
+                return ("ipython", getattr(ip, "execution_count", None))
         except Exception:
             pass
+        return ("other", None)
+
+    def _repr_html_(self) -> str:
+        """
+        Display hook for Jupyter, marimo, VS Code, Colab, and nbconvert.
+
+        Having this means a figure renders when it is the last expression in
+        a cell, with no ``.show()`` call, which is how matplotlib and Plotly
+        behave. marimo reads this method too, and reads it in preference to
+        everything else.
+        """
+        if self._already_shown():
+            return ""
+        return self.to_html_fragment()
+
+    def _already_shown(self) -> bool:
+        """
+        True if ``show()`` already displayed this figure in this execution.
+
+        ``show()`` returns self for chaining, so ``fig.show()`` on the last
+        line of a cell renders once from show() and again from the returned
+        value. The marker is deliberately not cleared when read: IPython asks
+        several formatters for a representation, and clearing on the first
+        would let the next one render the duplicate anyway. It goes stale on
+        its own once the execution counter moves on, so the same figure shown
+        again in a later cell still renders.
+        """
+        return (
+            self._shown_at is not None
+            and self._shown_at == self._current_execution()
+        )
+
+    def _repr_svg_(self) -> str | None:
+        """
+        Static fallback for front ends that render SVG but not HTML.
+
+        Returns None rather than an empty string when the figure has already
+        been shown: an empty image/svg+xml payload renders as a broken image,
+        whereas None is how a formatter declines to supply one.
+        """
+        if self._already_shown():
+            return None
+        return self.render_svg()
+
+    def _repr_mimebundle_(self, include=None, exclude=None) -> dict:
+        """
+        Offer several representations and let the front end pick.
+
+        Interactive HTML where it is supported, plain SVG for exporters that
+        strip scripts, and a text line for consoles.
+        """
+        if self._already_shown():
+            return {"text/plain": ""}
+        bundle = {
+            "text/html": self.to_html_fragment(),
+            "image/svg+xml": self.render_svg(),
+            "text/plain": repr(self),
+        }
+        if include:
+            bundle = {k: v for k, v in bundle.items() if k in include}
+        if exclude:
+            bundle = {k: v for k, v in bundle.items() if k not in exclude}
+        return bundle
+
+    def _display(self, svg_string: str) -> None:
+        """Show the figure using whatever the current environment supports."""
+        from .notebook import in_ipython_kernel, in_marimo
+
+        if in_marimo():
+            # marimo renders the value a cell returns, and anything passed to
+            # mo.output.append(). The latter works from inside a function,
+            # which .show() is.
+            try:
+                import marimo as mo
+
+                self._shown_at = self._current_execution()
+                mo.output.append(self)
+                return
+            except Exception:
+                pass
+
+        if in_ipython_kernel():
+            try:
+                from IPython.display import HTML
+                from IPython.display import display as jup_display
+
+                self._shown_at = self._current_execution()
+                jup_display(HTML(self.to_html_fragment()))
+                return
+            except Exception:
+                pass
+
         html = wrap_svg_with_template(svg_string)
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
@@ -1063,11 +1240,11 @@ class Figure:
         Example::
 
             svg = fig.render_responsive(dark_theme='dark')
-            Path('chart.svg').write_text(svg)
+            fig.save('chart.svg')          # handles encoding and the XML declaration
             # Open in a browser -- switches colours with the OS setting
         """
-        from .utils   import wrap_svg_with_css_vars
-        from .themes  import themes as _themes
+        from .themes import themes as _themes
+        from .utils import wrap_svg_with_css_vars
 
         light  = self.theme
         dark   = _themes.get(dark_theme or 'dark', _themes['dark'])
@@ -1079,7 +1256,7 @@ class Figure:
             svg_parts.append(
                 f'<text x="{self.width // 2}" y="28" text-anchor="middle" '
                 f'font-size="20" font-weight="bold" font-family="{font}" '
-                f'fill="var(--glyphx-text)">{svg_escape(self.title)}</text>'
+                f'fill="var(--glyphx-text)">{svg_label(self.title)}</text>'
             )
         inner = '\n'.join(svg_parts)
         return wrap_svg_with_css_vars(
@@ -1089,21 +1266,25 @@ class Figure:
         )
 
     def save(self, filename: str = "glyphx_output.svg",
-             dpi: int = 96) -> "Figure":
+             dpi: int = 96, backend: str | None = None) -> Figure:
         """
         Save the rendered figure to disk.
 
-        Supported extensions: ``.svg``, ``.html``, ``.png``, ``.jpg``,
-        ``.pptx``.  PNG/JPG/PPTX require optional extras::
+        ``.svg`` and ``.html`` need no extra packages.  ``.png``, ``.jpg``,
+        ``.webp``, and ``.pdf`` use whichever rendering backend is installed
+        (see :mod:`glyphx.export`); ``.pptx`` needs the pptx extra::
 
-            pip install "glyphx[export]"    # PNG/JPG
+            pip install "glyphx[export]"    # PNG/JPG/WEBP via resvg
+            pip install "glyphx[cairo]"     # adds PDF
             pip install "glyphx[pptx]"      # PowerPoint
 
         Args:
             filename: Output path.  Extension determines the format.
-            dpi:      Output resolution for raster formats (PNG/JPG).
-                      Default 96; use 192 or 300 for high-DPI / print.
-                      Has no effect on SVG or HTML output.
+            dpi:      Output resolution for raster formats.  Default 96;
+                      use 192 for retina or 300 for print.  No effect on
+                      SVG, HTML, or PDF.
+            backend:  Force a specific export backend ("resvg", "cairosvg",
+                      or "playwright").  Defaults to the best available.
 
         Returns:
             ``self`` for chaining.
@@ -1111,17 +1292,17 @@ class Figure:
         Example::
 
             fig.save("chart.png", dpi=192)   # crisp on retina displays
-            fig.save("chart.png", dpi=300)   # print-quality
+            fig.save("chart.pdf")            # vector, for print
         """
         svg = self.render_svg()
         if filename.lower().endswith(".pptx"):
             _save_as_pptx(svg, filename, title=self.title)
         else:
-            write_svg_file(svg, filename, dpi=dpi)
+            write_svg_file(svg, filename, dpi=dpi, backend=backend)
         return self
 
 
-    def tight_layout(self) -> "Figure":
+    def tight_layout(self) -> Figure:
         """
         Auto-adjust padding to prevent label clipping and overlap.
 
@@ -1141,7 +1322,7 @@ class Figure:
         self.axes.tight_layout()
         return self
 
-    def constrained_layout(self) -> "Figure":
+    def constrained_layout(self) -> Figure:
         """
         Align subplot cells so their plot areas share a common left edge.
 
@@ -1273,9 +1454,7 @@ class Figure:
 
 
 
-# ---------------------------------------------------------------------------
 # PPTX export helper
-# ---------------------------------------------------------------------------
 
 def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
     """
@@ -1299,8 +1478,8 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
         )
     try:
         from pptx import Presentation
-        from pptx.util import Inches, Pt
         from pptx.enum.text import PP_ALIGN
+        from pptx.util import Inches, Pt
     except ImportError:
         raise RuntimeError(
             "PPTX export requires python-pptx.  Install it with:\n"
@@ -1309,11 +1488,11 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
 
     import io
 
-    # -- SVG -> PNG at 2x for crisp rendering ------------------------------
+    # SVG -> PNG at 2x for crisp rendering
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 
-    # -- Build presentation ------------------------------------------------
+    # Build presentation
     prs    = Presentation()
     blank  = prs.slide_layouts[6]          # completely blank layout
     slide  = prs.slides.add_slide(blank)
@@ -1321,7 +1500,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
     slide_w = prs.slide_width
     slide_h = prs.slide_height
 
-    # -- Optional title text box -------------------------------------------
+    # Optional title text box
     top_offset = Inches(0)
     if title:
         txBox = slide.shapes.add_textbox(
@@ -1334,7 +1513,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
         tf.paragraphs[0].runs[0].font.bold = True
         top_offset = Inches(0.65)
 
-    # -- Insert chart PNG --------------------------------------------------
+    # Insert chart PNG
     pic_h = slide_h - top_offset - Inches(0.1)
     pic_w = min(slide_w - Inches(0.4), pic_h * (slide_w / slide_h))
     left  = (slide_w - pic_w) // 2
@@ -1343,9 +1522,7 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
     prs.save(filename)
 
 
-# ---------------------------------------------------------------------------
 # SubplotGrid
-# ---------------------------------------------------------------------------
 
 class SubplotGrid:
     """
@@ -1357,7 +1534,8 @@ class SubplotGrid:
         sg.add(fig_revenue, 0, 0)
         sg.add(fig_costs,   0, 1)
         html = sg.render()
-        open("dashboard.html", "w").write(html)
+        with open("dashboard.html", "w", encoding="utf-8") as fh:
+            fh.write(html)
 
     Args:
         rows: Number of rows.

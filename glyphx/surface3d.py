@@ -1,5 +1,5 @@
 """
-GlyphX Surface3DSeries — 3D surface / mesh plot.
+GlyphX Surface3DSeries - 3D surface / mesh plot.
 
 Renders a smooth coloured surface from a 2-D Z matrix defined over a
 regular X×Y grid.  The SVG path uses the painter's algorithm: faces
@@ -7,17 +7,15 @@ sorted back-to-front so nearer faces always draw on top.
 """
 from __future__ import annotations
 
-import math
 import numpy as np
 
-from .projection3d import Camera3D, normalize, _format_3d_tick
-from .colormaps     import apply_colormap
-from .utils         import svg_escape
+from .colormaps import apply_colormap
+from .projection3d import Camera3D, normalize
 
 
 class Surface3DSeries:
     """
-    3D surface plot — z = f(x, y) over a regular grid.
+    3D surface plot - z = f(x, y) over a regular grid.
 
     Args:
         x:        1-D X grid values (length N).
@@ -69,7 +67,7 @@ class Surface3DSeries:
 
         Quads are sorted back-to-front by their average projected depth.
         """
-        from .downsample import decimate_grid, cull_faces, _ds_comment, AUTO_THRESHOLD
+        from .downsample import AUTO_THRESHOLD, cull_faces, decimate_grid
 
         # Decimate grid before projection to keep face count manageable
         _thresh = self.threshold if self.threshold is not None else AUTO_THRESHOLD
@@ -89,7 +87,6 @@ class Surface3DSeries:
             self.last_downsample_info = None
             x_1d = self.x_1d; y_1d = self.y_1d; z_arr_dec = self.z_mat
 
-        import numpy as _np
         z_mat_use = [[float(v) for v in row] for row in z_arr_dec]
 
         nx = len(x_1d)

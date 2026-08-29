@@ -1,7 +1,8 @@
-from .figure import Figure
-from .layout import Axes
-from .series import LineSeries, ScatterSeries
 import numpy as np
+
+from .figure import Figure
+from .series import LineSeries, ScatterSeries
+
 
 def lmplot(df, x, y, theme="default", hue=None, order=1):
     fig = Figure()

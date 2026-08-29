@@ -1,10 +1,10 @@
 """
-GlyphX GroupedBarSeries — side-by-side bars for one value per group per category.
+GlyphX GroupedBarSeries - side-by-side bars for one value per group per category.
 """
 from __future__ import annotations
-import numpy as np
+
 from .series import BaseSeries
-from .utils import svg_escape, _format_tick
+from .utils import _format_tick, svg_escape
 
 
 class GroupedBarSeries(BaseSeries):
@@ -14,7 +14,7 @@ class GroupedBarSeries(BaseSeries):
 
     Args:
         groups:       Category labels shown on the X-axis (outer grouping).
-        categories:   Series / group names (inner grouping — one bar per name).
+        categories:   Series / group names (inner grouping - one bar per name).
         values:       2-D list ``values[group_i][cat_j]``.
         group_colors: Color per category (inner group).  Auto-assigned if None.
         bar_width:    Fraction of the available slot used by all bars together (0–1).
@@ -76,7 +76,7 @@ class GroupedBarSeries(BaseSeries):
         elements: list[str] = []
 
         for gi, gname in enumerate(self.groups):
-            cx_group = ax.scale_x(gi + 1)   # type: ignore  group centre pixel
+            cx_group = ax.scale_x(gi + 1)   # type: ignore  # group centre pixel
 
             for ci, (cat, color) in enumerate(zip(self.categories, self.group_colors)):
                 val    = self.values[gi][ci]

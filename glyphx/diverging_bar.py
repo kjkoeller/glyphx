@@ -1,10 +1,10 @@
 """
-GlyphX DivergingBarSeries — horizontal bars radiating left (negative) and
+GlyphX DivergingBarSeries - horizontal bars radiating left (negative) and
 right (positive) from a shared zero baseline.
 
 Standard for survey results (agree/disagree), before/after comparisons,
 sentiment analysis, and budget variance reports.  None of the three
-major libraries have a native diverging bar — users must assemble it
+major libraries have a native diverging bar - users must assemble it
 manually from two horizontal bar charts.
 
     from glyphx import Figure
@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .utils import svg_escape, _format_tick
+from .utils import _format_tick, svg_escape
 
 
 class DivergingBarSeries:
@@ -163,7 +163,6 @@ class DivergingBarSeries:
                     f'{sign}{svg_escape(_format_tick(val))}</text>'
                 )
 
-        # Zero reference line
         if self.zero_line:
             elements.append(
                 f'<line x1="{zero_x:.1f}" x2="{zero_x:.1f}" '

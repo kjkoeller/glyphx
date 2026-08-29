@@ -1,4 +1,3 @@
-<script>
 document.addEventListener("DOMContentLoaded", function () {
   // Create a tooltip div that will follow the cursor
   const tooltip = document.createElement("div");
@@ -49,4 +48,3 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-</script>

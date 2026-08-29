@@ -8,47 +8,69 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Install build dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install build "setuptools-scm>=8"
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install build "setuptools-scm>=8" twine
 
-    - name: Derive clean version from release tag
-      run: |
-        TAG="${GITHUB_REF_NAME#v}"
-        TAG="${TAG#V}"
-        echo "SETUPTOOLS_SCM_PRETEND_VERSION=${TAG}" >> "$GITHUB_ENV"
-        echo "Building version: ${TAG}"
+      - name: Derive clean version from release tag
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          TAG="${TAG#V}"
+          echo "SETUPTOOLS_SCM_PRETEND_VERSION=${TAG}" >> "$GITHUB_ENV"
+          echo "Building version: ${TAG}"
 
-    - name: Build package
-      run: python -m build
+      - name: Build package
+        run: python -m build
 
-    - name: Verify no local version segment in built distributions
-      run: |
-        for f in dist/*.whl dist/*.tar.gz; do
-          if echo "$f" | grep -qP '[+]'; then
-            echo "ERROR: local version segment found in $f" >&2
-            exit 1
-          fi
-        done
-        echo "Version check passed."
+      - name: Verify no local version segment in built distributions
+        run: |
+          for f in dist/*.whl dist/*.tar.gz; do
+            case "$f" in
+              *+*) echo "ERROR: local version segment found in $f" >&2; exit 1 ;;
+            esac
+          done
+          echo "Version check passed."
 
-    - name: Publish package to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_PASSWORD }}
+      - name: Check distribution metadata
+        run: twine check dist/*
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      # Required for PyPI Trusted Publishing (OIDC).  This replaces the
+      # long-lived PYPI_PASSWORD secret: configure glyphx on PyPI under
+      # Publishing -> Trusted Publishers with this repo and workflow name.
+      id-token: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true

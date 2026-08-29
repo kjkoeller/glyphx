@@ -3,8 +3,12 @@ Tests targeting the features that make GlyphX competitive with
 Matplotlib, Seaborn, and Plotly.
 """
 from __future__ import annotations
+
+import os as _os
+import sys as _sys
+
 import numpy as np
-import sys as _sys, os as _os
+
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 try:
     import pytest
@@ -13,7 +17,7 @@ except ImportError:
     _sys.modules["pytest"] = pytest
 import glyphx
 from glyphx import Figure
-from glyphx.series import ScatterSeries, LineSeries, BarSeries
+from glyphx.series import BarSeries, LineSeries, ScatterSeries
 
 
 @pytest.fixture
@@ -202,8 +206,9 @@ class TestRaincloud:
         assert "X" in svg and "Y" in svg and "Z" in svg
 
     def test_raincloud_reproducible(self, multi_group_data):
-        from glyphx.raincloud import RaincloudSeries
         import re as _re
+
+        from glyphx.raincloud import RaincloudSeries
         fig1 = Figure(auto_display=False)
         fig1.add(RaincloudSeries(multi_group_data, seed=42))
         fig2 = Figure(auto_display=False)
@@ -309,8 +314,8 @@ class TestCandlestick:
         assert "<line" in svg
 
     def test_candlestick_up_down_colors(self):
+
         from glyphx.candlestick import CandlestickSeries
-        import re
         fig = Figure(auto_display=False)
         fig.add(CandlestickSeries(
             dates=["A","B"],

@@ -1,22 +1,125 @@
 from __future__ import annotations
 
-from typing import Any
-
 """
 GlyphX utility functions: SVG helpers, display detection, legend rendering.
 """
 
 import html
-import os
 import math
+import os
 import tempfile
 import webbrowser
 from pathlib import Path
 
-
-# ---------------------------------------------------------------------------
 # Numeric helpers
-# ---------------------------------------------------------------------------
+
+#: Decimal places retained in emitted SVG pixel coordinates. Two is below
+#: the resolution of any real display and typically cuts document size by a
+#: third on point-dense charts.
+SVG_PRECISION = 2
+
+
+def stable_id(*parts, length: int = 12) -> str:
+    """
+    Return a short, deterministic id derived from ``parts``.
+
+    Used for SVG element ids and CSS class names.  Identical input always
+    yields the same id, so rendering the same figure twice produces
+    byte-identical SVG.
+
+    Args:
+        *parts: Any values; their ``str()`` forms are hashed.
+        length (int): Number of hex characters to return.
+
+    Returns:
+        str: A lowercase hex string of ``length`` characters.
+    """
+    import hashlib
+
+    digest = hashlib.blake2b(
+        "\x1f".join(str(p) for p in parts).encode("utf-8"),
+        digest_size=max(1, length // 2 + 1),
+    )
+    return digest.hexdigest()[:length]
+
+
+def has_data(value) -> bool:
+    """
+    Return True if ``value`` is a non-empty sequence or array.
+
+    Plain truthiness cannot be used on NumPy arrays or pandas Series --
+    their ``__bool__`` raises ``ValueError`` for length > 1 -- so every
+    "is this series empty?" check in GlyphX goes through this helper.
+
+    Args:
+        value: Any object, typically a list, tuple, ndarray, or Series.
+
+    Returns:
+        bool: True if the object has a length greater than zero, or is
+        truthy but has no length at all.
+    """
+    if value is None:
+        return False
+    try:
+        return len(value) > 0
+    except TypeError:
+        return bool(value)
+
+
+def check_xy_lengths(x, y, series_name: str) -> None:
+    """
+    Raise if paired X and Y data have different lengths.
+
+    Silently zipping mismatched sequences truncates to the shorter one, so a
+    typo drops data from the chart with no indication that anything is wrong.
+
+    Args:
+        x: X values.
+        y: Y values.
+        series_name (str): Class name, used in the error message.
+
+    Raises:
+        ValueError: If both are sized and their lengths differ.
+    """
+    try:
+        len_x, len_y = len(x), len(y)
+    except TypeError:
+        return  # unsized input (e.g. a generator); nothing to compare
+    if len_x != len_y:
+        raise ValueError(
+            f"{series_name}: x and y must be the same length "
+            f"(got len(x)={len_x}, len(y)={len_y})."
+        )
+
+
+def is_finite(value) -> bool:
+    """
+    Return True if ``value`` is a real, plottable number.
+
+    ``None``, NaN, and infinities are rejected so they never reach the SVG
+    output, where they would produce invalid coordinates.  Non-numeric
+    values (categorical X labels) are treated as plottable.
+
+    Args:
+        value: A candidate coordinate.
+
+    Returns:
+        bool: True if the value can be scaled to a pixel position.
+    """
+    if value is None:
+        return False
+    if isinstance(value, (int, float)):
+        return math.isfinite(value)
+    return True
+
+
+def as_seq(value) -> list:
+    """``value`` as a list, or ``[]`` if it is None or empty.
+
+    Array-safe stand-in for the ``value or []`` idiom.
+    """
+    return list(value) if has_data(value) else []
+
 
 def normalize(data):
     """
@@ -92,26 +195,57 @@ def _format_tick(val, is_log: bool = False):
     return f"{val:.2f}"
 
 
-# ---------------------------------------------------------------------------
 # SVG escaping
-# ---------------------------------------------------------------------------
 
-def svg_escape(text):
+def svg_label(text) -> str:
     """
-    Escape a string for safe embedding inside SVG text or attribute values.
+    Prepare a user-supplied label for an SVG ``<text>`` element.
+
+    Escapes the text, and renders any ``$...$`` span as real SVG markup via
+    :mod:`glyphx.mathtext`.  Every label site goes through this so math works
+    the same way in titles, axis labels, tick labels, legends, and
+    annotations.
 
     Args:
-        text (str): Raw user-provided string.
+        text: The label.
 
     Returns:
-        str: HTML-escaped string safe for SVG.
+        str: Markup safe to place inside a ``<text>`` element.
     """
+    from .mathtext import render
+
+    return render("" if text is None else text)
+
+
+def svg_escape(text):
+    """Escape a string so it is safe inside SVG text or an attribute."""
     return html.escape(str(text), quote=True)
 
 
-# ---------------------------------------------------------------------------
 # SVG/HTML wrapping
-# ---------------------------------------------------------------------------
+
+def _strip_script_tags(js: str) -> str:
+    """
+    Remove any wrapping ``<script>`` tags from a JS asset.
+
+    Assets are inlined as ``<script>{js}</script>``.  If the file already
+    carries its own tags, the inner ``</script>`` closes the block early and
+    the remainder of the file spills into the document as text -- which kills
+    that script and every one after it.  Two shipped assets had this problem,
+    so the loader now guards against it rather than trusting the files.
+
+    Args:
+        js (str): Raw asset contents.
+
+    Returns:
+        str: The JavaScript with any surrounding script tags removed.
+    """
+    import re as _re
+
+    js = _re.sub(r"^\s*<script[^>]*>", "", js)
+    js = _re.sub(r"</script>\s*$", "", js)
+    return js.strip()
+
 
 def wrap_svg_with_template(svg_string: str) -> str:
     """
@@ -144,47 +278,44 @@ def wrap_svg_with_template(svg_string: str) -> str:
 
     zoom_script = ""
     if zoom_path.exists():
-        zoom_content = zoom_path.read_text(encoding="utf-8")
+        zoom_content = _strip_script_tags(zoom_path.read_text(encoding="utf-8"))
         zoom_script = f"<script>\n{zoom_content}\n</script>"
 
-    legend_js = """
-    <script>
-    document.querySelectorAll('.legend-icon, .legend-label').forEach(el => {
-      el.addEventListener('click', () => {
-        const target = el.dataset.target;
-        const elems = document.querySelectorAll('.' + target);
-        elems.forEach(e => {
-          e.style.display = e.style.display === 'none' ? '' : 'none';
-        });
-      });
-    });
-    </script>
-    """
-
-    # MathJax -- inject only when the SVG contains $...$ math text
-    mathjax_script = ""
-    if 'data-has-math="true"' in svg_string:
-        mathjax_script = (
-            '<script>MathJax={tex:{inlineMath:[["$","$"]]}}</script>\n'
-            '<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>\n'
+    # Legend toggling lives in assets/legend.js so both export paths get the
+    # same keyboard handling and ARIA state. The previous inline copy was
+    # click-only, had no focus handling, and toggled inline display styles.
+    legend_path = Path(__file__).parent / "assets" / "legend.js"
+    legend_js = ""
+    if legend_path.exists():
+        legend_js = (
+            "<script>\n"
+            + _strip_script_tags(legend_path.read_text(encoding="utf-8"))
+            + "\n</script>"
         )
+
+    # MathJax used to be injected when the SVG still held raw $...$ text.
+    # It never worked: MathJax does not typeset inside an <svg> element, so
+    # the labels showed the literal LaTeX in every format. Math is now
+    # rendered to tspans in Python (glyphx/mathtext.py), which works in SVG,
+    # PNG, PDF, and HTML alike, so no front-end typesetter is needed.
+    mathjax_script = ""
 
     brush_script = ""
     brush_path = Path(__file__).parent / "assets" / "brush.js"
     if brush_path.exists():
-        brush_content = brush_path.read_text(encoding="utf-8")
+        brush_content = _strip_script_tags(brush_path.read_text(encoding="utf-8"))
         brush_script = f"<script>\n{brush_content}\n</script>"
 
     interact_script = ""
     interact_path = Path(__file__).parent / "assets" / "interact.js"
     if interact_path.exists():
-        interact_content = interact_path.read_text(encoding="utf-8")
+        interact_content = _strip_script_tags(interact_path.read_text(encoding="utf-8"))
         interact_script = f"<script>\n{interact_content}\n</script>"
 
     a11y_path = Path(__file__).parent / "assets" / "accessibility.js"
     a11y_script = ""
     if a11y_path.exists():
-        a11y_content = a11y_path.read_text(encoding="utf-8")
+        a11y_content = _strip_script_tags(a11y_path.read_text(encoding="utf-8"))
         a11y_script = f"<script>\n{a11y_content}\n</script>"
 
     return (
@@ -199,8 +330,12 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     """
     Wrap raw SVG elements in a full <svg> root element.
 
-    Each SVG gets a collision-resistant UUID id (no module-level counter
-    that grows unboundedly in long-running Jupyter sessions).
+    The chart id is a hash of the SVG content and canvas size, so the same
+    figure always renders byte-identical output.  A UUID would be equally
+    collision-resistant, but it made every render differ from the last --
+    which defeats caching, makes diffs unreadable, and rules out golden-file
+    tests.  Distinct charts still get distinct ids because distinct content
+    hashes differently.
 
     Args:
         svg_content (str): Inner SVG markup.
@@ -212,8 +347,7 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     Returns:
         str: Complete SVG document string.
     """
-    import uuid
-    chart_id  = f"glyphx-chart-{uuid.uuid4().hex[:12]}"
+    chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
     math_attr = ' data-has-math="true"' if has_math else ""
     return (
         f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
@@ -242,8 +376,7 @@ def wrap_svg_with_css_vars(svg_string: str, light_theme: dict, dark_theme: dict,
     Returns:
         Complete ``<svg>`` element with an embedded ``<style>`` block.
     """
-    import uuid as _uuid
-    chart_id = f"glyphx-css-{_uuid.uuid4().hex[:10]}"
+    chart_id = f"glyphx-css-{stable_id(svg_string)[:10]}"
 
     def _props(theme: dict) -> str:
         mapping = {
@@ -278,19 +411,20 @@ def wrap_svg_with_css_vars(svg_string: str, light_theme: dict, dark_theme: dict,
 
 def write_svg_file(svg_string: str, filename: str, **kwargs):
     """
-    Save a chart to file.  Supports .svg, .html, .png, and .jpg.
+    Save a chart to file.
 
-    PNG/JPG export requires the optional ``cairosvg`` package::
-
-        pip install cairosvg
+    ``.svg`` and ``.html`` are written directly.  ``.png``, ``.jpg``,
+    ``.webp``, and ``.pdf`` are delegated to :mod:`glyphx.export`, which
+    picks whichever rendering backend is installed.
 
     Args:
         svg_string (str): Raw SVG content.
         filename (str): Output path.  Extension determines format.
+        **kwargs: ``dpi`` (int) and ``backend`` (str) are forwarded to the
+            raster/PDF backends.
 
     Raises:
-        ValueError: For unsupported extensions.
-        RuntimeError: If cairosvg is not installed when exporting raster images.
+        RuntimeError: If no backend can produce the requested format.
     """
     ext = os.path.splitext(filename)[-1].lower()
 
@@ -300,33 +434,32 @@ def write_svg_file(svg_string: str, filename: str, **kwargs):
             f.write(content)
 
     elif ext == ".svg":
+        # A standalone .svg is parsed as XML, and XML defaults to UTF-8 only
+        # when nothing says otherwise. Writing the declaration makes the
+        # encoding explicit, so the file survives being re-saved by an editor
+        # under a different codec and browsers never have to guess.
         with open(filename, "w", encoding="utf-8") as f:
+            if not svg_string.lstrip().startswith("<?xml"):
+                f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
             f.write(svg_string)
 
-    elif ext in {".png", ".jpg", ".jpeg"}:
-        try:
-            import cairosvg
-        except ImportError:
-            raise RuntimeError(
-                "PNG/JPG export requires cairosvg.  Install it with:\n"
-                "    pip install cairosvg"
-            )
-        # dpi may be passed as a keyword via write_svg_file(... dpi=192)
-        _dpi = kwargs.get("dpi", 96)
-        _scale = _dpi / 96.0   # cairosvg scale=2 doubles resolution
-        cairosvg.svg2png(bytestring=svg_string.encode(),
-                         write_to=filename, scale=_scale)
-
     else:
-        raise ValueError(
-            f"Unsupported file extension '{ext}'.  "
-            "Use .svg, .html, .png, or .jpg."
-        )
+        # Raster and PDF formats go through the backend chain in export.py,
+        # which prefers resvg (prebuilt wheels, no system Cairo) and falls
+        # back to cairosvg or playwright.
+        # ExportError subclasses RuntimeError, and UnsupportedFormatError
+        # additionally subclasses ValueError, so both propagate with the
+        # exception types callers already catch.
+        from .export import render_to_file
+
+        render_to_file(svg_string, filename, dpi=kwargs.get("dpi", 96),
+                       backend=kwargs.get("backend"))
+        return
 
 
-# ---------------------------------------------------------------------------
+
+
 # Environment detection
-# ---------------------------------------------------------------------------
 
 def in_jupyter() -> bool:
     """Return True if executing inside a Jupyter kernel."""
@@ -360,9 +493,7 @@ def render_cli(svg_string: str):
     webbrowser.open(f"file://{path}")
 
 
-# ---------------------------------------------------------------------------
 # Legend rendering
-# ---------------------------------------------------------------------------
 
 # Fixed gutter width reserved for outside-right legends.
 # Must be wide enough for typical labels; figure.py uses this to shrink axes.
@@ -468,7 +599,7 @@ def draw_legend(
     for i, s in enumerate(normalized):
         class_name = getattr(s, "css_class", f"series-{i}")
         color      = getattr(s, "color", "#888") or "#888"
-        label      = svg_escape(s.label)
+        label      = svg_label(s.label)
         cy         = y + padding + i * spacing
 
         items.append(
@@ -484,9 +615,7 @@ def draw_legend(
     return '<g class="glyphx-legend">\n' + "\n".join(items) + "\n</g>"
 
 
-# ---------------------------------------------------------------------------
 # Arc geometry (for pie charts)
-# ---------------------------------------------------------------------------
 
 def describe_arc(cx, cy, r, start_angle, end_angle):
     """
@@ -520,9 +649,7 @@ def describe_arc(cx, cy, r, start_angle, end_angle):
     )
 
 
-# ---------------------------------------------------------------------------
 # Self-contained / shareable HTML
-# ---------------------------------------------------------------------------
 
 def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     """
@@ -547,13 +674,15 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
 
     def _read_js(name: str) -> str:
         p = assets_dir / name
-        return p.read_text(encoding="utf-8") if p.exists() else ""
+        if not p.exists():
+            return ""
+        return _strip_script_tags(p.read_text(encoding="utf-8"))
 
-    tooltip_js  = _read_js("tooltip.js")   # legacy path -- already in template
     zoom_js     = _read_js("zoom.js")
     brush_js    = _read_js("brush.js")
     interact_js = _read_js("interact.js")
     export_js   = _read_js("export.js")
+    legend_js   = _read_js("legend.js")
 
     # Read template and replace placeholders
     template_path = assets_dir / "responsive_template.html"
@@ -562,7 +691,6 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
 
     html = template_path.read_text(encoding="utf-8")
 
-    # Replace title
     html = html.replace("<title>GlyphX Chart</title>", f"<title>{html_escape(title)}</title>")
 
     # Inline all JS into {{extra_scripts}}
@@ -573,6 +701,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         f"<script>\n{interact_js}\n</script>" if interact_js else "",
         f"<script>\n{a11y_js}\n</script>"     if a11y_js     else "",
         f"<script>\n{export_js}\n</script>"   if export_js   else "",
+        f"<script>\n{legend_js}\n</script>"   if legend_js   else "",
     ]))
 
     # Metadata comment

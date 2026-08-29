@@ -3,19 +3,23 @@ from __future__ import annotations
 import numpy as np
 
 from .figure import Figure
-from .series import ScatterSeries, LineSeries, HistogramSeries
+from .series import HistogramSeries, LineSeries, ScatterSeries
 from .violin_plot import _numpy_kde
 
 
 def jointplot(df, x: str, y: str, kind: str = "scatter",
               marginal: str = "hist", theme: str = "default",
               hue: str | None = None):
-    fig   = Figure(width=600, height=600, theme=theme, auto_display=True)
+    # A joint plot is a 2x2 arrangement: the main panel plus a marginal
+    # distribution along each axis. The grid has to be sized for that up
+    # front, or add_axes() indexes past the default 1x1 grid.
+    fig   = Figure(width=600, height=600, rows=2, cols=2,
+                   theme=theme, auto_display=False)
     colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728"])
 
     ax_main  = fig.add_axes(0, 0)
     ax_top   = fig.add_axes(0, 1)
-    ax_right = fig.add_axes(1, 0)
+    ax_right = fig.add_axes(1, 1)
 
     categories = df[hue].unique().tolist() if hue else [None]
 

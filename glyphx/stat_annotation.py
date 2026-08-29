@@ -21,10 +21,7 @@ from typing import Any
 
 from .utils import svg_escape
 
-
-# ---------------------------------------------------------------------------
 # p-value → significance label
-# ---------------------------------------------------------------------------
 
 def pvalue_to_label(p: float, style: str = "stars") -> str:
     """
@@ -35,7 +32,7 @@ def pvalue_to_label(p: float, style: str = "stars") -> str:
         style: ``"stars"`` (default) or ``"numeric"``.
 
     Returns:
-        ``"***"``, ``"**"``, ``"*"``, ``"ns"`` — or the formatted number.
+        ``"***"``, ``"**"``, ``"*"``, ``"ns"`` - or the formatted number.
     """
     if style == "numeric":
         if p < 0.001:
@@ -51,9 +48,7 @@ def pvalue_to_label(p: float, style: str = "stars") -> str:
     return "ns"
 
 
-# ---------------------------------------------------------------------------
 # Annotation class
-# ---------------------------------------------------------------------------
 
 class StatAnnotation:
     """
@@ -105,7 +100,7 @@ class StatAnnotation:
         if ax.scale_x is None or ax.scale_y is None:
             return ""
 
-        # ── Resolve x positions ───────────────────────────────────────────
+        # Resolve x positions
         def resolve_x(val: Any) -> float:
             # Categorical lookup
             if isinstance(val, str):
@@ -124,7 +119,7 @@ class StatAnnotation:
         except (TypeError, ValueError):
             return ""
 
-        # ── Bracket y position: just above the tallest bar / data point ───
+        # Bracket y position: just above the tallest bar / data point
         y_top_data = ax._y_domain[1] if ax._y_domain else 0
         base_py    = ax.scale_y(y_top_data) - 16 - self.y_offset
         tip_py     = base_py + self.tip_len
@@ -134,7 +129,7 @@ class StatAnnotation:
         c     = self.color
         lw    = self.line_width
 
-        # ── Font size: larger for stars, smaller for numeric ─────────────
+        # Font size: larger for stars, smaller for numeric
         font_size = 16 if len(self.label) <= 3 else 11
 
         return "\n".join([

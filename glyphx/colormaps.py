@@ -2,9 +2,9 @@
 GlyphX perceptually-uniform colormaps.
 
 Built-in scales designed for accuracy, not aesthetics:
-  viridis, plasma, inferno, magma, cividis  — sequential, colorblind-safe
-  coolwarm, rdbu                             — diverging
-  spectral                                   — qualitative-ish rainbow
+  viridis, plasma, inferno, magma, cividis  - sequential, colorblind-safe
+  coolwarm, rdbu                             - diverging
+  spectral                                   - qualitative-ish rainbow
 
 Usage::
 
@@ -16,16 +16,12 @@ Usage::
 """
 from __future__ import annotations
 
-from typing import Any
-
-# ---------------------------------------------------------------------------
 # Colormap definitions (hex color stops, low → high)
-# ---------------------------------------------------------------------------
 # All sequential maps are perceptually uniform (linearised luminance).
 # Diverging maps are centred at neutral grey / white.
 
 _MAPS: dict[str, list[str]] = {
-    # ── Sequential ────────────────────────────────────────────────────────
+    # Sequential
     "viridis": [
         "#440154", "#472d7b", "#3b528b", "#2c728e", "#21918c",
         "#28ae80", "#5ec962", "#addc30", "#fde725",
@@ -46,7 +42,7 @@ _MAPS: dict[str, list[str]] = {
         "#00224e", "#1f4579", "#3b6896", "#608aab", "#87a9bd",
         "#b2c8d1", "#dde9e2", "#fee838",
     ],
-    # ── Diverging ─────────────────────────────────────────────────────────
+    # Diverging
     "coolwarm": [
         "#3b4cc0", "#6688ee", "#aab9f2", "#dddddd",
         "#f2a98b", "#d95533", "#b40426",
@@ -55,12 +51,12 @@ _MAPS: dict[str, list[str]] = {
         "#053061", "#2166ac", "#92c5de", "#f7f7f7",
         "#f4a582", "#d6604d", "#67001f",
     ],
-    # ── Spectral (rainbow — avoid for quantitative data) ──────────────────
+    # Spectral (rainbow - avoid for quantitative data)
     "spectral": [
         "#9e0142", "#d53e4f", "#f46d43", "#fdae61", "#fee090",
         "#ffffbf", "#e6f598", "#abdda4", "#66c2a5", "#3288bd", "#5e4fa2",
     ],
-    # ── Grayscale ─────────────────────────────────────────────────────────
+    # Grayscale
     "greys": ["#ffffff", "#bdbdbd", "#636363", "#000000"],
 }
 
@@ -89,9 +85,7 @@ def get_colormap(name: str) -> list[str]:
     return _MAPS[key]
 
 
-# ---------------------------------------------------------------------------
 # Color interpolation
-# ---------------------------------------------------------------------------
 
 def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
     h = hex_color.lstrip("#")
@@ -147,9 +141,7 @@ def colormap_colors(cmap: str, n: int) -> list[str]:
     return [apply_colormap(i / (n - 1), cmap) for i in range(n)]
 
 
-# ---------------------------------------------------------------------------
 # Colorbar SVG generator
-# ---------------------------------------------------------------------------
 
 def render_colorbar_svg(
     cmap: str | list[str],

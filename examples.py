@@ -38,7 +38,7 @@ W, H = 760, 460   # standard figure size
 
 
 def save(fig, name):
-    (OUT / f"{name}.svg").write_text(fig.render_svg())
+    (OUT / f"{name}.svg").write_text(fig.render_svg(), encoding="utf-8")
     print(f"  {name}.svg")
 
 

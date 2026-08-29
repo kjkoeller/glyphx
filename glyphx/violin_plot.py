@@ -1,5 +1,5 @@
 """
-GlyphX ViolinPlotSeries — replaces scipy gaussian_kde with a pure-numpy implementation.
+GlyphX ViolinPlotSeries - replaces scipy gaussian_kde with a pure-numpy implementation.
 """
 
 import numpy as np

@@ -1,8 +1,5 @@
 from .figure import Figure
-from .layout import Axes
-from .plot import plot
-import pandas as pd
-from .series import HistogramSeries, ScatterSeries, LineSeries
+from .series import HistogramSeries, LineSeries, ScatterSeries
 
 
 def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
@@ -20,8 +17,9 @@ def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
 
             if i == j:
                 if diag_kind == "kde":
-                    from .violin_plot import _numpy_kde
                     import numpy as np
+
+                    from .violin_plot import _numpy_kde
                     values = np.asarray(df[xcol].dropna(), dtype=float)
                     kde = _numpy_kde(values)
                     x_vals = np.linspace(values.min(), values.max(), 100)

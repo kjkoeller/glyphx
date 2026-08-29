@@ -1,5 +1,5 @@
 """
-GlyphX ContourSeries — 2D filled contour plot (companion to Surface3D).
+GlyphX ContourSeries - 2D filled contour plot (companion to Surface3D).
 
 Renders isocontour bands on a regular grid, equivalent to
 Matplotlib's ``ax.contourf()`` and ``ax.contour()``.  Works inside a
@@ -7,17 +7,15 @@ regular :class:`~glyphx.Figure` (not Figure3D).
 """
 from __future__ import annotations
 
-import math
 import numpy as np
 
-from .series    import BaseSeries
-from .colormaps import apply_colormap, colormap_colors
-from .utils     import svg_escape, _format_tick
+from .colormaps import colormap_colors
+from .series import BaseSeries
 
 
 class ContourSeries(BaseSeries):
     """
-    2D filled contour plot — iso-lines and/or filled bands.
+    2D filled contour plot - iso-lines and/or filled bands.
 
     Args:
         x:        1-D X grid values (length N).
@@ -62,9 +60,7 @@ class ContourSeries(BaseSeries):
         else:
             self._levels = sorted(levels)
 
-        # BaseSeries domain — X is x_1d, Y is y_1d for Axes scaling
-        all_x = list(x) + list(x)
-        all_y = list(y) + list(y)
+        # BaseSeries domain - X is x_1d, Y is y_1d for Axes scaling
         super().__init__(x=list(x), y=list(y), color="#000", label=label)
 
     def to_svg(self, ax: object, use_y2: bool = False) -> str:

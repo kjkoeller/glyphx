@@ -1,12 +1,171 @@
 [build-system]
-requires = ["setuptools>=64", "setuptools_scm", "wheel"]
+requires = ["setuptools>=64", "setuptools_scm>=8", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "glyphx"
+description = "A next-gen Python plotting library with SVG-first rendering, interactivity, themes, and clean defaults"
+readme = { file = "README.md", content-type = "text/markdown" }
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Kyle Koeller" }]
+requires-python = ">=3.10"
+dynamic = ["version"]
+
+# IPython and ipywidgets are needed only inside a notebook, and every use
+# site already guards them with try/except ImportError.  Keeping them out of
+# the base install avoids pulling traitlets, jedi, prompt_toolkit, comm, and
+# widgetsnbextension into every environment that just wants to draw a chart.
+dependencies = [
+    "numpy>=1.26",
+    "pandas>=2.1",
+]
+
+keywords = ["plotting", "visualization", "svg", "charts", "dataviz"]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Multimedia :: Graphics",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage      = "https://glyphx.readthedocs.io/"
+Documentation = "https://glyphx.readthedocs.io/"
+Source        = "https://github.com/kjkoeller/glyphx"
+Issues        = "https://github.com/kjkoeller/glyphx/issues"
+Changelog     = "https://github.com/kjkoeller/glyphx/releases"
+
+[project.optional-dependencies]
+notebook = ["ipython>=8.0", "ipywidgets>=8.1"]
+# marimo needs nothing extra at runtime -- it reads _repr_html_ --
+# but the test suite exercises its formatter directly.
+# resvg ships prebuilt wheels on every major platform, so PNG export works
+# without a compiler or system Cairo.  Pillow covers JPEG/WEBP conversion.
+export   = ["resvg-py>=0.3", "pillow>=10.0"]
+cairo    = ["cairosvg>=2.5"]          # adds PDF; needs system libcairo
+browser  = ["playwright>=1.40"]       # adds PDF and browser tests
+pptx     = ["cairosvg>=2.5", "python-pptx>=0.6.21"]
+all = [
+    "ipython>=8.0",
+    "ipywidgets>=8.1",
+    "resvg-py>=0.3",
+    "pillow>=10.0",
+    "cairosvg>=2.5",
+    "python-pptx>=0.6.21",
+]
+# polars/pyarrow exercise the dataframe-interop paths; without them
+# those tests skip silently and the interchange code goes untested.
+test = [
+    "pytest>=7",
+    "pytest-cov",
+    "polars>=0.20",
+    "pyarrow>=14",
+    "resvg-py>=0.3",
+    "pillow>=10.0",
+    "ipython>=8.0",
+    "ipykernel>=6.0",
+    "nbclient>=0.9",
+    "nbformat>=5.9",
+    "marimo>=0.9",
+]
+lint = ["ruff>=0.6", "mypy>=1.10"]
+docs = ["sphinx", "furo", "matplotlib"]
+
+[project.scripts]
+glyphx = "glyphx.cli:main"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+include = ["glyphx*"]
+
+[tool.setuptools.package-data]
+glyphx = ["py.typed", "assets/*.js", "assets/*.html", "assets/*.py"]
 
 [tool.setuptools_scm]
 write_to = "glyphx/_version.py"
 # "no-local-version" strips the +gHASH.dDATE local segment so the version
 # string is always PEP 440 public-version-compliant and accepted by PyPI.
-# Dev builds from untagged commits will look like "2.1.0.dev3" (commit
-# distance only) rather than "2.1.0.dev0+gbfa4f6035.d20260412".
 version_scheme = "release-branch-semver"
 local_scheme   = "no-local-version"
+
+# ---------------------------------------------------------------------------
+# Tooling
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+minversion = "7"
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+markers = [
+    "browser: renders in a real browser via playwright (slow; needs chromium)",
+    "slow: drives a real Jupyter kernel or marimo runtime",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+
+# The ignores below are a ratchet, not a verdict.  The gate is green today so
+# that a red run means "you broke something", not "this repo has always been
+# red".  Each entry has a rough cost to clear; delete them one at a time.
+ignore = [
+    "E501",    # long lines: left to the formatter, not enforced here
+    "E741",    # single-letter names are idiomatic in geometry code
+    "SIM108",  # ternaries are not always clearer than if/else
+    "B008",    # call-in-default is used deliberately for theme lookups
+
+    # --- Ratchet: currently violated, worth fixing in follow-ups ---
+    "B905",    # zip() without strict= (59 sites; needs a per-site length audit)
+    "E701",    # multiple statements on one line, colon (21)
+    "E702",    # multiple statements on one line, semicolon (36)
+    "B007",    # unused loop control variable (13)
+    "SIM115",  # open() without a context manager (13; some are deliberate)
+    "E402",    # module import not at top of file (7; deferred heavy imports)
+    "C408",    # dict()/list() calls that could be literals (7)
+    "B023",    # function defined in a loop uses a loop variable (5)
+    "B904",    # raise ... from err inside except (5)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"glyphx/__init__.py" = ["F401", "E402"]   # deliberate re-exports
+"tests/*"            = ["E402"]
+
+[tool.mypy]
+# Pinned to 3.12 rather than the 3.10 floor in requires-python: numpy >= 2.5
+# ships stubs written with PEP 695 `type X = ...` statements, which mypy
+# refuses to parse when told to target 3.10, aborting the whole run with a
+# syntax error before it reaches any glyphx source.  Ruff still enforces the
+# real 3.10 floor via target-version = "py310".
+python_version = "3.12"
+ignore_missing_imports = true
+# Start permissive: the goal is to keep py.typed honest, then tighten.
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+[tool.coverage.run]
+source = ["glyphx"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "except ImportError",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

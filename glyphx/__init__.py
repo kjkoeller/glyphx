@@ -1,5 +1,5 @@
 """
-GlyphX v1.5.0 — SVG-first Python plotting library.
+GlyphX - SVG-first Python plotting library.
 
 Beats Matplotlib, Seaborn, and Plotly across three axes:
 
@@ -8,11 +8,11 @@ Beats Matplotlib, Seaborn, and Plotly across three axes:
   vs Seaborn     → statistical annotations, ECDF, raincloud, perceptually-
                    uniform colormaps, continuous color encoding in scatter
   vs Plotly      → candlestick/OHLC, waterfall, treemap, streaming series,
-                   synchronized crosshair — with zero server dependency
+                   synchronized crosshair - with zero server dependency
 
 Quick-start::
 
-    from glyphx import plot, from_prompt
+    from glyphx import plot
 
     # Classic
     plot([1,2,3],[4,5,6], kind="bar", title="Revenue")
@@ -26,108 +26,187 @@ Quick-start::
     # DataFrame accessor
     df.glyphx.bar(x="month", y="revenue").add_stat_annotation("Jan","Mar",0.01)
 
-    # NLP  (pip install anthropic)
-    from_prompt("top 10 products by revenue", df=df)
 """
 
-from ._version import __version__
+import contextlib as _contextlib
+import importlib as _importlib
+import importlib.abc as _importlib_abc  # noqa: F401  -- populates _importlib.abc
+import importlib.util as _importlib_util  # noqa: F401  -- populates _importlib.util
+import sys as _sys
 
 try:
-    pass  # version already set
-except PackageNotFoundError:
-    # Package is not installed (e.g. running from source without install)
-    __version__ = "unknown"
+    # Written at build time by setuptools_scm.
+    from ._version import __version__
+except ImportError:  # pragma: no cover - source checkout without an install
+    from importlib.metadata import PackageNotFoundError
+    from importlib.metadata import version as _pkg_version
 
-# ── Core ──────────────────────────────────────────────────────────────────
-from .figure   import Figure, SubplotGrid
-from .layout   import Axes, grid
-from .themes   import themes
-from .utils    import normalize
-from .plot     import plot
-from .nlp      import from_prompt
+    try:
+        __version__ = _pkg_version("glyphx")
+    except PackageNotFoundError:
+        __version__ = "0.0.0.dev0"
+
+# Core
 from .colormaps import (
     apply_colormap,
     colormap_colors,
-    list_colormaps,
     get_colormap,
+    list_colormaps,
 )
+from .figure import Figure, SubplotGrid
+from .layout import Axes, grid
+from .plot import plot
 
-# ── Core series ───────────────────────────────────────────────────────────
+# Core series
 from .series import (
-    LineSeries, BarSeries, ScatterSeries,
-    PieSeries, DonutSeries, HistogramSeries,
-    HeatmapSeries, BoxPlotSeries,
+    BarSeries,
+    BoxPlotSeries,
+    DonutSeries,
+    HeatmapSeries,
+    HistogramSeries,
+    LineSeries,
+    PieSeries,
+    ScatterSeries,
 )
+from .themes import themes
+from .utils import normalize
 
-# ── Statistical / distribution ────────────────────────────────────────────
-from .ecdf          import ECDFSeries
-from .fill_between  import FillBetweenSeries
-from .kde           import KDESeries
-from .raincloud     import RaincloudSeries
-from .stat_annotation import StatAnnotation, pvalue_to_label
-from .violin_plot   import ViolinPlotSeries
+# Lazily loaded submodules
+# Importing all ~50 chart modules up front cost ~0.5 s, most of it pandas via
+# facet_grid, even if you only wanted a line chart. PEP 562 defers each one to
+# first use; `from glyphx import TreemapSeries` still works.
+_LAZY_ATTRS = {
+    "AUTO_THRESHOLD": ".downsample",
+    "Bar3DSeries": ".bar3d",
+    "BubbleSeries": ".bubble",
+    "BumpChartSeries": ".bump_chart",
+    "CandlestickSeries": ".candlestick",
+    "ChoroplethSeries": ".choropleth",
+    "ContourSeries": ".contour",
+    "CountPlotSeries": ".count_plot",
+    "DivergingBarSeries": ".diverging_bar",
+    "ECDFSeries": ".ecdf",
+    "FacetGrid": ".facet_grid",
+    "Figure3D": ".figure3d",
+    "FillBetweenSeries": ".fill_between",
+    "GanttSeries": ".gantt",
+    "GroupedBarSeries": ".grouped_bar",
+    "KDESeries": ".kde",
+    "Line3DSeries": ".line3d",
+    "ParallelCoordinatesSeries": ".parallel_coords",
+    "RaincloudSeries": ".raincloud",
+    "Scatter3DSeries": ".scatter3d",
+    "SparklineSeries": ".sparkline",
+    "StackedBarSeries": ".stacked_bar",
+    "StatAnnotation": ".stat_annotation",
+    "StreamingSeries": ".streaming",
+    "SunburstSeries": ".sunburst",
+    "Surface3DSeries": ".surface3d",
+    "SwarmPlotSeries": ".swarm_plot",
+    "TreemapSeries": ".treemap",
+    "ViolinPlotSeries": ".violin_plot",
+    "WaterfallSeries": ".waterfall",
+    "apply_colormap": ".colormaps",
+    "clustermap": ".clustermap",
+    "colormap_colors": ".colormaps",
+    "cull_faces": ".downsample",
+    "decimate_grid": ".downsample",
+    "ds_disable": (".downsample", "disable"),
+    "ds_enable": (".downsample", "enable"),
+    "ds_is_enabled": (".downsample", "is_enabled"),
+    "facet_plot": ".facet_plot",
+    "get_colormap": ".colormaps",
+    "jointplot": ".jointplot",
+    "list_colormaps": ".colormaps",
+    "lmplot": ".lmplot",
+    "lttb": ".downsample",
+    "lttb_3d": ".downsample",
+    "m4": ".downsample",
+    "maybe_downsample": ".downsample",
+    "maybe_downsample_line": ".downsample",
+    "pairplot": ".pairplot",
+    "plot3d": ".plot3d",
+    "pvalue_to_label": ".stat_annotation",
+    "regplot": ".regplot",
+    "save_vega_lite": ".vega_lite",
+    "sparkline_svg": ".sparkline",
+    "to_vega_lite": ".vega_lite",
+    "voxel_thin_2d": ".downsample",
+    "voxel_thin_3d": ".downsample",
+}
 
-# ── Financial ────────────────────────────────────────────────────────────
-from .candlestick   import CandlestickSeries
-from .waterfall     import WaterfallSeries
 
-# ── Hierarchical ─────────────────────────────────────────────────────────
-from .treemap       import TreemapSeries
+def __getattr__(name: str):
+    """Import and cache a chart module the first time one of its names is used."""
+    entry = _LAZY_ATTRS.get(name)
+    if entry is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    # Entries are either "module" or ("module", "attribute") when the exported
+    # name differs from the one defined in the module (e.g. ds_enable).
+    module, attr = entry if isinstance(entry, tuple) else (entry, name)
+    import importlib
+    value = getattr(importlib.import_module(module, __name__), attr)
+    globals()[name] = value        # subsequent lookups skip __getattr__
+    return value
 
-# ── Streaming / real-time ────────────────────────────────────────────────
-from .streaming     import StreamingSeries
 
-# ── Advanced chart types ──────────────────────────────────────────────────
-from .grouped_bar      import GroupedBarSeries
-from .swarm_plot       import SwarmPlotSeries
-from .count_plot       import CountPlotSeries
+def __dir__() -> list:
+    return sorted(set(globals()) | set(_LAZY_ATTRS))
 
-# ── New: competitive feature set ──────────────────────────────────────────
-from .bubble           import BubbleSeries
-from .stacked_bar      import StackedBarSeries
 
-# ── 3D chart types ────────────────────────────────────────────────────────
-from .figure3d   import Figure3D
-from .plot3d     import plot3d
-from .scatter3d  import Scatter3DSeries
-from .surface3d  import Surface3DSeries
-from .line3d     import Line3DSeries
-from .bar3d      import Bar3DSeries
-from .contour    import ContourSeries
+# Register the pandas accessor (df.glyphx.*).
+# Importing it pulls in pandas: ~255 ms, more than the rest of GlyphX put
+# together, paid whether or not you touch a DataFrame. Register now if pandas
+# is already loaded, else hook its import. Either order ends up working.
 
-from .bump_chart       import BumpChartSeries
-from .gantt            import GanttSeries
-from .clustermap       import clustermap
-from .facet_grid       import FacetGrid
-from .regplot          import regplot
-from .choropleth       import ChoroplethSeries
-from .vega_lite        import to_vega_lite, save_vega_lite
-from .suggest          import suggest, Recommendation
-from .sparkline        import SparklineSeries, sparkline_svg
-from .sunburst         import SunburstSeries
-from .parallel_coords  import ParallelCoordinatesSeries
-from .diverging_bar    import DivergingBarSeries
-from .downsample       import (
-    lttb, m4, maybe_downsample, maybe_downsample_line,
-    voxel_thin_2d, voxel_thin_3d, lttb_3d,
-    decimate_grid, cull_faces,
-    enable as ds_enable, disable as ds_disable, is_enabled as ds_is_enabled,
-    AUTO_THRESHOLD,
-)
 
-# ── Seaborn-style composites ──────────────────────────────────────────────
-from .facet_plot   import facet_plot
-from .pairplot     import pairplot
-from .jointplot    import jointplot
-from .lmplot       import lmplot
+def _register_pandas_accessor() -> None:
+    """Import the accessor module, whose import registers ``df.glyphx``."""
+    from . import accessor as _accessor  # noqa: F401
 
-# ── Register pandas accessor (df.glyphx.*) ────────────────────────────────
-from . import accessor as _accessor  # noqa: F401
+
+if "pandas" in _sys.modules:
+    _register_pandas_accessor()
+else:
+    class _PandasImportHook(_importlib.abc.MetaPathFinder):
+        """Runs the accessor registration right after pandas finishes loading."""
+
+        def find_spec(self, fullname, path=None, target=None):
+            if fullname != "pandas":
+                return None
+            # Step aside so the real finders resolve pandas, then wrap the
+            # loader so we run immediately after its module body executes.
+            _sys.meta_path.remove(self)
+            try:
+                spec = _importlib.util.find_spec("pandas")
+            except Exception:       # pragma: no cover - defensive
+                return None
+            finally:
+                if self not in _sys.meta_path:
+                    _sys.meta_path.insert(0, self)
+            if spec is None or spec.loader is None:
+                return None
+
+            real_exec = spec.loader.exec_module
+
+            def exec_module(module):
+                real_exec(module)
+                if self in _sys.meta_path:
+                    _sys.meta_path.remove(self)
+                # Never let a registration failure break `import pandas`.
+                with _contextlib.suppress(Exception):  # pragma: no cover
+                    _register_pandas_accessor()
+
+            spec.loader.exec_module = exec_module
+            return spec
+
+    _sys.meta_path.insert(0, _PandasImportHook())
+
 
 __all__ = [
     # Core
     "Figure", "SubplotGrid", "Axes", "grid", "themes", "normalize",
-    "plot", "from_prompt",
+    "plot",
     # Colormaps
     "apply_colormap", "colormap_colors", "list_colormaps", "get_colormap",
     # Base series
@@ -136,6 +215,7 @@ __all__ = [
     "HeatmapSeries", "BoxPlotSeries",
     # Statistical
     "ECDFSeries", "RaincloudSeries", "ViolinPlotSeries",
+    "FillBetweenSeries", "KDESeries",
     "StatAnnotation", "pvalue_to_label",
     # Financial
     "CandlestickSeries", "WaterfallSeries",
@@ -156,7 +236,6 @@ __all__ = [
     "decimate_grid", "cull_faces",
     "ds_enable", "ds_disable", "ds_is_enabled", "AUTO_THRESHOLD",
     "StackedBarSeries", "BumpChartSeries", "GanttSeries",
-    "suggest", "Recommendation",
     "clustermap", "FacetGrid", "regplot", "ChoroplethSeries",
     "to_vega_lite", "save_vega_lite",
     "SparklineSeries", "sparkline_svg",

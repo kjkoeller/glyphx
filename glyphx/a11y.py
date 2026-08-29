@@ -9,6 +9,9 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
+from .mathtext import to_plain_text
+from .utils import has_data, is_finite
+
 if TYPE_CHECKING:
     from .figure import Figure
 
@@ -41,7 +44,7 @@ def generate_alt_text(fig: Figure) -> str:
     """
     parts: list[str] = []
 
-    # ── Chart kind ──────────────────────────────────────────────────────
+    # Chart kind
     kinds: list[str] = []
     for s, _ in fig.series:
         raw  = type(s).__name__.lower()
@@ -50,19 +53,21 @@ def generate_alt_text(fig: Figure) -> str:
 
     primary_kind = kinds[0] if kinds else "chart"
 
-    # ── Title ────────────────────────────────────────────────────────────
     if fig.title:
-        parts.append(f"{primary_kind.capitalize()} chart titled \"{fig.title}\".")
+        # Screen readers get the spoken form: "sigma_x", not "$\sigma_{x}$".
+        parts.append(
+            f"{primary_kind.capitalize()} chart titled \"{to_plain_text(fig.title)}\"."
+        )
     else:
         parts.append(f"{primary_kind.capitalize()} chart.")
 
-    # ── Axis labels ──────────────────────────────────────────────────────
+    # Axis labels
     if getattr(fig.axes, "xlabel", None):
-        parts.append(f"X axis: {fig.axes.xlabel}.")
+        parts.append(f"X axis: {to_plain_text(fig.axes.xlabel)}.")
     if getattr(fig.axes, "ylabel", None):
-        parts.append(f"Y axis: {fig.axes.ylabel}.")
+        parts.append(f"Y axis: {to_plain_text(fig.axes.ylabel)}.")
 
-    # ── Series descriptions ───────────────────────────────────────────────
+    # Series descriptions
     for s, _ in fig.series:
         x_vals = getattr(s, "x", None)
         y_vals = getattr(s, "y", None)
@@ -79,10 +84,10 @@ def generate_alt_text(fig: Figure) -> str:
             )
             continue
 
-        if not x_vals or not y_vals:
+        if not has_data(x_vals) or not has_data(y_vals):
             continue
 
-        lbl = f'Series "{s.label}"' if getattr(s, "label", None) else "Series"
+        lbl = f'Series "{to_plain_text(s.label)}"' if getattr(s, "label", None) else "Series"
 
         # Count
         n = len(x_vals)
@@ -90,8 +95,17 @@ def generate_alt_text(fig: Figure) -> str:
 
         # Range (numeric y only)
         try:
-            numeric_y = [float(v) for v in y_vals]
-            numeric_x = list(x_vals)
+            # Missing values are rendered as gaps, so they must not appear
+            # in the spoken range either.
+            pairs = [
+                (float(v), xv)
+                for v, xv in zip(y_vals, x_vals)
+                if is_finite(v)
+            ]
+            if not pairs:
+                continue
+            numeric_y = [v for v, _ in pairs]
+            numeric_x = [xv for _, xv in pairs]
             mn  = min(numeric_y)
             mx  = max(numeric_y)
             # Use enumerate to find indices safely
@@ -136,7 +150,7 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
     title_id = f"{chart_id}-title"
     desc_id  = f"{chart_id}-desc"
 
-    # ── 1. Add role + aria-labelledby only if not already present ────────
+    # 1. Add role + aria-labelledby only if not already present
     if 'role=' not in svg:
         svg = svg.replace(
             "<svg ",
@@ -145,14 +159,14 @@ def inject_aria(svg: str, title: str, desc: str, chart_id: str) -> str:
             1
         )
 
-    # ── 2. Inject <title> and <desc> right after the first > ─────────────
+    # 2. Inject <title> and <desc> right after the first >
     insert = (
         f'<title id="{title_id}">{svg_escape(title)}</title>'
         f'<desc id="{desc_id}">{svg_escape(desc)}</desc>'
     )
     svg = svg.replace(">", f">{insert}", 1)
 
-    # ── 3. Add tabindex + role to every interactive point ─────────────────
+    # 3. Add tabindex + role to every interactive point
     svg = re.sub(
         r'(class="glyphx-point[^"]*")',
         r'\1 tabindex="0" role="graphics-symbol"',

@@ -1,20 +1,17 @@
 """
-GlyphX Scatter3DSeries — 3D scatter plot.
+GlyphX Scatter3DSeries - 3D scatter plot.
 
 Renders interactively via Three.js (HTML output) and as a static
 orthographic SVG.  Supports a fourth variable encoded as color.
 """
 from __future__ import annotations
 
-import json
-import math
-
 import numpy as np
 
-from .projection3d import Camera3D, normalize, _format_3d_tick
-from .colormaps     import apply_colormap
-from .downsample    import AUTO_THRESHOLD
-from .utils         import svg_escape
+from .colormaps import apply_colormap
+from .downsample import AUTO_THRESHOLD
+from .projection3d import Camera3D, _format_3d_tick
+from .utils import svg_escape
 
 
 class Scatter3DSeries:
@@ -68,8 +65,8 @@ class Scatter3DSeries:
     def to_svg(self, cam: Camera3D,
                x_range: tuple, y_range: tuple, z_range: tuple) -> str:
         """Render as SVG circles with 3D voxel thinning for large datasets."""
+        from .downsample import _ds_comment, voxel_thin_3d
         from .projection3d import normalize as _norm
-        from .downsample import voxel_thin_3d, _ds_comment
 
         x_plot, y_plot, z_plot = self.x, self.y, self.z
         point_colors = list(self._point_colors)

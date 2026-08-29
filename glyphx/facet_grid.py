@@ -16,17 +16,15 @@ The grid wraps into multiple rows when ``col_wrap`` is set.
 from __future__ import annotations
 
 import math
-from typing import Any
 
-import numpy as np
-import pandas as pd
-
-from .figure  import Figure
-from .themes  import themes as _themes
 from .colormaps import colormap_colors
-from .utils   import svg_escape
+from .figure import Figure
+from .themes import themes as _themes
+from .utils import svg_escape
 
 
+# FIXME: shared axes are computed per-facet, so sharey=True still lets the
+# tick labels drift by a pixel or two between rows. Noticeable on a 4x4 grid.
 class FacetGrid:
     """
     Small-multiples grid.
@@ -93,14 +91,13 @@ class FacetGrid:
         n_hue = len(self._hue_vals) if hue else 1
         self._palette = palette or colormap_colors("viridis", max(n_hue, 2))
 
-    # ------------------------------------------------------------------
     def map(
         self,
         kind:    str,
         x:       str | None = None,
         y:       str | None = None,
         **kwargs,
-    ) -> "FacetGrid":
+    ) -> FacetGrid:
         """
         Apply a chart type to each facet cell.
 
@@ -120,15 +117,13 @@ class FacetGrid:
             g.map("scatter", x="bill_length", y="flipper_length")
             g.map("hist", x="body_mass")
         """
-        from .series       import (LineSeries, BarSeries, ScatterSeries,
-                                   HistogramSeries, BoxPlotSeries)
-        from .kde          import KDESeries
-        from .violin_plot  import ViolinPlotSeries
+        from .kde import KDESeries
+        from .series import BarSeries, BoxPlotSeries, HistogramSeries, LineSeries, ScatterSeries
+        from .violin_plot import ViolinPlotSeries
 
         self._map_kind = kind
         self._figs = []
 
-        theme_dict = _themes.get(self._theme, _themes["default"])
 
         for r_val in self._row_vals:
             for c_val in self._col_vals:
@@ -204,7 +199,6 @@ class FacetGrid:
 
         return self
 
-    # ------------------------------------------------------------------
     def render_svg(self) -> str:
         """Composite all cell figures into a single SVG grid."""
         if not self._figs:
@@ -274,21 +268,23 @@ class FacetGrid:
         parts.append("</svg>")
         return "\n".join(parts)
 
-    def show(self) -> "FacetGrid":
+    def show(self) -> FacetGrid:
         """Display in Jupyter or open in browser."""
         svg = self.render_svg()
         try:
-            from IPython.display import SVG, display as jd
+            from IPython.display import SVG
+            from IPython.display import display as jd
             jd(SVG(svg)); return self
         except Exception:
             pass
-        import tempfile, webbrowser
+        import tempfile
+        import webbrowser
         tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".svg", mode="w")
         tmp.write(svg); tmp.close()
         webbrowser.open(f"file://{tmp.name}")
         return self
 
-    def save(self, path: str) -> "FacetGrid":
+    def save(self, path: str) -> FacetGrid:
         """Save the composite SVG to a file."""
         from pathlib import Path
         Path(path).write_text(self.render_svg(), encoding="utf-8")

@@ -18,10 +18,11 @@ All tests are flat functions (no classes).  Tests cover:
 
 import math
 import os
-import tempfile
+import os as _os
+import sys as _sys
 
 import numpy as np
-import sys as _sys, os as _os
+
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 try:
     import pytest
@@ -31,15 +32,19 @@ except ImportError:
 
 # ── Module-level imports ────────────────────────────────────────────────────
 from glyphx import Figure, plot, themes
+from glyphx.figure import SubplotGrid
 from glyphx.layout import Axes, grid
 from glyphx.series import (
-    LineSeries, BarSeries, ScatterSeries,
-    PieSeries, DonutSeries, HistogramSeries,
-    BoxPlotSeries, HeatmapSeries,
+    BarSeries,
+    BoxPlotSeries,
+    DonutSeries,
+    HeatmapSeries,
+    HistogramSeries,
+    LineSeries,
+    PieSeries,
+    ScatterSeries,
 )
-from glyphx.figure import SubplotGrid
-from glyphx.utils import normalize, svg_escape, _format_tick, draw_legend
-
+from glyphx.utils import _format_tick, draw_legend, normalize, svg_escape
 
 # ===========================================================================
 # Helpers
@@ -416,7 +421,7 @@ def test_axes_finalize_sets_scales():
 def test_axes_categorical_x_does_not_mutate_series():
     """BUG: compute_domain used to overwrite s.x in place."""
     s  = BarSeries(["A", "B", "C"], [1, 2, 3])
-    ax = _finalize_with(_make_axes(), s)
+    _finalize_with(_make_axes(), s)          # finalize for its side effects
     # Original x must be unchanged
     assert s.x == ["A", "B", "C"]
     # Numeric mapping stored separately

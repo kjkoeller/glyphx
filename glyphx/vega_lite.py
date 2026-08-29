@@ -18,7 +18,8 @@ makes GlyphX the first to close the Python ↔ Observable interoperability gap.
            .add(BarSeries(months, costs,   label="Costs")))
 
     spec = to_vega_lite(fig)
-    json.dump(spec, open("chart.vl.json","w"), indent=2)
+    with open("chart.vl.json", "w", encoding="utf-8") as fh:
+        json.dump(spec, fh, indent=2)
 
     # Or use the Figure method directly
     fig.to_vega_lite("chart.vl.json")
@@ -29,10 +30,9 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .utils import as_seq, has_data
 
-# ---------------------------------------------------------------------------
 # Series-level converters
-# ---------------------------------------------------------------------------
 
 def _series_to_layer(series, use_y2: bool = False) -> dict | None:
     """Convert a single GlyphX series to a Vega-Lite layer dict."""
@@ -40,9 +40,9 @@ def _series_to_layer(series, use_y2: bool = False) -> dict | None:
 
     # Base data
     x_vals = getattr(series, "_numeric_x", series.x) if series.x else []
-    y_vals = series.y or []
+    y_vals = as_seq(series.y)
 
-    if not x_vals or not y_vals:
+    if not has_data(x_vals) or not has_data(y_vals):
         return None
 
     # Build inline data records
@@ -169,9 +169,7 @@ def _infer_type(values: list) -> str:
     return "nominal"
 
 
-# ---------------------------------------------------------------------------
 # Figure-level converter
-# ---------------------------------------------------------------------------
 
 def to_vega_lite(
     fig,
@@ -211,7 +209,6 @@ def to_vega_lite(
     H = height or fig.height
 
     layers = []
-    resolve: dict = {}
 
     for series, use_y2 in fig.series:
         layer = _series_to_layer(series, use_y2=use_y2)
@@ -248,7 +245,6 @@ def to_vega_lite(
             if "encoding" in layer and "y" in layer["encoding"]:
                 layer["encoding"]["y"]["title"] = axes.ylabel
 
-    # Theme approximation
     theme_dict = fig.theme
     bg  = theme_dict.get("background", "#fff")
     tc  = theme_dict.get("text_color",  "#000")
