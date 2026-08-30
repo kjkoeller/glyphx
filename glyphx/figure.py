@@ -76,16 +76,12 @@ class Figure:
         self.xscale       = xscale
         self.yscale       = yscale
 
-        from .themes import themes
+        from .themes import get_theme, themes
         self._theme_name: str = (
             theme if isinstance(theme, str) and theme in themes
             else ("custom" if isinstance(theme, dict) else "default")
         )
-        self.theme: dict[str, Any] = (
-            themes.get(theme, themes["default"])
-            if isinstance(theme, str)
-            else (theme or themes["default"])
-        )
+        self.theme: dict[str, Any] = get_theme(theme)
 
         self.legend_pos: str | None = (
             None if legend in (False, None) else str(legend)
@@ -124,16 +120,12 @@ class Figure:
 
     def set_theme(self, theme: str | dict[str, Any]) -> Figure:
         """Apply a named theme or a custom dict and return ``self``."""
-        from .themes import themes
+        from .themes import get_theme, themes
         self._theme_name = (
             theme if isinstance(theme, str) and theme in themes
             else ("custom" if isinstance(theme, dict) else "default")
         )
-        self.theme = (
-            themes.get(theme, themes["default"])
-            if isinstance(theme, str)
-            else theme
-        )
+        self.theme = get_theme(theme)
         self.axes.theme = self.theme
         return self
 
@@ -1245,11 +1237,11 @@ class Figure:
             fig.save('chart.svg')          # handles encoding and the XML declaration
             # Open in a browser -- switches colours with the OS setting
         """
-        from .themes import themes as _themes
+        from .themes import get_theme
         from .utils import wrap_svg_with_css_vars
 
         light  = self.theme
-        dark   = _themes.get(dark_theme or 'dark', _themes['dark'])
+        dark   = get_theme(dark_theme or 'dark')
 
         # Render inner SVG content (no root element)
         svg_parts: list[str] = []

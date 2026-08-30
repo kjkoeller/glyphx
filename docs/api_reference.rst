@@ -219,6 +219,14 @@ Themes
 
 .. autodata:: glyphx.themes.themes
 
+.. autofunction:: glyphx.themes.register_theme
+
+.. autofunction:: glyphx.themes.unregister_theme
+
+.. autofunction:: glyphx.themes.get_theme
+
+.. autofunction:: glyphx.themes.list_themes
+
 Available theme names: ``"default"``, ``"dark"``, ``"colorblind"``,
 ``"pastel"``, ``"warm"``, ``"ocean"``, ``"monochrome"``
 

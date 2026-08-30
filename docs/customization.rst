@@ -23,6 +23,43 @@ GlyphX ships seven built-in themes. Pass the name as a string:
    :width: 760px
    :align: center
 
+Registering a custom theme
+---------------------------
+
+``Figure`` accepts a theme dict directly, but every other entry point --
+``df.glyphx.*``, :func:`~glyphx.facet_plot`, :func:`~glyphx.clustermap`,
+:class:`~glyphx.figure3d.Figure3D` and the CLI -- takes a theme *name*.
+:func:`~glyphx.register_theme` adds a name to the registry so a custom
+palette works in all of them:
+
+.. code-block:: python
+
+   from glyphx import Figure, register_theme, list_themes
+
+   register_theme(
+       "acme",
+       base="dark",                                # inherit the rest
+       colors=["#e6194b", "#3cb44b", "#4363d8"],
+       font="Inter, sans-serif",
+   )
+
+   Figure(theme="acme").line(x, y).show()
+   list_themes()        # ['acme', 'colorblind', 'dark', 'default', ...]
+
+Unspecified keys are inherited from ``base``, so a brand palette on top of the
+dark theme is three lines. Definitions are validated on registration: unknown
+keys, a non-list ``colors``, and empty palettes all raise :class:`ValueError`
+with a message naming the problem.
+
+Built-in names cannot be overwritten. Use :func:`~glyphx.unregister_theme` to
+drop a custom one.
+
+.. note::
+
+   An unrecognised theme name raises ``ValueError`` with a suggestion.
+   Earlier versions fell back to ``"default"`` silently, so a typo such as
+   ``theme="darkk"`` produced a light chart with no indication of the mistake.
+
 .. image:: examples/colorblind_theme.svg
    :alt: Colorblind-safe Okabe-Ito theme
    :width: 760px

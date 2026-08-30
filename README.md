@@ -542,6 +542,42 @@ Figure(theme={
 fig.set_theme("dark")
 ```
 
+### Registering your own theme
+
+A theme dict works with `Figure(theme=...)`, but everything else — `df.glyphx.*`,
+`facet_plot`, `clustermap`, `Figure3D`, the CLI — takes a theme *name*. Register
+one and it works everywhere:
+
+```python
+from glyphx import register_theme, list_themes
+
+register_theme(
+    "acme",
+    base="dark",                                   # inherit unspecified keys
+    colors=["#e6194b", "#3cb44b", "#4363d8"],
+    font="Inter, sans-serif",
+)
+
+Figure(theme="acme").line(x, y).show()
+df.glyphx.scatter(x="a", y="b", theme="acme")
+
+list_themes()          # -> ['acme', 'colorblind', 'dark', 'default', ...]
+```
+
+`register_theme` validates as it goes: a misspelled key (`colours`) or a bad
+`colors` value is rejected with a message naming the problem, and built-in
+names are protected from being overwritten. Unknown theme names now raise
+rather than silently falling back to `default`:
+
+```python
+Figure(theme="darkk")
+# ValueError: Unknown theme 'darkk'. Did you mean 'dark'? Available: ...
+```
+
+Series without an explicit `color=` cycle through the active theme's palette,
+so a three-line chart on `colorblind` gets three distinguishable Okabe-Ito
+colors rather than three identical blues.
+
 > **Accessibility note:** The `colorblind` theme uses the [Okabe-Ito palette](https://jfly.uni-koeln.de/color/) — the scientific standard for color-vision-deficiency-safe visualization. It is safe for deuteranopia, protanopia, and tritanopia.
 
 ---

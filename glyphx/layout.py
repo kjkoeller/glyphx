@@ -640,12 +640,38 @@ class Axes:
             return self._scale_log(domain_min, domain_max, range_min, range_max)
         return self._scale_linear(domain_min, domain_max, range_min, range_max)
 
+    def _assign_theme_colors(self) -> None:
+        """
+        Give each un-colored series the next color from the theme palette.
+
+        Every series defaulted to ``#1f77b4`` at construction, so three lines
+        on one chart rendered identically and no theme's ``colors`` list was
+        ever used -- including ``"colorblind"``, whose whole purpose is its
+        palette.  A color passed explicitly is always left alone.
+        """
+        palette = (self.theme or {}).get("colors")
+        if not palette:
+            return
+
+        i = 0
+        for entry in list(self.series) + list(self.y2_series):
+            series = entry[0] if isinstance(entry, tuple) else entry
+            # Multi-color series (pie, treemap, heatmap) manage their own
+            # `colors` list and have no single `color` to assign.
+            if not hasattr(series, "color"):
+                continue
+            if getattr(series, "_explicit_color", True):
+                continue
+            series.color = palette[i % len(palette)]
+            i += 1
+
     def finalize(self):
         """
         Compute all scale functions after series have been registered.
 
         Must be called before any rendering method.
         """
+        self._assign_theme_colors()
         if self.series:
             self._x_domain, self._y_domain = self.compute_domain(self.series)
         if self.y2_series:

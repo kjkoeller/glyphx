@@ -335,8 +335,8 @@ def clustermap(
     vmin, vmax = float(mat_r.min()), float(mat_r.max())
     span = vmax - vmin or 1.0
 
-    from .themes import themes as _themes
-    theme_dict = _themes.get(theme, _themes["default"])
+    from .themes import get_theme
+    theme_dict = get_theme(theme)
     bg   = theme_dict.get("background", "#fff")
     tc   = theme_dict.get("text_color",  "#000")
     font = theme_dict.get("font", "sans-serif")

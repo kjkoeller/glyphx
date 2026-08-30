@@ -74,6 +74,9 @@ class BaseSeries:
         # positionally, and a filtered frame carries a non-contiguous index.
         self.x     = drop_index(x)
         self.y     = drop_index(y)
+        # Track whether the caller picked this, so Axes.finalize() can assign
+        # from the theme palette without overriding an explicit choice.
+        self._explicit_color = color is not None
         self.color = color or "#1f77b4"
         self.label = label
         self.title = title

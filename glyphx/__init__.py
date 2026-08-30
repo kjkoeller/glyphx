@@ -69,7 +69,13 @@ from .series import (
     PieSeries,
     ScatterSeries,
 )
-from .themes import themes
+from .themes import (
+    get_theme,
+    list_themes,
+    register_theme,
+    themes,
+    unregister_theme,
+)
 from .utils import normalize
 
 # Lazily loaded submodules
@@ -236,6 +242,8 @@ __all__ = [
     # Core
     "Figure", "SubplotGrid", "Axes", "grid", "themes", "normalize",
     "plot",
+    # Theme registry
+    "register_theme", "unregister_theme", "get_theme", "list_themes",
     # Colormaps
     "apply_colormap", "colormap_colors", "list_colormaps", "get_colormap",
     # Base series
