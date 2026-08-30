@@ -63,6 +63,8 @@ class StackedBarSeries(BaseSeries):
 
         palette = _themes["default"]["colors"]
         self.colors = colors or palette
+        self._palette_attr     = "colors"
+        self._explicit_palette = colors is not None
 
         # Pre-compute per-category totals for normalization
         names     = list(series.keys())

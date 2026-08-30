@@ -576,7 +576,10 @@ Figure(theme="darkk")
 
 Series without an explicit `color=` cycle through the active theme's palette,
 so a three-line chart on `colorblind` gets three distinguishable Okabe-Ito
-colors rather than three identical blues.
+colors rather than three identical blues. The same applies to the multi-color
+types — pie, donut, grouped bar and stacked bar all take their slice and
+segment colors from the active theme. Colormap-driven charts (treemap,
+raincloud, bump) keep their `cmap`.
 
 > **Accessibility note:** The `colorblind` theme uses the [Okabe-Ito palette](https://jfly.uni-koeln.de/color/) — the scientific standard for color-vision-deficiency-safe visualization. It is safe for deuteranopia, protanopia, and tritanopia.
 

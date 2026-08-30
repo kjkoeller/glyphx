@@ -133,3 +133,80 @@ def test_explicit_color_is_never_overridden():
     fig.line([1, 2, 3], [3.0, 2.0, 1.0])
     fig.render_svg()
     assert [s.color for s in fig.axes.series][0] == "#ff0000"
+
+
+# ---------------------------------------------------------------------------
+# Multi-color series
+# ---------------------------------------------------------------------------
+
+def _palette_of(series, theme, attr="colors"):
+    fig = Figure(theme=theme, auto_display=False)
+    fig.add(series)
+    fig.render_svg()
+    return getattr(fig.axes.series[0], attr)
+
+
+def test_pie_uses_the_active_theme_palette():
+    """
+    Pie and donut hardcoded a copy of the light palette, so every theme --
+    including colorblind -- drew the same slice colors.  They are also
+    axis-free (x and y are None), so they never reach Axes.finalize() and
+    the assignment has to happen before the render branches.
+    """
+    from glyphx import PieSeries
+
+    expected = glyphx.themes["colorblind"]["colors"][:3]
+    assert _palette_of(PieSeries([3, 2, 1], labels=list("abc")), "colorblind")[:3] == expected
+
+
+def test_donut_uses_the_active_theme_palette():
+    from glyphx import DonutSeries
+
+    expected = glyphx.themes["dark"]["colors"][:3]
+    assert _palette_of(DonutSeries([3, 2, 1], labels=list("abc")), "dark")[:3] == expected
+
+
+def test_grouped_bar_uses_the_active_theme_palette():
+    from glyphx import GroupedBarSeries
+
+    series = GroupedBarSeries(["g1", "g2"], ["a", "b"], [[1, 2], [2, 1]])
+    expected = glyphx.themes["colorblind"]["colors"][:2]
+    assert _palette_of(series, "colorblind", attr="group_colors") == expected
+
+
+def test_stacked_bar_uses_the_active_theme_palette():
+    from glyphx import StackedBarSeries
+
+    series = StackedBarSeries(["x", "y"], {"a": [1, 2], "b": [2, 1]})
+    expected = glyphx.themes["colorblind"]["colors"][:2]
+    assert _palette_of(series, "colorblind")[:2] == expected
+
+
+def test_explicit_palette_is_never_overridden():
+    from glyphx import PieSeries
+
+    chosen = ["#111111", "#222222", "#333333"]
+    series = PieSeries([3, 2, 1], labels=list("abc"), colors=chosen)
+    assert _palette_of(series, "colorblind") == chosen
+
+
+def test_colormap_driven_series_are_left_alone():
+    """treemap, raincloud and bump chart pick colors from a colormap on
+    purpose; the theme palette must not clobber them."""
+    from glyphx import TreemapSeries
+
+    series = TreemapSeries(labels=list("abc"), values=[5.0, 3.0, 2.0])
+    before = list(series.colors)
+    fig = Figure(theme="colorblind", auto_display=False)
+    fig.add(series)
+    fig.render_svg()
+    assert series.colors == before
+
+
+def test_assignment_is_idempotent():
+    """render_svg() applies it, then Axes.finalize() applies it again."""
+    fig = Figure(theme="dark", auto_display=False)
+    fig.line([1, 2, 3], [1.0, 2.0, 3.0]).line([1, 2, 3], [3.0, 2.0, 1.0])
+    first = [s.color for s in (fig.render_svg(), fig.axes.series)[1]]
+    fig.render_svg()
+    assert [s.color for s in fig.axes.series] == first

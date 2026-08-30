@@ -38,6 +38,8 @@ class GroupedBarSeries(BaseSeries):
         self.categories   = list(categories)
         self.values       = values          # [n_groups][n_cats]
         self.group_colors = (group_colors or default_colors)[:len(categories)]
+        self._palette_attr     = "group_colors"
+        self._explicit_palette = group_colors is not None
         self.bar_width    = float(bar_width)
 
         all_y = [v for row in values for v in row]

@@ -902,6 +902,9 @@ class Figure:
         Returns:
             Complete SVG document markup.
         """
+        from .utils import assign_theme_colors
+        assign_theme_colors(self.series, self.theme)
+
         svg_parts: list[str] = []
 
         if any(a["arrow"] for a in self._annotations):

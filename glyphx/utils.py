@@ -113,6 +113,49 @@ def is_finite(value) -> bool:
     return True
 
 
+def assign_theme_colors(series_list, theme) -> None:
+    """
+    Give un-colored series their color from the active theme's palette.
+
+    Every series defaulted to ``#1f77b4`` (or, for pie/donut/grouped/stacked,
+    to a hardcoded copy of the light palette) at construction time, before it
+    knew which figure it belonged to.  The result was that no theme's
+    ``colors`` list was ever used -- three lines on one chart came out
+    identical, and ``theme="colorblind"`` produced the same colors as
+    ``"default"``.
+
+    A color the caller passed explicitly is always left alone.  Colormap-driven
+    series (treemap, raincloud, bump chart) opt out by not declaring a palette
+    attribute.  Safe to call more than once: assignment is by position, so a
+    second pass produces the same result.
+
+    Args:
+        series_list: Series, or ``(series, use_y2)`` tuples.
+        theme:       Theme dict; a missing or empty ``colors`` is a no-op.
+    """
+    palette = (theme or {}).get("colors")
+    if not palette:
+        return
+
+    i = 0
+    for entry in series_list:
+        series = entry[0] if isinstance(entry, tuple) else entry
+
+        attr = getattr(series, "_palette_attr", None)
+        if attr and not getattr(series, "_explicit_palette", True):
+            current = getattr(series, attr) or []
+            setattr(series, attr,
+                    [palette[k % len(palette)] for k in range(len(current))])
+            continue
+
+        if not hasattr(series, "color"):
+            continue
+        if getattr(series, "_explicit_color", True):
+            continue
+        series.color = palette[i % len(palette)]
+        i += 1
+
+
 def drop_index(value):
     """
     Strip the index from a pandas Series or Index, leaving the values.
