@@ -3,6 +3,7 @@ GlyphX GroupedBarSeries - side-by-side bars for one value per group per category
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .utils import _format_tick, svg_escape
 
@@ -56,8 +57,8 @@ class GroupedBarSeries(BaseSeries):
         self._numeric_x    = list(range(1, n + 1))
         self.css_class     = f"series-{id(self) % 100000}"
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y   = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y   = ax.scale_y2 if use_y2 else ax.scale_y
         n_groups  = len(self.groups)
         n_cats    = len(self.categories)
         if n_groups == 0 or n_cats == 0:
@@ -65,9 +66,9 @@ class GroupedBarSeries(BaseSeries):
 
         # Pixel width for the whole group slot (distance between group centres)
         if n_groups > 1:
-            px_slot = ax.scale_x(2) - ax.scale_x(1)   # type: ignore
+            px_slot = ax.scale_x(2) - ax.scale_x(1)
         else:
-            px_slot = (ax.width - 2 * ax.padding) * 0.8  # type: ignore
+            px_slot = (ax.width - 2 * ax.padding) * 0.8
 
         px_total = px_slot * self.bar_width
         px_bar   = px_total / n_cats
@@ -76,7 +77,7 @@ class GroupedBarSeries(BaseSeries):
         elements: list[str] = []
 
         for gi, gname in enumerate(self.groups):
-            cx_group = ax.scale_x(gi + 1)   # type: ignore  # group centre pixel
+            cx_group = ax.scale_x(gi + 1)  # group centre pixel
 
             for ci, (cat, color) in enumerate(zip(self.categories, self.group_colors)):
                 val    = self.values[gi][ci]
@@ -101,11 +102,11 @@ class GroupedBarSeries(BaseSeries):
                 )
 
         # Category color legend (right-side inline)
-        font = ax.theme.get("font", "sans-serif")   # type: ignore
-        tc   = ax.theme.get("text_color", "#000")   # type: ignore
-        lx   = ax.width - ax.padding - 120           # type: ignore
+        font = ax.theme.get("font", "sans-serif")
+        tc   = ax.theme.get("text_color", "#000")
+        lx   = ax.width - ax.padding - 120
         for ci, (cat, color) in enumerate(zip(self.categories, self.group_colors)):
-            ly = ax.padding + ci * 18                # type: ignore
+            ly = ax.padding + ci * 18
             elements.append(
                 f'<rect x="{lx}" y="{ly}" width="12" height="12" fill="{color}"/>'
             )

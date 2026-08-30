@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .utils import svg_escape
 
@@ -65,9 +66,9 @@ class ECDFSeries(BaseSeries):
         self.line_width   = line_width
         self._raw         = arr
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
         """Render the ECDF step function as SVG."""
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y  # type: ignore[union-attr]
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
         # Build step-function path
@@ -79,12 +80,12 @@ class ECDFSeries(BaseSeries):
         prev_py: float | None = None
 
         for x_val, y_val in zip(self.x, self.y):
-            px = ax.scale_x(x_val)   # type: ignore[union-attr]
+            px = ax.scale_x(x_val)
             py = scale_y(y_val)
 
             if prev_px is None:
                 # Horizontal lead-in from left edge to first point
-                path_d.append(f"M {ax.padding},{py}")  # type: ignore[union-attr]
+                path_d.append(f"M {ax.padding},{py}")
                 path_d.append(f"L {px},{py}")
             else:
                 # Horizontal at previous y
@@ -106,7 +107,7 @@ class ECDFSeries(BaseSeries):
         # Horizontal tail to right edge
         if prev_px is not None:
             path_d.append(
-                f"L {ax.width - ax.padding},{prev_py}"  # type: ignore[union-attr]
+                f"L {ax.width - ax.padding},{prev_py}"
             )
 
         if path_d:

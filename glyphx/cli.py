@@ -42,7 +42,7 @@ def main(argv: list[str] | None = None) -> int:
 
 # plot sub-command
 
-def _add_plot_parser(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
+def _add_plot_parser(sub: argparse._SubParsersAction) -> None:
     p = sub.add_parser(
         "plot",
         help="Render a chart from a CSV / JSON / Excel file.",
@@ -215,7 +215,7 @@ def _series_for(kind: str, x: list, y: list, color: str | None, label: str | Non
 
 # version sub-command
 
-def _add_version_parser(sub: argparse._SubParsersAction) -> None:  # type: ignore[type-arg]
+def _add_version_parser(sub: argparse._SubParsersAction) -> None:
     p = sub.add_parser("version", help="Print GlyphX version and exit.")
     p.set_defaults(func=_cmd_version)
 

@@ -16,6 +16,7 @@ Essential for financial P&L analysis, budget variance, and change attribution.
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .utils import _format_tick, svg_escape
 
@@ -96,12 +97,12 @@ class WaterfallSeries(BaseSeries):
         self._x_categories = list(labels)
         self._numeric_x    = [i + 0.5 for i in range(n)]
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore[union-attr]
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
         n       = len(self.labels)
-        slot_px = (ax.width - 2 * ax.padding) / n           # type: ignore[union-attr]
+        slot_px = (ax.width - 2 * ax.padding) / n
         body_px = slot_px * self.bar_width
 
         prev_top_py: float | None = None
@@ -110,7 +111,7 @@ class WaterfallSeries(BaseSeries):
             self.labels, self._bases, self._tops,
             self._colors, self._deltas,
         )):
-            cx      = ax.scale_x(i + 0.5)   # type: ignore[union-attr]
+            cx      = ax.scale_x(i + 0.5)
             py_base = scale_y(base)
             py_top  = scale_y(top)
             bar_h   = abs(py_base - py_top)
@@ -130,7 +131,7 @@ class WaterfallSeries(BaseSeries):
 
             # Connector dashed line from previous bar's top to this bar's base
             if self.connector and prev_top_py is not None:
-                prev_cx = ax.scale_x(i - 1 + 0.5)   # type: ignore[union-attr]
+                prev_cx = ax.scale_x(i - 1 + 0.5)
                 elements.append(
                     f'<line '
                     f'x1="{prev_cx + body_px / 2}" '

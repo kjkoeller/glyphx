@@ -20,6 +20,7 @@ Plotly's require full Figure scaffolding.
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .series import BaseSeries
 
 # Standalone helper - returns a raw SVG string with no Figure overhead
@@ -165,8 +166,8 @@ class SparklineSeries(BaseSeries):
             label=label,
         )
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x)
         n       = len(x_vals)
         if n < 2:
@@ -176,11 +177,11 @@ class SparklineSeries(BaseSeries):
 
         if self.kind == "bar":
             y0       = scale_y(max(lo, 0))
-            pw       = (ax.width - 2 * ax.padding) / n    # type: ignore
+            pw       = (ax.width - 2 * ax.padding) / n
             bw       = pw * 0.8
             elements = []
             for i, (x, v) in enumerate(zip(x_vals, self.data)):
-                cx  = ax.scale_x(x)                       # type: ignore
+                cx  = ax.scale_x(x)
                 cy  = scale_y(v)
                 bh  = abs(cy - y0)
                 top = min(cy, y0)
@@ -192,13 +193,13 @@ class SparklineSeries(BaseSeries):
             return "\n".join(elements)
 
         pts  = " ".join(
-            f"{ax.scale_x(x):.2f},{scale_y(v):.2f}"   # type: ignore
+            f"{ax.scale_x(x):.2f},{scale_y(v):.2f}"
             for x, v in zip(x_vals, self.data)
         )
         out: list[str] = []
         if self.fill:
             y_base = scale_y(max(lo, 0))
-            x0, xn = ax.scale_x(x_vals[0]), ax.scale_x(x_vals[-1])   # type: ignore
+            x0, xn = ax.scale_x(x_vals[0]), ax.scale_x(x_vals[-1])
             poly = f"{x0:.2f},{y_base:.2f} " + pts + f" {xn:.2f},{y_base:.2f}"
             out.append(
                 f'<polygon points="{poly}" fill="{self.color}" '
@@ -210,7 +211,7 @@ class SparklineSeries(BaseSeries):
             f'stroke-linejoin="round" stroke-linecap="round"/>'
         )
         if self.show_last_dot:
-            lx = ax.scale_x(x_vals[-1])                  # type: ignore
+            lx = ax.scale_x(x_vals[-1])
             ly = scale_y(self.data[-1])
             out.append(
                 f'<circle cx="{lx:.2f}" cy="{ly:.2f}" '

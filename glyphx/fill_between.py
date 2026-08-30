@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .series import BaseSeries
 
 
@@ -66,13 +67,13 @@ class FillBetweenSeries(BaseSeries):
             label = label,
         )
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y = ax.scale_y2 if use_y2 else ax.scale_y  # type: ignore[union-attr]
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x1)
 
         # Build a closed polygon: trace y2 forward, then y1 backward
-        upper_pts = [f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y2)]  # type: ignore[union-attr]
-        lower_pts = [f"{ax.scale_x(x)},{scale_y(y)}" for x, y in reversed(list(zip(x_vals, self.y1)))]  # type: ignore[union-attr]
+        upper_pts = [f"{ax.scale_x(x)},{scale_y(y)}" for x, y in zip(x_vals, self.y2)]
+        lower_pts = [f"{ax.scale_x(x)},{scale_y(y)}" for x, y in reversed(list(zip(x_vals, self.y1)))]
         polygon_points = " ".join(upper_pts + lower_pts)
 
         elements = [
@@ -85,7 +86,7 @@ class FillBetweenSeries(BaseSeries):
         if self.line_width > 0:
             for y_vals, label_sfx in [(self.y2, "-upper"), (self.y1, "-lower")]:
                 pts = " ".join(
-                    f"{ax.scale_x(x)},{scale_y(y)}"  # type: ignore[union-attr]
+                    f"{ax.scale_x(x)},{scale_y(y)}"
                     for x, y in zip(x_vals, y_vals)
                 )
                 elements.append(
