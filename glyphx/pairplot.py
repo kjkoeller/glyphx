@@ -56,11 +56,9 @@ def pairplot(df, hue=None, kind="scatter", theme="default", diag_kind="hist"):
                     mask = df[hue] == cat
                     if not mask.any():
                         continue
-                    # .to_numpy(): a boolean-masked Series keeps the original
-                    # index, and the series coercion path indexes positionally.
                     ax.add(ScatterSeries(
-                        df.loc[mask, xcol].to_numpy(),
-                        df.loc[mask, ycol].to_numpy(),
+                        df.loc[mask, xcol],
+                        df.loc[mask, ycol],
                         color=hue_colors[k % len(hue_colors)],
                         label=str(cat),
                     ))

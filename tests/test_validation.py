@@ -313,3 +313,54 @@ def test_equal_figures_compare_equal():
 def test_different_figures_compare_unequal():
     other = Figure(auto_display=False).line([1, 2, 3], [5.0, 5.0, 5.0])
     assert _build_reference_figure() != other
+
+
+# ---------------------------------------------------------------------------
+# pandas index handling
+# ---------------------------------------------------------------------------
+
+def test_filtered_series_with_noncontiguous_index_renders():
+    """
+    A boolean-masked frame keeps the parent index, so ``df[df.g == "b"].x``
+    might be indexed ``[1, 3]``.  The render path indexes coordinates
+    positionally (``s.x[0]``), which on a pandas Series is a *label* lookup --
+    this used to raise ``KeyError: 0`` from ``Axes.compute_domain``.
+    """
+    pd = pytest.importorskip("pandas")
+    frame = pd.DataFrame({
+        "x": [1.0, 2.0, 3.0, 4.0],
+        "y": [4.0, 3.0, 2.0, 1.0],
+        "g": ["a", "b", "a", "b"],
+    })
+    subset = frame[frame.g == "b"]
+    assert list(subset.index) == [1, 3]
+
+    svg = Figure(auto_display=False).scatter(subset.x, subset.y).render_svg()
+    ET.fromstring(svg)
+
+
+def test_series_index_is_dropped_at_construction():
+    pd = pytest.importorskip("pandas")
+    values = pd.Series([1.0, 2.0, 3.0], index=[10, 20, 30])
+    series = LineSeries(values, values)
+    assert not hasattr(series.x, "index")
+    assert list(series.x) == [1.0, 2.0, 3.0]
+
+
+def test_numeric_series_keeps_the_numpy_fast_path():
+    """Large numeric input must not be turned into a Python list."""
+    pd = pytest.importorskip("pandas")
+    values = pd.Series(np.arange(500, dtype=float))
+    assert isinstance(LineSeries(values, values).x, np.ndarray)
+
+
+def test_datetime_series_still_gets_date_formatted_ticks():
+    """
+    to_numpy() on a datetime column yields datetime64 scalars, which the
+    date-axis detection does not recognise; the conversion has to keep
+    Timestamps for non-numeric dtypes.
+    """
+    pd = pytest.importorskip("pandas")
+    stamps = pd.Series(pd.date_range("2024-01-01", periods=5, freq="D"))
+    svg = Figure(auto_display=False).line(stamps, [1.0, 2.0, 3.0, 4.0, 5.0]).render_svg()
+    assert re.search(r">\s*\d{1,2}\s+[A-Z][a-z]{2}\s*<", svg), "expected date tick labels"
