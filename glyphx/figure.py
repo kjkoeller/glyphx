@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import re
 import webbrowser
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Any
 
@@ -1215,7 +1216,7 @@ class Figure:
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
         tmp.close()
-        webbrowser.open(f"file://{tmp.name}")
+        webbrowser.open(Path(tmp.name).as_uri())
 
     def show(self) -> Figure:
         """Render and display the figure. Returns ``self`` for chaining."""

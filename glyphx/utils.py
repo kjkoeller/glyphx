@@ -527,7 +527,7 @@ def render_cli(svg_string: str):
     ) as f:
         f.write(f"<html><body>{svg_string}</body></html>")
         path = f.name
-    webbrowser.open(f"file://{path}")
+    webbrowser.open(Path(path).as_uri())
 
 
 # Legend rendering

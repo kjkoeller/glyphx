@@ -427,3 +427,64 @@ def test_no_platform_specific_strftime_directives():
                 offenders.append(f"{path.name}:{node.lineno} {node.value!r}")
 
     assert offenders == [], f"non-portable strftime directives: {offenders}"
+
+
+def test_naive_datetimes_are_read_as_utc_not_local_time():
+    """
+    ``_to_timestamp`` used ``datetime.timestamp()``, which applies the
+    machine's zone to a naive value, while ``_format_datetime_tick`` formats
+    in UTC.  The two disagreed by the local offset, so a date axis labelled
+    itself a day early anywhere east of UTC.
+
+    Pinned to absolute epoch values so this holds regardless of the TZ the
+    suite happens to run under.
+    """
+    import datetime as dt
+
+    from glyphx.layout import _to_timestamp
+
+    midnight_utc = 1704412800.0          # 2024-01-05T00:00:00Z
+    assert _to_timestamp(dt.date(2024, 1, 5)) == midnight_utc
+    assert _to_timestamp(dt.datetime(2024, 1, 5)) == midnight_utc
+
+    aware = dt.datetime(2024, 1, 5, tzinfo=dt.timezone.utc)
+    assert _to_timestamp(aware) == midnight_utc
+
+
+def test_stdlib_and_pandas_datetimes_agree_on_the_same_axis():
+    """A naive Timestamp is UTC to pandas; stdlib must not differ."""
+    import datetime as dt
+
+    pd = pytest.importorskip("pandas")
+    from glyphx.layout import _to_timestamp
+
+    assert _to_timestamp(dt.datetime(2024, 1, 5)) == \
+           _to_timestamp(pd.Timestamp("2024-01-05"))
+
+
+def test_date_tick_label_is_timezone_independent():
+    import datetime as dt
+    import os
+    import time
+
+    if not hasattr(time, "tzset"):
+        pytest.skip("TZ manipulation needs tzset (not available on Windows)")
+
+    from glyphx.layout import _format_datetime_tick, _to_timestamp
+
+    original = os.environ.get("TZ")
+    labels = set()
+    try:
+        for zone in ("UTC", "America/New_York", "Pacific/Auckland", "Asia/Tokyo"):
+            os.environ["TZ"] = zone
+            time.tzset()
+            labels.add(_format_datetime_tick(_to_timestamp(dt.date(2024, 1, 5)),
+                                             30 * 86400))
+    finally:
+        if original is None:
+            os.environ.pop("TZ", None)
+        else:
+            os.environ["TZ"] = original
+        time.tzset()
+
+    assert labels == {"5 Jan"}, f"label varied by timezone: {labels}"

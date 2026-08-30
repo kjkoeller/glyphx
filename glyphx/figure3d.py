@@ -1099,7 +1099,7 @@ class Figure3D:
                     delete=False, suffix=".html", mode="w", encoding="utf-8"
                 )
                 tmp.write(html); tmp.close()
-                jd(IFrame(f"file://{tmp.name}",
+                jd(IFrame(Path(tmp.name).as_uri(),
                            width=self.width, height=self.height))
                 return self
         except Exception:
@@ -1108,7 +1108,7 @@ class Figure3D:
             delete=False, suffix=".html", mode="w", encoding="utf-8"
         )
         tmp.write(html); tmp.close()
-        webbrowser.open(f"file://{tmp.name}")
+        webbrowser.open(Path(tmp.name).as_uri())
         return self
 
     def save(self, filename: str = "glyphx3d.html") -> Figure3D:

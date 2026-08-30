@@ -29,10 +29,19 @@ def _to_timestamp(val) -> float:
             return val.timestamp()
     except ImportError:
         pass
+    # Naive values are read as UTC, not local time.  datetime.timestamp()
+    # applies the machine's zone to a naive value while _format_datetime_tick
+    # formats in UTC, so the two disagreed by the local offset: a plain
+    # date(2024, 1, 5) labelled itself "4 Jan" anywhere east of UTC, and
+    # disagreed with a pandas Timestamp for the same wall clock on the same
+    # axis (pandas already reads naive as UTC).
     if isinstance(val, _dt.datetime):
+        if val.tzinfo is None:
+            val = val.replace(tzinfo=_dt.timezone.utc)
         return val.timestamp()
     if isinstance(val, _dt.date):
-        return _dt.datetime(val.year, val.month, val.day).timestamp()
+        return _dt.datetime(val.year, val.month, val.day,
+                            tzinfo=_dt.timezone.utc).timestamp()
     return float(val)
 
 
