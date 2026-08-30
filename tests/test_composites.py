@@ -224,3 +224,24 @@ def test_add_axes_within_the_grid_works():
 def test_jointplot_builds_a_2x2_grid(df):
     fig = glyphx.jointplot(df, x="height", y="weight")
     assert (fig.rows, fig.cols) == (2, 2)
+
+
+def test_facet_plot_is_callable_at_all(df):
+    """
+    ``facet_plot`` forwarded ``kind=`` to ``FacetGrid()``, which has no such
+    parameter, so every call raised TypeError -- including the example in
+    docs/advanced.rst.  ``x`` and ``y`` were accepted and silently dropped.
+    """
+    grid = glyphx.facet_plot(df, x="height", y="weight", col="group", kind="scatter")
+    _assert_renders(grid)
+
+
+def test_facet_plot_maps_the_requested_kind(df):
+    _assert_renders(glyphx.facet_plot(df, x="height", col="group", kind="hist"))
+
+
+def test_figure_regplot_method(df):
+    """``Figure.regplot`` passed ``y2=`` to ``add()``, whose parameter is
+    ``use_y2`` -- TypeError on every call."""
+    fig = Figure(auto_display=False).regplot(df, x="height", y="weight")
+    _assert_renders(fig)

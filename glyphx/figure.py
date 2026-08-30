@@ -654,7 +654,8 @@ class Figure:
                            x_vals=x_vals, y_vals=y_vals,
                            auto_display=False, **kwargs)
         for s, u in reg_fig.series:
-            self.add(s, y2=u)
+            # The parameter is use_y2; y2= raised TypeError on every call.
+            self.add(s, use_y2=u)
         return self
 
     def choropleth(self, geojson, data, key='name', cmap='viridis',

@@ -158,7 +158,11 @@ python_version = "3.12"
 ignore_missing_imports = true
 # Start permissive: the goal is to keep py.typed honest, then tighten.
 disallow_untyped_defs = false
-check_untyped_defs = false
+# On, despite raising the count from 46 to 71: mypy skips the *body* of an
+# unannotated function entirely, and two call-signature bugs that crashed on
+# every invocation (facet_plot, Figure.regplot) lived in exactly that blind
+# spot.  The typing env is advisory, so the extra errors gate nothing.
+check_untyped_defs = true
 
 [tool.coverage.run]
 source = ["glyphx"]
