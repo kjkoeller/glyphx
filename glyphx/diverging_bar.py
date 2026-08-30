@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .utils import _format_tick, svg_escape
 
 
@@ -74,7 +75,7 @@ class DivergingBarSeries:
         self.x = None
         self.y = None
 
-    def to_svg(self, ax: object = None) -> str:   # type: ignore[override]
+    def to_svg(self, ax: AxesLike = None) -> str:
         vals = np.asarray(self.values, dtype=float)
 
         if ax is None:
@@ -82,14 +83,14 @@ class DivergingBarSeries:
             w, h = 640, 400
             font, tc, gc = "sans-serif", "#000", "#ddd"
         else:
-            pad_x = getattr(ax, "padding", 50) * 2    # type: ignore
+            pad_x = getattr(ax, "padding", 50) * 2
             # Use full padding on top so Figure title never overlaps chart area
-            pad_y = getattr(ax, "padding", 50)         # type: ignore
-            w     = ax.width   # type: ignore
-            h     = ax.height  # type: ignore
-            font  = ax.theme.get("font", "sans-serif")  # type: ignore
-            tc    = ax.theme.get("text_color", "#000")  # type: ignore
-            gc    = ax.theme.get("grid_color", "#ddd")  # type: ignore
+            pad_y = getattr(ax, "padding", 50)
+            w     = ax.width
+            h     = ax.height
+            font  = ax.theme.get("font", "sans-serif")
+            tc    = ax.theme.get("text_color", "#000")
+            gc    = ax.theme.get("grid_color", "#ddd")
 
         n        = len(self.categories)
         plot_w   = w - 2 * pad_x

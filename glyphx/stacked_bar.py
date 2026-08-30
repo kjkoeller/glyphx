@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .themes import themes as _themes
 from .utils import stable_id, svg_escape
@@ -105,16 +106,16 @@ class StackedBarSeries(BaseSeries):
             tuple(names), self._mat.shape, length=8,
         )
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:  # type: ignore
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y       # type: ignore
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
         # Pixel slot width
         n_cats  = len(self.categories)
         if n_cats > 1:
-            px_slot = ax.scale_x(1.5) - ax.scale_x(0.5)   # type: ignore
+            px_slot = ax.scale_x(1.5) - ax.scale_x(0.5)
         else:
-            px_slot = (ax.width - 2 * ax.padding) * 0.8    # type: ignore
+            px_slot = (ax.width - 2 * ax.padding) * 0.8
         px_bar  = px_slot * self.bar_width
 
         names = list(self.stacks.keys())
@@ -123,7 +124,7 @@ class StackedBarSeries(BaseSeries):
         # nowhere to put one and the leader-line logic to place it outside
         # the bar is a bigger job than it looks.
         for cat_j, cat in enumerate(self.categories):
-            cx = ax.scale_x(cat_j + 0.5)   # type: ignore
+            cx = ax.scale_x(cat_j + 0.5)
 
             # Two accumulators from zero, up and down. One running total
             # would let a negative pull the baseline back and draw the next

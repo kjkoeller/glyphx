@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import math
 
+from ._typing import AxesLike
 from .colormaps import apply_colormap
 from .utils import _format_tick, has_data, svg_escape
 
@@ -173,11 +174,11 @@ class ChoroplethSeries:
         norm = (float(val) - self._vmin) / self._vspan
         return apply_colormap(norm, self.cmap)
 
-    def to_svg(self, ax: object = None) -> str:  # type: ignore
+    def to_svg(self, ax: AxesLike = None) -> str:  # type: ignore
         W = getattr(ax, "width",  800) if ax else 800
         H = getattr(ax, "height", 500) if ax else 500
-        font = ax.theme.get("font", "sans-serif") if ax else "sans-serif"   # type: ignore
-        tc   = ax.theme.get("text_color", "#000") if ax else "#000"         # type: ignore
+        font = ax.theme.get("font", "sans-serif") if ax else "sans-serif"
+        tc   = ax.theme.get("text_color", "#000") if ax else "#000"
 
         lon_min, lon_max, y_min, y_max = _coord_bounds(self._features)
 

@@ -33,6 +33,7 @@ import importlib as _importlib
 import importlib.abc as _importlib_abc  # noqa: F401  -- populates _importlib.abc
 import importlib.util as _importlib_util  # noqa: F401  -- populates _importlib.util
 import sys as _sys
+import types as _types
 
 try:
     # Written at build time by setuptools_scm.
@@ -152,6 +153,34 @@ def __getattr__(name: str):
 
 def __dir__() -> list:
     return sorted(set(globals()) | set(_LAZY_ATTRS))
+
+
+# Seven exported names match the module that defines them: clustermap,
+# facet_plot, jointplot, lmplot, pairplot, plot3d, regplot.  Importing a
+# submodule binds it onto its package, so `import glyphx.regplot` -- or any
+# internal `from .regplot import regplot`, which Figure.regplot does -- makes
+# glyphx.regplot the *module*.  Normal lookup then succeeds and __getattr__ is
+# never consulted, so the exported function silently becomes uncallable, and
+# whether it does depends on import order.  Re-resolve on the way out.
+
+#: The only names that can be shadowed -- an exported symbol whose module has
+#: the same name.  Kept as a frozenset so the check below is a cheap miss for
+#: every other attribute.
+_SHADOWABLE = frozenset(
+    name for name, entry in _LAZY_ATTRS.items()
+    if not isinstance(entry, tuple) and entry == f".{name}"
+)
+
+
+class _GlyphxModule(_types.ModuleType):
+    def __getattribute__(self, name: str):
+        value = _types.ModuleType.__getattribute__(self, name)
+        if type(value) is _types.ModuleType and name in _SHADOWABLE:
+            value = __getattr__(name)
+        return value
+
+
+_sys.modules[__name__].__class__ = _GlyphxModule
 
 
 # Register the pandas accessor (df.glyphx.*).

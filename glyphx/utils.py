@@ -113,6 +113,43 @@ def is_finite(value) -> bool:
     return True
 
 
+def drop_index(value):
+    """
+    Strip the index from a pandas Series or Index, leaving the values.
+
+    Everything in the rendering path indexes coordinates positionally --
+    ``s.x[0]``, ``self.x[i]``, ``xs[-1]``.  On a pandas Series those are *label*
+    lookups, so a filtered frame (``df[df.g == "b"]``, whose index might be
+    ``[1, 3]``) raises ``KeyError: 0`` at render time rather than plotting.
+    Converting once at construction makes every downstream access positional.
+
+    Lists, tuples and NumPy arrays are returned untouched, so this costs
+    nothing for the common cases and never copies a large array.
+
+    Args:
+        value: Candidate series data.
+
+    Returns:
+        The values as a NumPy array if ``value`` was pandas-indexed, else
+        ``value`` unchanged.
+    """
+    if value is None:
+        return None
+    # Duck-typed rather than importing pandas: glyphx does not depend on it at
+    # import time, and this also catches index-carrying pandas-likes.
+    if not (hasattr(value, "to_numpy") and hasattr(value, "index")):
+        return value
+    try:
+        # Numeric and boolean dtypes keep the NumPy fast path.  Anything else
+        # -- datetime64, categorical, object -- goes to a Python list, because
+        # to_numpy() on a datetime Series yields datetime64 scalars and the
+        # date-axis detection only recognises datetime/Timestamp objects.
+        kind = getattr(getattr(value, "dtype", None), "kind", "O")
+        return value.to_numpy() if kind in "biufc" else value.tolist()
+    except Exception:
+        return value
+
+
 def as_seq(value) -> list:
     """``value`` as a list, or ``[]`` if it is None or empty.
 

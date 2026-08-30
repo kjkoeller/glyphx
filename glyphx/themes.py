@@ -1,15 +1,18 @@
 """
 GlyphX theme definitions.
 
-Each theme is a dictionary with keys:
-  colors       – ordered list of series colors
-  axis_color   – stroke color for axis lines
-  grid_color   – stroke color for grid lines
-  font         – font-family string
-  background   – canvas background fill
-  text_color   – default text fill color
+Each theme is a dictionary with keys::
+
+    colors       - ordered list of series colors
+    axis_color   - stroke color for axis lines
+    grid_color   - stroke color for grid lines
+    font         - font-family string
+    background   - canvas background fill
+    text_color   - default text fill color
 """
 
+#: Mapping of theme name to theme definition.  Each value is a dict with the
+#: keys listed above; pass a name to ``Figure(theme=...)`` or ``set_theme()``.
 themes = {
     "default": {
         "colors": ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",

@@ -19,6 +19,7 @@ from .utils import (
     as_seq,
     check_xy_lengths,
     describe_arc,
+    drop_index,
     has_data,
     is_finite,
     stable_id,
@@ -69,8 +70,10 @@ class BaseSeries:
     """
 
     def __init__(self, x, y=None, color=None, label=None, title=None):
-        self.x     = x
-        self.y     = y
+        # Strip any pandas index up front: everything downstream indexes
+        # positionally, and a filtered frame carries a non-contiguous index.
+        self.x     = drop_index(x)
+        self.y     = drop_index(y)
         self.color = color or "#1f77b4"
         self.label = label
         self.title = title

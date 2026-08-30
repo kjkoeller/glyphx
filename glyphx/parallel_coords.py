@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .colormaps import apply_colormap, colormap_colors
 from .utils import LEGEND_GUTTER, _format_tick, svg_escape
 
@@ -124,18 +125,18 @@ class ParallelCoordinatesSeries:
         self.x = None
         self.y = None
 
-    def to_svg(self, ax: object = None) -> str:   # type: ignore[override]
+    def to_svg(self, ax: AxesLike = None) -> str:
         if ax is None:
             pad_x, pad_y = 60, 50
             w, h = 740, 400
             font, tc = "sans-serif", "#000"
         else:
-            pad_x = ax.padding * 2    # type: ignore
-            pad_y = ax.padding        # type: ignore
-            w     = ax.width          # type: ignore
-            h     = ax.height         # type: ignore
-            font  = ax.theme.get("font", "sans-serif")  # type: ignore
-            tc    = ax.theme.get("text_color", "#000")  # type: ignore
+            pad_x = ax.padding * 2
+            pad_y = ax.padding
+            w     = ax.width
+            h     = ax.height
+            font  = ax.theme.get("font", "sans-serif")
+            tc    = ax.theme.get("text_color", "#000")
 
         n_axes   = len(self.axes_names)
         n_rows   = self.matrix.shape[0]

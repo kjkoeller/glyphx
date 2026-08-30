@@ -18,6 +18,7 @@ Standard financial chart showing open, high, low, close for each period.
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .utils import svg_escape
 
@@ -72,13 +73,13 @@ class CandlestickSeries(BaseSeries):
         self._x_categories = list(dates)
         self._numeric_x    = [i + 0.5 for i in range(len(dates))]
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y  # type: ignore[union-attr]
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
         # Candle body pixel width
         n       = len(self.dates)
-        slot_px = (ax.width - 2 * ax.padding) / n      # type: ignore[union-attr]
+        slot_px = (ax.width - 2 * ax.padding) / n
         body_px      = slot_px * self.candle_width
 
         for i, (date, o, h, l, c) in enumerate(zip(
@@ -86,7 +87,7 @@ class CandlestickSeries(BaseSeries):
             self.open_prices, self.high_prices,
             self.low_prices,  self.close_prices,
         )):
-            cx    = ax.scale_x(i + 0.5)   # type: ignore[union-attr]
+            cx    = ax.scale_x(i + 0.5)
             is_up = c >= o
             color = self.up_color if is_up else self.down_color
 

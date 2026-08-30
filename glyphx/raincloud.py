@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .utils import svg_escape
 from .violin_plot import _numpy_kde
@@ -76,8 +77,8 @@ class RaincloudSeries:
         all_vals = np.concatenate(self.datasets)
         self.y   = [float(all_vals.min()), float(all_vals.max())]
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y  # type: ignore[union-attr]
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         rng      = np.random.default_rng(self.seed)
         elements: list[str] = []
 
@@ -159,7 +160,7 @@ class RaincloudSeries:
             # Category label - skip if _x_categories is set, grid handles it
             if not getattr(self, "_x_categories", None):
                 elements.append(
-                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '  # type: ignore[union-attr]
+                    f'<text x="{cx}" y="{ax.height - ax.padding + 16}" '
                     f'text-anchor="middle" font-size="11" fill="#444">'
                     f'{svg_escape(cat)}</text>'
                 )

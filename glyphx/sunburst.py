@@ -21,6 +21,7 @@ from __future__ import annotations
 import math
 from collections import defaultdict
 
+from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .utils import _format_tick, svg_escape
 
@@ -163,15 +164,15 @@ class SunburstSeries:
             "Z"
         )
 
-    def to_svg(self, ax: object = None) -> str:   # type: ignore[override]
+    def to_svg(self, ax: AxesLike = None) -> str:
         if ax is None:
             cx, cy = 275, 275
             font, tc = "sans-serif", "#000"
         else:
-            cx = ax.width  // 2   # type: ignore
-            cy = ax.height // 2   # type: ignore
-            font = ax.theme.get("font", "sans-serif")  # type: ignore
-            tc   = ax.theme.get("text_color", "#000")  # type: ignore
+            cx = ax.width  // 2
+            cy = ax.height // 2
+            font = ax.theme.get("font", "sans-serif")
+            tc   = ax.theme.get("text_color", "#000")
 
         elements: list[str] = []
 

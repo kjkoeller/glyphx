@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .series import BaseSeries
 
@@ -63,10 +64,10 @@ class ContourSeries(BaseSeries):
         # BaseSeries domain - X is x_1d, Y is y_1d for Axes scaling
         super().__init__(x=list(x), y=list(y), color="#000", label=label)
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
         """Render filled contour bands using linear interpolation."""
-        scale_x = ax.scale_x   # type: ignore
-        scale_y = ax.scale_y   # type: ignore
+        scale_x = ax.scale_x
+        scale_y = ax.scale_y
         elements: list[str] = []
 
         nx = len(self.x_1d)
@@ -177,9 +178,9 @@ class ContourSeries(BaseSeries):
     def _colorbar_svg(self, ax, colors: list[str]) -> str:
         """Vertical colorbar strip on the right side."""
         from .utils import _format_tick
-        bx = ax.width - 20    # type: ignore
-        by = ax.padding        # type: ignore
-        bh = ax.height - 2 * ax.padding  # type: ignore
+        bx = ax.width - 20
+        by = ax.padding
+        bh = ax.height - 2 * ax.padding
         bw = 12
         steps = len(colors)
         step_h = bh / steps
@@ -192,12 +193,12 @@ class ContourSeries(BaseSeries):
             )
         items.append(
             f'<text x="{bx + bw + 3}" y="{by + 8}" font-size="10" '
-            f'fill="{ax.theme.get("text_color","#000")}">'   # type: ignore
+            f'fill="{ax.theme.get("text_color","#000")}">'
             f'{_format_tick(self._levels[-1])}</text>'
         )
         items.append(
             f'<text x="{bx + bw + 3}" y="{by + bh}" font-size="10" '
-            f'fill="{ax.theme.get("text_color","#000")}">'   # type: ignore
+            f'fill="{ax.theme.get("text_color","#000")}">'
             f'{_format_tick(self._levels[0])}</text>'
         )
         return "\n".join(items)

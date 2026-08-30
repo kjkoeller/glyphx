@@ -17,6 +17,7 @@ ratios so rectangles are as square as possible.
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .colormaps import apply_colormap
 from .utils import _format_tick, svg_escape
 
@@ -167,7 +168,7 @@ class TreemapSeries:
         self.x = None
         self.y = None
 
-    def to_svg(self, ax: object = None) -> str:   # type: ignore[override]
+    def to_svg(self, ax: AxesLike = None) -> str:
         """Render the treemap into SVG rectangles."""
         if ax is None:
             # Fallback dimensions
@@ -178,8 +179,8 @@ class TreemapSeries:
             pad    = getattr(ax, "padding", 50)
             plot_x = float(pad)
             plot_y = float(pad)
-            plot_w = float(ax.width  - 2 * pad)   # type: ignore[union-attr]
-            plot_h = float(ax.height - 2 * pad)   # type: ignore[union-attr]
+            plot_w = float(ax.width  - 2 * pad)
+            plot_h = float(ax.height - 2 * pad)
             theme  = getattr(ax, "theme", {})
             font   = theme.get("font", "sans-serif")
             tc     = "#fff"   # white text looks good on colored rects

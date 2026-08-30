@@ -23,6 +23,7 @@ Plotly has no native bump chart.  Matplotlib requires manual assembly.
 """
 from __future__ import annotations
 
+from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .utils import svg_escape
 
@@ -79,7 +80,7 @@ class BumpChartSeries:
         self.x = None
         self.y = None
 
-    def to_svg(self, ax: object = None) -> str:   # type: ignore
+    def to_svg(self, ax: AxesLike = None) -> str:   # type: ignore
         # The gutter holds both the "#N" rank labels and the series name
         # anchored to the first dot. At a fixed 30px they landed on top of
         # each other, so size it to the longest name.
@@ -93,12 +94,12 @@ class BumpChartSeries:
             w, h = 780, 480
             font, tc = "sans-serif", "#000"
         else:
-            pad_x = getattr(ax, "padding", 50) + _gutter   # type: ignore
-            pad_y = getattr(ax, "padding", 50)         # type: ignore
-            w     = ax.width    # type: ignore
-            h     = ax.height   # type: ignore
-            font  = ax.theme.get("font", "sans-serif")  # type: ignore
-            tc    = ax.theme.get("text_color", "#000")  # type: ignore
+            pad_x = getattr(ax, "padding", 50) + _gutter
+            pad_y = getattr(ax, "padding", 50)
+            w     = ax.width
+            h     = ax.height
+            font  = ax.theme.get("font", "sans-serif")
+            tc    = ax.theme.get("text_color", "#000")
 
         n_periods = len(self.x_labels)
         n_ranks   = self._max_rank

@@ -5,26 +5,25 @@ SVG performance degrades visibly above ~5 000 points.  GlyphX
 automatically downsamples before SVG generation using a suite of
 algorithms chosen per series type.
 
-Algorithm summary
------------------
-2-D line series   : Two-stage M4 -> LTTB pipeline.
-2-D scatter series: 2-D voxel grid thinning.
-3-D line series   : LTTB on vectorised camera-projected screen coords,
-                    result cached in a WeakKeyDictionary keyed on camera
-                    state + data fingerprint.
-3-D scatter series: 3-D voxel grid thinning.
-3-D surface series: Per-axis grid decimation + sub-pixel face culling.
+Algorithm summary::
 
-Performance notes
------------------
-All hot paths are fully vectorised with NumPy:
-- LTTB   : triangle-area computation uses slice broadcasting per bucket;
-           no Python loop inside the bucket scan.
-- M4     : column assignment via np.digitize; min/max/first/last per
-           column via np.minimum.reduceat / np.maximum.reduceat after a
-           single argsort by column - no per-column Python list.
-- Voxel  : nearest-centroid selection via np.minimum.reduceat after
-           sorting by cell_id - avoids a full argsort on distance.
+    2-D line series   : Two-stage M4 -> LTTB pipeline.
+    2-D scatter series: 2-D voxel grid thinning.
+    3-D line series   : LTTB on vectorised camera-projected screen coords,
+                        result cached in a WeakKeyDictionary keyed on camera
+                        state + data fingerprint.
+    3-D scatter series: 3-D voxel grid thinning.
+    3-D surface series: Per-axis grid decimation + sub-pixel face culling.
+
+Performance notes -- all hot paths are fully vectorised with NumPy::
+
+    LTTB   : triangle-area computation uses slice broadcasting per bucket;
+             no Python loop inside the bucket scan.
+    M4     : column assignment via np.digitize; min/max/first/last per
+             column via np.minimum.reduceat / np.maximum.reduceat after a
+             single argsort by column - no per-column Python list.
+    Voxel  : nearest-centroid selection via np.minimum.reduceat after
+             sorting by cell_id - avoids a full argsort on distance.
 
 Global kill-switch
 ------------------
