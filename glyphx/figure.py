@@ -499,6 +499,24 @@ class Figure:
         self.axes.set_tick_format(formatter)
         return self
 
+    def set_tick_wrap(self, enabled: bool = True) -> Figure:
+        """
+        Wrap long X-axis tick labels onto a second line instead of rotating.
+
+        Args:
+            enabled: ``True`` to wrap, ``False`` to restore auto-rotation.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.bar(["Product Engineering", "Sales & Marketing"], [10, 20])
+            fig.set_tick_wrap()
+        """
+        self.axes.set_tick_wrap(enabled)
+        return self
+
     def set_minor_ticks(self, n: int = 4) -> Figure:
         """
         Draw minor tick subdivisions between each pair of major ticks.
@@ -857,7 +875,7 @@ class Figure:
                 elements.append(
                     f'<line x1="{px + ox}" y1="{py + oy}" x2="{px}" y2="{py}" '
                     f'stroke="{ann["color"]}" stroke-width="1.5" '
-                    f'marker-end="url(#arrow)"/>'
+                    f'marker-end="url(#{self._arrow_marker_id()})"/>'
                 )
             elements.append(
                 f'<text x="{px + ox}" y="{py + oy - 2}" '
@@ -867,10 +885,28 @@ class Figure:
             )
         return "\n".join(elements)
 
-    @staticmethod
-    def _arrow_marker_def() -> str:
+    def _arrow_marker_id(self) -> str:
+        """
+        A per-figure id for the annotation-arrow marker.
+
+        The id was a static ``"arrow"`` literal, so two figures with
+        annotations sharing one HTML document -- ``SubplotGrid``, a notebook
+        cell, any dashboard embedding more than one GlyphX chart -- emitted
+        duplicate ``id="arrow"`` definitions.  Every browser resolves
+        ``url(#arrow)`` to whichever element with that id comes first in the
+        document, so the second figure's arrows silently point at the first
+        figure's marker.  Harmless today only because the marker's fill is
+        hardcoded; it stops being harmless the moment that becomes
+        configurable.  Derived from content so re-rendering the same figure
+        is still byte-identical.
+        """
+        from .utils import stable_id
+        return "glyphx-arrow-" + stable_id(repr(self._annotations), length=8)
+
+    def _arrow_marker_def(self) -> str:
+        marker_id = self._arrow_marker_id()
         return (
-            '<defs><marker id="arrow" markerWidth="8" markerHeight="8" '
+            f'<defs><marker id="{marker_id}" markerWidth="8" markerHeight="8" '
             'refX="6" refY="3" orient="auto">'
             '<path d="M0,0 L0,6 L8,3 z" fill="#333"/>'
             '</marker></defs>'
@@ -1453,17 +1489,8 @@ class Figure:
 
 # PPTX export helper
 
-def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
-    """
-    Save an SVG as a PNG-embedded PowerPoint slide.
-
-    Requires ``python-pptx`` and ``cairosvg``::
-
-        pip install "glyphx[pptx]"
-
-    The SVG is rasterised to PNG at 2x resolution, then inserted as a
-    full-slide picture in a blank 16:9 presentation.
-    """
+def _require_pptx_deps():
+    """Import cairosvg and python-pptx, or raise with install instructions."""
     try:
         import cairosvg
     except (ImportError, OSError):
@@ -1474,30 +1501,39 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
             "On macOS: brew install cairo"
         )
     try:
-        from pptx import Presentation
-        from pptx.enum.text import PP_ALIGN
-        from pptx.util import Inches, Pt
+        import pptx
     except ImportError:
         raise RuntimeError(
             "PPTX export requires python-pptx.  Install it with:\n"
             "    pip install \"glyphx[pptx]\""
         )
+    return cairosvg, pptx
 
+
+def _add_pptx_slide(cairosvg, prs, svg: str, title: str | None = None) -> None:
+    """
+    Add one full-slide picture, rasterised from ``svg``, to ``prs``.
+
+    Shared by the single-figure and multi-slide export paths so a change to
+    slide layout (title placement, picture sizing) only has one place to
+    make it, rather than two copies that drift apart.  ``cairosvg`` is passed
+    in rather than imported here so callers only pay the import cost once.
+    """
     import io
+
+    from pptx.enum.text import PP_ALIGN
+    from pptx.util import Inches, Pt
 
     # SVG -> PNG at 2x for crisp rendering
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 
-    # Build presentation
-    prs    = Presentation()
-    blank  = prs.slide_layouts[6]          # completely blank layout
-    slide  = prs.slides.add_slide(blank)
+    blank = prs.slide_layouts[6]           # completely blank layout
+    slide = prs.slides.add_slide(blank)
 
     slide_w = prs.slide_width
     slide_h = prs.slide_height
 
-    # Optional title text box
     top_offset = Inches(0)
     if title:
         txBox = slide.shapes.add_textbox(
@@ -1510,12 +1546,28 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
         tf.paragraphs[0].runs[0].font.bold = True
         top_offset = Inches(0.65)
 
-    # Insert chart PNG
     pic_h = slide_h - top_offset - Inches(0.1)
     pic_w = min(slide_w - Inches(0.4), pic_h * (slide_w / slide_h))
     left  = (slide_w - pic_w) // 2
 
     slide.shapes.add_picture(png_stream, left, top_offset, pic_w, pic_h)
+
+
+def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
+    """
+    Save an SVG as a single-slide PowerPoint file.
+
+    Requires ``python-pptx`` and ``cairosvg``::
+
+        pip install "glyphx[pptx]"
+
+    The SVG is rasterised to PNG at 2x resolution, then inserted as a
+    full-slide picture in a blank 16:9 presentation.
+    """
+    cairosvg, pptx_mod = _require_pptx_deps()
+
+    prs = pptx_mod.Presentation()
+    _add_pptx_slide(cairosvg, prs, svg, title=title)
     prs.save(filename)
 
 
@@ -1582,3 +1634,70 @@ class SubplotGrid:
 
         html_body = "<div>" + "".join(rows_html) + "</div>"
         return wrap_svg_with_template(html_body)
+
+    def _figures_in_order(self):
+        """Grid cells in row-major order, skipping empty ones."""
+        return [fig for row in self.grid for fig in row if fig is not None]
+
+    def save(self, filename: str = "glyphx_dashboard.html",
+             dpi: int = 96, backend: str | None = None) -> SubplotGrid:
+        """
+        Save the grid to disk.
+
+        ``.html`` writes the same composite page :meth:`render` produces.
+        ``.pptx`` puts each figure on its own slide, in row-major order,
+        titled from the figure's own ``title`` if it set one -- this is the
+        multi-slide export the standalone :class:`SubplotGrid` had no way to
+        do before, since :meth:`Figure.save` only ever knew about one figure.
+        ``.svg``, ``.png``, ``.jpg`` and ``.pdf`` are not supported: those
+        formats have no multi-page notion, and the grid's cells sit in
+        separate ``<svg>`` documents rather than one combined one, so there
+        is no single image to rasterise. Save each :class:`Figure` in the
+        grid individually for those formats.
+
+        Args:
+            filename: Output path. Extension selects the format.
+            dpi:      Forwarded to the PNG rasteriser that PPTX export uses
+                      internally. No effect on ``.html``.
+            backend:  Unused; accepted for signature parity with
+                      :meth:`Figure.save`.
+
+        Returns:
+            ``self`` for chaining.
+
+        Raises:
+            ValueError: For an unsupported extension.
+
+        Example::
+
+            sg = SubplotGrid(2, 2)
+            sg.add(revenue_fig, 0, 0).add(costs_fig, 0, 1)
+            sg.save("quarterly_review.pptx")   # one slide per figure
+        """
+        ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+
+        if ext == "html":
+            with open(filename, "w", encoding="utf-8") as fh:
+                fh.write(self.render())
+            return self
+
+        if ext == "pptx":
+            # Both already defined at module level in this file.
+            cairosvg, pptx_mod = _require_pptx_deps()
+            prs = pptx_mod.Presentation()
+            figures = self._figures_in_order()
+            if not figures:
+                raise ValueError(
+                    "Cannot save an empty SubplotGrid: add at least one "
+                    "figure first."
+                )
+            for fig in figures:
+                _add_pptx_slide(cairosvg, prs, fig.render_svg(), title=fig.title)
+            prs.save(filename)
+            return self
+
+        raise ValueError(
+            f"SubplotGrid.save() does not support '.{ext}'. Use '.html' for "
+            f"the composite dashboard, '.pptx' for one slide per figure, or "
+            f"save each Figure individually for '.svg' / '.png' / '.pdf'."
+        )

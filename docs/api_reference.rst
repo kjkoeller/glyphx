@@ -227,6 +227,11 @@ Themes
 
 .. autofunction:: glyphx.themes.list_themes
 
+Tick label wrapping
+-------------------
+
+.. autofunction:: glyphx.utils.wrap_tick_label
+
 Available theme names: ``"default"``, ``"dark"``, ``"colorblind"``,
 ``"pastel"``, ``"warm"``, ``"ocean"``, ``"monochrome"``
 

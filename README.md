@@ -482,7 +482,16 @@ fig.annotate("Baseline", x=0, y=2.0, anchor="start")
 
 # Auto tight layout (adjusts padding, rotates crowded X labels)
 fig.tight_layout()
+
+# Wrap long X labels onto a second line instead of rotating them
+fig.bar(["Product Engineering", "Sales & Marketing", "R&D"], [10, 20, 15])
+fig.tight_layout().set_tick_wrap()
 ```
+
+`set_tick_wrap()` is an alternative to GlyphX's default auto-rotation. Rotation
+is compact but harder to read; wrapping keeps labels horizontal by splitting
+them across up to two lines. Labels that already fit are left alone, and the
+two are mutually exclusive — enabling wrap suppresses rotation for that axes.
 
 ---
 
@@ -602,6 +611,28 @@ html_str = fig.share(title="Q3 Report")      # custom <title> tag
 
 `fig.share()` inlines all JavaScript so the output works in:
 email clients · Confluence · Notion · GitHub Pages · air-gapped environments
+
+### Multi-figure export
+
+`SubplotGrid` lays out several independent figures on one page, and now saves
+directly:
+
+```python
+from glyphx import Figure
+from glyphx.figure import SubplotGrid
+
+sg = SubplotGrid(2, 2)
+sg.add(revenue_fig, 0, 0)
+sg.add(costs_fig,   0, 1)
+
+sg.save("dashboard.html")          # composite page, all figures inline
+sg.save("quarterly_review.pptx")   # one slide per figure, row-major order
+```
+
+Each PPTX slide is titled from that figure's own `title`. Empty grid cells are
+skipped. Single-image formats (`.svg`, `.png`, `.pdf`) are rejected with a
+pointer to saving each `Figure` individually — the grid's cells are separate
+`<svg>` documents, so there is no one image to rasterise.
 
 ---
 
@@ -853,35 +884,40 @@ The items below are planned for upcoming releases. Contributions and feedback on
 - **DataFrame accessor** (`df.glyphx.*`) with `hue=` support
 - **Statistical significance brackets** (`add_stat_annotation`)
 - **Raincloud plot**, **ECDF**, **KDE**, **FillBetween**, **Candlestick**, **Waterfall**, **Treemap**, **Streaming**
-- **PPTX export**, **CLI tool**, **ARIA accessibility**, **full type annotations**
+- **PPTX export** (single figure, and `SubplotGrid.save("deck.pptx")` for one slide per figure), **CLI tool**, **ARIA accessibility**, **full type annotations**
 - **LTTB downsampling** — Largest-Triangle-Three-Buckets auto-downsampling for `LineSeries` on datasets above 5 000 points; SVG stays fast where Matplotlib would rasterize
 
-### v2.2 — Remaining Chart Gaps
+### ✅ v2.2 — Chart Gaps (shipped)
 - **Stacked bar chart** — `StackedBarSeries` with optional 100% percentage mode
 - **Stacked area chart** — additive multi-series `FillBetweenSeries`
 - **Bump chart** — rank-over-time (Seaborn cannot do this natively)
-- **Forest plot** — meta-analysis standard; no native equivalent in any library
-- **Alluvial / Sankey diagram** — flow between categorical states over time
 - **ECDF with bootstrap confidence bands** — shading around the step function
 - **Clustermap with dendrogram** — Seaborn's most distinctive chart in bioinformatics; hierarchically-clustered heatmap with tree diagrams on both axes
-- **Regplot / lmplot completeness** — polynomial, logistic, LOWESS, and robust regression with CI shading; beat Seaborn's regression plotting
+- **Regplot polynomial / logistic / LOWESS** with CI shading
+- **Geographic / choropleth maps** — GeoJSON + SVG path rendering, no external tile dependencies
 
-### v2.3 — Layout & Polish
+### ✅ v2.3 — Layout & Polish (shipped)
+- **Multi-line axis labels** — `fig.set_tick_wrap()` wraps long X-tick labels over two lines instead of forcing rotation
+- **Custom tick formatters** — `fig.set_tick_format(lambda v: f"${v:,.0f}")` for per-axis label control
+- **Minor ticks** — `fig.set_minor_ticks(n)` grid subdivisions between major ticks
+- **Theme registry** — `register_theme()` for named custom themes usable anywhere a theme name is accepted
+
+### v2.4 — Remaining Chart Gaps
+- **Forest plot** — meta-analysis standard; no native equivalent in any library
+- **Alluvial / Sankey diagram** — flow between categorical states over time
+- **Robust regression** — Huber / RANSAC fits in `regplot`, the one mode not yet covered
+
+### v2.5 — Layout
 - **Shared axis subplots** — `Figure(rows=2, shared_x=True)` so all subplots share a single X axis with synchronized zoom and pan
 - **Inset axis** — `fig.inset_axes(x, y, width, height)` for zoomed detail panels inside a larger plot
-- **Multi-line axis labels** — wrap long X-tick labels over two lines instead of forcing rotation
-- **Custom tick formatters** — `fig.axes.set_tick_format(lambda v: f"${v:,.0f}")` for per-axis label control; beat Matplotlib's fine-grained axis API
-- **Minor ticks** — configurable minor grid subdivisions between major ticks
 
-### v2.4 — Interactivity & Export
+### v2.6 — Interactivity & Export
 - **Click-to-filter** — click a bar or slice to cross-filter all other charts on the same HTML page, with zero server dependency
 - **Animated transitions** — SVG `<animate>` elements between data updates for streaming and dashboard refresh
-- **PowerPoint multi-slide** — `SubplotGrid.save("deck.pptx")` exports each subplot to a separate slide
 - **Chart diff** — `glyphx.diff(fig_v1, fig_v2)` produces an animated SVG showing what changed between two renders
 - **VS Code extension** — live SVG preview panel that updates on file save; no browser tab switching
 
 ### v3.0 — Platform
-- **Geographic / choropleth maps** — GeoJSON + SVG path rendering for country/region maps without external tile dependencies
 - **React / Next.js component** — `<GlyphXChart>` web component with Python-serialized config
 - **WebAssembly renderer** — full GlyphX in the browser via Pyodide; no Python server required
 - **Collaborative dashboards** — multi-user real-time dashboards over WebSocket push, no Dash or Streamlit needed

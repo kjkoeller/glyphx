@@ -277,6 +277,60 @@ def _format_tick(val, is_log: bool = False):
 
 # SVG escaping
 
+def wrap_tick_label(label, max_chars, max_lines: int = 2) -> list:
+    """
+    Word-wrap a tick label to at most ``max_lines`` lines of roughly
+    ``max_chars`` characters each.
+
+    Character-count based, like every other width estimate in this codebase
+    -- SVG text has no font-metrics API to query, so
+    ``Axes._should_rotate_xlabels`` uses the same kind of estimate for its
+    rotate-vs-not decision.  This is the wrap alternative: a label too long
+    to fit at the current tick spacing goes to two lines instead of forcing
+    every label on the axis to rotate.
+
+    A single word longer than ``max_chars`` is hard-split rather than left
+    to overflow one line.  If content remains after ``max_lines``, the last
+    line is truncated with an ellipsis rather than silently dropped.
+
+    Args:
+        label:     Text to wrap. Non-strings are stringified first.
+        max_chars: Approximate character budget per line.
+        max_lines: Maximum lines to return.
+
+    Returns:
+        list[str]: One or more lines, never more than ``max_lines``.
+    """
+    max_chars = max(1, int(max_chars))
+    words = str(label).split()
+    if not words:
+        return [str(label)]
+
+    lines: list = []
+    current = ""
+    for word in words:
+        candidate = f"{current} {word}".strip()
+        if len(candidate) <= max_chars:
+            current = candidate
+            continue
+        if current:
+            lines.append(current)
+        current = word
+        while len(current) > max_chars:      # hard-split an overlong token
+            lines.append(current[:max_chars])
+            current = current[max_chars:]
+    if current:
+        lines.append(current)
+
+    if len(lines) <= max_lines:
+        return lines
+    kept = lines[:max_lines]
+    last = kept[-1]
+    kept[-1] = (last[:max(0, max_chars - 1)] + "…"
+               if len(last) >= max_chars else last + "…")
+    return kept
+
+
 def svg_label(text) -> str:
     """
     Prepare a user-supplied label for an SVG ``<text>`` element.

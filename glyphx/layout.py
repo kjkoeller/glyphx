@@ -140,6 +140,7 @@ class Axes:
         self._yticklabels:  list[str] | None   = None   # override y labels
         self._tick_formatter = None                      # callable(value) → str
         self._minor_ticks:  int                = 0      # subdivisions between majors
+        self._tick_wrap:    bool               = False   # wrap long x-labels, not rotate
         self._tick_length:  float              = 4.0    # tick mark length px
         self._minor_length: float              = 2.0    # minor tick length px
 
@@ -226,6 +227,31 @@ class Axes:
             ax.set_tick_format(lambda v: f"{v:.1%}")
         """
         self._tick_formatter = formatter
+        return self
+
+    def set_tick_wrap(self, enabled: bool = True) -> Axes:
+        """
+        Wrap long X-axis tick labels onto a second line instead of rotating.
+
+        Rotation is GlyphX's automatic default once labels would overlap at
+        horizontal angle (see ``_should_rotate_xlabels``); this is an
+        explicit alternative for when rotated text is harder to read than
+        two short lines -- category names and month/quarter labels are the
+        common case. The two are mutually exclusive: enabling wrap suppresses
+        auto-rotation for this axes.
+
+        Args:
+            enabled: ``True`` to wrap, ``False`` to restore the default
+                (auto-rotate when labels would otherwise overlap).
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_tick_wrap()   # "Product Engineering" -> "Product" / "Engineering"
+        """
+        self._tick_wrap = enabled
         return self
 
     def set_minor_ticks(self, n: int, length: float = 2.0) -> Axes:
@@ -741,6 +767,49 @@ class Axes:
 
         return "\n".join(elements)
 
+    def _tick_label_svg(self, x_p: float, y_label: float, label, *,
+                        anchor: str, font: str, text_color: str,
+                        transform: str = "", wrap_chars: float | None = None) -> str:
+        """
+        Build the ``<text>`` element for one X-axis tick label.
+
+        Escapes ``label`` via :func:`svg_label` -- both call sites used to
+        interpolate it raw, so a custom tick label containing ``&`` or an
+        HTML tag (from ``set_xticks(..., labels=[...])``, or from any
+        ``set_tick_format`` callback that formats untrusted data) landed in
+        the SVG unescaped.
+
+        When ``wrap_chars`` is given and ``self._tick_wrap`` is enabled, a
+        label that would not fit at the current tick spacing is split across
+        up to two ``<tspan>`` lines instead of the caller rotating it.
+        Wrapping happens on the raw string, before escaping, so entities
+        like ``&amp;`` are never split apart.
+        """
+        from .utils import svg_label, wrap_tick_label
+
+        text = str(label)
+        if self._tick_wrap and wrap_chars and len(text) > wrap_chars:
+            lines = wrap_tick_label(text, wrap_chars, max_lines=2)
+        else:
+            lines = [text]
+
+        if len(lines) == 1:
+            body = svg_label(lines[0])
+        else:
+            tspans = "".join(
+                f'<tspan x="{x_p}" dy="{"0" if i == 0 else "1.2em"}">'
+                f'{svg_label(line)}</tspan>'
+                for i, line in enumerate(lines)
+            )
+            body = tspans
+
+        transform_attr = f'transform="{transform}"' if transform else ""
+        return (
+            f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
+            f'font-size="11" font-family="{font}" fill="{text_color}" {transform_attr}>'
+            f'{body}</text>'
+        )
+
     def render_grid(self, ticks=5):
         """
         Render tick marks, grid lines, and numeric labels.
@@ -837,7 +906,7 @@ class Axes:
             elements.append(
                 f'<text x="{pad - self._tick_length - 4}" y="{y_p + 4}" text-anchor="end" '
                 f'font-size="11" font-family="{font}" fill="{text_color}">'
-                f'{_fmt(y_v, lbl_ovr)}</text>'
+                f'{svg_label(_fmt(y_v, lbl_ovr))}</text>'
             )
 
         # Minor Y ticks
@@ -881,26 +950,26 @@ class Axes:
                 )
 
         # X ticks - bottom, vertical grid lines
-        rotate      = getattr(self, "_auto_rotate", False)
+        plot_w      = self.width - 2 * pad
+        rotate      = getattr(self, "_auto_rotate", False) and not self._tick_wrap
         anchor      = "end" if rotate else "middle"
         rot_tfm     = "rotate(-40, {x_p}, {y_label})" if rotate else ""
         y_label_off = 16 if not rotate else 8
 
         if all_categories:
+            n_cats = max(1, len(all_categories))
+            wrap_chars = (plot_w / n_cats) * 0.85 / 6.5
             for x_v, label in all_categories.items():
                 x_p     = self.scale_x(x_v)
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
-                transform = f'transform="{rot}"' if rot else ""
                 elements.append(
                     f'<line y1="{pad}" y2="{self.height - pad}" '
                     f'x1="{x_p}" x2="{x_p}" '
                     f'stroke="{stroke}" stroke-dasharray="3,3" />')
-                elements.append(
-                    f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-                    f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{svg_label(label)}</text>'
-                )
+                elements.append(self._tick_label_svg(
+                    x_p, y_label, label, anchor=anchor, font=font,
+                    text_color=text_color, transform=rot, wrap_chars=wrap_chars))
         else:
             _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
             _span   = (self._x_domain[1] - self._x_domain[0]) if _has_dt else 0
@@ -911,13 +980,13 @@ class Axes:
                                 ticks, self.xscale == "log")
             )
             _x_tick_lbls = self._xticklabels
+            wrap_chars = (plot_w / max(1, len(_x_tick_vals) - 1)) * 0.85 / 6.5
             for idx_x, x_v in enumerate(_x_tick_vals):
                 if not (self._x_domain[0] <= x_v <= self._x_domain[1]):
                     continue
                 x_p     = self.scale_x(x_v)
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
-                transform = f'transform="{rot}"' if rot else ""
                 if _x_tick_lbls and idx_x < len(_x_tick_lbls):
                     tick_label = _x_tick_lbls[idx_x]
                 elif self._tick_formatter is not None:
@@ -935,11 +1004,9 @@ class Axes:
                     f'<line x1="{x_p}" x2="{x_p}" '
                     f'y1="{self.height - pad}" y2="{self.height - pad + self._tick_length}" '
                     f'stroke="{text_color}" stroke-width="1"/>')
-                elements.append(
-                    f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-                    f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{tick_label}</text>'
-                )
+                elements.append(self._tick_label_svg(
+                    x_p, y_label, tick_label, anchor=anchor, font=font,
+                    text_color=text_color, transform=rot, wrap_chars=wrap_chars))
             # Minor X ticks
             if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
                 for j in range(len(_x_tick_vals) - 1):
