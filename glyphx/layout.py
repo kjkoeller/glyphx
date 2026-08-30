@@ -41,13 +41,17 @@ def _format_datetime_tick(ts: float, span_seconds: float) -> str:
 
     Chooses the right granularity based on the total time span displayed.
     """
-    dt = _dt.datetime.utcfromtimestamp(ts)
+    # utcfromtimestamp() is deprecated from 3.12 and slated for removal.
+    dt = _dt.datetime.fromtimestamp(ts, tz=_dt.timezone.utc)
     if span_seconds <= 3 * 3600:          # ≤ 3 hours → HH:MM
         return dt.strftime("%H:%M")
     if span_seconds <= 3 * 86400:         # ≤ 3 days  → Mon 14:00
         return dt.strftime("%a %H:%M")
     if span_seconds <= 90 * 86400:        # ≤ 90 days → 15 Jan
-        return dt.strftime("%-d %b")
+        # Not "%-d": the no-pad flag is a glibc extension that MSVC rejects
+        # with ValueError, so every date axis under 90 days crashed on
+        # Windows.  (Windows spells it "%#d"; neither is portable.)
+        return f"{dt.day} {dt.strftime('%b')}"
     if span_seconds <= 730 * 86400:       # ≤ 2 years → Jan 2024
         return dt.strftime("%b %Y")
     return dt.strftime("%Y")              # > 2 years → 2024
