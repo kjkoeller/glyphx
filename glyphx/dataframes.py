@@ -99,6 +99,32 @@ def column_names(df: Any) -> list[str]:
     raise TypeError(f"Not a dataframe: {type(df).__name__}")
 
 
+def _resolve_key(df: Any, name: str) -> Any:
+    """
+    Map a stringified column name back to the key the frame actually holds.
+
+    ``column_names()`` stringifies for display, so a frame with integer column
+    labels -- what ``pd.read_csv(header=None)`` produces -- reports ``"0"``
+    while indexing still requires ``0``.  Looking the string up directly
+    raised KeyError on a column that was plainly listed as available.
+    """
+    if isinstance(df, dict):
+        if name in df:
+            return name
+        return next((k for k in df if str(k) == name), name)
+
+    columns = getattr(df, "columns", None)
+    if columns is None:
+        return name
+    try:
+        cols = list(columns)
+    except TypeError:                       # not iterable; leave it alone
+        return name
+    if name in cols:
+        return name
+    return next((c for c in cols if str(c) == name), name)
+
+
 def get_column(df: Any, name: str) -> list:
     """
     Return one column of ``df`` as a plain Python list.
@@ -121,18 +147,30 @@ def get_column(df: Any, name: str) -> list:
             f"Column {name!r} not found. Available columns: {available}"
         )
 
+    # A duplicated name makes df[name] return a 2-D frame, and iterating a
+    # DataFrame yields its column *labels* -- so this silently plotted
+    # ["a", "a"] as if it were data.  Refuse instead.
+    if available.count(name) > 1:
+        raise KeyError(
+            f"Column {name!r} is ambiguous: the frame has "
+            f"{available.count(name)} columns with that name. "
+            f"Rename or de-duplicate them before plotting."
+        )
+
+    key = _resolve_key(df, name)
+
     if isinstance(df, dict):
-        return list(df[name])
+        return list(df[key])
 
     column = None
     if _is_arrow_table(df):
-        column = df.column(name)
+        column = df.column(key)
     elif _has_pandas_api(df):
-        column = df[name]
+        column = df[key]
     elif hasattr(df, "__getitem__"):
         # Polars, cuDF, and most others support df[name] directly.
         try:
-            column = df[name]
+            column = df[key]
         except Exception:       # fall through to the interchange protocol
             column = None
 
