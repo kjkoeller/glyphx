@@ -11,6 +11,7 @@ from typing import Any
 
 from .layout import Axes
 from .utils import (
+    SVG_PRECISION,
     as_seq,
     draw_legend,
     svg_label,
@@ -107,6 +108,8 @@ class Figure:
         )
         self.series: list[tuple[Any, bool]] = []
         self._annotations:   list[dict[str, Any]] = []
+        # (Axes, x_px, y_px) for each inset panel; see inset_axes().
+        self._insets:        list[tuple] = []
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -498,6 +501,128 @@ class Figure:
         """
         self.axes.set_tick_format(formatter)
         return self
+
+    def inset_axes(self, x: float, y: float, width: float, height: float,
+                   *, theme=None, padding: float | None = None,
+                   background: str | None = None, show_grid: bool = True):
+        """
+        Add a small panel drawn on top of the main plot area.
+
+        Useful for a zoomed detail view of a dense region, or an overview
+        thumbnail alongside a zoomed main chart.  Returns a fresh
+        :class:`~glyphx.layout.Axes` with its own independent scales -- add
+        series to it with ``add_series()``, exactly as with
+        :meth:`add_axes` for subplot grids.
+
+        Position and size are fractions of the figure canvas, not of the
+        plot area, so ``inset_axes(0.6, 0.1, 0.35, 0.3)`` always lands in
+        the top-right regardless of how padding changes.
+
+        Insets render after the main series and in the order added, so a
+        later inset overlaps an earlier one. They are drawn over an opaque
+        background by default so the parent's grid lines do not show
+        through.
+
+        Args:
+            x:          Left edge, 0-1 fraction of figure width.
+            y:          Top edge, 0-1 fraction of figure height.
+            width:      Panel width, 0-1 fraction of figure width.
+            height:     Panel height, 0-1 fraction of figure height.
+            theme:      Theme name or dict. Defaults to the parent's theme.
+            padding:    Inner padding in px. Defaults to a value scaled to
+                        the panel size, since the figure default of 50 would
+                        consume most of a small inset.
+            background: Panel fill. Defaults to the theme background.
+                        Pass ``"none"`` for a transparent inset.
+            show_grid:  Draw grid lines inside the panel.
+
+        Returns:
+            Axes: the inset's axes.
+
+        Raises:
+            ValueError: If the panel is not within the canvas, or has
+                non-positive size.
+
+        Example::
+
+            fig = Figure().line(x, y)
+            inset = fig.inset_axes(0.6, 0.15, 0.35, 0.3)
+            inset.add_series(LineSeries(x[:20], y[:20]))
+        """
+        from .layout import Axes
+        from .themes import get_theme
+
+        if not (width > 0 and height > 0):
+            raise ValueError(
+                f"Inset width and height must be positive, got "
+                f"width={width}, height={height}."
+            )
+        if not (x >= 0 and y >= 0 and x + width <= 1 and y + height <= 1):
+            raise ValueError(
+                f"Inset must fit inside the canvas as 0-1 fractions; got "
+                f"x={x}, y={y}, width={width}, height={height} "
+                f"(x+width={x + width}, y+height={y + height})."
+            )
+
+        px_w = self.width * width
+        px_h = self.height * height
+
+        if padding is None:
+            # The figure default of 50 would leave a 200x150 inset with no
+            # plot area at all.  Scale it, but keep room for tick labels.
+            padding = max(14.0, min(px_w, px_h) * 0.18)
+
+        resolved = get_theme(theme) if theme is not None else self.theme
+
+        ax = Axes(
+            width=px_w,
+            height=px_h,
+            padding=padding,
+            show_grid=show_grid,
+            theme=resolved,
+        )
+        ax._inset_background = (
+            background if background is not None
+            else resolved.get("background", "#ffffff")
+        )
+        self._insets.append((ax, self.width * x, self.height * y))
+        return ax
+
+    def _render_insets(self) -> str:
+        """Composite every inset panel into the parent SVG."""
+        from .utils import assign_theme_colors
+
+        parts = []
+        for ax, px, py in self._insets:
+            assign_theme_colors(list(ax.series) + list(ax.y2_series), ax.theme)
+            ax.finalize()
+
+            body = []
+            bg = getattr(ax, "_inset_background", "none")
+            if bg and bg != "none":
+                body.append(
+                    f'<rect x="0" y="0" width="{ax.width}" height="{ax.height}" '
+                    f'fill="{bg}" stroke="{ax.theme.get("axis_color", "#333")}" '
+                    f'stroke-width="1"/>'
+                )
+            body.append(ax.render_axes())
+            body.append(ax.render_grid())
+            if ax.scale_x is not None and ax.scale_y is not None:
+                for s in ax.series:
+                    body.append(s.to_svg(ax))
+                for s in ax.y2_series:
+                    body.append(s.to_svg(ax, use_y2=True))
+
+            # Round like every other emitted coordinate: float division by a
+            # fraction otherwise yields 463.99999999999994 in the output.
+            parts.append(
+                f'<g class="glyphx-inset" '
+                f'transform="translate({round(px, SVG_PRECISION)}, '
+                f'{round(py, SVG_PRECISION)})">'
+                + "\n".join(body)
+                + "</g>"
+            )
+        return "\n".join(parts)
 
     def set_tick_wrap(self, enabled: bool = True) -> Figure:
         """
@@ -1079,6 +1204,11 @@ class Figure:
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
+
+        # Insets draw last so they sit above the main plot, and work on any
+        # of the branches above -- including an otherwise empty figure.
+        if self._insets:
+            svg_parts.append(self._render_insets())
 
         _svg_content = "\n".join(svg_parts)
         # Math is rendered to tspans before this point, so a surviving "$" is

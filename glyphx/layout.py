@@ -141,6 +141,9 @@ class Axes:
         self._tick_formatter = None                      # callable(value) → str
         self._minor_ticks:  int                = 0      # subdivisions between majors
         self._tick_wrap:    bool               = False   # wrap long x-labels, not rotate
+        # Set by Figure.inset_axes() when this Axes is an inset panel; the
+        # opaque fill behind it so the parent's grid does not show through.
+        self._inset_background: str | None      = None
         self._tick_length:  float              = 4.0    # tick mark length px
         self._minor_length: float              = 2.0    # minor tick length px
 

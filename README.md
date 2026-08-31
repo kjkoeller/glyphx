@@ -488,6 +488,31 @@ fig.bar(["Product Engineering", "Sales & Marketing", "R&D"], [10, 20, 15])
 fig.tight_layout().set_tick_wrap()
 ```
 
+### Inset axes
+
+A small panel drawn on top of the main plot area, with its own independent
+scales — for a zoomed detail view, or an overview thumbnail beside a zoomed
+main chart:
+
+```python
+from glyphx import Figure, LineSeries
+
+fig = Figure(width=820, height=520).line(x, y, label="full range")
+
+inset = fig.inset_axes(0.55, 0.14, 0.38, 0.34)   # x, y, w, h as 0-1 fractions
+inset.add_series(LineSeries(x[:45], y[:45]))
+fig.show()
+```
+
+Position and size are fractions of the **figure canvas**, not the plot area, so
+an inset stays where you put it regardless of how padding changes. The panel
+inherits the parent's theme unless you pass `theme=`, gets a padding scaled to
+its own size, and draws on an opaque background so the parent's grid lines
+don't show through — pass `background="none"` for a transparent panel. Insets
+render last and in the order added, so a later one overlaps an earlier one.
+
+### Wrapping long tick labels
+
 `set_tick_wrap()` is an alternative to GlyphX's default auto-rotation. Rotation
 is compact but harder to read; wrapping keeps labels horizontal by splitting
 them across up to two lines. Labels that already fit are left alone, and the
@@ -901,6 +926,7 @@ The items below are planned for upcoming releases. Contributions and feedback on
 - **Custom tick formatters** — `fig.set_tick_format(lambda v: f"${v:,.0f}")` for per-axis label control
 - **Minor ticks** — `fig.set_minor_ticks(n)` grid subdivisions between major ticks
 - **Theme registry** — `register_theme()` for named custom themes usable anywhere a theme name is accepted
+- **Inset axis** — `fig.inset_axes(x, y, width, height)` for zoomed detail panels inside a larger plot
 
 ### v2.4 — Remaining Chart Gaps
 - **Forest plot** — meta-analysis standard; no native equivalent in any library
@@ -909,7 +935,6 @@ The items below are planned for upcoming releases. Contributions and feedback on
 
 ### v2.5 — Layout
 - **Shared axis subplots** — `Figure(rows=2, shared_x=True)` so all subplots share a single X axis with synchronized zoom and pan
-- **Inset axis** — `fig.inset_axes(x, y, width, height)` for zoomed detail panels inside a larger plot
 
 ### v2.6 — Interactivity & Export
 - **Click-to-filter** — click a bar or slice to cross-filter all other charts on the same HTML page, with zero server dependency
