@@ -144,6 +144,11 @@ class Axes:
         # Set by Figure.inset_axes() when this Axes is an inset panel; the
         # opaque fill behind it so the parent's grid does not show through.
         self._inset_background: str | None      = None
+        # Set by Figure._apply_shared_x() on every cell of a shared-x grid:
+        # the unified domain to use instead of this cell's own, and whether
+        # to suppress X tick labels (all rows but the bottom one).
+        self._x_domain_override: tuple | None   = None
+        self._hide_xticklabels: bool            = False
         self._tick_length:  float              = 4.0    # tick mark length px
         self._minor_length: float              = 2.0    # minor tick length px
 
@@ -686,6 +691,12 @@ class Axes:
         if self.y2_series:
             _, self._y2_domain = self.compute_domain(self.y2_series)
 
+        # A shared-x grid unifies the domain across cells, so this cell plots
+        # against the whole grid's range rather than only its own data's.
+        # Applied after compute_domain so re-finalising stays idempotent.
+        if self._x_domain_override is not None:
+            self._x_domain = self._x_domain_override
+
         if self._x_domain and self._y_domain:
             self.scale_x = self._make_scale(
                 self._x_domain[0], self._x_domain[1],
@@ -970,9 +981,11 @@ class Axes:
                     f'<line y1="{pad}" y2="{self.height - pad}" '
                     f'x1="{x_p}" x2="{x_p}" '
                     f'stroke="{stroke}" stroke-dasharray="3,3" />')
-                elements.append(self._tick_label_svg(
-                    x_p, y_label, label, anchor=anchor, font=font,
-                    text_color=text_color, transform=rot, wrap_chars=wrap_chars))
+                if not self._hide_xticklabels:
+                    elements.append(self._tick_label_svg(
+                        x_p, y_label, label, anchor=anchor, font=font,
+                        text_color=text_color, transform=rot,
+                        wrap_chars=wrap_chars))
         else:
             _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
             _span   = (self._x_domain[1] - self._x_domain[0]) if _has_dt else 0
@@ -1007,9 +1020,11 @@ class Axes:
                     f'<line x1="{x_p}" x2="{x_p}" '
                     f'y1="{self.height - pad}" y2="{self.height - pad + self._tick_length}" '
                     f'stroke="{text_color}" stroke-width="1"/>')
-                elements.append(self._tick_label_svg(
-                    x_p, y_label, tick_label, anchor=anchor, font=font,
-                    text_color=text_color, transform=rot, wrap_chars=wrap_chars))
+                if not self._hide_xticklabels:
+                    elements.append(self._tick_label_svg(
+                        x_p, y_label, tick_label, anchor=anchor, font=font,
+                        text_color=text_color, transform=rot,
+                        wrap_chars=wrap_chars))
             # Minor X ticks
             if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
                 for j in range(len(_x_tick_vals) - 1):

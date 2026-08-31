@@ -488,6 +488,31 @@ fig.bar(["Product Engineering", "Sales & Marketing", "R&D"], [10, 20, 15])
 fig.tight_layout().set_tick_wrap()
 ```
 
+### Shared X axis
+
+Stacked panels that all plot against one X range — the standard layout for a
+price/volume/indicator stack, or any set of series measured over the same
+period:
+
+```python
+fig = Figure(rows=3, cols=1, width=820, height=640, shared_x=True)
+
+fig.add_axes(0, 0).add_series(LineSeries(t, price))
+fig.add_axes(1, 0).add_series(LineSeries(t, volume))
+fig.add_axes(2, 0).add_series(LineSeries(t, rsi))
+fig.show()
+```
+
+Every cell gets the union of all cells' X domains, so panels line up vertically
+even when their series cover different spans. X tick labels are drawn only on
+the lowest occupied cell in each column; grid lines and tick marks stay on all
+of them, so the alignment is still readable. Sparse grids work — if a column's
+bottom row is empty, the lowest cell that exists keeps its labels.
+
+Zoom and pan are already synchronised: a subplot grid renders as one `<svg>`
+with the cells as translated groups, and `zoom.js` works on the SVG viewBox,
+so dragging moves every panel together.
+
 ### Inset axes
 
 A small panel drawn on top of the main plot area, with its own independent
@@ -927,16 +952,14 @@ The items below are planned for upcoming releases. Contributions and feedback on
 - **Minor ticks** — `fig.set_minor_ticks(n)` grid subdivisions between major ticks
 - **Theme registry** — `register_theme()` for named custom themes usable anywhere a theme name is accepted
 - **Inset axis** — `fig.inset_axes(x, y, width, height)` for zoomed detail panels inside a larger plot
+- **Shared axis subplots** — `Figure(rows=3, shared_x=True)` unifies the X domain across cells, with synchronized zoom and pan
 
 ### v2.4 — Remaining Chart Gaps
 - **Forest plot** — meta-analysis standard; no native equivalent in any library
 - **Alluvial / Sankey diagram** — flow between categorical states over time
 - **Robust regression** — Huber / RANSAC fits in `regplot`, the one mode not yet covered
 
-### v2.5 — Layout
-- **Shared axis subplots** — `Figure(rows=2, shared_x=True)` so all subplots share a single X axis with synchronized zoom and pan
-
-### v2.6 — Interactivity & Export
+### v2.5 — Interactivity & Export
 - **Click-to-filter** — click a bar or slice to cross-filter all other charts on the same HTML page, with zero server dependency
 - **Animated transitions** — SVG `<animate>` elements between data updates for streaming and dashboard refresh
 - **Chart diff** — `glyphx.diff(fig_v1, fig_v2)` produces an animated SVG showing what changed between two renders

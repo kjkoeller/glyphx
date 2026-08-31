@@ -63,6 +63,7 @@ class Figure:
         legend: str | bool | None = "outside-right",
         xscale: str = "linear",
         yscale: str = "linear",
+        shared_x: bool = False,
     ) -> None:
         self.width        = width
         self.height       = height
@@ -76,6 +77,8 @@ class Figure:
         self._shown_at = None
         self.xscale       = xscale
         self.yscale       = yscale
+        # Unify the X domain across every subplot cell; see _apply_shared_x().
+        self.shared_x     = shared_x
 
         from .themes import get_theme, themes
         self._theme_name: str = (
@@ -587,6 +590,54 @@ class Figure:
         )
         self._insets.append((ax, self.width * x, self.height * y))
         return ax
+
+    def _apply_shared_x(self) -> None:
+        """
+        Give every subplot cell the same X domain, and label only the bottom.
+
+        Runs in two passes because the unified domain cannot be known until
+        every cell has computed its own: finalize each cell, take the union
+        of their X domains, then push that back as an override and finalize
+        again. ``Axes.finalize()`` is idempotent, so the second pass is
+        safe.
+
+        X tick labels are suppressed on every cell except the lowest
+        occupied one in each column -- grid lines and tick marks stay, so
+        the alignment is still readable. Sparse grids are handled: if the
+        bottom row of a column is empty, the lowest cell that does exist
+        keeps its labels.
+
+        Cells with no data are skipped entirely; a cell whose series are all
+        categorical still gets the shared numeric domain, but keeps its own
+        category labels, since those come from the series rather than the
+        axes.
+        """
+        cells = [ax for row in self.grid for ax in row if ax is not None]
+        if not cells:
+            return
+
+        for ax in cells:
+            ax.finalize()
+
+        domains = [ax._x_domain for ax in cells if ax._x_domain is not None]
+        if not domains:
+            return
+
+        shared = (min(d[0] for d in domains), max(d[1] for d in domains))
+        for ax in cells:
+            ax._x_domain_override = shared
+            ax.finalize()
+
+        # Label only the lowest occupied cell in each column.
+        for c in range(self.cols):
+            occupied = [(r, self.grid[r][c]) for r in range(self.rows)
+                        if self.grid[r][c] is not None]
+            if not occupied:
+                continue
+            bottom = max(r for r, _ in occupied)
+            for r, cell in occupied:
+                assert cell is not None      # narrowed by the filter above
+                cell._hide_xticklabels = (r != bottom)
 
     def _render_insets(self) -> str:
         """Composite every inset panel into the parent SVG."""
@@ -1128,6 +1179,8 @@ class Figure:
 
         # Subplot grid
         if self.grid and any(any(cell for cell in row) for row in self.grid):
+            if self.shared_x:
+                self._apply_shared_x()
             cell_w = self.width  // self.cols
             cell_h = self.height // self.rows
             for r, row in enumerate(self.grid):
