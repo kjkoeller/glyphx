@@ -151,6 +151,13 @@ def test_save_rejects_unsupported_extensions(tmp_path):
 
 
 def test_save_pptx_requires_a_non_empty_grid(tmp_path):
+    """
+    Deliberately no importorskip: an empty grid is a caller error whether or
+    not cairosvg is installed, so this must raise ValueError everywhere. The
+    dependency check used to run first, turning a missing figure into a
+    misleading "install cairosvg" RuntimeError on any machine without the
+    optional extras -- which is every CI runner.
+    """
     with pytest.raises(ValueError, match="empty"):
         SubplotGrid(1, 1).save(str(tmp_path / "empty.pptx"))
 

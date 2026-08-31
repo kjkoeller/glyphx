@@ -1880,15 +1880,19 @@ class SubplotGrid:
             return self
 
         if ext == "pptx":
-            # Both already defined at module level in this file.
-            cairosvg, pptx_mod = _require_pptx_deps()
-            prs = pptx_mod.Presentation()
+            # Validate the grid before reaching for the optional dependencies:
+            # an empty grid is a caller error either way, and demanding
+            # cairosvg first turned it into a misleading "install cairosvg"
+            # message on machines where the real problem was the empty grid.
             figures = self._figures_in_order()
             if not figures:
                 raise ValueError(
                     "Cannot save an empty SubplotGrid: add at least one "
                     "figure first."
                 )
+            # Both already defined at module level in this file.
+            cairosvg, pptx_mod = _require_pptx_deps()
+            prs = pptx_mod.Presentation()
             for fig in figures:
                 _add_pptx_slide(cairosvg, prs, fig.render_svg(), title=fig.title)
             prs.save(filename)
