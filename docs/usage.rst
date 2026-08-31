@@ -87,8 +87,18 @@ Chainable ``Figure`` methods:
      - X-axis label
    * - ``.set_ylabel(text)``
      - Y-axis label
+   * - ``.set_y2label(text)``
+     - Right-hand Y-axis label; no-op without ``use_y2`` series
    * - ``.set_legend(position)``
      - Legend position or ``False`` to hide
+   * - ``.set_tick_format(fn)``
+     - Tick label formatter, applied to X, Y1 and Y2
+   * - ``.set_minor_ticks(n)``
+     - Minor tick subdivisions between majors
+   * - ``.set_tick_wrap(enabled)``
+     - Wrap long X tick labels instead of rotating them
+   * - ``.inset_axes(x, y, w, h)``
+     - Panel drawn over the plot area with its own scales
    * - ``.annotate(text, x, y, ...)``
      - Add a text annotation with optional arrow
    * - ``.add_stat_annotation(x1, x2, p_value)``
@@ -259,10 +269,29 @@ Use ``Figure3D`` for interactive Three.js output with an SVG fallback:
      - Z-axis label
 
 
+Column name errors
+~~~~~~~~~~~~~~~~~~
+
+An unrecognised column name raises :class:`KeyError` naming the closest match
+and listing what is available, rather than being ignored:
+
+.. code-block:: python
+
+   df.glyphx.line(x="Month", y="revenue")
+   # KeyError: "Column 'Month' not found. Did you mean 'month'?
+   #            Available columns: ['month', 'revenue', 'region']"
+
+This applies to ``x``, ``y``, ``yerr``, ``hue`` and ``groupby``. Omitting
+``x`` is still legitimate and falls back to the row index; only a name that
+does not exist is an error.
+
+
 Dual Y-Axis
 -----------
 
-Bind any series to the secondary (right-hand) Y-axis with ``use_y2=True``:
+Bind any series to the secondary (right-hand) Y-axis with ``use_y2=True``.
+The two axes compute independent domains, so a price line and a volume bar
+series can share a chart without either being flattened:
 
 .. code-block:: python
 
@@ -274,12 +303,53 @@ Bind any series to the secondary (right-hand) Y-axis with ``use_y2=True``:
    fig.add(LineSeries(dates, prices, color="#2563eb", label="Price (left)"))
    fig.add(BarSeries(dates, volume, color="#d97706", label="Volume (right)"),
            use_y2=True)
+   fig.set_ylabel("Price ($)").set_y2label("Volume (units)")
    fig.show()
 
 .. image:: examples/dual_y.svg
    :alt: Dual Y-axis line and bar chart
    :width: 760px
    :align: center
+
+Labelling the right-hand axis
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:meth:`~glyphx.Figure.set_y2label` mirrors :meth:`~glyphx.Figure.set_ylabel`,
+drawing rotated text down the right edge of the plot area. It is a no-op on a
+figure with no ``use_y2`` series, so it is safe to set unconditionally when
+building charts from a template.
+
+Gridline alignment
+~~~~~~~~~~~~~~~~~~
+
+Right-hand tick rows are derived from the left axis: each Y1 tick's fraction
+through its domain is read back out of the Y2 domain. The two sets of
+gridlines therefore always coincide, including when
+:meth:`~glyphx.layout.Axes.set_yticks` gives the left axis a non-default tick
+count.
+
+.. code-block:: python
+
+   fig.axes.set_yticks([10, 20, 30, 40])   # 4 ticks on the left
+   # -> 4 ticks on the right, on the same pixel rows
+
+Tick formatting
+~~~~~~~~~~~~~~~
+
+:meth:`~glyphx.Figure.set_tick_format` applies to all three axes -- X, Y1 and
+Y2:
+
+.. code-block:: python
+
+   fig.set_tick_format(lambda v: f"${v:,.0f}")
+
+.. note::
+
+   On a logarithmic Y axis, series that measure from a zero baseline (bar,
+   histogram, box plot, waterfall, stacked and grouped bars) are **not**
+   zero-anchored, because zero has no position on a log scale. Their domain
+   starts at the smallest positive value instead. Non-positive values are
+   dropped with a warning, as on any log axis.
 
 
 Auto Display
@@ -328,6 +398,21 @@ Pass ``xscale`` or ``yscale`` to the ``Figure`` constructor:
 
    fig = Figure(yscale="log")
    fig.add(LineSeries(x, y))
+   fig.show()
+
+Both axes of a dual-axis chart share the scale setting, so ``yscale="log"``
+applies to the secondary axis as well.
+
+Non-positive values are dropped with a warning, since ``log10`` is undefined
+at and below zero. Series that measure from a zero baseline -- bar, histogram,
+box plot, waterfall, and the stacked and grouped bars -- are not zero-anchored
+on a log axis for the same reason; their domain starts at the smallest
+positive value in the data.
+
+.. code-block:: python
+
+   fig = Figure(yscale="log")
+   fig.add(BarSeries(x, y))     # domain starts at min(y), not 0
    fig.show()
 
 

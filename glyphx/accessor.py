@@ -47,10 +47,40 @@ class GlyphXAccessor:
     # Internal helpers
 
     def _col(self, name: str | None) -> list | None:
-        """Return column as list, or None if name is None / not in df."""
-        if name is None or name not in self._df.columns:
+        """
+        Return a column as a list, or ``None`` when ``name`` is ``None``.
+
+        A name that is not in the frame raises rather than returning
+        ``None``.  The two cases used to be indistinguishable, so
+        ``df.glyphx.line(x="Month", y="revenue")`` -- a capitalisation typo --
+        silently fell back to the row index and drew a 0, 1, 2 axis instead
+        of the month names, with no indication anything was wrong.
+
+        Raises:
+            KeyError: If ``name`` is not a column, with the closest match
+                and the available columns.
+        """
+        if name is None:
             return None
+        if name not in self._df.columns:
+            raise KeyError(self._unknown_column_message(name))
         return self._df[name].tolist()
+
+    def _unknown_column_message(self, name) -> str:
+        """Build a 'did you mean' message for an unknown column name."""
+        import difflib
+
+        available = [str(c) for c in self._df.columns]
+        close = difflib.get_close_matches(str(name), available, n=1, cutoff=0.6)
+        hint = f" Did you mean {close[0]!r}?" if close else ""
+        return (f"Column {name!r} not found.{hint} "
+                f"Available columns: {available}")
+
+    def _check_column(self, name, role: str = "column"):
+        """Validate an optional column name used outside :meth:`_col`."""
+        if name is not None and name not in self._df.columns:
+            raise KeyError(f"{role}: " + self._unknown_column_message(name))
+        return name
 
     def _fig(
         self,
@@ -116,6 +146,7 @@ class GlyphXAccessor:
         fig = self._fig(title, theme, legend, width, height,
                         xlabel or x, ylabel or y, auto_display)
         hue = kwargs.pop("hue", None)
+        self._check_column(hue, "hue")
         if hue and hue in self._df.columns:
             theme_colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c"])
             for i, (grp_val, grp_df) in enumerate(self._df.groupby(hue)):
@@ -178,6 +209,7 @@ class GlyphXAccessor:
         fig = self._fig(title, theme, legend, width, height,
                         xlabel or x, ylabel or y, auto_display)
 
+        self._check_column(effective_groupby, "hue/groupby")
         if effective_groupby and effective_groupby in self._df.columns:
             theme_colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c"])
             num_col = str(y or self._df.select_dtypes("number").columns[0])
@@ -260,6 +292,7 @@ class GlyphXAccessor:
         fig = self._fig(title, theme, legend, width, height,
                         xlabel or x, ylabel or y, auto_display)
         hue = kwargs.pop("hue", None)
+        self._check_column(hue, "hue")
         if hue and hue in self._df.columns:
             theme_colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c"])
             for i, (grp_val, grp_df) in enumerate(self._df.groupby(hue)):
@@ -325,6 +358,7 @@ class GlyphXAccessor:
         target = col or self._df.select_dtypes("number").columns[0]
         fig    = self._fig(title, theme, False, width, height, None, target, auto_display)
 
+        self._check_column(groupby, "groupby")
         if groupby and groupby in self._df.columns:
             groups = self._df[groupby].unique().tolist()
             arrays = [

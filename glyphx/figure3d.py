@@ -32,7 +32,7 @@ from typing import Any
 import numpy as np
 
 from .projection3d import Camera3D, _format_3d_tick, normalize
-from .themes import themes as _themes
+from .themes import get_theme as _get_theme
 from .utils import as_seq, svg_escape
 
 # Three.js HTML template (all JS is inline -- zero CDN except Three.js itself)
@@ -782,7 +782,7 @@ class Figure3D:
         self.ylabel    = ylabel
         self.zlabel    = zlabel
 
-        theme_dict = _themes.get(theme, _themes["default"])
+        theme_dict = _get_theme(theme)
         self.theme = theme_dict
 
         self._series: list[Any] = []
@@ -1099,7 +1099,7 @@ class Figure3D:
                     delete=False, suffix=".html", mode="w", encoding="utf-8"
                 )
                 tmp.write(html); tmp.close()
-                jd(IFrame(f"file://{tmp.name}",
+                jd(IFrame(Path(tmp.name).as_uri(),
                            width=self.width, height=self.height))
                 return self
         except Exception:
@@ -1108,7 +1108,7 @@ class Figure3D:
             delete=False, suffix=".html", mode="w", encoding="utf-8"
         )
         tmp.write(html); tmp.close()
-        webbrowser.open(f"file://{tmp.name}")
+        webbrowser.open(Path(tmp.name).as_uri())
         return self
 
     def save(self, filename: str = "glyphx3d.html") -> Figure3D:

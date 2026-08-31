@@ -29,10 +29,19 @@ def _to_timestamp(val) -> float:
             return val.timestamp()
     except ImportError:
         pass
+    # Naive values are read as UTC, not local time.  datetime.timestamp()
+    # applies the machine's zone to a naive value while _format_datetime_tick
+    # formats in UTC, so the two disagreed by the local offset: a plain
+    # date(2024, 1, 5) labelled itself "4 Jan" anywhere east of UTC, and
+    # disagreed with a pandas Timestamp for the same wall clock on the same
+    # axis (pandas already reads naive as UTC).
     if isinstance(val, _dt.datetime):
+        if val.tzinfo is None:
+            val = val.replace(tzinfo=_dt.timezone.utc)
         return val.timestamp()
     if isinstance(val, _dt.date):
-        return _dt.datetime(val.year, val.month, val.day).timestamp()
+        return _dt.datetime(val.year, val.month, val.day,
+                            tzinfo=_dt.timezone.utc).timestamp()
     return float(val)
 
 
@@ -41,13 +50,17 @@ def _format_datetime_tick(ts: float, span_seconds: float) -> str:
 
     Chooses the right granularity based on the total time span displayed.
     """
-    dt = _dt.datetime.utcfromtimestamp(ts)
+    # utcfromtimestamp() is deprecated from 3.12 and slated for removal.
+    dt = _dt.datetime.fromtimestamp(ts, tz=_dt.timezone.utc)
     if span_seconds <= 3 * 3600:          # ≤ 3 hours → HH:MM
         return dt.strftime("%H:%M")
     if span_seconds <= 3 * 86400:         # ≤ 3 days  → Mon 14:00
         return dt.strftime("%a %H:%M")
     if span_seconds <= 90 * 86400:        # ≤ 90 days → 15 Jan
-        return dt.strftime("%-d %b")
+        # Not "%-d": the no-pad flag is a glibc extension that MSVC rejects
+        # with ValueError, so every date axis under 90 days crashed on
+        # Windows.  (Windows spells it "%#d"; neither is portable.)
+        return f"{dt.day} {dt.strftime('%b')}"
     if span_seconds <= 730 * 86400:       # ≤ 2 years → Jan 2024
         return dt.strftime("%b %Y")
     return dt.strftime("%Y")              # > 2 years → 2024
@@ -104,9 +117,10 @@ class Axes:
         # density but inflates every path in the document.
         self.precision = precision
 
-        self.title  = None
-        self.xlabel = None
-        self.ylabel = None
+        self.title   = None
+        self.xlabel  = None
+        self.ylabel  = None
+        self.y2label = None
 
         self.series    = []
         self.y2_series = []
@@ -127,6 +141,15 @@ class Axes:
         self._yticklabels:  list[str] | None   = None   # override y labels
         self._tick_formatter = None                      # callable(value) → str
         self._minor_ticks:  int                = 0      # subdivisions between majors
+        self._tick_wrap:    bool               = False   # wrap long x-labels, not rotate
+        # Set by Figure.inset_axes() when this Axes is an inset panel; the
+        # opaque fill behind it so the parent's grid does not show through.
+        self._inset_background: str | None      = None
+        # Set by Figure._apply_shared_x() on every cell of a shared-x grid:
+        # the unified domain to use instead of this cell's own, and whether
+        # to suppress X tick labels (all rows but the bottom one).
+        self._x_domain_override: tuple | None   = None
+        self._hide_xticklabels: bool            = False
         self._tick_length:  float              = 4.0    # tick mark length px
         self._minor_length: float              = 2.0    # minor tick length px
 
@@ -213,6 +236,48 @@ class Axes:
             ax.set_tick_format(lambda v: f"{v:.1%}")
         """
         self._tick_formatter = formatter
+        return self
+
+    def set_y2label(self, label: str) -> Axes:
+        """
+        Label the secondary (right-hand) Y axis.
+
+        Rendered rotated on the right edge, mirroring ``ylabel``. Only drawn
+        when the axes actually has ``y2_series``, so setting it on a
+        single-axis chart is a harmless no-op.
+
+        Args:
+            label: Text for the right-hand axis.
+
+        Returns:
+            ``self`` for chaining.
+        """
+        self.y2label = label
+        return self
+
+    def set_tick_wrap(self, enabled: bool = True) -> Axes:
+        """
+        Wrap long X-axis tick labels onto a second line instead of rotating.
+
+        Rotation is GlyphX's automatic default once labels would overlap at
+        horizontal angle (see ``_should_rotate_xlabels``); this is an
+        explicit alternative for when rotated text is harder to read than
+        two short lines -- category names and month/quarter labels are the
+        common case. The two are mutually exclusive: enabling wrap suppresses
+        auto-rotation for this axes.
+
+        Args:
+            enabled: ``True`` to wrap, ``False`` to restore the default
+                (auto-rotate when labels would otherwise overlap).
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            ax.set_tick_wrap()   # "Product Engineering" -> "Product" / "Engineering"
+        """
+        self._tick_wrap = enabled
         return self
 
     def set_minor_ticks(self, n: int, length: float = 2.0) -> Axes:
@@ -516,15 +581,22 @@ class Axes:
         )
         # Bars measure from zero, so zero has to be in the domain whichever
         # way the data runs. Otherwise the baseline sits off-canvas and the
-        # bars grow from the wrong edge.
-        if _has_zero_anchor:
+        # bars grow from the wrong edge.  Skipped on a log axis: zero has no
+        # position there, and forcing it made y_min 0 and sent log10(0) into
+        # a ValueError, so every bar chart on a log Y axis crashed.
+        # _mask_nonpositive has already dropped non-positive values, so the
+        # remaining bound is safe to take a logarithm of.
+        if _has_zero_anchor and self.yscale != "log":
             y_min = min(y_min, 0.0)
             y_max = max(y_max, 0.0)
 
         _bottom_is_zero = _has_zero_anchor and y_min >= 0
 
-        # Force zero-anchored series to include 0
-        if _has_zero_anchor:
+        # Force zero-anchored series to include 0.  Not on a log axis: zero
+        # has no position there, and anchoring to it drove y_min to 0 and
+        # then log10(0) straight into a ValueError -- so every bar chart on
+        # a log Y axis crashed rather than rendering.
+        if _has_zero_anchor and self.yscale != "log":
             y_min = min(0, y_min)
             y_max = max(0, y_max)
 
@@ -627,16 +699,28 @@ class Axes:
             return self._scale_log(domain_min, domain_max, range_min, range_max)
         return self._scale_linear(domain_min, domain_max, range_min, range_max)
 
+    def _assign_theme_colors(self) -> None:
+        """Apply the theme palette to this axes' series. See utils."""
+        from .utils import assign_theme_colors
+        assign_theme_colors(list(self.series) + list(self.y2_series), self.theme)
+
     def finalize(self):
         """
         Compute all scale functions after series have been registered.
 
         Must be called before any rendering method.
         """
+        self._assign_theme_colors()
         if self.series:
             self._x_domain, self._y_domain = self.compute_domain(self.series)
         if self.y2_series:
             _, self._y2_domain = self.compute_domain(self.y2_series)
+
+        # A shared-x grid unifies the domain across cells, so this cell plots
+        # against the whole grid's range rather than only its own data's.
+        # Applied after compute_domain so re-finalising stays idempotent.
+        if self._x_domain_override is not None:
+            self._x_domain = self._x_domain_override
 
         if self._x_domain and self._y_domain:
             self.scale_x = self._make_scale(
@@ -714,6 +798,15 @@ class Axes:
                 f'{svg_label(self.ylabel)}</text>'
             )
 
+        if self.y2label and self.y2_series:
+            _y2x = self.width - 15
+            elements.append(
+                f'<text x="{_y2x}" y="{self.height // 2}" text-anchor="middle" '
+                f'font-size="13" font-family="{font}" fill="{text_color}" '
+                f'transform="rotate(90, {_y2x}, {self.height // 2})">'
+                f'{svg_label(self.y2label)}</text>'
+            )
+
         if self.y2_series:
             elements.append(
                 f'<line x1="{self.width - pad}" y1="{pad}" '
@@ -721,6 +814,49 @@ class Axes:
             )
 
         return "\n".join(elements)
+
+    def _tick_label_svg(self, x_p: float, y_label: float, label, *,
+                        anchor: str, font: str, text_color: str,
+                        transform: str = "", wrap_chars: float | None = None) -> str:
+        """
+        Build the ``<text>`` element for one X-axis tick label.
+
+        Escapes ``label`` via :func:`svg_label` -- both call sites used to
+        interpolate it raw, so a custom tick label containing ``&`` or an
+        HTML tag (from ``set_xticks(..., labels=[...])``, or from any
+        ``set_tick_format`` callback that formats untrusted data) landed in
+        the SVG unescaped.
+
+        When ``wrap_chars`` is given and ``self._tick_wrap`` is enabled, a
+        label that would not fit at the current tick spacing is split across
+        up to two ``<tspan>`` lines instead of the caller rotating it.
+        Wrapping happens on the raw string, before escaping, so entities
+        like ``&amp;`` are never split apart.
+        """
+        from .utils import svg_label, wrap_tick_label
+
+        text = str(label)
+        if self._tick_wrap and wrap_chars and len(text) > wrap_chars:
+            lines = wrap_tick_label(text, wrap_chars, max_lines=2)
+        else:
+            lines = [text]
+
+        if len(lines) == 1:
+            body = svg_label(lines[0])
+        else:
+            tspans = "".join(
+                f'<tspan x="{x_p}" dy="{"0" if i == 0 else "1.2em"}">'
+                f'{svg_label(line)}</tspan>'
+                for i, line in enumerate(lines)
+            )
+            body = tspans
+
+        transform_attr = f'transform="{transform}"' if transform else ""
+        return (
+            f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
+            f'font-size="11" font-family="{font}" fill="{text_color}" {transform_attr}>'
+            f'{body}</text>'
+        )
 
     def render_grid(self, ticks=5):
         """
@@ -818,7 +954,7 @@ class Axes:
             elements.append(
                 f'<text x="{pad - self._tick_length - 4}" y="{y_p + 4}" text-anchor="end" '
                 f'font-size="11" font-family="{font}" fill="{text_color}">'
-                f'{_fmt(y_v, lbl_ovr)}</text>'
+                f'{svg_label(_fmt(y_v, lbl_ovr))}</text>'
             )
 
         # Minor Y ticks
@@ -837,7 +973,7 @@ class Axes:
                         f'y1="{mp}" y2="{mp}" stroke="{text_color}" '
                         f'stroke-width="0.7" opacity="0.5"/>')
 
-        # Y2 ticks - right side, own independent scale, no extra grid lines
+        # Y2 ticks - right side, own independent scale, no extra grid lines.
         _has_y2 = (
             bool(self.y2_series)
             and self._y2_domain is not None
@@ -846,8 +982,20 @@ class Axes:
         )
         if _has_y2:
             right_x = self.width - pad
-            for y2_v in _tick_vals(self._y2_domain[0], self._y2_domain[1],
-                                    ticks, self.yscale == "log"):
+            # Place a right-hand tick at each left-hand tick's pixel row,
+            # by taking that tick's fraction through the Y1 domain and
+            # reading the same fraction of the Y2 domain.  Generating the
+            # two independently happened to line up for the default five
+            # ticks, but drifted apart the moment set_yticks() gave Y1 a
+            # different count -- leaving two sets of gridlines interleaved.
+            y1_lo, y1_hi = self._y_domain
+            y2_lo, y2_hi = self._y2_domain
+            y1_span = (y1_hi - y1_lo) or 1.0
+            _y2_tick_vals = [
+                y2_lo + ((v - y1_lo) / y1_span) * (y2_hi - y2_lo)
+                for v in _y_tick_vals
+            ]
+            for y2_v in _y2_tick_vals:
                 y2_p = self.scale_y2(y2_v)
                 # Tick mark on right axis line
                 elements.append(
@@ -858,30 +1006,32 @@ class Axes:
                 elements.append(
                     f'<text x="{right_x + 9}" y="{y2_p + 4}" text-anchor="start" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" opacity="0.85">'
-                    f'{_format_tick(y2_v)}</text>'
+                    f'{svg_label(_fmt(y2_v))}</text>'
                 )
 
         # X ticks - bottom, vertical grid lines
-        rotate      = getattr(self, "_auto_rotate", False)
+        plot_w      = self.width - 2 * pad
+        rotate      = getattr(self, "_auto_rotate", False) and not self._tick_wrap
         anchor      = "end" if rotate else "middle"
         rot_tfm     = "rotate(-40, {x_p}, {y_label})" if rotate else ""
         y_label_off = 16 if not rotate else 8
 
         if all_categories:
+            n_cats = max(1, len(all_categories))
+            wrap_chars = (plot_w / n_cats) * 0.85 / 6.5
             for x_v, label in all_categories.items():
                 x_p     = self.scale_x(x_v)
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
-                transform = f'transform="{rot}"' if rot else ""
                 elements.append(
                     f'<line y1="{pad}" y2="{self.height - pad}" '
                     f'x1="{x_p}" x2="{x_p}" '
                     f'stroke="{stroke}" stroke-dasharray="3,3" />')
-                elements.append(
-                    f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-                    f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{svg_label(label)}</text>'
-                )
+                if not self._hide_xticklabels:
+                    elements.append(self._tick_label_svg(
+                        x_p, y_label, label, anchor=anchor, font=font,
+                        text_color=text_color, transform=rot,
+                        wrap_chars=wrap_chars))
         else:
             _has_dt = any(getattr(s, "_datetime_x", False) for s in self.series)
             _span   = (self._x_domain[1] - self._x_domain[0]) if _has_dt else 0
@@ -892,13 +1042,13 @@ class Axes:
                                 ticks, self.xscale == "log")
             )
             _x_tick_lbls = self._xticklabels
+            wrap_chars = (plot_w / max(1, len(_x_tick_vals) - 1)) * 0.85 / 6.5
             for idx_x, x_v in enumerate(_x_tick_vals):
                 if not (self._x_domain[0] <= x_v <= self._x_domain[1]):
                     continue
                 x_p     = self.scale_x(x_v)
                 y_label = self.height - pad + y_label_off
                 rot     = rot_tfm.format(x_p=x_p, y_label=y_label) if rotate else ""
-                transform = f'transform="{rot}"' if rot else ""
                 if _x_tick_lbls and idx_x < len(_x_tick_lbls):
                     tick_label = _x_tick_lbls[idx_x]
                 elif self._tick_formatter is not None:
@@ -916,11 +1066,11 @@ class Axes:
                     f'<line x1="{x_p}" x2="{x_p}" '
                     f'y1="{self.height - pad}" y2="{self.height - pad + self._tick_length}" '
                     f'stroke="{text_color}" stroke-width="1"/>')
-                elements.append(
-                    f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-                    f'font-size="11" font-family="{font}" fill="{text_color}" {transform}>'
-                    f'{tick_label}</text>'
-                )
+                if not self._hide_xticklabels:
+                    elements.append(self._tick_label_svg(
+                        x_p, y_label, tick_label, anchor=anchor, font=font,
+                        text_color=text_color, transform=rot,
+                        wrap_chars=wrap_chars))
             # Minor X ticks
             if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
                 for j in range(len(_x_tick_vals) - 1):

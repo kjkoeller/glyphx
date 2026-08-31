@@ -383,7 +383,8 @@ def test_no_text_file_is_written_without_an_explicit_encoding():
                 continue
             func = node.func
             name = getattr(func, "attr", None) or getattr(func, "id", None)
-            if name not in {"write_text", "open"}:
+            if name not in {"write_text", "open", "NamedTemporaryFile",
+                            "TemporaryFile", "SpooledTemporaryFile"}:
                 continue
             if name == "open" and isinstance(func, ast.Attribute):
                 continue                      # webbrowser.open and friends
@@ -393,7 +394,13 @@ def test_no_text_file_is_written_without_an_explicit_encoding():
             mode = None
             if len(node.args) > 1 and isinstance(node.args[1], ast.Constant):
                 mode = node.args[1].value
-            if name == "open" and isinstance(mode, str) and "b" in mode:
+            if name.endswith("TemporaryFile"):
+                # These take mode by keyword and default to "w+b"; only the
+                # text modes need an encoding.
+                mode = next((kw.value.value for kw in node.keywords
+                             if kw.arg == "mode"
+                             and isinstance(kw.value, ast.Constant)), "w+b")
+            if isinstance(mode, str) and "b" in mode:
                 continue                      # binary needs no encoding
             if any(kw.arg == "encoding" for kw in node.keywords):
                 continue

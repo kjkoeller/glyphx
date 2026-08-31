@@ -16,10 +16,11 @@ The grid wraps into multiple rows when ``col_wrap`` is set.
 from __future__ import annotations
 
 import math
+from pathlib import Path
 
 from .colormaps import colormap_colors
 from .figure import Figure
-from .themes import themes as _themes
+from .themes import get_theme as _get_theme
 from .utils import svg_escape
 
 
@@ -215,7 +216,7 @@ class FacetGrid:
         total_w   = n_cols * cell_w + (n_cols + 1) * gap
         total_h   = n_rows * cell_h + (n_rows + 1) * gap + title_h
 
-        theme_dict = _themes.get(self._theme, _themes["default"])
+        theme_dict = _get_theme(self._theme)
         bg   = theme_dict.get("background", "#fff")
         tc   = theme_dict.get("text_color",  "#000")
         font = theme_dict.get("font", "sans-serif")
@@ -279,9 +280,10 @@ class FacetGrid:
             pass
         import tempfile
         import webbrowser
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".svg", mode="w")
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".svg", mode="w",
+                                          encoding="utf-8")
         tmp.write(svg); tmp.close()
-        webbrowser.open(f"file://{tmp.name}")
+        webbrowser.open(Path(tmp.name).as_uri())
         return self
 
     def save(self, path: str) -> FacetGrid:

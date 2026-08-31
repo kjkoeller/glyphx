@@ -364,3 +364,127 @@ def test_datetime_series_still_gets_date_formatted_ticks():
     stamps = pd.Series(pd.date_range("2024-01-01", periods=5, freq="D"))
     svg = Figure(auto_display=False).line(stamps, [1.0, 2.0, 3.0, 4.0, 5.0]).render_svg()
     assert re.search(r">\s*\d{1,2}\s+[A-Z][a-z]{2}\s*<", svg), "expected date tick labels"
+
+
+# ---------------------------------------------------------------------------
+# Cross-platform date tick formatting
+# ---------------------------------------------------------------------------
+
+def test_datetime_tick_labels_for_every_span_bucket():
+    """
+    Exercises all five granularity branches of ``_format_datetime_tick``.
+
+    The 90-day branch used ``"%-d %b"``.  The no-pad flag is a glibc
+    extension; MSVC raises ``ValueError: Invalid format string``, so every
+    date axis under 90 days crashed on Windows while passing on Linux CI.
+    """
+    import datetime as dt
+
+    from glyphx.layout import _format_datetime_tick
+
+    ts = dt.datetime(2024, 1, 5, 13, 45, tzinfo=dt.timezone.utc).timestamp()
+    assert _format_datetime_tick(ts, 3600) == "13:45"
+    assert _format_datetime_tick(ts, 2 * 86400) == "Fri 13:45"
+    assert _format_datetime_tick(ts, 30 * 86400) == "5 Jan"
+    assert _format_datetime_tick(ts, 400 * 86400) == "Jan 2024"
+    assert _format_datetime_tick(ts, 1000 * 86400) == "2024"
+
+
+def test_no_platform_specific_strftime_directives():
+    """
+    Guard the whole package against this bug class.
+
+    ``%-d`` (glibc) and ``%#d`` (MSVC) are both non-portable.  Parsed with
+    ``ast`` so prose in docstrings and comments is not counted.
+    """
+    import ast
+    import re
+    from pathlib import Path
+
+    bad = re.compile(r"%[-#][a-zA-Z]")
+    offenders = []
+
+    for path in sorted((Path(__file__).resolve().parent.parent / "glyphx").rglob("*.py")):
+        tree = ast.parse(path.read_text(encoding="utf-8"))
+
+        # Prose is allowed to say "100%-stacked"; only real code is checked.
+        docstrings = set()
+        for node in ast.walk(tree):
+            if isinstance(node, (ast.Module, ast.ClassDef,
+                                 ast.FunctionDef, ast.AsyncFunctionDef)):
+                first = node.body[0] if node.body else None
+                if (isinstance(first, ast.Expr)
+                        and isinstance(first.value, ast.Constant)
+                        and isinstance(first.value.value, str)):
+                    docstrings.add(id(first.value))
+
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Constant) or not isinstance(node.value, str):
+                continue
+            if id(node) in docstrings:
+                continue
+            if bad.search(node.value):
+                offenders.append(f"{path.name}:{node.lineno} {node.value!r}")
+
+    assert offenders == [], f"non-portable strftime directives: {offenders}"
+
+
+def test_naive_datetimes_are_read_as_utc_not_local_time():
+    """
+    ``_to_timestamp`` used ``datetime.timestamp()``, which applies the
+    machine's zone to a naive value, while ``_format_datetime_tick`` formats
+    in UTC.  The two disagreed by the local offset, so a date axis labelled
+    itself a day early anywhere east of UTC.
+
+    Pinned to absolute epoch values so this holds regardless of the TZ the
+    suite happens to run under.
+    """
+    import datetime as dt
+
+    from glyphx.layout import _to_timestamp
+
+    midnight_utc = 1704412800.0          # 2024-01-05T00:00:00Z
+    assert _to_timestamp(dt.date(2024, 1, 5)) == midnight_utc
+    assert _to_timestamp(dt.datetime(2024, 1, 5)) == midnight_utc
+
+    aware = dt.datetime(2024, 1, 5, tzinfo=dt.timezone.utc)
+    assert _to_timestamp(aware) == midnight_utc
+
+
+def test_stdlib_and_pandas_datetimes_agree_on_the_same_axis():
+    """A naive Timestamp is UTC to pandas; stdlib must not differ."""
+    import datetime as dt
+
+    pd = pytest.importorskip("pandas")
+    from glyphx.layout import _to_timestamp
+
+    assert _to_timestamp(dt.datetime(2024, 1, 5)) == \
+           _to_timestamp(pd.Timestamp("2024-01-05"))
+
+
+def test_date_tick_label_is_timezone_independent():
+    import datetime as dt
+    import os
+    import time
+
+    if not hasattr(time, "tzset"):
+        pytest.skip("TZ manipulation needs tzset (not available on Windows)")
+
+    from glyphx.layout import _format_datetime_tick, _to_timestamp
+
+    original = os.environ.get("TZ")
+    labels = set()
+    try:
+        for zone in ("UTC", "America/New_York", "Pacific/Auckland", "Asia/Tokyo"):
+            os.environ["TZ"] = zone
+            time.tzset()
+            labels.add(_format_datetime_tick(_to_timestamp(dt.date(2024, 1, 5)),
+                                             30 * 86400))
+    finally:
+        if original is None:
+            os.environ.pop("TZ", None)
+        else:
+            os.environ["TZ"] = original
+        time.tzset()
+
+    assert labels == {"5 Jan"}, f"label varied by timezone: {labels}"

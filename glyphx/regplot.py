@@ -205,6 +205,21 @@ def regplot(
     arr_x = arr_x[mask]
     arr_y = arr_y[mask]
 
+    # Degenerate inputs used to sail through: a single point produced a fit
+    # line from nothing, constant x produced an ill-conditioned polyfit, and
+    # both printed "r=nan" into the chart legend behind a wall of NumPy
+    # RuntimeWarnings.  Fail with something a caller can act on instead.
+    if arr_x.size < 2:
+        raise ValueError(
+            f"regplot needs at least 2 finite (x, y) pairs to fit a line; "
+            f"got {arr_x.size}."
+        )
+    if np.ptp(arr_x) == 0:
+        raise ValueError(
+            "regplot cannot fit a line: every x value is "
+            f"{arr_x[0]:g}, so the slope is undefined."
+        )
+
     fig = Figure(width=700, height=480, auto_display=auto_display, theme=theme)
     if title:
         fig.set_title(title)
@@ -246,8 +261,13 @@ def regplot(
         # Fit annotation
         if order == 1:
             slope, intercept = coeffs
-            corr = float(np.corrcoef(arr_x, arr_y)[0, 1])
-            lbl  = f"y = {slope:.2g}x + {intercept:.2g}  (r={corr:.2f})"
+            lbl = f"y = {slope:.2g}x + {intercept:.2g}"
+            # np.corrcoef divides by the standard deviations, so a constant y
+            # gives 0/0 -> nan plus a divide-by-zero warning.  The fit itself
+            # is still meaningful (a flat line); only r is not.
+            if np.ptp(arr_y) > 0:
+                corr = float(np.corrcoef(arr_x, arr_y)[0, 1])
+                lbl += f"  (r={corr:.2f})"
         else:
             lbl = f"Degree-{order} polynomial"
 

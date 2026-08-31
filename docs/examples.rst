@@ -617,6 +617,7 @@ Dual Y-Axis
 
    fig.add(LineSeries(x, prices, label="Price (left)"))
    fig.add(BarSeries(x, volume, label="Volume (right)"), use_y2=True)
+   fig.set_ylabel("Price ($)").set_y2label("Volume (units)")
 
 
 DataFrame Accessor

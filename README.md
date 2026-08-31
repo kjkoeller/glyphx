@@ -460,10 +460,18 @@ open("dashboard.html", "w").write(html)
 # Dual Y-axis
 fig.add(LineSeries(x, prices, label="Price (left)"))
 fig.add(BarSeries(x, volume, label="Volume (right)"), use_y2=True)
+fig.set_ylabel("Price ($)").set_y2label("Volume (units)")
 
 # Log-scale axes
 fig = Figure(yscale="log")
 fig = Figure(xscale="log", yscale="log")
+```
+
+Right-hand tick rows are derived from the left axis, so the two sets of
+gridlines always coincide — including when `set_yticks()` gives the left axis
+a non-default tick count. `set_tick_format()` applies to all three axes.
+
+```python
 
 # Subplot grid
 fig = Figure(rows=2, cols=2, width=1000, height=700)
@@ -482,7 +490,66 @@ fig.annotate("Baseline", x=0, y=2.0, anchor="start")
 
 # Auto tight layout (adjusts padding, rotates crowded X labels)
 fig.tight_layout()
+
+# Wrap long X labels onto a second line instead of rotating them
+fig.bar(["Product Engineering", "Sales & Marketing", "R&D"], [10, 20, 15])
+fig.tight_layout().set_tick_wrap()
 ```
+
+### Shared X axis
+
+Stacked panels that all plot against one X range — the standard layout for a
+price/volume/indicator stack, or any set of series measured over the same
+period:
+
+```python
+fig = Figure(rows=3, cols=1, width=820, height=640, shared_x=True)
+
+fig.add_axes(0, 0).add_series(LineSeries(t, price))
+fig.add_axes(1, 0).add_series(LineSeries(t, volume))
+fig.add_axes(2, 0).add_series(LineSeries(t, rsi))
+fig.show()
+```
+
+Every cell gets the union of all cells' X domains, so panels line up vertically
+even when their series cover different spans. X tick labels are drawn only on
+the lowest occupied cell in each column; grid lines and tick marks stay on all
+of them, so the alignment is still readable. Sparse grids work — if a column's
+bottom row is empty, the lowest cell that exists keeps its labels.
+
+Zoom and pan are already synchronised: a subplot grid renders as one `<svg>`
+with the cells as translated groups, and `zoom.js` works on the SVG viewBox,
+so dragging moves every panel together.
+
+### Inset axes
+
+A small panel drawn on top of the main plot area, with its own independent
+scales — for a zoomed detail view, or an overview thumbnail beside a zoomed
+main chart:
+
+```python
+from glyphx import Figure, LineSeries
+
+fig = Figure(width=820, height=520).line(x, y, label="full range")
+
+inset = fig.inset_axes(0.55, 0.14, 0.38, 0.34)   # x, y, w, h as 0-1 fractions
+inset.add_series(LineSeries(x[:45], y[:45]))
+fig.show()
+```
+
+Position and size are fractions of the **figure canvas**, not the plot area, so
+an inset stays where you put it regardless of how padding changes. The panel
+inherits the parent's theme unless you pass `theme=`, gets a padding scaled to
+its own size, and draws on an opaque background so the parent's grid lines
+don't show through — pass `background="none"` for a transparent panel. Insets
+render last and in the order added, so a later one overlaps an earlier one.
+
+### Wrapping long tick labels
+
+`set_tick_wrap()` is an alternative to GlyphX's default auto-rotation. Rotation
+is compact but harder to read; wrapping keeps labels horizontal by splitting
+them across up to two lines. Labels that already fit are left alone, and the
+two are mutually exclusive — enabling wrap suppresses rotation for that axes.
 
 ---
 
@@ -542,6 +609,45 @@ Figure(theme={
 fig.set_theme("dark")
 ```
 
+### Registering your own theme
+
+A theme dict works with `Figure(theme=...)`, but everything else — `df.glyphx.*`,
+`facet_plot`, `clustermap`, `Figure3D`, the CLI — takes a theme *name*. Register
+one and it works everywhere:
+
+```python
+from glyphx import register_theme, list_themes
+
+register_theme(
+    "acme",
+    base="dark",                                   # inherit unspecified keys
+    colors=["#e6194b", "#3cb44b", "#4363d8"],
+    font="Inter, sans-serif",
+)
+
+Figure(theme="acme").line(x, y).show()
+df.glyphx.scatter(x="a", y="b", theme="acme")
+
+list_themes()          # -> ['acme', 'colorblind', 'dark', 'default', ...]
+```
+
+`register_theme` validates as it goes: a misspelled key (`colours`) or a bad
+`colors` value is rejected with a message naming the problem, and built-in
+names are protected from being overwritten. Unknown theme names now raise
+rather than silently falling back to `default`:
+
+```python
+Figure(theme="darkk")
+# ValueError: Unknown theme 'darkk'. Did you mean 'dark'? Available: ...
+```
+
+Series without an explicit `color=` cycle through the active theme's palette,
+so a three-line chart on `colorblind` gets three distinguishable Okabe-Ito
+colors rather than three identical blues. The same applies to the multi-color
+types — pie, donut, grouped bar and stacked bar all take their slice and
+segment colors from the active theme. Colormap-driven charts (treemap,
+raincloud, bump) keep their `cmap`.
+
 > **Accessibility note:** The `colorblind` theme uses the [Okabe-Ito palette](https://jfly.uni-koeln.de/color/) — the scientific standard for color-vision-deficiency-safe visualization. It is safe for deuteranopia, protanopia, and tritanopia.
 
 ---
@@ -563,6 +669,28 @@ html_str = fig.share(title="Q3 Report")      # custom <title> tag
 
 `fig.share()` inlines all JavaScript so the output works in:
 email clients · Confluence · Notion · GitHub Pages · air-gapped environments
+
+### Multi-figure export
+
+`SubplotGrid` lays out several independent figures on one page, and now saves
+directly:
+
+```python
+from glyphx import Figure
+from glyphx.figure import SubplotGrid
+
+sg = SubplotGrid(2, 2)
+sg.add(revenue_fig, 0, 0)
+sg.add(costs_fig,   0, 1)
+
+sg.save("dashboard.html")          # composite page, all figures inline
+sg.save("quarterly_review.pptx")   # one slide per figure, row-major order
+```
+
+Each PPTX slide is titled from that figure's own `title`. Empty grid cells are
+skipped. Single-image formats (`.svg`, `.png`, `.pdf`) are rejected with a
+pointer to saving each `Figure` individually — the grid's cells are separate
+`<svg>` documents, so there is no one image to rasterise.
 
 ---
 
@@ -724,8 +852,13 @@ fig.share("chart.html")        # all JS inlined, zero dependencies
 | `.set_size(width, height)` | `Figure` | Resize canvas |
 | `.set_xlabel(text)` | `Figure` | X-axis label |
 | `.set_ylabel(text)` | `Figure` | Y-axis label |
+| `.set_y2label(text)` | `Figure` | Right-hand Y-axis label (no-op without `use_y2` series) |
 | `.set_legend(position)` | `Figure` | Legend position or `False` |
+| `.set_tick_format(fn)` | `Figure` | Tick label formatter, applied to X, Y1 and Y2 |
+| `.set_minor_ticks(n)` | `Figure` | Minor tick subdivisions |
+| `.set_tick_wrap(enabled)` | `Figure` | Wrap long X tick labels instead of rotating |
 | `.add_axes(row, col)` | `Axes` | Get / create subplot cell |
+| `.inset_axes(x, y, w, h)` | `Axes` | Panel drawn over the plot area, own scales |
 | `.annotate(text, x, y, ...)` | `Figure` | Text annotation with optional arrow |
 | `.add_stat_annotation(x1, x2, p_value, ...)` | `Figure` | Significance bracket |
 | `.tight_layout()` | `Figure` | Auto-adjust padding and rotate labels |
@@ -751,6 +884,18 @@ fig.share("chart.html")        # all JS inlined, zero dependencies
 | `.plot(kind, x, y, ...)` | Unified dispatcher |
 
 All accessor methods return `Figure` for chaining.
+
+An unrecognised column name raises `KeyError` naming the closest match, rather
+than being silently ignored:
+
+```python
+df.glyphx.line(x="Month", y="revenue")
+# KeyError: "Column 'Month' not found. Did you mean 'month'?
+#            Available columns: ['month', 'revenue', 'region']"
+```
+
+Applies to `x`, `y`, `yerr`, `hue` and `groupby`. Omitting `x` is still valid
+and falls back to the row index — only a name that doesn't exist is an error.
 
 ### CLI
 
@@ -796,57 +941,6 @@ Please ensure all new chart types include:
 - Tests in `tests/`
 - A `to_alt_text()` compatible description
 - An entry in `__init__.py` and `__all__`
-
----
-
-## Roadmap
-
-The items below are planned for upcoming releases. Contributions and feedback on priority order are welcome — open a GitHub issue or discussion.
-
-### ✅ v2.1 — Competitive Foundation (shipped)
-- **BubbleSeries** — scatter with size encoding; missing from all three competitors
-- **SunburstSeries** — multi-ring hierarchical chart; previously Plotly-exclusive
-- **ParallelCoordinatesSeries** — high-dimensional data; Seaborn has nothing equivalent
-- **DivergingBarSeries** — horizontal diverging bars; no native equivalent in any competitor
-- **LTTB downsampling** — Largest-Triangle-Three-Buckets auto-downsampling for LineSeries; GlyphX now handles 100k+ point datasets without SVG degradation, matching Matplotlib's large-data performance
-- **Hue / palette API** — `df.glyphx.bar(x="month", y="revenue", hue="region")` auto-splits into color-coded series with theme-aligned colors; closes Seaborn's biggest advantage
-- **Fluent method chaining** — every Figure method returns `self`
-- **DataFrame accessor** (`df.glyphx.*`) with `hue=` support
-- **Statistical significance brackets** (`add_stat_annotation`)
-- **Raincloud plot**, **ECDF**, **KDE**, **FillBetween**, **Candlestick**, **Waterfall**, **Treemap**, **Streaming**
-- **PPTX export**, **CLI tool**, **ARIA accessibility**, **full type annotations**
-- **LTTB downsampling** — Largest-Triangle-Three-Buckets auto-downsampling for `LineSeries` on datasets above 5 000 points; SVG stays fast where Matplotlib would rasterize
-
-### v2.2 — Remaining Chart Gaps
-- **Stacked bar chart** — `StackedBarSeries` with optional 100% percentage mode
-- **Stacked area chart** — additive multi-series `FillBetweenSeries`
-- **Bump chart** — rank-over-time (Seaborn cannot do this natively)
-- **Forest plot** — meta-analysis standard; no native equivalent in any library
-- **Alluvial / Sankey diagram** — flow between categorical states over time
-- **ECDF with bootstrap confidence bands** — shading around the step function
-- **Clustermap with dendrogram** — Seaborn's most distinctive chart in bioinformatics; hierarchically-clustered heatmap with tree diagrams on both axes
-- **Regplot / lmplot completeness** — polynomial, logistic, LOWESS, and robust regression with CI shading; beat Seaborn's regression plotting
-
-### v2.3 — Layout & Polish
-- **Shared axis subplots** — `Figure(rows=2, shared_x=True)` so all subplots share a single X axis with synchronized zoom and pan
-- **Inset axis** — `fig.inset_axes(x, y, width, height)` for zoomed detail panels inside a larger plot
-- **Multi-line axis labels** — wrap long X-tick labels over two lines instead of forcing rotation
-- **Custom tick formatters** — `fig.axes.set_tick_format(lambda v: f"${v:,.0f}")` for per-axis label control; beat Matplotlib's fine-grained axis API
-- **Minor ticks** — configurable minor grid subdivisions between major ticks
-
-### v2.4 — Interactivity & Export
-- **Click-to-filter** — click a bar or slice to cross-filter all other charts on the same HTML page, with zero server dependency
-- **Animated transitions** — SVG `<animate>` elements between data updates for streaming and dashboard refresh
-- **PowerPoint multi-slide** — `SubplotGrid.save("deck.pptx")` exports each subplot to a separate slide
-- **Chart diff** — `glyphx.diff(fig_v1, fig_v2)` produces an animated SVG showing what changed between two renders
-- **VS Code extension** — live SVG preview panel that updates on file save; no browser tab switching
-
-### v3.0 — Platform
-- **Geographic / choropleth maps** — GeoJSON + SVG path rendering for country/region maps without external tile dependencies
-- **React / Next.js component** — `<GlyphXChart>` web component with Python-serialized config
-- **WebAssembly renderer** — full GlyphX in the browser via Pyodide; no Python server required
-- **Collaborative dashboards** — multi-user real-time dashboards over WebSocket push, no Dash or Streamlit needed
-- **Figma plugin** — export any GlyphX SVG to Figma as an editable vector layer
 
 ---
 

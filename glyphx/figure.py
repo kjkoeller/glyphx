@@ -5,11 +5,13 @@ from __future__ import annotations
 
 import re
 import webbrowser
+from pathlib import Path
 from tempfile import NamedTemporaryFile
 from typing import Any
 
 from .layout import Axes
 from .utils import (
+    SVG_PRECISION,
     as_seq,
     draw_legend,
     svg_label,
@@ -61,6 +63,7 @@ class Figure:
         legend: str | bool | None = "outside-right",
         xscale: str = "linear",
         yscale: str = "linear",
+        shared_x: bool = False,
     ) -> None:
         self.width        = width
         self.height       = height
@@ -74,17 +77,15 @@ class Figure:
         self._shown_at = None
         self.xscale       = xscale
         self.yscale       = yscale
+        # Unify the X domain across every subplot cell; see _apply_shared_x().
+        self.shared_x     = shared_x
 
-        from .themes import themes
+        from .themes import get_theme, themes
         self._theme_name: str = (
             theme if isinstance(theme, str) and theme in themes
             else ("custom" if isinstance(theme, dict) else "default")
         )
-        self.theme: dict[str, Any] = (
-            themes.get(theme, themes["default"])
-            if isinstance(theme, str)
-            else (theme or themes["default"])
-        )
+        self.theme: dict[str, Any] = get_theme(theme)
 
         self.legend_pos: str | None = (
             None if legend in (False, None) else str(legend)
@@ -110,6 +111,8 @@ class Figure:
         )
         self.series: list[tuple[Any, bool]] = []
         self._annotations:   list[dict[str, Any]] = []
+        # (Axes, x_px, y_px) for each inset panel; see inset_axes().
+        self._insets:        list[tuple] = []
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -123,16 +126,12 @@ class Figure:
 
     def set_theme(self, theme: str | dict[str, Any]) -> Figure:
         """Apply a named theme or a custom dict and return ``self``."""
-        from .themes import themes
+        from .themes import get_theme, themes
         self._theme_name = (
             theme if isinstance(theme, str) and theme in themes
             else ("custom" if isinstance(theme, dict) else "default")
         )
-        self.theme = (
-            themes.get(theme, themes["default"])
-            if isinstance(theme, str)
-            else theme
-        )
+        self.theme = get_theme(theme)
         self.axes.theme = self.theme
         return self
 
@@ -152,6 +151,21 @@ class Figure:
     def set_ylabel(self, label: str) -> Figure:
         """Set the Y-axis label and return ``self``."""
         self.axes.ylabel = label
+        return self
+
+    def set_y2label(self, label: str) -> Figure:
+        """
+        Label the secondary (right-hand) Y axis, and return ``self``.
+
+        Only drawn when the figure has series added with ``use_y2=True``.
+
+        Example::
+
+            fig.add(LineSeries(x, price), )
+            fig.add(BarSeries(x, volume), use_y2=True)
+            fig.set_ylabel("Price ($)").set_y2label("Volume")
+        """
+        self.axes.y2label = label
         return self
 
     def set_legend(self, position: str | bool | None) -> Figure:
@@ -504,6 +518,194 @@ class Figure:
             fig.set_tick_format(lambda v: f"{v:.1%}")
         """
         self.axes.set_tick_format(formatter)
+        return self
+
+    def inset_axes(self, x: float, y: float, width: float, height: float,
+                   *, theme=None, padding: float | None = None,
+                   background: str | None = None, show_grid: bool = True):
+        """
+        Add a small panel drawn on top of the main plot area.
+
+        Useful for a zoomed detail view of a dense region, or an overview
+        thumbnail alongside a zoomed main chart.  Returns a fresh
+        :class:`~glyphx.layout.Axes` with its own independent scales -- add
+        series to it with ``add_series()``, exactly as with
+        :meth:`add_axes` for subplot grids.
+
+        Position and size are fractions of the figure canvas, not of the
+        plot area, so ``inset_axes(0.6, 0.1, 0.35, 0.3)`` always lands in
+        the top-right regardless of how padding changes.
+
+        Insets render after the main series and in the order added, so a
+        later inset overlaps an earlier one. They are drawn over an opaque
+        background by default so the parent's grid lines do not show
+        through.
+
+        Args:
+            x:          Left edge, 0-1 fraction of figure width.
+            y:          Top edge, 0-1 fraction of figure height.
+            width:      Panel width, 0-1 fraction of figure width.
+            height:     Panel height, 0-1 fraction of figure height.
+            theme:      Theme name or dict. Defaults to the parent's theme.
+            padding:    Inner padding in px. Defaults to a value scaled to
+                        the panel size, since the figure default of 50 would
+                        consume most of a small inset.
+            background: Panel fill. Defaults to the theme background.
+                        Pass ``"none"`` for a transparent inset.
+            show_grid:  Draw grid lines inside the panel.
+
+        Returns:
+            Axes: the inset's axes.
+
+        Raises:
+            ValueError: If the panel is not within the canvas, or has
+                non-positive size.
+
+        Example::
+
+            fig = Figure().line(x, y)
+            inset = fig.inset_axes(0.6, 0.15, 0.35, 0.3)
+            inset.add_series(LineSeries(x[:20], y[:20]))
+        """
+        from .layout import Axes
+        from .themes import get_theme
+
+        if not (width > 0 and height > 0):
+            raise ValueError(
+                f"Inset width and height must be positive, got "
+                f"width={width}, height={height}."
+            )
+        if not (x >= 0 and y >= 0 and x + width <= 1 and y + height <= 1):
+            raise ValueError(
+                f"Inset must fit inside the canvas as 0-1 fractions; got "
+                f"x={x}, y={y}, width={width}, height={height} "
+                f"(x+width={x + width}, y+height={y + height})."
+            )
+
+        px_w = self.width * width
+        px_h = self.height * height
+
+        if padding is None:
+            # The figure default of 50 would leave a 200x150 inset with no
+            # plot area at all.  Scale it, but keep room for tick labels.
+            padding = max(14.0, min(px_w, px_h) * 0.18)
+
+        resolved = get_theme(theme) if theme is not None else self.theme
+
+        ax = Axes(
+            width=px_w,
+            height=px_h,
+            padding=padding,
+            show_grid=show_grid,
+            theme=resolved,
+        )
+        ax._inset_background = (
+            background if background is not None
+            else resolved.get("background", "#ffffff")
+        )
+        self._insets.append((ax, self.width * x, self.height * y))
+        return ax
+
+    def _apply_shared_x(self) -> None:
+        """
+        Give every subplot cell the same X domain, and label only the bottom.
+
+        Runs in two passes because the unified domain cannot be known until
+        every cell has computed its own: finalize each cell, take the union
+        of their X domains, then push that back as an override and finalize
+        again. ``Axes.finalize()`` is idempotent, so the second pass is
+        safe.
+
+        X tick labels are suppressed on every cell except the lowest
+        occupied one in each column -- grid lines and tick marks stay, so
+        the alignment is still readable. Sparse grids are handled: if the
+        bottom row of a column is empty, the lowest cell that does exist
+        keeps its labels.
+
+        Cells with no data are skipped entirely; a cell whose series are all
+        categorical still gets the shared numeric domain, but keeps its own
+        category labels, since those come from the series rather than the
+        axes.
+        """
+        cells = [ax for row in self.grid for ax in row if ax is not None]
+        if not cells:
+            return
+
+        for ax in cells:
+            ax.finalize()
+
+        domains = [ax._x_domain for ax in cells if ax._x_domain is not None]
+        if not domains:
+            return
+
+        shared = (min(d[0] for d in domains), max(d[1] for d in domains))
+        for ax in cells:
+            ax._x_domain_override = shared
+            ax.finalize()
+
+        # Label only the lowest occupied cell in each column.
+        for c in range(self.cols):
+            occupied = [(r, self.grid[r][c]) for r in range(self.rows)
+                        if self.grid[r][c] is not None]
+            if not occupied:
+                continue
+            bottom = max(r for r, _ in occupied)
+            for r, cell in occupied:
+                assert cell is not None      # narrowed by the filter above
+                cell._hide_xticklabels = (r != bottom)
+
+    def _render_insets(self) -> str:
+        """Composite every inset panel into the parent SVG."""
+        from .utils import assign_theme_colors
+
+        parts = []
+        for ax, px, py in self._insets:
+            assign_theme_colors(list(ax.series) + list(ax.y2_series), ax.theme)
+            ax.finalize()
+
+            body = []
+            bg = getattr(ax, "_inset_background", "none")
+            if bg and bg != "none":
+                body.append(
+                    f'<rect x="0" y="0" width="{ax.width}" height="{ax.height}" '
+                    f'fill="{bg}" stroke="{ax.theme.get("axis_color", "#333")}" '
+                    f'stroke-width="1"/>'
+                )
+            body.append(ax.render_axes())
+            body.append(ax.render_grid())
+            if ax.scale_x is not None and ax.scale_y is not None:
+                for s in ax.series:
+                    body.append(s.to_svg(ax))
+                for s in ax.y2_series:
+                    body.append(s.to_svg(ax, use_y2=True))
+
+            # Round like every other emitted coordinate: float division by a
+            # fraction otherwise yields 463.99999999999994 in the output.
+            parts.append(
+                f'<g class="glyphx-inset" '
+                f'transform="translate({round(px, SVG_PRECISION)}, '
+                f'{round(py, SVG_PRECISION)})">'
+                + "\n".join(body)
+                + "</g>"
+            )
+        return "\n".join(parts)
+
+    def set_tick_wrap(self, enabled: bool = True) -> Figure:
+        """
+        Wrap long X-axis tick labels onto a second line instead of rotating.
+
+        Args:
+            enabled: ``True`` to wrap, ``False`` to restore auto-rotation.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.bar(["Product Engineering", "Sales & Marketing"], [10, 20])
+            fig.set_tick_wrap()
+        """
+        self.axes.set_tick_wrap(enabled)
         return self
 
     def set_minor_ticks(self, n: int = 4) -> Figure:
@@ -864,7 +1066,7 @@ class Figure:
                 elements.append(
                     f'<line x1="{px + ox}" y1="{py + oy}" x2="{px}" y2="{py}" '
                     f'stroke="{ann["color"]}" stroke-width="1.5" '
-                    f'marker-end="url(#arrow)"/>'
+                    f'marker-end="url(#{self._arrow_marker_id()})"/>'
                 )
             elements.append(
                 f'<text x="{px + ox}" y="{py + oy - 2}" '
@@ -874,10 +1076,28 @@ class Figure:
             )
         return "\n".join(elements)
 
-    @staticmethod
-    def _arrow_marker_def() -> str:
+    def _arrow_marker_id(self) -> str:
+        """
+        A per-figure id for the annotation-arrow marker.
+
+        The id was a static ``"arrow"`` literal, so two figures with
+        annotations sharing one HTML document -- ``SubplotGrid``, a notebook
+        cell, any dashboard embedding more than one GlyphX chart -- emitted
+        duplicate ``id="arrow"`` definitions.  Every browser resolves
+        ``url(#arrow)`` to whichever element with that id comes first in the
+        document, so the second figure's arrows silently point at the first
+        figure's marker.  Harmless today only because the marker's fill is
+        hardcoded; it stops being harmless the moment that becomes
+        configurable.  Derived from content so re-rendering the same figure
+        is still byte-identical.
+        """
+        from .utils import stable_id
+        return "glyphx-arrow-" + stable_id(repr(self._annotations), length=8)
+
+    def _arrow_marker_def(self) -> str:
+        marker_id = self._arrow_marker_id()
         return (
-            '<defs><marker id="arrow" markerWidth="8" markerHeight="8" '
+            f'<defs><marker id="{marker_id}" markerWidth="8" markerHeight="8" '
             'refX="6" refY="3" orient="auto">'
             '<path d="M0,0 L0,6 L8,3 z" fill="#333"/>'
             '</marker></defs>'
@@ -909,6 +1129,9 @@ class Figure:
         Returns:
             Complete SVG document markup.
         """
+        from .utils import assign_theme_colors
+        assign_theme_colors(self.series, self.theme)
+
         svg_parts: list[str] = []
 
         if any(a["arrow"] for a in self._annotations):
@@ -971,6 +1194,8 @@ class Figure:
 
         # Subplot grid
         if self.grid and any(any(cell for cell in row) for row in self.grid):
+            if self.shared_x:
+                self._apply_shared_x()
             cell_w = self.width  // self.cols
             cell_h = self.height // self.rows
             for r, row in enumerate(self.grid):
@@ -1047,6 +1272,11 @@ class Figure:
         elif self.series:
             for series, _ in self.series:
                 svg_parts.append(series.to_svg(self.axes))
+
+        # Insets draw last so they sit above the main plot, and work on any
+        # of the branches above -- including an otherwise empty figure.
+        if self._insets:
+            svg_parts.append(self._render_insets())
 
         _svg_content = "\n".join(svg_parts)
         # Math is rendered to tspans before this point, so a surviving "$" is
@@ -1215,7 +1445,7 @@ class Figure:
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
         tmp.close()
-        webbrowser.open(f"file://{tmp.name}")
+        webbrowser.open(Path(tmp.name).as_uri())
 
     def show(self) -> Figure:
         """Render and display the figure. Returns ``self`` for chaining."""
@@ -1244,11 +1474,11 @@ class Figure:
             fig.save('chart.svg')          # handles encoding and the XML declaration
             # Open in a browser -- switches colours with the OS setting
         """
-        from .themes import themes as _themes
+        from .themes import get_theme
         from .utils import wrap_svg_with_css_vars
 
         light  = self.theme
-        dark   = _themes.get(dark_theme or 'dark', _themes['dark'])
+        dark   = get_theme(dark_theme or 'dark')
 
         # Render inner SVG content (no root element)
         svg_parts: list[str] = []
@@ -1457,17 +1687,8 @@ class Figure:
 
 # PPTX export helper
 
-def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
-    """
-    Save an SVG as a PNG-embedded PowerPoint slide.
-
-    Requires ``python-pptx`` and ``cairosvg``::
-
-        pip install "glyphx[pptx]"
-
-    The SVG is rasterised to PNG at 2x resolution, then inserted as a
-    full-slide picture in a blank 16:9 presentation.
-    """
+def _require_pptx_deps():
+    """Import cairosvg and python-pptx, or raise with install instructions."""
     try:
         import cairosvg
     except (ImportError, OSError):
@@ -1478,30 +1699,39 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
             "On macOS: brew install cairo"
         )
     try:
-        from pptx import Presentation
-        from pptx.enum.text import PP_ALIGN
-        from pptx.util import Inches, Pt
+        import pptx
     except ImportError:
         raise RuntimeError(
             "PPTX export requires python-pptx.  Install it with:\n"
             "    pip install \"glyphx[pptx]\""
         )
+    return cairosvg, pptx
 
+
+def _add_pptx_slide(cairosvg, prs, svg: str, title: str | None = None) -> None:
+    """
+    Add one full-slide picture, rasterised from ``svg``, to ``prs``.
+
+    Shared by the single-figure and multi-slide export paths so a change to
+    slide layout (title placement, picture sizing) only has one place to
+    make it, rather than two copies that drift apart.  ``cairosvg`` is passed
+    in rather than imported here so callers only pay the import cost once.
+    """
     import io
+
+    from pptx.enum.text import PP_ALIGN
+    from pptx.util import Inches, Pt
 
     # SVG -> PNG at 2x for crisp rendering
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 
-    # Build presentation
-    prs    = Presentation()
-    blank  = prs.slide_layouts[6]          # completely blank layout
-    slide  = prs.slides.add_slide(blank)
+    blank = prs.slide_layouts[6]           # completely blank layout
+    slide = prs.slides.add_slide(blank)
 
     slide_w = prs.slide_width
     slide_h = prs.slide_height
 
-    # Optional title text box
     top_offset = Inches(0)
     if title:
         txBox = slide.shapes.add_textbox(
@@ -1514,12 +1744,28 @@ def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
         tf.paragraphs[0].runs[0].font.bold = True
         top_offset = Inches(0.65)
 
-    # Insert chart PNG
     pic_h = slide_h - top_offset - Inches(0.1)
     pic_w = min(slide_w - Inches(0.4), pic_h * (slide_w / slide_h))
     left  = (slide_w - pic_w) // 2
 
     slide.shapes.add_picture(png_stream, left, top_offset, pic_w, pic_h)
+
+
+def _save_as_pptx(svg: str, filename: str, title: str | None = None) -> None:
+    """
+    Save an SVG as a single-slide PowerPoint file.
+
+    Requires ``python-pptx`` and ``cairosvg``::
+
+        pip install "glyphx[pptx]"
+
+    The SVG is rasterised to PNG at 2x resolution, then inserted as a
+    full-slide picture in a blank 16:9 presentation.
+    """
+    cairosvg, pptx_mod = _require_pptx_deps()
+
+    prs = pptx_mod.Presentation()
+    _add_pptx_slide(cairosvg, prs, svg, title=title)
     prs.save(filename)
 
 
@@ -1586,3 +1832,74 @@ class SubplotGrid:
 
         html_body = "<div>" + "".join(rows_html) + "</div>"
         return wrap_svg_with_template(html_body)
+
+    def _figures_in_order(self):
+        """Grid cells in row-major order, skipping empty ones."""
+        return [fig for row in self.grid for fig in row if fig is not None]
+
+    def save(self, filename: str = "glyphx_dashboard.html",
+             dpi: int = 96, backend: str | None = None) -> SubplotGrid:
+        """
+        Save the grid to disk.
+
+        ``.html`` writes the same composite page :meth:`render` produces.
+        ``.pptx`` puts each figure on its own slide, in row-major order,
+        titled from the figure's own ``title`` if it set one -- this is the
+        multi-slide export the standalone :class:`SubplotGrid` had no way to
+        do before, since :meth:`Figure.save` only ever knew about one figure.
+        ``.svg``, ``.png``, ``.jpg`` and ``.pdf`` are not supported: those
+        formats have no multi-page notion, and the grid's cells sit in
+        separate ``<svg>`` documents rather than one combined one, so there
+        is no single image to rasterise. Save each :class:`Figure` in the
+        grid individually for those formats.
+
+        Args:
+            filename: Output path. Extension selects the format.
+            dpi:      Forwarded to the PNG rasteriser that PPTX export uses
+                      internally. No effect on ``.html``.
+            backend:  Unused; accepted for signature parity with
+                      :meth:`Figure.save`.
+
+        Returns:
+            ``self`` for chaining.
+
+        Raises:
+            ValueError: For an unsupported extension.
+
+        Example::
+
+            sg = SubplotGrid(2, 2)
+            sg.add(revenue_fig, 0, 0).add(costs_fig, 0, 1)
+            sg.save("quarterly_review.pptx")   # one slide per figure
+        """
+        ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+
+        if ext == "html":
+            with open(filename, "w", encoding="utf-8") as fh:
+                fh.write(self.render())
+            return self
+
+        if ext == "pptx":
+            # Validate the grid before reaching for the optional dependencies:
+            # an empty grid is a caller error either way, and demanding
+            # cairosvg first turned it into a misleading "install cairosvg"
+            # message on machines where the real problem was the empty grid.
+            figures = self._figures_in_order()
+            if not figures:
+                raise ValueError(
+                    "Cannot save an empty SubplotGrid: add at least one "
+                    "figure first."
+                )
+            # Both already defined at module level in this file.
+            cairosvg, pptx_mod = _require_pptx_deps()
+            prs = pptx_mod.Presentation()
+            for fig in figures:
+                _add_pptx_slide(cairosvg, prs, fig.render_svg(), title=fig.title)
+            prs.save(filename)
+            return self
+
+        raise ValueError(
+            f"SubplotGrid.save() does not support '.{ext}'. Use '.html' for "
+            f"the composite dashboard, '.pptx' for one slide per figure, or "
+            f"save each Figure individually for '.svg' / '.png' / '.pdf'."
+        )

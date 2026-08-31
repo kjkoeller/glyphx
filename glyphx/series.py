@@ -74,6 +74,9 @@ class BaseSeries:
         # positionally, and a filtered frame carries a non-contiguous index.
         self.x     = drop_index(x)
         self.y     = drop_index(y)
+        # Track whether the caller picked this, so Axes.finalize() can assign
+        # from the theme palette without overriding an explicit choice.
+        self._explicit_color = color is not None
         self.color = color or "#1f77b4"
         self.label = label
         self.title = title
@@ -554,6 +557,11 @@ class PieSeries(BaseSeries):
         self.labels         = labels
         # BUG FIX: was `self.colors = self.colors or [...]` - self.colors didn't exist yet
         self.colors         = colors or _DEFAULT_COLORS
+        # Let Axes.finalize() swap in the active theme's palette when the
+        # caller did not choose one; _DEFAULT_COLORS is the light default and
+        # was used verbatim on every theme.
+        self._palette_attr    = "colors"
+        self._explicit_palette = colors is not None
         self.label_position = label_position
         self.radius         = radius
 
@@ -649,6 +657,8 @@ class DonutSeries(BaseSeries):
         self.values            = values
         self.labels            = labels or [str(i) for i in range(len(values))]
         self.colors            = colors or _DEFAULT_COLORS
+        self._palette_attr     = "colors"
+        self._explicit_palette = colors is not None
         self.show_labels       = show_labels
         self.hover_animate     = hover_animate
         self.inner_radius_frac = inner_radius_frac
