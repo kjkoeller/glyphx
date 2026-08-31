@@ -104,6 +104,13 @@ class Axes:
         yscale="linear",
         precision=SVG_PRECISION,
     ):
+        """
+        Set up the plot area, scales and the various tick and span registries.
+
+        Everything data-dependent -- the domains and the scale callables -- stays
+        ``None`` until :meth:`finalize` runs, since none of it can be computed
+        before the series are known.
+        """
         self.width    = width
         self.height   = height
         self.padding  = padding
@@ -430,6 +437,12 @@ class Axes:
         # Vertical bands
         for span in self._vspans:
             def _resolve_x(v):
+                """
+                Turn a span boundary into a numeric x, resolving category names.
+
+                ``axvspan("Feb", "Apr")`` is as valid as passing numbers, so a string is
+                looked up against whatever categorical mapping the series registered.
+                """
                 if isinstance(v, str):
                     for s in self.series + self.y2_series:
                         cats = getattr(s, "_x_categories", None)
@@ -634,6 +647,12 @@ class Axes:
         ndigits = self.precision
 
         def scaler(value):
+            """
+            Map one data value onto its pixel position.
+
+            A zero-width domain would divide by zero, so a single-valued axis puts
+            everything at the midpoint of the range rather than failing.
+            """
             if domain_max == domain_min:
                 return round((range_min + range_max) / 2, ndigits)
             return round(
@@ -679,6 +698,13 @@ class Axes:
         ndigits = self.precision
 
         def scaler(value):
+            """
+            Map one data value onto its pixel position on a log axis.
+
+            Non-positive input has no logarithm, so it becomes NaN rather than a
+            number -- that routes it through the same ``is_finite`` gates as missing
+            data and leaves a gap, instead of silently pinning it to one end.
+            """
             if value is None or value <= 0:
                 # Undefined on a log axis. Returning NaN routes the value
                 # through the same is_finite() gates that handle missing
@@ -695,6 +721,7 @@ class Axes:
         return scaler
 
     def _make_scale(self, domain_min, domain_max, range_min, range_max, scale_type):
+        """Return the linear or log scaler for this axis, whichever is configured."""
         if scale_type == "log":
             return self._scale_log(domain_min, domain_max, range_min, range_max)
         return self._scale_linear(domain_min, domain_max, range_min, range_max)
@@ -906,6 +933,13 @@ class Axes:
 
         # Helper: generate tick values for a numeric domain
         def _tick_vals(d_min: float, d_max: float, n: int, is_log: bool) -> list:
+            """
+            Choose tick positions for a domain.
+
+            Log axes get 1/2/5 multiples of each decade, which is what reads
+            naturally on a log scale; linear axes get ``n`` evenly spaced values.
+            Falls back to even spacing if the log path yields nothing usable.
+            """
             if is_log and d_min > 0:
                 lo = int(_math.floor(_math.log10(d_min)))
                 hi = int(_math.ceil(_math.log10(max(d_max, d_min * 10))))
@@ -924,6 +958,7 @@ class Axes:
         # Y1 ticks - left side, horizontal grid lines across full plot width
         # Use custom tick positions if set, otherwise auto-compute.
         def _fmt(val: float, label_override: str | None = None) -> str:
+            """Format one Y tick, honouring an explicit label or a custom formatter."""
             if label_override is not None:
                 return label_override
             if self._tick_formatter is not None:

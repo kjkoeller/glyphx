@@ -773,6 +773,7 @@ class Figure3D:
         ylabel:    str   = "Y",
         zlabel:    str   = "Z",
     ) -> None:
+        """Set up the 3-D canvas, camera defaults and empty series list."""
         self.width     = width
         self.height    = height
         self.title     = title
@@ -823,12 +824,15 @@ class Figure3D:
                                      label=label))
 
     def set_xlabel(self, label: str) -> Figure3D:
+        """Label the X axis and return ``self``."""
         self.xlabel = label; return self
 
     def set_ylabel(self, label: str) -> Figure3D:
+        """Label the Y axis and return ``self``."""
         self.ylabel = label; return self
 
     def set_zlabel(self, label: str) -> Figure3D:
+        """Label the Z axis and return ``self``."""
         self.zlabel = label; return self
 
     def set_view(self, azimuth: float, elevation: float) -> Figure3D:
@@ -987,9 +991,19 @@ class Figure3D:
         yn, ylo, yhi = normalize(ys)
         zn, zlo, zhi = normalize(zs)
 
-        def nx(v): return (v - xlo) / (xhi - xlo) * 2 - 1
-        def ny(v): return (v - ylo) / (yhi - ylo) * 2 - 1
-        def nz(v): return (v - zlo) / (zhi - zlo) * 2 - 1
+        # Each maps one data axis onto the -1..1 cube the camera works in,
+        # so the projection never needs to know the real data range.
+        def nx(v):
+            """Map a data-space x onto the -1..1 cube."""
+            return (v - xlo) / (xhi - xlo) * 2 - 1
+
+        def ny(v):
+            """Map a data-space y onto the -1..1 cube."""
+            return (v - ylo) / (yhi - ylo) * 2 - 1
+
+        def nz(v):
+            """Map a data-space z onto the -1..1 cube."""
+            return (v - zlo) / (zhi - zlo) * 2 - 1
 
         # Normalise per series for Three.js (Y-up: swap y↔z for Three.js camera)
         data_list = []
@@ -1031,6 +1045,12 @@ class Figure3D:
 
         # Tick labels
         def make_ticks(lo, hi, n=4):
+            """
+            Build ``n`` evenly spaced ticks as normalised positions plus labels.
+
+            The position is in cube space so the renderer can place it without
+            knowing the data range; the label keeps the real value.
+            """
             return [{"norm": -1 + k*2/n,
                      "label": _format_3d_tick(lo + k*(hi-lo)/n)}
                     for k in range(n+1)]
@@ -1128,5 +1148,6 @@ class Figure3D:
         return self
 
     def __repr__(self) -> str:
+        """Summarise the figure for the REPL: size, series kinds, theme."""
         kinds = [s.__class__.__name__ for s in self._series]
         return f"<glyphx.Figure3D [{', '.join(kinds)}] title={self.title!r}>"
