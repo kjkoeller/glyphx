@@ -149,6 +149,7 @@ def _render_expr(expr: str, italic: bool = True) -> str:
     plain: list[str] = []
 
     def flush() -> None:
+        """Emit any buffered plain text before switching to a math run."""
         if plain:
             out.append(_escape("".join(plain)))
             plain.clear()
@@ -296,6 +297,7 @@ def to_plain_text(text: str) -> str:
         return str(text)
 
     def _plain(match: re.Match) -> str:
+        """Strip the math markers, returning the expression as plain text."""
         expr = match.group(1)
         # Structural commands first: \sqrt is also in SYMBOLS, and replacing
         # it as a bare glyph would strip the parentheses off its argument.

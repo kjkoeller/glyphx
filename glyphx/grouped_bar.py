@@ -31,6 +31,7 @@ class GroupedBarSeries(BaseSeries):
         bar_width: float = 0.8,
         label: str | None = None,
     ) -> None:
+        """Store the groups and pick each group's colour from the theme."""
         from .themes import themes as _themes
         default_colors = _themes["default"]["colors"]
 
@@ -60,6 +61,7 @@ class GroupedBarSeries(BaseSeries):
         self.css_class     = f"series-{id(self) % 100000}"
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the groups side by side, splitting each category slot between them."""
         scale_y   = ax.scale_y2 if use_y2 else ax.scale_y
         n_groups  = len(self.groups)
         n_cats    = len(self.categories)

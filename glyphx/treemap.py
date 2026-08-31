@@ -134,6 +134,7 @@ class TreemapSeries:
         min_font: int = 9,
         label: str | None = None,
     ) -> None:
+        """Store the labels and values, checking the two line up."""
         if len(labels) != len(values):
             raise ValueError(
                 f"labels and values must be the same length "

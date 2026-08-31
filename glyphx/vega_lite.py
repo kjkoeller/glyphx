@@ -124,6 +124,7 @@ def _series_to_layer(series, use_y2: bool = False) -> dict | None:
 
 
 def _dash_to_vl(style: str) -> list[int]:
+    """Translate a GlyphX dash style into a Vega-Lite strokeDash array."""
     mapping = {
         "solid":    [],
         "dashed":   [6, 3],

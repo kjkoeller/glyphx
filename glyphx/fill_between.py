@@ -45,6 +45,7 @@ class FillBetweenSeries(BaseSeries):
         label: str | None   = None,
         line_color: str | None = None,
     ) -> None:
+        """Store the shared x and the two y boundaries of the band."""
         self.x1       = list(x)
         self.y1       = list(y1)
         # y2 can be a scalar baseline (e.g. 0) or a full array
@@ -68,6 +69,7 @@ class FillBetweenSeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the band as one closed path: y1 forward, then y2 back."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x1)
 

@@ -96,6 +96,7 @@ def plot(x=None, y=None, kind="line", data=None, legend="top-right", **kwargs):
     # dataframe interchange protocol -- see glyphx.dataframes.
     if data is not None and is_dataframe(data):
         def _resolve(value):
+            """Resolve a column name against the frame, or pass a sequence through."""
             if isinstance(value, str):
                 return get_column(data, value)
             return value

@@ -25,6 +25,7 @@ class SwarmPlotSeries(BaseSeries):
 
     def __init__(self, data, categories=None, color="#1f77b4", size=4,
                  jitter=6, label=None):
+        """Store one dataset per category, to be laid out without overlap."""
         self.data = [list(group) for group in data]
         self.categories = (
             list(categories) if categories
@@ -45,6 +46,7 @@ class SwarmPlotSeries(BaseSeries):
         self._numeric_x = positions
 
     def to_svg(self, ax, use_y2=False) -> str:
+        """Draw each point, nudged sideways until it clears its neighbours."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         scale_x = ax.scale_x
         elements = []

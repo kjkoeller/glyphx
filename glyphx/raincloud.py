@@ -57,6 +57,7 @@ class RaincloudSeries:
         seed: int = 42,
         label: str | None = None,
     ) -> None:
+        """Store one dataset per category and cycle colours to match."""
         self.datasets     = [np.asarray(d, dtype=float) for d in data]
         self.categories   = categories or [str(i) for i in range(len(data))]
         self.jitter_width = jitter_width
@@ -78,6 +79,7 @@ class RaincloudSeries:
         self.y   = [float(all_vals.min()), float(all_vals.max())]
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw each group as a half violin, a box, and its jittered points."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         rng      = np.random.default_rng(self.seed)
         elements: list[str] = []

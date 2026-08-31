@@ -42,6 +42,7 @@ class GlyphXAccessor:
     """
 
     def __init__(self, df: pd.DataFrame) -> None:
+        """Hold the frame this accessor was attached to."""
         self._df = df
 
     # Internal helpers

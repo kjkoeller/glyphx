@@ -63,6 +63,7 @@ class ParallelCoordinatesSeries:
         show_axes: bool            = True,
         label: str | None          = None,
     ) -> None:
+        """Store the matrix and normalise each axis to its own range."""
         self.matrix     = np.asarray(data, dtype=float)
         self.axes_names = list(axes)
         self.alpha      = float(alpha)
@@ -126,6 +127,7 @@ class ParallelCoordinatesSeries:
         self.y = None
 
     def to_svg(self, ax: AxesLike = None) -> str:
+        """Draw one polyline per row, crossing every vertical axis."""
         if ax is None:
             pad_x, pad_y = 60, 50
             w, h = 740, 400

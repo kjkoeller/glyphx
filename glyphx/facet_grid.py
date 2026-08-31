@@ -64,6 +64,7 @@ class FacetGrid:
         hue_order: list | None    = None,
         palette:   list | None    = None,
     ) -> None:
+        """Work out the grid shape from the row and column facet values."""
         self._df        = data
         self._col       = col
         self._row       = row
@@ -293,5 +294,6 @@ class FacetGrid:
         return self
 
     def __repr__(self) -> str:
+        """Summarise the grid for the REPL: facet columns and cell count."""
         return (f"<FacetGrid col={self._col!r} row={self._row!r} "
                 f"hue={self._hue!r} cells={len(self._figs)}>")

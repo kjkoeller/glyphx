@@ -513,6 +513,7 @@ def wrap_svg_with_css_vars(svg_string: str, light_theme: dict, dark_theme: dict,
     chart_id = f"glyphx-css-{stable_id(svg_string)[:10]}"
 
     def _props(theme: dict) -> str:
+        """Render a theme dict as the CSS custom properties block."""
         mapping = {
             "--glyphx-bg":         theme.get("background", "#ffffff"),
             "--glyphx-text":       theme.get("text_color",  "#000000"),
@@ -807,6 +808,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     assets_dir = Path(__file__).parent / "assets"
 
     def _read_js(name: str) -> str:
+        """Read one bundled JS asset from the package directory."""
         p = assets_dir / name
         if not p.exists():
             return ""

@@ -47,6 +47,7 @@ class KDESeries(BaseSeries):
         label: str | None    = None,
         bw_method: str | float = "silverman",
     ) -> None:
+        """Estimate the density on construction, so the curve is ready to draw."""
         arr = np.asarray(data, dtype=float)
         arr = arr[np.isfinite(arr)]
 
@@ -70,6 +71,7 @@ class KDESeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the density curve, filled beneath if that was asked for."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.kde_x)
 

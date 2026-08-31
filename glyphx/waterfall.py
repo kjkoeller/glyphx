@@ -50,6 +50,7 @@ class WaterfallSeries(BaseSeries):
         show_values: bool  = True,
         label: str | None  = None,
     ) -> None:
+        """Store the steps and compute the running total each bar starts from."""
         self.labels      = labels
         self.raw_values  = values
         self.up_color    = up_color
@@ -98,6 +99,7 @@ class WaterfallSeries(BaseSeries):
         self._numeric_x    = [i + 0.5 for i in range(n)]
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw each step as a floating bar between its start and end totals."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 

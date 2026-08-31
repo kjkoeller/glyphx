@@ -57,6 +57,7 @@ class DivergingBarSeries:
         zero_line:   bool  = True,
         label: str | None  = None,
     ) -> None:
+        """Store the categories and values, checking the two line up."""
         if len(categories) != len(values):
             raise ValueError("categories and values must have the same length.")
 
@@ -76,6 +77,7 @@ class DivergingBarSeries:
         self.y = None
 
     def to_svg(self, ax: AxesLike = None) -> str:
+        """Draw bars left or right of a centre line, by sign."""
         vals = np.asarray(self.values, dtype=float)
 
         if ax is None:

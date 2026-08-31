@@ -38,6 +38,7 @@ class Scatter3DSeries:
         label:  str | None    = None,
         alpha:  float         = 0.85,
     ) -> None:
+        """Store the three coordinate arrays and the marker styling."""
         self.x                    = list(x)
         self.y                    = list(y)
         self.z                    = list(z)

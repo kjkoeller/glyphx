@@ -51,6 +51,7 @@ class CandlestickSeries(BaseSeries):
         candle_width: float = 0.6,
         label: str | None = None,
     ) -> None:
+        """Store the OHLC arrays and check they are all the same length."""
         self.dates        = dates
         self.open_prices  = list(open)
         self.high_prices  = list(high)
@@ -74,6 +75,7 @@ class CandlestickSeries(BaseSeries):
         self._numeric_x    = [i + 0.5 for i in range(len(dates))]
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw each candle: a high-low wick with the open-close body over it."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 

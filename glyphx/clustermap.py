@@ -463,7 +463,9 @@ def clustermap(
         """
         x = None; y = None; label = None; color = "#000"
         css_class = "clustermap"
-        def to_svg(self, ax=None, use_y2=False): return "\n".join(parts[2:-1])
+        def to_svg(self, ax=None, use_y2=False):
+            """Return the pre-built markup, minus its outer <svg> wrapper."""
+            return "\n".join(parts[2:-1])
 
     fig._raw_svg = "\n".join(parts)
     fig._clustermap = True
