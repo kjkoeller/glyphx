@@ -643,15 +643,20 @@ class Figure:
             ax._x_domain_override = shared
             ax.finalize()
 
-        # Label only the lowest occupied cell in each column.
+        # Label only the lowest occupied cell in each column.  Built with an
+        # explicit loop rather than a comprehension plus assert: mypy cannot
+        # narrow Axes | None through a comprehension's filter, and an assert
+        # as the narrowing device is stripped by python -O.
         for c in range(self.cols):
-            occupied = [(r, self.grid[r][c]) for r in range(self.rows)
-                        if self.grid[r][c] is not None]
+            occupied: list[tuple[int, Axes]] = []
+            for r in range(self.rows):
+                cell = self.grid[r][c]
+                if cell is not None:
+                    occupied.append((r, cell))
             if not occupied:
                 continue
             bottom = max(r for r, _ in occupied)
             for r, cell in occupied:
-                assert cell is not None      # narrowed by the filter above
                 cell._hide_xticklabels = (r != bottom)
 
     def _render_insets(self) -> str:

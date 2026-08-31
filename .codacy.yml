@@ -1,8 +1,20 @@
 ---
+# Bandit's B101 (assert_used) exists because `python -O` strips assert
+# statements, so an assert relied on as a runtime check silently disappears
+# in optimised builds.  That reasoning applies to shipped code, not to a test
+# suite -- pytest is never run under -O, and assert is its primary assertion
+# mechanism.  Scanning tests/ for B101 produced ~790 findings, every one of
+# them a false positive.
+#
+# glyphx/ is still scanned in full, and tests/test_no_asserts_in_package.py
+# fails the build if an assert ever reappears there.
+
+exclude_paths:
+  - 'tests/**'
+  - 'docs/**'
+  - 'examples.py'
+
 engines:
   bandit:
     exclude_paths:
       - 'tests/**'
-exclude_paths:
-  - 'tests/**'
-  - 'docs/**'
