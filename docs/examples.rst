@@ -908,42 +908,6 @@ Tiny inline charts for dashboards and KPI tables:
    fig.sparkline([1, 3, 2, 5, 4, 6])
 
 
-AI Chart Recommendation
-------------------------
-
-.. image:: examples/suggest_scores.svg
-   :alt: suggest() recommendation scores
-   :width: 700px
-   :align: center
-
-:func:`glyphx.suggest` inspects a DataFrame and returns ranked chart recommendations
-with mini preview figures — no external dependencies required:
-
-.. code-block:: python
-
-   from glyphx import suggest
-   import pandas as pd
-
-   df = pd.read_csv("sales.csv")
-   recs = suggest(df, top_n=5)
-
-   for rec in recs:
-       print(f"{rec.kind:12s}  score={rec.score:.0f}")
-       print(f"  {rec.reason}")
-       rec.preview.show()   # 340×220 mini figure
-
-   # Access recommendation metadata
-   best = recs[0]
-   print(best.kind, best.x_col, best.y_col, best.hue_col)
-
-The ``preview`` property renders a 340x220 mini figure using the actual data:
-
-.. image:: examples/suggest_preview.svg
-   :alt: suggest() top recommendation preview
-   :width: 700px
-   :align: center
-
-
 Responsive Dark-Mode SVG
 --------------------------
 

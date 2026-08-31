@@ -33,6 +33,7 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Any
 
+from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .series import BaseSeries
 from .utils import svg_escape
@@ -136,16 +137,16 @@ class GanttSeries(BaseSeries):
         # BaseSeries stubs -- axis-free rendering
         super().__init__(x=None, y=None, color=self._default_color, label=label)
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:  # type: ignore
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
         w     = getattr(ax, "width",   800)
         h     = getattr(ax, "height",  400)
         pad_l = getattr(ax, "padding", 50) + 80  # extra room for labels
         pad_r = getattr(ax, "padding", 50) + (130 if self._group_colors else 10)
         pad_t = getattr(ax, "padding", 50)
         pad_b = getattr(ax, "padding", 50)
-        font  = ax.theme.get("font", "sans-serif")   # type: ignore
-        tc    = ax.theme.get("text_color", "#000")   # type: ignore
-        gc    = ax.theme.get("grid_color", "#ddd")   # type: ignore
+        font  = ax.theme.get("font", "sans-serif")
+        tc    = ax.theme.get("text_color", "#000")
+        gc    = ax.theme.get("grid_color", "#ddd")
 
         plot_w = w - pad_l - pad_r
         plot_h = h - pad_t - pad_b

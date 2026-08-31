@@ -31,6 +31,7 @@ from collections import deque
 
 import numpy as np
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .utils import has_data, svg_escape
 
@@ -108,15 +109,15 @@ class StreamingSeries(BaseSeries):
 
     # SVG rendering
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
         if not has_data(self.x) or not has_data(self.y):
             return ""
 
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore[union-attr]
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
         points = " ".join(
-            f"{ax.scale_x(x):.1f},{scale_y(y):.1f}"   # type: ignore[union-attr]
+            f"{ax.scale_x(x):.1f},{scale_y(y):.1f}"
             for x, y in zip(self.x, self.y)
         )
         elements.append(
@@ -129,7 +130,7 @@ class StreamingSeries(BaseSeries):
             for x, y in zip(self.x, self.y):
                 elements.append(
                     f'<circle class="glyphx-point {self.css_class}" '
-                    f'cx="{ax.scale_x(x):.1f}" cy="{scale_y(y):.1f}" '  # type: ignore[union-attr]
+                    f'cx="{ax.scale_x(x):.1f}" cy="{scale_y(y):.1f}" '
                     f'r="3" fill="{self.color}" '
                     f'data-x="{x}" data-y="{y:.3g}" '
                     f'data-label="{svg_escape(self.label or "")}"/>'
@@ -183,7 +184,7 @@ class _LiveContext:
         try:
             from IPython.display import SVG, clear_output, display
             clear_output(wait=True)
-            display(SVG(self._fig.render_svg()))  # type: ignore[union-attr]
+            display(SVG(self._fig.render_svg()))
         except Exception:
             pass
 

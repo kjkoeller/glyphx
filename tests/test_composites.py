@@ -56,6 +56,50 @@ def test_pairplot_with_hue(df):
     _assert_renders(glyphx.pairplot(df[["height", "weight", "group"]], hue="group"))
 
 
+def test_pairplot_builds_a_real_grid(df):
+    """
+    Every cell needs its own Axes.
+
+    ``fig.add_axes()`` with no arguments always hands back cell (0, 0), so the
+    whole n-by-n grid used to be drawn on top of a single axes and the figure
+    was an overplot rather than a pair grid.
+    """
+    fig = glyphx.pairplot(df[["height", "weight", "age"]])
+    assert (fig.rows, fig.cols) == (3, 3)
+    occupied = [ax for row in fig.grid for ax in row if ax is not None]
+    assert len(occupied) == 9
+    assert len({id(ax) for ax in occupied}) == 9
+
+
+def test_pairplot_hue_produces_one_labelled_series_per_category(df):
+    """The legend block used to sit after `return fig` and never ran."""
+    fig = glyphx.pairplot(df[["height", "weight", "group"]], hue="group")
+    off_diag = fig.grid[0][1]
+    assert sorted(s.label for s in off_diag.series) == ["a", "b"]
+
+    svg = _assert_renders(fig)
+    assert svg.count('class="legend-label"') == 2
+
+
+def test_pairplot_hue_values_are_escaped():
+    frame = pd.DataFrame({
+        "x": [1.0, 2.0, 3.0, 4.0],
+        "y": [4.0, 3.0, 2.0, 1.0],
+        "g": ["Ben & Co", "plain", "Ben & Co", "plain"],
+    })
+    svg = _assert_renders(glyphx.pairplot(frame, hue="g"))
+    assert "Ben &amp; Co" in svg
+
+
+def test_pairplot_kde_diagonal_has_no_stray_identity_line(df):
+    """
+    ``diag_kind="kde"`` fell through a second bare `if` into the else branch
+    and drew LineSeries(x, x) on top of the density curve.
+    """
+    fig = glyphx.pairplot(df[["height", "weight"]], diag_kind="kde")
+    assert len(fig.grid[0][0].series) == 1
+
+
 @pytest.mark.parametrize("diag_kind", ["hist", "kde"])
 def test_pairplot_diagonal_kinds(df, diag_kind):
     _assert_renders(
@@ -180,3 +224,24 @@ def test_add_axes_within_the_grid_works():
 def test_jointplot_builds_a_2x2_grid(df):
     fig = glyphx.jointplot(df, x="height", y="weight")
     assert (fig.rows, fig.cols) == (2, 2)
+
+
+def test_facet_plot_is_callable_at_all(df):
+    """
+    ``facet_plot`` forwarded ``kind=`` to ``FacetGrid()``, which has no such
+    parameter, so every call raised TypeError -- including the example in
+    docs/advanced.rst.  ``x`` and ``y`` were accepted and silently dropped.
+    """
+    grid = glyphx.facet_plot(df, x="height", y="weight", col="group", kind="scatter")
+    _assert_renders(grid)
+
+
+def test_facet_plot_maps_the_requested_kind(df):
+    _assert_renders(glyphx.facet_plot(df, x="height", col="group", kind="hist"))
+
+
+def test_figure_regplot_method(df):
+    """``Figure.regplot`` passed ``y2=`` to ``add()``, whose parameter is
+    ``use_y2`` -- TypeError on every call."""
+    fig = Figure(auto_display=False).regplot(df, x="height", y="weight")
+    _assert_renders(fig)

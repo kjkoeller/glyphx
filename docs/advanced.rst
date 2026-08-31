@@ -208,7 +208,7 @@ New 2-D Chart Types (v1.5+)
 ----------------------------
 
 Bubble Chart
-~~~~~~~~~~~~
+^^^^^^^^^^^^
 
 Scatter plot with size encoding for a fourth variable:
 
@@ -223,7 +223,7 @@ Scatter plot with size encoding for a fourth variable:
 
 
 Sunburst Chart
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 Multi-ring hierarchical chart:
 
@@ -241,7 +241,7 @@ Multi-ring hierarchical chart:
 
 
 Parallel Coordinates
-~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^
 
 High-dimensional data visualization:
 
@@ -259,7 +259,7 @@ High-dimensional data visualization:
 
 
 Diverging Bar Chart
-~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^
 
 Horizontal bars diverging from a center baseline:
 
@@ -281,7 +281,7 @@ Statistical Charts
 ------------------
 
 ECDF
-~~~~
+^^^^
 
 .. code-block:: python
 
@@ -302,7 +302,7 @@ ECDF
 
 
 Raincloud Plot
-~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^
 
 Combines jittered strip plot, half-violin, and box in one panel.
 Use ``seed=`` for reproducible jitter:
@@ -327,7 +327,7 @@ Use ``seed=`` for reproducible jitter:
 
 
 Box Plot
-~~~~~~~~
+^^^^^^^^
 
 .. code-block:: python
 
@@ -348,7 +348,7 @@ Box Plot
 
 
 Heatmap
-~~~~~~~
+^^^^^^^
 
 .. code-block:: python
 
@@ -373,7 +373,7 @@ Financial Charts
 ----------------
 
 Candlestick / OHLC
-~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -396,7 +396,7 @@ Candlestick / OHLC
 
 
 Waterfall / Bridge Chart
-~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
@@ -420,7 +420,7 @@ Hierarchical Charts
 -------------------
 
 Treemap
-~~~~~~~
+^^^^^^^
 
 .. code-block:: python
 

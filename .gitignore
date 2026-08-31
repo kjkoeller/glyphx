@@ -1,0 +1,40 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+
+# Written at build time by setuptools_scm (write_to = "glyphx/_version.py").
+# The generated file says so itself: "don't track in version control".
+glyphx/_version.py
+
+# Test / lint / type caches
+.tox/
+.nox/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Docs build output (docs/examples/ is committed and stays tracked)
+docs/_build/

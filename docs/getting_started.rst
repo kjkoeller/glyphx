@@ -15,13 +15,14 @@ Install optional extras depending on what you need:
 .. code-block:: bash
 
    pip install "glyphx[pptx]"    # PowerPoint export (python-pptx + cairosvg)
-   pip install "glyphx[export]"  # PNG / JPG raster export (cairosvg)
-   pip install "glyphx[nlp]"     # Natural language charts (anthropic)
+   pip install "glyphx[export]"  # PNG / JPG raster export (resvg-py + pillow)
+   pip install "glyphx[cairo]"   # PDF export (cairosvg)
    pip install "glyphx[all]"     # Everything
 
 .. note::
-   PNG/JPG and PPTX export require the system ``libcairo`` library in addition
-   to the Python packages. On macOS: ``brew install cairo``.
+   PNG/JPG export needs no system libraries -- ``resvg-py`` ships prebuilt
+   wheels. The ``cairo`` and ``pptx`` extras do require the system
+   ``libcairo`` library. On macOS: ``brew install cairo``.
    On Ubuntu/Debian: ``sudo apt-get install libcairo2``.
 
 Install from source:

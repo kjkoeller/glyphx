@@ -54,7 +54,6 @@ Key Features
 - **Auto-display** — no ``plt.show()`` or ``.show()`` required
 - **Method chaining** — every mutating method returns ``self``
 - **DataFrame accessor** — ``df.glyphx.bar(x=..., y=..., hue=...)``
-- **Natural language charts** — ``from_prompt("bar chart of sales by region", df=df)``
 - **Linked interactive brushing** — ``Shift``\+drag filters all charts on a page
 - **Self-contained shareable HTML** — ``fig.share()`` inlines all JS, works offline
 - **25+ chart types** — including 3D scatter/surface/line/bar, raincloud, ECDF, treemap, and more
@@ -80,7 +79,6 @@ Installation
    # Optional extras
    pip install "glyphx[pptx]"    # PowerPoint export
    pip install "glyphx[export]"  # PNG / JPG raster export
-   pip install "glyphx[nlp]"     # Natural language chart generation
 
 
 Project Links
@@ -98,6 +96,7 @@ Contents
    :maxdepth: 2
    :caption: User Guide
 
+   intro
    getting_started
    usage
    customization

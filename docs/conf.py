@@ -1,16 +1,14 @@
 # Configuration file for the Sphinx documentation builder.
 
 import datetime
-from configparser import ConfigParser
+import sys
+from importlib.metadata import metadata as get_metadata
 from importlib.metadata import version as get_version
 from unittest.mock import MagicMock
-import os
-import sys
 
 # Mock optional dependencies that are not needed to build docs
 # and may not be installable in the ReadTheDocs environment
 MOCK_MODULES = [
-    'anthropic',
     'cairosvg',
     'cairocffi',
     'pptx',
@@ -23,17 +21,17 @@ MOCK_MODULES = [
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = MagicMock()
 
-# Get configuration information from setup.cfg
-conf = ConfigParser()
-conf.read([os.path.join(os.path.dirname(__file__), '..', 'setup.cfg')])
-setup_cfg = dict(conf.items('metadata'))
+# Project metadata lives in pyproject.toml (PEP 621).  Read it from the
+# installed distribution -- setup.cfg has had no [metadata] section since the
+# move, and reading it there fails the build before any page renders.
+_meta = get_metadata("glyphx")
 
 # By default, highlight as Python 3.
 highlight_language = 'python3'
 
 # -- Project information
-project = setup_cfg['name']
-author = setup_cfg['author']
+project = _meta['Name']
+author = _meta['Author'] or _meta['Author-email'] or 'the GlyphX authors'
 copyright = '{0}, {1}'.format(datetime.datetime.now().year, author)
 
 try:

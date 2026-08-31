@@ -13,12 +13,6 @@ glyphx.plot3d
 .. autofunction:: glyphx.plot3d
 
 
-glyphx.from_prompt
-------------------
-
-.. autofunction:: glyphx.nlp.from_prompt
-
-
 Figure
 ------
 
@@ -303,12 +297,3 @@ Vega-Lite Export
 .. autofunction:: glyphx.vega_lite.to_vega_lite
 
 .. autofunction:: glyphx.vega_lite.save_vega_lite
-
-
-AI Recommendation
------------------
-
-.. autofunction:: glyphx.suggest.suggest
-
-.. autoclass:: glyphx.suggest.Recommendation
-   :members:

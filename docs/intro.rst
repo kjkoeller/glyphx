@@ -35,9 +35,9 @@ no server, works offline and in air-gapped environments.
 Architecture Overview
 ---------------------
 
-::
+.. code-block:: text
 
-   plot() / df.glyphx.* / from_prompt()
+   plot() / df.glyphx.*
               │
               ▼
            Figure

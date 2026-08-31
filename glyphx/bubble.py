@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .colormaps import apply_colormap
 from .series import BaseSeries
 from .utils import _format_tick, svg_escape
@@ -110,8 +111,8 @@ class BubbleSeries(BaseSeries):
         else:
             self._c_norm = None
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y   # type: ignore
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals   = getattr(self, "_numeric_x", self.x)
         elements: list[str] = []
 
@@ -123,7 +124,7 @@ class BubbleSeries(BaseSeries):
             y_val  = self.y[idx]
             radius = float(self._radii[idx])
 
-            px = ax.scale_x(x_val)   # type: ignore
+            px = ax.scale_x(x_val)
             py = scale_y(y_val)
 
             # Colour
@@ -160,24 +161,24 @@ class BubbleSeries(BaseSeries):
                 cmap=self.cmap,
                 vmin=float(c_arr.min()),
                 vmax=float(c_arr.max()),
-                x=ax.width - 30,        # type: ignore
-                y=ax.padding,           # type: ignore
+                x=ax.width - 30,
+                y=ax.padding,
                 width=12,
-                height=ax.height - 2 * ax.padding,   # type: ignore
-                font=ax.theme.get("font", "sans-serif"),  # type: ignore
-                text_color=ax.theme.get("text_color", "#000"),  # type: ignore
+                height=ax.height - 2 * ax.padding,
+                font=ax.theme.get("font", "sans-serif"),
+                text_color=ax.theme.get("text_color", "#000"),
             ))
 
 
         return "\n".join(elements)
 
-    def _size_legend(self, ax: object) -> str:
+    def _size_legend(self, ax: AxesLike) -> str:
         """Render a small 3-bubble size guide in the bottom-right corner."""
         size_arr = np.asarray([self.min_radius, (self.min_radius + self.max_radius) / 2,
                                 self.max_radius])
-        x_base  = ax.width  - 60      # type: ignore
-        y_base  = ax.height - 20      # type: ignore
-        tc      = ax.theme.get("text_color", "#000")  # type: ignore
+        x_base  = ax.width  - 60
+        y_base  = ax.height - 20
+        tc      = ax.theme.get("text_color", "#000")
         items: list[str] = []
         for r in size_arr:
             items.append(

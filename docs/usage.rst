@@ -331,23 +331,6 @@ Pass ``xscale`` or ``yscale`` to the ``Figure`` constructor:
    fig.show()
 
 
-Natural Language Chart Generation
-----------------------------------
-
-Requires ``pip install "glyphx[nlp]"`` and an ``ANTHROPIC_API_KEY`` environment variable.
-
-.. code-block:: python
-
-   from glyphx import from_prompt
-   import pandas as pd
-
-   df = pd.read_csv("sales.csv")
-
-   fig = from_prompt("bar chart of total revenue by region, dark theme", df=df)
-   fig = from_prompt("scatter plot showing a strong positive correlation")
-   fig = from_prompt("top 10 products by revenue, sorted descending", df=df)
-
-
 CLI Tool
 --------
 
@@ -357,7 +340,6 @@ Plot any CSV, JSON, or Excel file directly from the terminal:
 
    glyphx plot sales.csv --x month --y revenue --kind bar -o chart.html
    glyphx plot data.csv --x date --y revenue --kind line --theme dark --open
-   glyphx suggest data.csv
    glyphx version
 
 Supported input formats: ``.csv`` ``.tsv`` ``.json`` ``.jsonl`` ``.xlsx`` ``.xls``

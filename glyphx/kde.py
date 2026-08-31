@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from ._typing import AxesLike
 from .series import BaseSeries
 from .violin_plot import _numpy_kde
 
@@ -68,12 +69,12 @@ class KDESeries(BaseSeries):
             label = label,
         )
 
-    def to_svg(self, ax: object, use_y2: bool = False) -> str:
-        scale_y = ax.scale_y2 if use_y2 else ax.scale_y  # type: ignore[union-attr]
+    def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.kde_x)
 
         pts = " ".join(
-            f"{ax.scale_x(x):.2f},{scale_y(y):.2f}"  # type: ignore[union-attr]
+            f"{ax.scale_x(x):.2f},{scale_y(y):.2f}"
             for x, y in zip(x_vals, self.kde_y)
         )
 
@@ -81,9 +82,9 @@ class KDESeries(BaseSeries):
 
         if self.filled:
             # Close the polygon to x-axis (y=0)
-            y0      = scale_y(0)  # type: ignore[union-attr]
-            x_left  = ax.scale_x(x_vals[0])   # type: ignore[union-attr]
-            x_right = ax.scale_x(x_vals[-1])  # type: ignore[union-attr]
+            y0      = scale_y(0)
+            x_left  = ax.scale_x(x_vals[0])
+            x_right = ax.scale_x(x_vals[-1])
             polygon_pts = f"{x_left},{y0} " + pts + f" {x_right},{y0}"
             elements.append(
                 f'<polygon class="{self.css_class}" '
