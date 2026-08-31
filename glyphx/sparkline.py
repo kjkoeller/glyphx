@@ -66,9 +66,11 @@ def sparkline_svg(
     ph    = height - 2 * padding
 
     def sx(i: int) -> float:
+        """Pixel x for the i-th point, spread evenly across the width."""
         return padding + i * pw / (n - 1)
 
     def sy(v: float) -> float:
+        """Pixel y for a value, inverted so larger values sit higher."""
         return padding + ph - (v - lo) / span * ph
 
     parts: list[str] = [
@@ -150,6 +152,7 @@ class SparklineSeries(BaseSeries):
         show_last_dot: bool = True,
         label: str | None   = None,
     ) -> None:
+        """Store the values and the optional marker/fill styling."""
         self.data          = list(data)
         self.kind          = kind
         self.fill          = fill
@@ -167,6 +170,7 @@ class SparklineSeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the sparkline, plus any min/max/last markers that were enabled."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x)
         n       = len(x_vals)

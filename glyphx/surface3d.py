@@ -38,6 +38,7 @@ class Surface3DSeries:
         wire_color:  str   = "#ffffff44",
         label:       str | None = None,
     ) -> None:
+        """Flatten the mesh grids and record the Z range used to shade faces."""
         self.x_1d                 = list(x)
         self.y_1d                 = list(y)
         self.z_mat                = [list(row) for row in z]
@@ -57,6 +58,7 @@ class Surface3DSeries:
         self._z_span = self._z_max - self._z_min or 1.0
 
     def _face_color(self, z_val: float) -> str:
+        """Shade one face by where its height sits in the surface's Z range."""
         norm = (z_val - self._z_min) / self._z_span
         return apply_colormap(norm, self.cmap)
 
@@ -100,6 +102,7 @@ class Surface3DSeries:
         z_norm = [zn_flat[j * nx + i] for j in range(ny) for i in range(nx)]
 
         def znv(j, i):
+            """Normalised Z at grid position (j, i), from the flattened array."""
             return z_norm[j * nx + i]
 
         # Project all grid vertices
@@ -145,6 +148,7 @@ class Surface3DSeries:
         return "\n".join(elements)
 
     def to_threejs_data(self) -> dict:
+        """Export the mesh as plain dicts for the Three.js renderer."""
         return {
             "type":       "surface",
             "x":          self.x_1d,

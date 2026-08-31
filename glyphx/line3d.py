@@ -26,6 +26,7 @@ class Line3DSeries:
         linestyle: str          = "solid",
         label:     str | None   = None,
     ) -> None:
+        """Store the three coordinate arrays and the line's styling."""
         self.x                    = list(x)
         self.y                    = list(y)
         self.z                    = list(z)
@@ -39,6 +40,12 @@ class Line3DSeries:
 
     def to_svg(self, cam: Camera3D,
                x_range, y_range, z_range) -> str:
+        """
+        Project the path to screen space and draw it, thinning first if needed.
+
+        LTTB runs on the projected screen coordinates rather than the raw data,
+        so the points kept are the ones that matter from this camera angle.
+        """
         from .downsample import AUTO_THRESHOLD, lttb_3d
 
         # LTTB on camera-projected screen coordinates for large 3D lines
@@ -72,6 +79,7 @@ class Line3DSeries:
         )
 
     def to_threejs_data(self) -> dict:
+        """Export the path as plain dicts for the Three.js renderer."""
         return {
             "type":  "line",
             "x":     self.x,

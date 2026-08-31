@@ -101,6 +101,7 @@ class GanttSeries(BaseSeries):
         show_grid:    bool                  = True,
         label:        str | None            = None,
     ) -> None:
+        """Store the tasks and work out the overall date span the chart covers."""
         self.tasks       = tasks
         self.bar_height  = int(bar_height)
         self.row_padding = int(row_padding)
@@ -138,6 +139,7 @@ class GanttSeries(BaseSeries):
         super().__init__(x=None, y=None, color=self._default_color, label=label)
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw one horizontal bar per task, positioned by its start and end dates."""
         w     = getattr(ax, "width",   800)
         h     = getattr(ax, "height",  400)
         pad_l = getattr(ax, "padding", 50) + 80  # extra room for labels
@@ -161,6 +163,7 @@ class GanttSeries(BaseSeries):
         span      = epoch_max - epoch_min or 1
 
         def dx(d: date) -> float:
+            """Pixel x for a date, measured from the chart's earliest date."""
             return pad_l + ((_date_to_epoch(d) - epoch_min) / span) * plot_w
 
         elements: list[str] = []

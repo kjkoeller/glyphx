@@ -61,6 +61,7 @@ class BumpChartSeries:
         show_labels: bool        = True,
         label: str | None        = None,
     ) -> None:
+        """Store the periods and per-entity rankings, one series row per entity."""
         self.x_labels    = list(x)
         self.rankings    = rankings
         self.line_width  = float(line_width)
@@ -81,6 +82,7 @@ class BumpChartSeries:
         self.y = None
 
     def to_svg(self, ax: AxesLike = None) -> str:   # type: ignore
+        """Draw one line per entity across the periods, ranked top to bottom."""
         # The gutter holds both the "#N" rank labels and the series name
         # anchored to the first dot. At a fixed 30px they landed on top of
         # each other, so size it to the longest name.
@@ -109,12 +111,14 @@ class BumpChartSeries:
 
         # Map period index → pixel x
         def px(period_i: int) -> float:
+            """Pixel x for a period index. A single period sits mid-plot."""
             if n_periods <= 1:
                 return pad_x + plot_w / 2
             return pad_x + period_i * plot_w / (n_periods - 1)
 
         # Map rank → pixel y  (rank 1 = top)
         def py(rank: int) -> float:
+            """Pixel y for a rank, counting downward so rank 1 is at the top."""
             if n_ranks <= 1:
                 return pad_y + plot_h / 2
             return pad_y + (rank - 1) * plot_h / (n_ranks - 1)
