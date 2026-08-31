@@ -1,6 +1,6 @@
 """
 Inset axes: a small panel drawn on top of the main plot area, with its own
-independent scales. Fills the "inset axis" gap in the layout roadmap.
+independent scales.
 """
 
 import re
