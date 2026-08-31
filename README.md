@@ -852,8 +852,13 @@ fig.share("chart.html")        # all JS inlined, zero dependencies
 | `.set_size(width, height)` | `Figure` | Resize canvas |
 | `.set_xlabel(text)` | `Figure` | X-axis label |
 | `.set_ylabel(text)` | `Figure` | Y-axis label |
+| `.set_y2label(text)` | `Figure` | Right-hand Y-axis label (no-op without `use_y2` series) |
 | `.set_legend(position)` | `Figure` | Legend position or `False` |
+| `.set_tick_format(fn)` | `Figure` | Tick label formatter, applied to X, Y1 and Y2 |
+| `.set_minor_ticks(n)` | `Figure` | Minor tick subdivisions |
+| `.set_tick_wrap(enabled)` | `Figure` | Wrap long X tick labels instead of rotating |
 | `.add_axes(row, col)` | `Axes` | Get / create subplot cell |
+| `.inset_axes(x, y, w, h)` | `Axes` | Panel drawn over the plot area, own scales |
 | `.annotate(text, x, y, ...)` | `Figure` | Text annotation with optional arrow |
 | `.add_stat_annotation(x1, x2, p_value, ...)` | `Figure` | Significance bracket |
 | `.tight_layout()` | `Figure` | Auto-adjust padding and rotate labels |
