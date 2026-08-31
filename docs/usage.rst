@@ -269,6 +269,23 @@ Use ``Figure3D`` for interactive Three.js output with an SVG fallback:
      - Z-axis label
 
 
+Column name errors
+~~~~~~~~~~~~~~~~~~
+
+An unrecognised column name raises :class:`KeyError` naming the closest match
+and listing what is available, rather than being ignored:
+
+.. code-block:: python
+
+   df.glyphx.line(x="Month", y="revenue")
+   # KeyError: "Column 'Month' not found. Did you mean 'month'?
+   #            Available columns: ['month', 'revenue', 'region']"
+
+This applies to ``x``, ``y``, ``yerr``, ``hue`` and ``groupby``. Omitting
+``x`` is still legitimate and falls back to the row index; only a name that
+does not exist is an error.
+
+
 Dual Y-Axis
 -----------
 

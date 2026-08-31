@@ -885,6 +885,18 @@ fig.share("chart.html")        # all JS inlined, zero dependencies
 
 All accessor methods return `Figure` for chaining.
 
+An unrecognised column name raises `KeyError` naming the closest match, rather
+than being silently ignored:
+
+```python
+df.glyphx.line(x="Month", y="revenue")
+# KeyError: "Column 'Month' not found. Did you mean 'month'?
+#            Available columns: ['month', 'revenue', 'region']"
+```
+
+Applies to `x`, `y`, `yerr`, `hue` and `groupby`. Omitting `x` is still valid
+and falls back to the row index — only a name that doesn't exist is an error.
+
 ### CLI
 
 | Command | Description |
