@@ -70,6 +70,16 @@ class BaseSeries:
     """
 
     def __init__(self, x, y=None, color=None, label=None, title=None):
+        """
+        Store the coordinates and derive the series' CSS class.
+
+        Two things happen here that are easy to miss. Any pandas index is
+        stripped, because everything downstream indexes positionally and a
+        filtered frame carries a non-contiguous one. And whether the caller
+        actually chose ``color`` is recorded separately, so the theme palette
+        can fill in the series they left alone without overriding the ones
+        they didn't.
+        """
         # Strip any pandas index up front: everything downstream indexes
         # positionally, and a filtered frame carries a non-contiguous index.
         self.x     = drop_index(x)
@@ -86,6 +96,7 @@ class BaseSeries:
         self.css_class = f"series-{stable_id(type(self).__name__, label, title, self.color, _summarise(x), _summarise(y), length=8)}"
 
     def __repr__(self) -> str:
+        """Summarise the series for the REPL: point count, label, and x range."""
         n     = len(self.x) if self.x is not None else 0
         label = f" label={self.label!r}" if self.label else ""
         rng   = ""
@@ -146,6 +157,7 @@ class LineSeries(BaseSeries):
         markers="auto",
         threshold=None,
     ):
+        """Set up the line, keeping an explicit downsample threshold if given."""
         check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.linestyle            = linestyle
@@ -157,6 +169,14 @@ class LineSeries(BaseSeries):
         self.last_downsample_info = None
 
     def to_svg(self, ax, use_y2=False):
+        """
+        Draw the line, thinning the data first if it has more points than pixels.
+
+        An M4 pass preserves the per-column extremes, then LTTB thins what
+        remains, so a million-point series renders in the time a few thousand
+        would without losing spikes. What happened is recorded on
+        ``last_downsample_info`` for anyone who needs to check.
+        """
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         dash    = self._DASH.get(self.linestyle, "")
 
@@ -315,12 +335,20 @@ class BarSeries(BaseSeries):
 
     def __init__(self, x, y, color=None, label=None, legend=None,
                  bar_width=0.8, title=None, yerr=None):
+        """Set up the bars, checking x and y are the same length."""
         check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.bar_width = bar_width
         self.yerr      = yerr
 
     def to_svg(self, ax, use_y2=False):
+        """
+        Draw the bars, taking their width from the axes' own category spacing.
+
+        Width comes from ``scale_x(start + 1) - scale_x(start)`` rather than
+        dividing the plot area by this series' category count, so bars stay
+        aligned when several series share an axes and cover different categories.
+        """
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x)
         elements = []
@@ -416,6 +444,7 @@ class ScatterSeries(BaseSeries):
                  c=None, cmap="viridis",
                  sizes=None, style=None, style_order=None,
                  threshold=None):
+        """Set up the points, including any size, colour or marker-style encoding."""
         check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
         self.size                 = size
@@ -441,6 +470,12 @@ class ScatterSeries(BaseSeries):
         return self.color
 
     def to_svg(self, ax, use_y2=False):
+        """
+        Draw the points, voxel-thinning first when there are too many to see.
+
+        Thinning keeps one point per occupied grid cell and tracks which original
+        rows survived, so tooltips still report the right underlying values.
+        """
         from .downsample import voxel_thin_2d
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals   = list(getattr(self, "_numeric_x", self.x))
@@ -551,6 +586,7 @@ class PieSeries(BaseSeries):
 
     def __init__(self, values, labels=None, colors=None, title=None,
                  label_position="outside", radius=None):
+        """Set up the slices. Colours are left to the theme unless given here."""
         # BaseSeries requires x; pie charts are axis-free.
         super().__init__(x=None, y=None, color=None, title=title)
         self.values         = values
@@ -566,6 +602,7 @@ class PieSeries(BaseSeries):
         self.radius         = radius
 
     def to_svg(self, ax=None):
+        """Draw the slices as arc paths, with labels placed inside or outside."""
         elements = []
         total    = sum(self.values)
         if total == 0:
@@ -652,6 +689,7 @@ class DonutSeries(BaseSeries):
 
     def __init__(self, values, labels=None, colors=None,
                  show_labels=True, hover_animate=True, inner_radius_frac=0.5):
+        """Set up the ring: a pie with an inner radius punched out of it."""
         # BUG FIX: super().__init__() was never called → self.label etc. missing
         super().__init__(x=None, y=None, color=None)
         self.values            = values
@@ -664,6 +702,7 @@ class DonutSeries(BaseSeries):
         self.inner_radius_frac = inner_radius_frac
 
     def to_svg(self, ax=None):
+        """Draw the ring segments, plus the centre label if one is set."""
         total = sum(self.values)
         if total == 0:
             return ""
@@ -752,6 +791,7 @@ class HistogramSeries(BaseSeries):
 
     def __init__(self, data, bins=10, color=None, label=None,
                  hue=None, hue_colors=None, cmap="viridis", alpha=0.65):
+        """Bin the data on construction, so the counts are ready to draw."""
         self.data       = list(data)
         self.hue        = hue
         self.hue_colors = hue_colors
@@ -768,6 +808,7 @@ class HistogramSeries(BaseSeries):
         self.x_extent = (float(edges[0]), float(edges[-1]))
 
     def to_svg(self, ax, use_y2=False):
+        """Draw one bar per bin, splitting by hue when a hue column was given."""
         from .colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
@@ -838,6 +879,7 @@ class BoxPlotSeries(BaseSeries):
     def __init__(self, data, categories=None, color="#1f77b4",
                  label=None, box_width=20, width=None,
                  hue=None, hue_colors=None, cmap="viridis"):
+        """Set up one box per dataset, computing quartiles and whisker ends."""
         # ``width`` kept for backward-compat; prefer box_width
         self.color      = color
         self.label      = label
@@ -873,6 +915,7 @@ class BoxPlotSeries(BaseSeries):
         self.cmap_name  = 'viridis'
 
     def to_svg(self, ax, use_y2=False):
+        """Draw each box with its whiskers, median line, and any outlier points."""
         from .colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []
@@ -983,6 +1026,7 @@ class HeatmapSeries(BaseSeries):
 
     def __init__(self, matrix, cmap=None, row_labels=None,
                  col_labels=None, show_values=False, **kwargs):
+        """Set up the grid and normalise the matrix ready for colour mapping."""
         self.matrix     = matrix
         self.cmap       = cmap or ["#fff7fb", "#d0d1e6", "#74a9cf", "#0570b0", "#023858"]
         self.row_labels = row_labels
@@ -998,6 +1042,7 @@ class HeatmapSeries(BaseSeries):
         t      = norm_val * n - lo_idx
 
         def hex_to_rgb(h):
+            """Split ``#rrggbb`` into an (r, g, b) tuple of ints."""
             h = h.lstrip("#")
             return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
@@ -1009,6 +1054,7 @@ class HeatmapSeries(BaseSeries):
         return f"#{r:02x}{g:02x}{b:02x}"
 
     def to_svg(self, ax, use_y2=False):
+        """Draw the cells, the colorbar, and the per-cell values if enabled."""
         svg     = []
         rows    = len(self.matrix)
         cols    = len(self.matrix[0])
