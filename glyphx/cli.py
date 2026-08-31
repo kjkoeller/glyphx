@@ -43,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
 # plot sub-command
 
 def _add_plot_parser(sub: argparse._SubParsersAction) -> None:
+    """Register the ``plot`` subcommand and all of its options."""
     p = sub.add_parser(
         "plot",
         help="Render a chart from a CSV / JSON / Excel file.",
@@ -207,6 +208,7 @@ def _cmd_plot(args: argparse.Namespace) -> int:
 
 
 def _series_for(kind: str, x: list, y: list, color: str | None, label: str | None):
+    """Build the series class matching ``kind``, or raise if it is unknown."""
     from glyphx.series import BarSeries, LineSeries, ScatterSeries
     if kind == "bar":     return BarSeries(x, y, color=color, label=label)
     if kind == "scatter": return ScatterSeries(x, y, color=color, label=label)
@@ -216,11 +218,13 @@ def _series_for(kind: str, x: list, y: list, color: str | None, label: str | Non
 # version sub-command
 
 def _add_version_parser(sub: argparse._SubParsersAction) -> None:
+    """Register the ``version`` subcommand."""
     p = sub.add_parser("version", help="Print GlyphX version and exit.")
     p.set_defaults(func=_cmd_version)
 
 
 def _cmd_version(args: argparse.Namespace) -> int:
+    """Print the installed version. Returns the process exit code."""
     import glyphx
     print(f"GlyphX {glyphx.__version__}")
     return 0
@@ -248,10 +252,12 @@ def _load_file(path: Path, sep: str = ",", sheet: int | str = 0):
 # Console helpers
 
 def _info(msg: str) -> None:
+    """Print a success line to stderr, so stdout stays pipeable."""
     print(f"  ✓ {msg}", file=sys.stderr)
 
 
 def _err(msg: str) -> None:
+    """Print a failure line to stderr."""
     print(f"  ✗ {msg}", file=sys.stderr)
 
 

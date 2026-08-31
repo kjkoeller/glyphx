@@ -65,6 +65,12 @@ class Figure:
         yscale: str = "linear",
         shared_x: bool = False,
     ) -> None:
+        """
+        Set up the canvas, theme and the empty subplot grid.
+
+        ``rows``/``cols`` size the grid up front because :meth:`add_axes`
+        validates against it; a plain figure is just the 1x1 case.
+        """
         self.width        = width
         self.height       = height
         self.padding      = padding
@@ -987,6 +993,7 @@ class Figure:
         return id(self)
 
     def __repr__(self) -> str:
+        """Summarise the figure for the REPL: size, series, theme."""
         series_desc = ", ".join(
             f"{s.__class__.__name__}({repr(s.label)})"
             if getattr(s, "label", None)
@@ -1043,6 +1050,7 @@ class Figure:
         scale_y: Any,
         font: str,
     ) -> str:
+        """Emit every annotation: its text, and a leader arrow where one was asked for."""
         elements: list[str] = []
         # Build a category->numeric map from all registered series
         cat_map: dict = {}
@@ -1100,6 +1108,7 @@ class Figure:
         return "glyphx-arrow-" + stable_id(repr(self._annotations), length=8)
 
     def _arrow_marker_def(self) -> str:
+        """Emit the ``<marker>`` this figure's annotation arrows point at."""
         marker_id = self._arrow_marker_id()
         return (
             f'<defs><marker id="{marker_id}" markerWidth="8" markerHeight="8" '
@@ -1795,6 +1804,7 @@ class SubplotGrid:
     """
 
     def __init__(self, rows: int, cols: int) -> None:
+        """Create an empty rows x cols grid to place existing figures into."""
         self.rows = rows
         self.cols = cols
         self.grid: list[list[Figure | None]] = [

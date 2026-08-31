@@ -108,6 +108,7 @@ def _leaf_order(linkage: list[tuple], n_leaves: int) -> list[int]:
     root = n + len(linkage) - 1
 
     def _dfs(node: int) -> list[int]:
+        """Walk the linkage tree depth-first, returning leaf indices in draw order."""
         if node < n:
             return [node]
         l, r = children[node]
@@ -162,6 +163,7 @@ def _dendrogram_svg(
         # Resolve a node id to its pixel position: leaves use their slot,
         # internal nodes use the midpoint recorded when they were merged.
         def _node_px(node_id: int) -> float:
+            """Pixel position of a dendrogram node: a leaf slot, or the midpoint of its children."""
             if node_id < n:
                 return _leaf_px(node_id)
             return cluster_pos.get(node_id, 0)
@@ -452,6 +454,13 @@ def clustermap(
 
     # Inject raw SVG via a custom series stub
     class _RawSVG:
+        """
+        Adapter that lets a pre-rendered SVG string sit in a Figure's series list.
+
+        The clustermap builds its own markup rather than going through the
+        normal series path, and this gives it the attribute surface the renderer
+        expects.
+        """
         x = None; y = None; label = None; color = "#000"
         css_class = "clustermap"
         def to_svg(self, ax=None, use_y2=False): return "\n".join(parts[2:-1])
@@ -461,6 +470,7 @@ def clustermap(
     # Override render_svg to return our pre-built SVG
     _orig_render = fig.render_svg
     def _render_patched():
+        """Return the pre-built SVG instead of re-rendering from series."""
         return fig._raw_svg
     import types
     fig.render_svg = types.MethodType(lambda self: self._raw_svg, fig)

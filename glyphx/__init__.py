@@ -158,6 +158,7 @@ def __getattr__(name: str):
 
 
 def __dir__() -> list:
+    """Include the lazily-exported names so tab-completion still finds them."""
     return sorted(set(globals()) | set(_LAZY_ATTRS))
 
 
@@ -179,7 +180,15 @@ _SHADOWABLE = frozenset(
 
 
 class _GlyphxModule(_types.ModuleType):
+    """
+    Module type that keeps lazy exports from being shadowed by submodules.
+
+    See the comment above for the full story: importing ``glyphx.regplot``
+    binds the module onto the package, which hides the function of the same
+    name that ``__getattr__`` would otherwise supply.
+    """
     def __getattribute__(self, name: str):
+        """Re-resolve through ``__getattr__`` when a lookup returns a shadowing module."""
         value = _types.ModuleType.__getattribute__(self, name)
         if type(value) is _types.ModuleType and name in _SHADOWABLE:
             value = __getattr__(name)
@@ -207,6 +216,7 @@ else:
         """Runs the accessor registration right after pandas finishes loading."""
 
         def find_spec(self, fullname, path=None, target=None):
+            """Claim only the ``pandas`` import, so every other module is untouched."""
             if fullname != "pandas":
                 return None
             # Step aside so the real finders resolve pandas, then wrap the
@@ -225,6 +235,7 @@ else:
             real_exec = spec.loader.exec_module
 
             def exec_module(module):
+                """Let pandas finish importing, then register the ``.glyphx`` accessor."""
                 real_exec(module)
                 if self in _sys.meta_path:
                     _sys.meta_path.remove(self)

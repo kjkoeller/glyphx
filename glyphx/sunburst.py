@@ -62,6 +62,7 @@ class SunburstSeries:
         min_label_arc: float            = 14.0,
         label:         str | None       = None,
     ) -> None:
+        """Build the parent/child index and check the label arrays line up."""
         if len(labels) != len(parents) or len(labels) != len(values):
             raise ValueError(
                 "labels, parents, and values must all have the same length."
@@ -108,6 +109,7 @@ class SunburstSeries:
         self.y = None
 
     def _sum_tree(self, node: str) -> float:
+        """Total value of a node: its own, plus everything beneath it."""
         children = self._children.get(node, [])
         if not children:
             s = self._value.get(node, 0.0)
@@ -132,6 +134,12 @@ class SunburstSeries:
         return "#888888"
 
     def _is_descendant(self, node: str, ancestor: str) -> bool:
+        """
+        Is ``node`` somewhere under ``ancestor``?
+
+        Tracks visited nodes, so a malformed hierarchy with a parent cycle
+        terminates instead of recursing forever.
+        """
         visited: set[str] = set()
         cur = node
         parent_map = dict(zip(self.labels, self.parents))
@@ -147,6 +155,7 @@ class SunburstSeries:
                   a_start: float, a_end: float) -> str:
         """SVG path for an annular sector (ring segment)."""
         def pt(r: float, a: float):
+            """Cartesian point at radius ``r`` and angle ``a`` degrees from centre."""
             rad = math.radians(a)
             return cx + r * math.cos(rad), cy + r * math.sin(rad)
 
@@ -165,6 +174,7 @@ class SunburstSeries:
         )
 
     def to_svg(self, ax: AxesLike = None) -> str:
+        """Draw each ring outward from the root, one arc per node."""
         if ax is None:
             cx, cy = 275, 275
             font, tc = "sans-serif", "#000"
