@@ -460,10 +460,18 @@ open("dashboard.html", "w").write(html)
 # Dual Y-axis
 fig.add(LineSeries(x, prices, label="Price (left)"))
 fig.add(BarSeries(x, volume, label="Volume (right)"), use_y2=True)
+fig.set_ylabel("Price ($)").set_y2label("Volume (units)")
 
 # Log-scale axes
 fig = Figure(yscale="log")
 fig = Figure(xscale="log", yscale="log")
+```
+
+Right-hand tick rows are derived from the left axis, so the two sets of
+gridlines always coincide — including when `set_yticks()` gives the left axis
+a non-default tick count. `set_tick_format()` applies to all three axes.
+
+```python
 
 # Subplot grid
 fig = Figure(rows=2, cols=2, width=1000, height=700)

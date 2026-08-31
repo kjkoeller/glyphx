@@ -117,9 +117,10 @@ class Axes:
         # density but inflates every path in the document.
         self.precision = precision
 
-        self.title  = None
-        self.xlabel = None
-        self.ylabel = None
+        self.title   = None
+        self.xlabel  = None
+        self.ylabel  = None
+        self.y2label = None
 
         self.series    = []
         self.y2_series = []
@@ -235,6 +236,23 @@ class Axes:
             ax.set_tick_format(lambda v: f"{v:.1%}")
         """
         self._tick_formatter = formatter
+        return self
+
+    def set_y2label(self, label: str) -> Axes:
+        """
+        Label the secondary (right-hand) Y axis.
+
+        Rendered rotated on the right edge, mirroring ``ylabel``. Only drawn
+        when the axes actually has ``y2_series``, so setting it on a
+        single-axis chart is a harmless no-op.
+
+        Args:
+            label: Text for the right-hand axis.
+
+        Returns:
+            ``self`` for chaining.
+        """
+        self.y2label = label
         return self
 
     def set_tick_wrap(self, enabled: bool = True) -> Axes:
@@ -563,15 +581,22 @@ class Axes:
         )
         # Bars measure from zero, so zero has to be in the domain whichever
         # way the data runs. Otherwise the baseline sits off-canvas and the
-        # bars grow from the wrong edge.
-        if _has_zero_anchor:
+        # bars grow from the wrong edge.  Skipped on a log axis: zero has no
+        # position there, and forcing it made y_min 0 and sent log10(0) into
+        # a ValueError, so every bar chart on a log Y axis crashed.
+        # _mask_nonpositive has already dropped non-positive values, so the
+        # remaining bound is safe to take a logarithm of.
+        if _has_zero_anchor and self.yscale != "log":
             y_min = min(y_min, 0.0)
             y_max = max(y_max, 0.0)
 
         _bottom_is_zero = _has_zero_anchor and y_min >= 0
 
-        # Force zero-anchored series to include 0
-        if _has_zero_anchor:
+        # Force zero-anchored series to include 0.  Not on a log axis: zero
+        # has no position there, and anchoring to it drove y_min to 0 and
+        # then log10(0) straight into a ValueError -- so every bar chart on
+        # a log Y axis crashed rather than rendering.
+        if _has_zero_anchor and self.yscale != "log":
             y_min = min(0, y_min)
             y_max = max(0, y_max)
 
@@ -773,6 +798,15 @@ class Axes:
                 f'{svg_label(self.ylabel)}</text>'
             )
 
+        if self.y2label and self.y2_series:
+            _y2x = self.width - 15
+            elements.append(
+                f'<text x="{_y2x}" y="{self.height // 2}" text-anchor="middle" '
+                f'font-size="13" font-family="{font}" fill="{text_color}" '
+                f'transform="rotate(90, {_y2x}, {self.height // 2})">'
+                f'{svg_label(self.y2label)}</text>'
+            )
+
         if self.y2_series:
             elements.append(
                 f'<line x1="{self.width - pad}" y1="{pad}" '
@@ -939,7 +973,7 @@ class Axes:
                         f'y1="{mp}" y2="{mp}" stroke="{text_color}" '
                         f'stroke-width="0.7" opacity="0.5"/>')
 
-        # Y2 ticks - right side, own independent scale, no extra grid lines
+        # Y2 ticks - right side, own independent scale, no extra grid lines.
         _has_y2 = (
             bool(self.y2_series)
             and self._y2_domain is not None
@@ -948,8 +982,20 @@ class Axes:
         )
         if _has_y2:
             right_x = self.width - pad
-            for y2_v in _tick_vals(self._y2_domain[0], self._y2_domain[1],
-                                    ticks, self.yscale == "log"):
+            # Place a right-hand tick at each left-hand tick's pixel row,
+            # by taking that tick's fraction through the Y1 domain and
+            # reading the same fraction of the Y2 domain.  Generating the
+            # two independently happened to line up for the default five
+            # ticks, but drifted apart the moment set_yticks() gave Y1 a
+            # different count -- leaving two sets of gridlines interleaved.
+            y1_lo, y1_hi = self._y_domain
+            y2_lo, y2_hi = self._y2_domain
+            y1_span = (y1_hi - y1_lo) or 1.0
+            _y2_tick_vals = [
+                y2_lo + ((v - y1_lo) / y1_span) * (y2_hi - y2_lo)
+                for v in _y_tick_vals
+            ]
+            for y2_v in _y2_tick_vals:
                 y2_p = self.scale_y2(y2_v)
                 # Tick mark on right axis line
                 elements.append(
@@ -960,7 +1006,7 @@ class Axes:
                 elements.append(
                     f'<text x="{right_x + 9}" y="{y2_p + 4}" text-anchor="start" '
                     f'font-size="11" font-family="{font}" fill="{text_color}" opacity="0.85">'
-                    f'{_format_tick(y2_v)}</text>'
+                    f'{svg_label(_fmt(y2_v))}</text>'
                 )
 
         # X ticks - bottom, vertical grid lines

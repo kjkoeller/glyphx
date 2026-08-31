@@ -153,6 +153,21 @@ class Figure:
         self.axes.ylabel = label
         return self
 
+    def set_y2label(self, label: str) -> Figure:
+        """
+        Label the secondary (right-hand) Y axis, and return ``self``.
+
+        Only drawn when the figure has series added with ``use_y2=True``.
+
+        Example::
+
+            fig.add(LineSeries(x, price), )
+            fig.add(BarSeries(x, volume), use_y2=True)
+            fig.set_ylabel("Price ($)").set_y2label("Volume")
+        """
+        self.axes.y2label = label
+        return self
+
     def set_legend(self, position: str | bool | None) -> Figure:
         """Set legend position (or ``False`` to hide) and return ``self``."""
         self.legend_pos = None if position in (False, None) else str(position)
