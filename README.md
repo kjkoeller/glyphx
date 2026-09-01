@@ -19,29 +19,32 @@ View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index
 
 | Feature | GlyphX | Matplotlib | Seaborn | Plotly |
 |---|---|---|---|---|
-| Auto-display (no `show()`) | Yes | No | No | No |
+| Auto-display (no `show()`) | Everywhere | Notebooks only | Notebooks only | Notebooks only |
 | Method chaining API | Yes | No | No | Partial |
 | DataFrame accessor (`df.glyphx.*`) | Yes | No | Partial | No |
-| Linked interactive brushing | Yes | No | No | Needs a server |
-| Cross-chart click-to-filter | Yes | No | No | Needs Dash |
-| Self-contained shareable HTML | Yes | No | No | No |
-| Statistical significance brackets | Yes | No | No | No |
-| ECDF plot | Yes | No | Yes | No |
-| Raincloud plot | Yes | No | No | No |
-| 3-D scatter / surface / line / bar | WebGL and SVG | No | No | WebGL |
+| Self-contained HTML size | Tens of KB | n/a | n/a | ~3 MB (inlines plotly.js) |
+| Cross-chart click-to-filter | Yes, no server | No | No | Needs Dash |
+| Linked interactive brushing | Yes, no server | No | No | Needs Dash |
+| Streaming / real-time series | Yes, no server | No | No | Needs a server |
+| Statistical significance brackets | Yes | No | Third-party | No |
+| Raincloud plot | Yes | No | Third-party | No |
 | Sunburst chart | Yes | No | No | Yes |
 | Diverging bar | Yes | No | No | Yes |
-| Candlestick / OHLC | Yes | No | No | Yes |
+| Candlestick / OHLC | Yes | Third-party | No | Yes |
 | Waterfall / bridge chart | Yes | No | No | Yes |
-| Treemap (squarified) | Yes | No | No | Yes |
-| Auto large-data downsampling (SVG) | M4, LTTB and voxel | Rasterises instead | No | No |
-| Streaming / real-time series | Yes, no server | No | No | Needs a server |
-| Synchronized crosshair | Yes | No | No | Needs a server |
+| Treemap (squarified) | Yes | Third-party | No | Yes |
+| Auto large-data downsampling | M4, LTTB and voxel | Rasterises instead | No | No |
 | PPTX export | Yes | No | No | No |
 | CLI tool (`glyphx plot data.csv`) | Yes | No | No | No |
 | Full ARIA / WCAG 2.1 AA accessibility | Yes | No | No | Partial |
-| Full type annotations (`py.typed`) | Yes | No | No | Partial |
 | `tight_layout()` | Automatic | Manual | Automatic | Automatic |
+
+Matplotlib and Plotly are both mature and broadly capable; the rows above are
+where GlyphX differs, not a general scorecard. Notably, both have things
+GlyphX does not: Matplotlib ships 3-D plotting (`mpl_toolkits.mplot3d`), an
+`ecdf` method, and type hints for most public APIs since 3.8, and Plotly's
+`write_html` already produces a fully self-contained offline file — GlyphX's
+is simply two orders of magnitude smaller.
 
 ---
 
@@ -784,7 +787,7 @@ Works with **mypy**, **pyright**, and all major IDEs out of the box.
 ## Comparison with Matplotlib
 
 ```python
-# Matplotlib — 12 lines, no interactivity, no shareable output
+# Matplotlib — 12 lines, and the output is a static image
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 ax.plot(months, revenue, color="blue",  label="Revenue")
@@ -828,14 +831,19 @@ annotator.apply_and_annotate()
 ## Comparison with Plotly
 
 ```python
-# Plotly — HTML has CDN dependency, breaks offline
+# Plotly — self-contained by default, but inlines ~3 MB of plotly.js
 import plotly.express as px
 fig = px.line(df, x="month", y="revenue")
-fig.write_html("chart.html")   # requires CDN at view time
+fig.write_html("chart.html")            # ~3 MB, works offline
+fig.write_html("chart.html", include_plotlyjs="cdn")   # ~40 KB, needs the CDN
 
-# GlyphX — truly self-contained, works on a USB stick
-fig.share("chart.html")        # all JS inlined, zero dependencies
+# GlyphX — self-contained *and* small; there is no CDN variant to pick
+fig.share("chart.html")                 # tens of KB, all JS inlined
 ```
+
+Both produce a file you can open offline. The difference is that Plotly makes
+you trade size against a CDN dependency, and GlyphX does not — its inlined
+JavaScript is a few tens of KB rather than three megabytes.
 
 ---
 
