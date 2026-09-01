@@ -119,6 +119,8 @@ class Figure:
         self._annotations:   list[dict[str, Any]] = []
         # (Axes, x_px, y_px) for each inset panel; see inset_axes().
         self._insets:        list[tuple] = []
+        # Opt-in marker read by crossfilter.js; see enable_crossfilter().
+        self._crossfilter:   bool = False
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -157,6 +159,41 @@ class Figure:
     def set_ylabel(self, label: str) -> Figure:
         """Set the Y-axis label and return ``self``."""
         self.axes.ylabel = label
+        return self
+
+    def enable_crossfilter(self, enabled: bool = True) -> Figure:
+        """
+        Let clicks in this chart filter every other opted-in chart on the page.
+
+        Clicking a bar, point or slice dims everything in every participating
+        chart that does not share its x value; clicking the same element
+        again, or pressing Escape, clears the filter. The x value is the join
+        key, since that is what ``data-x`` already carries on every drawn
+        element.
+
+        Charts opt in individually, so a page can mix filtered charts with
+        independent ones. The filtering runs entirely in the exported HTML --
+        there is no server, no callback round-trip, and nothing leaves the
+        page, which is what Dash or Streamlit are normally needed for.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined. A bare ``render_svg()`` string carries the
+        marker but has no script to act on it.
+
+        Args:
+            enabled: ``False`` to opt this chart back out.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            revenue = Figure().bar(months, revenue).enable_crossfilter()
+            costs   = Figure().bar(months, costs).enable_crossfilter()
+            SubplotGrid(1, 2).add(revenue, 0, 0).add(costs, 0, 1).save("d.html")
+            # clicking "Feb" in either chart dims every other month in both
+        """
+        self._crossfilter = enabled
         return self
 
     def set_y2label(self, label: str) -> Figure:
@@ -1302,6 +1339,7 @@ class Figure:
             width=self.width,
             height=self.height,
             has_math=_has_math,
+            crossfilter=self._crossfilter,
         )
 
         # Accessibility injection

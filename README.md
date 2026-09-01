@@ -670,6 +670,30 @@ html_str = fig.share(title="Q3 Report")      # custom <title> tag
 `fig.share()` inlines all JavaScript so the output works in:
 email clients · Confluence · Notion · GitHub Pages · air-gapped environments
 
+### Cross-chart filtering
+
+Click a bar, point or slice and every other opted-in chart on the page dims
+everything that doesn't share that x value:
+
+```python
+revenue = Figure().bar(months, revenue).enable_crossfilter()
+costs   = Figure().bar(months, costs).enable_crossfilter()
+
+SubplotGrid(1, 2).add(revenue, 0, 0).add(costs, 0, 1).save("dashboard.html")
+```
+
+Click "Feb" in either chart and February stays lit in both while the other
+months recede. Click it again, or press Escape, to clear.
+
+This runs entirely inside the exported HTML — no server, no callback
+round-trip, nothing leaving the page. Linked views in Plotly need Dash, and in
+Bokeh need a Bokeh server; here it's a static file you can email.
+
+Charts opt in individually, so a page can mix filtered and independent charts.
+The x value is the join key, since `data-x` is already on every drawn element.
+Filter changes are announced through an ARIA live region, and elements are
+keyboard-reachable, so `Enter` and `Space` filter as well as clicking.
+
 ### Multi-figure export
 
 `SubplotGrid` lays out several independent figures on one page, and now saves

@@ -427,6 +427,17 @@ def wrap_svg_with_template(svg_string: str) -> str:
             + "\n</script>"
         )
 
+    # Cross-chart filtering. Inert unless a chart on the page carries
+    # data-glyphx-crossfilter, so it costs nothing when unused.
+    xfilter_path = Path(__file__).parent / "assets" / "crossfilter.js"
+    xfilter_js = ""
+    if xfilter_path.exists():
+        xfilter_js = (
+            "<script>\n"
+            + _strip_script_tags(xfilter_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
     # MathJax used to be injected when the SVG still held raw $...$ text.
     # It never worked: MathJax does not typeset inside an <svg> element, so
     # the labels showed the literal LaTeX in every format. Math is now
@@ -455,12 +466,13 @@ def wrap_svg_with_template(svg_string: str) -> str:
     return (
         html_content
         .replace("{{svg_content}}", svg_string)
-        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script + interact_script + a11y_script + legend_js)
+        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script
+                 + interact_script + a11y_script + legend_js + xfilter_js)
     )
 
 
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
-                    has_math: bool = False) -> str:
+                    has_math: bool = False, crossfilter: bool = False) -> str:
     """
     Wrap raw SVG elements in a full <svg> root element.
 
@@ -477,14 +489,19 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
         height (int):      Canvas height in pixels.
         has_math (bool):   When True, embeds a MathJax data attribute so
                            wrap_svg_with_template injects the CDN script.
+        crossfilter (bool): When True, marks the root so crossfilter.js
+                           includes this chart. Charts without the marker
+                           are left alone, so one page can mix filtered and
+                           independent charts.
 
     Returns:
         str: Complete SVG document string.
     """
     chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
     math_attr = ' data-has-math="true"' if has_math else ""
+    xfilter_attr = ' data-glyphx-crossfilter="true"' if crossfilter else ""
     return (
-        f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
+        f'<svg id="{chart_id}" data-glyphx="true"{math_attr}{xfilter_attr} '
         f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {width} {height}">{svg_content}</svg>'
     )
@@ -819,6 +836,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     interact_js = _read_js("interact.js")
     export_js   = _read_js("export.js")
     legend_js   = _read_js("legend.js")
+    xfilter_js  = _read_js("crossfilter.js")
 
     # Read template and replace placeholders
     template_path = assets_dir / "responsive_template.html"
@@ -838,6 +856,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         f"<script>\n{a11y_js}\n</script>"     if a11y_js     else "",
         f"<script>\n{export_js}\n</script>"   if export_js   else "",
         f"<script>\n{legend_js}\n</script>"   if legend_js   else "",
+        f"<script>\n{xfilter_js}\n</script>"  if xfilter_js  else "",
     ]))
 
     # Metadata comment
