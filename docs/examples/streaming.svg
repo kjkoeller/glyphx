@@ -1,33 +1,48 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-21-title glyphx-chart-21-desc" id="glyphx-chart-21" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-21-title">Live Sensor Feed  —  StreamingSeries(max_points=100)</title><desc id="glyphx-chart-21-desc">Streaming chart titled &quot;Live Sensor Feed  —  StreamingSeries(max_points=100)&quot;. Series &quot;Sensor&quot;: 100 data points. Ranges from 12.5 (at 185) to 36.1 (at 155).</desc><rect width="760" height="460" fill="#ffffff"/>
-<text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Live Sensor Feed  —  StreamingSeries(max_points=100)</text>
-<line x1="50" y1="410" x2="710" y2="410" stroke="#333" />
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-0d7e95e3eb78-title glyphx-chart-0d7e95e3eb78-desc" id="glyphx-chart-0d7e95e3eb78" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-0d7e95e3eb78-title">Live Sensor Feed  —  StreamingSeries(max_points=120)</title><desc id="glyphx-chart-0d7e95e3eb78-desc">Streaming chart titled &quot;Live Sensor Feed  —  StreamingSeries(max_points=120)&quot;. Series &quot;Sensor A&quot;: 120 data points. Ranges from 16.5 (at 136) to 39.1 (at 101). Series &quot;Sensor B&quot;: 120 data points. Ranges from 11.9 (at 192) to 31.7 (at 80).</desc><rect width="760" height="460" fill="#ffffff"/>
+<text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Live Sensor Feed  —  StreamingSeries(max_points=120)</text>
+<line x1="50" y1="410" x2="580" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
-<line x1="50" x2="710" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">12.5</text>
-<line x1="50" x2="710" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">17.2</text>
-<line x1="50" x2="710" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">22.0</text>
-<line x1="50" x2="710" y1="194.00000000000003" y2="194.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="198.00000000000003" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">26.7</text>
-<line x1="50" x2="710" y1="122.00000000000006" y2="122.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="126.00000000000006" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">31.4</text>
-<line x1="50" x2="710" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">36.1</text>
+<line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">9.97</text>
+<line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">16.2</text>
+<line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">22.4</text>
+<line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">28.6</text>
+<line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">34.8</text>
+<line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">41.0</text>
 <line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >99.5</text>
-<line y1="50" y2="410" x1="182.0" x2="182.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="182.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >120</text>
-<line y1="50" y2="410" x1="314.0" x2="314.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="314.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >140</text>
-<line y1="50" y2="410" x1="446.0" x2="446.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="446.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >160</text>
-<line y1="50" y2="410" x1="578.0" x2="578.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="578.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >180</text>
-<line y1="50" y2="410" x1="710.0" x2="710.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="710.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >200</text>
-<polyline class="series-1872" fill="none" stroke="#7c3aed" stroke-width="2.0" points="53.3,246.6 59.9,232.7 66.5,246.5 73.1,302.3 79.7,271.6 86.3,308.6 92.9,275.1 99.5,315.5 106.1,290.3 112.7,349.6 119.3,354.1 125.9,347.9 132.5,336.7 139.1,352.7 145.7,397.4 152.3,367.2 158.9,371.6 165.5,381.4 172.1,384.5 178.7,326.4 185.3,370.7 191.9,375.2 198.5,334.2 205.1,337.6 211.7,333.0 218.3,303.0 224.9,298.5 231.5,289.3 238.1,262.8 244.7,265.1 251.3,271.9 257.9,251.9 264.5,241.2 271.1,210.0 277.7,225.1 284.3,228.1 290.9,170.3 297.5,189.4 304.1,190.5 310.7,125.0 317.3,138.3 323.9,100.0 330.5,113.9 337.1,118.8 343.7,114.1 350.3,91.1 356.9,80.6 363.5,89.4 370.1,74.6 376.7,102.3 383.3,67.2 389.9,110.3 396.5,76.7 403.1,60.7 409.7,57.3 416.3,50.0 422.9,132.9 429.5,89.1 436.1,89.0 442.7,105.3 449.3,160.9 455.9,142.8 462.5,122.9 469.1,213.5 475.7,182.4 482.3,182.2 488.9,238.0 495.5,223.1 502.1,275.2 508.7,283.3 515.3,297.0 521.9,286.9 528.5,305.8 535.1,293.6 541.7,347.7 548.3,339.0 554.9,322.8 561.5,339.7 568.1,389.3 574.7,349.0 581.3,379.1 587.9,362.0 594.5,365.1 601.1,344.0 607.7,367.8 614.3,410.0 620.9,394.8 627.5,341.3 634.1,357.2 640.7,317.4 647.3,328.2 653.9,341.6 660.5,288.7 667.1,320.2 673.7,336.1 680.3,228.8 686.9,306.1 693.5,233.8 700.1,212.6 706.7,216.3"/>
+<line x1="50.0" x2="50.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >79.5</text>
+<line y1="50" y2="410" x1="156.0" x2="156.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="156.0" x2="156.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="156.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >104</text>
+<line y1="50" y2="410" x1="262.0" x2="262.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="262.0" x2="262.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="262.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >128</text>
+<line y1="50" y2="410" x1="368.0" x2="368.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="368.0" x2="368.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="368.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >152</text>
+<line y1="50" y2="410" x1="474.0" x2="474.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="474.0" x2="474.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="474.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >176</text>
+<line y1="50" y2="410" x1="580.0" x2="580.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="580.0" x2="580.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
+<text x="580.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >200</text>
+<polyline class="series-eb452244" fill="none" stroke="#2563eb" stroke-width="2.0" points="52.2,194.9 56.6,164.1 61.0,185.3 65.5,174.0 69.9,157.1 74.3,138.1 78.7,136.7 83.1,153.9 87.5,126.8 92.0,122.0 96.4,121.8 100.8,118.9 105.2,80.1 109.6,105.1 114.0,107.3 118.5,83.1 122.9,87.3 127.3,88.0 131.7,74.7 136.1,78.0 140.5,79.8 145.0,72.1 149.4,83.0 153.8,97.7 158.2,97.0 162.6,102.7 167.0,96.7 171.5,119.5 175.9,135.4 180.3,114.6 184.7,141.0 189.1,156.5 193.5,131.6 198.0,154.5 202.4,145.9 206.8,168.7 211.2,185.6 215.6,196.2 220.0,195.2 224.5,200.9 228.9,217.7 233.3,219.3 237.7,245.8 242.1,233.1 246.5,267.0 251.0,253.1 255.4,248.8 259.8,251.1 264.2,249.8 268.6,302.2 273.0,276.4 277.5,276.0 281.9,284.4 286.3,315.7 290.7,301.1 295.1,284.3 299.5,333.8 304.0,308.3 308.4,300.7 312.8,326.5 317.2,308.5 321.6,330.7 326.0,325.5 330.5,323.3 334.9,306.3 339.3,306.6 343.7,287.7 348.1,309.1 352.5,292.4 357.0,271.1 361.4,270.0 365.8,289.2 370.2,254.0 374.6,262.0 379.0,241.7 383.5,234.4 387.9,212.8 392.3,219.2 396.7,237.6 401.1,221.7 405.5,183.3 410.0,187.9 414.4,159.5 418.8,162.7 423.2,168.3 427.6,134.4 432.0,152.7 436.5,162.3 440.9,97.8 445.3,146.3 449.7,104.5 454.1,94.6 458.5,100.4 463.0,121.4 467.4,79.9 471.8,110.8 476.2,106.9 480.6,91.3 485.0,74.2 489.5,80.5 493.9,73.7 498.3,92.2 502.7,90.2 507.1,106.0 511.5,97.7 516.0,88.8 520.4,105.7 524.8,99.9 529.2,120.2 533.6,126.6 538.0,124.5 542.5,135.0 546.9,131.6 551.3,145.4 555.7,131.9 560.1,167.8 564.5,176.7 569.0,197.0 573.4,191.3 577.8,191.3"/>
+<polyline class="series-b4ee3bed" fill="none" stroke="#dc2626" stroke-width="2.0" points="52.2,158.2 56.6,195.5 61.0,200.1 65.5,190.0 69.9,199.8 74.3,167.1 78.7,184.8 83.1,205.0 87.5,205.8 92.0,162.1 96.4,215.6 100.8,223.3 105.2,214.4 109.6,215.9 114.0,228.3 118.5,250.8 122.9,261.2 127.3,243.9 131.7,260.2 136.1,289.6 140.5,257.8 145.0,270.6 149.4,292.0 153.8,299.4 158.2,299.5 162.6,319.0 167.0,334.8 171.5,317.7 175.9,348.2 180.3,328.2 184.7,358.9 189.1,345.0 193.5,349.8 198.0,326.8 202.4,369.8 206.8,377.4 211.2,368.9 215.6,377.2 220.0,370.9 224.5,357.4 228.9,352.4 233.3,339.4 237.7,371.6 242.1,322.8 246.5,329.6 251.0,357.2 255.4,382.9 259.8,348.2 264.2,341.7 268.6,369.9 273.0,331.6 277.5,329.8 281.9,331.9 286.3,306.0 290.7,294.1 295.1,308.1 299.5,291.1 304.0,296.3 308.4,290.9 312.8,271.5 317.2,258.0 321.6,265.8 326.0,281.6 330.5,235.5 334.9,259.0 339.3,228.3 343.7,198.8 348.1,217.6 352.5,228.1 357.0,226.4 361.4,184.7 365.8,196.6 370.2,184.6 374.6,175.6 379.0,186.0 383.5,186.9 387.9,193.7 392.3,221.9 396.7,199.1 401.1,178.6 405.5,180.2 410.0,172.9 414.4,181.6 418.8,179.5 423.2,173.2 427.6,199.4 432.0,194.6 436.5,217.0 440.9,185.5 445.3,203.4 449.7,202.5 454.1,193.5 458.5,206.0 463.0,228.2 467.4,223.1 471.8,260.8 476.2,241.9 480.6,253.2 485.0,284.9 489.5,251.1 493.9,286.8 498.3,274.8 502.7,297.3 507.1,284.7 511.5,287.1 516.0,323.7 520.4,339.8 524.8,326.4 529.2,318.6 533.6,341.0 538.0,349.3 542.5,338.6 546.9,387.9 551.3,362.3 555.7,375.4 560.1,354.6 564.5,370.9 569.0,377.6 573.4,367.9 577.8,383.7"/>
 <g class="glyphx-legend">
-<rect x="668" y="20" width="12" height="12" fill="#7c3aed" class="legend-icon" data-target="series-1872" />
-<text x="688" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-1872">Sensor</text>
+<rect x="638" y="208" width="12" height="12" fill="#2563eb" class="legend-icon" data-target="series-eb452244" />
+<text x="658" y="218" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-eb452244">Sensor A</text>
+<rect x="638" y="230" width="12" height="12" fill="#dc2626" class="legend-icon" data-target="series-b4ee3bed" />
+<text x="658" y="240" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-b4ee3bed">Sensor B</text>
 </g></svg>

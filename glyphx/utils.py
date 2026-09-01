@@ -19,6 +19,54 @@ from pathlib import Path
 SVG_PRECISION = 2
 
 
+def series_fingerprint(series) -> tuple:
+    """
+    A cheap, stable summary of a series' data, for deriving its CSS class.
+
+    Seventeen series types built their class from ``id(self) % 100000`` --
+    a memory address, so it changed on every run and broke the
+    byte-identical rendering that snapshot comparison and caching depend
+    on. Worse, the modulo made collisions between two series plausible,
+    and the class is what the legend toggles on.
+
+    Only lengths and endpoints are used, not every element: this needs to
+    distinguish series, not hash their contents, and it runs per series on
+    every construction.
+
+    Args:
+        series: Any series object.
+
+    Returns:
+        tuple: Hashable summary, stable across processes.
+    """
+    parts: list = []
+    for attr in ("x", "y", "values", "data", "datasets", "labels",
+                 "categories", "matrix", "z"):
+        value = getattr(series, attr, None)
+        if value is None:
+            continue
+        try:
+            length = len(value)
+        except TypeError:                       # scalars, callables
+            parts.append((attr, repr(value)[:40]))
+            continue
+        if isinstance(value, dict):
+            # Mapping attributes (choropleth's {region: value}) are not
+            # positionally indexable; their keys identify them well enough.
+            parts.append((attr, length, repr(sorted(map(str, value))[:3])[:48]))
+            continue
+        try:
+            head = repr(value[0])[:24] if length else ""
+            tail = repr(value[-1])[:24] if length else ""
+        except (KeyError, IndexError, TypeError):
+            # Anything sized but not positionally indexable: sets, and any
+            # third-party container that only supports iteration.
+            parts.append((attr, length))
+            continue
+        parts.append((attr, length, head, tail))
+    return tuple(parts)
+
+
 def stable_id(*parts, length: int = 12) -> str:
     """
     Return a short, deterministic id derived from ``parts``.

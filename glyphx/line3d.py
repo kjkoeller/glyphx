@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from .projection3d import Camera3D, normalize
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 
 
 class Line3DSeries:
@@ -36,7 +36,17 @@ class Line3DSeries:
         self.label                = label
         self.threshold            = None
         self.last_downsample_info = None
-        self.css_class            = f"series3d-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class            = "series3d-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
     def to_svg(self, cam: Camera3D,
                x_range, y_range, z_range) -> str:

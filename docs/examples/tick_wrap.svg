@@ -1,0 +1,35 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-6f19d943aac7-title glyphx-chart-6f19d943aac7-desc" id="glyphx-chart-6f19d943aac7" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-6f19d943aac7-title">Wrapped tick labels  —  fig.set_tick_wrap()</title><desc id="glyphx-chart-6f19d943aac7-desc">Bar chart titled &quot;Wrapped tick labels  —  fig.set_tick_wrap()&quot;. Series: 4 data points. Ranges from 18 (at Customer Support) to 42 (at Product Engineering).</desc><rect width="760" height="460" fill="#ffffff"/>
+<text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Wrapped tick labels  —  fig.set_tick_wrap()</text>
+<line x1="50" y1="410" x2="580" y2="410" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
+<line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">8.99</text>
+<line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">18.0</text>
+<line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">27.0</text>
+<line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">36.0</text>
+<line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">44.9</text>
+<line y1="50" y2="410" x1="116.25" x2="116.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="116.25" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" ><tspan x="116.25" dy="0">Product</tspan><tspan x="116.25" dy="1.2em">Engineering</tspan></text>
+<line y1="50" y2="410" x1="248.75" x2="248.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="248.75" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Sales &amp; Marketing</text>
+<line y1="50" y2="410" x1="381.25" x2="381.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="381.25" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Customer Support</text>
+<line y1="50" y2="410" x1="513.75" x2="513.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="513.75" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" ><tspan x="513.75" dy="0">Research &amp;</tspan><tspan x="513.75" dy="1.2em">Development</tspan></text>
+<rect class="glyphx-point series-6d1bb369" tabindex="0" role="graphics-symbol" x="63.25" y="73.55" width="106.0" height="336.45" fill="#1f77b4" stroke="#00000033" data-x="Product Engineering" data-y="42.0" data-label=""/>
+<rect class="glyphx-point series-6d1bb369" tabindex="0" role="graphics-symbol" x="195.75" y="161.67" width="106.0" height="248.33" fill="#1f77b4" stroke="#00000033" data-x="Sales &amp; Marketing" data-y="31.0" data-label=""/>
+<rect class="glyphx-point series-6d1bb369" tabindex="0" role="graphics-symbol" x="328.25" y="265.81" width="106.0" height="144.19" fill="#1f77b4" stroke="#00000033" data-x="Customer Support" data-y="18.0" data-label=""/>
+<rect class="glyphx-point series-6d1bb369" tabindex="0" role="graphics-symbol" x="460.75" y="193.71" width="106.0" height="216.29" fill="#1f77b4" stroke="#00000033" data-x="Research &amp; Development" data-y="27.0" data-label=""/>
+</svg>

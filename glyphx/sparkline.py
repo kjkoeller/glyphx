@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .series import BaseSeries
+from .utils import series_fingerprint, stable_id
 
 # Standalone helper - returns a raw SVG string with no Figure overhead
 
@@ -159,7 +160,17 @@ class SparklineSeries(BaseSeries):
         self.fill_alpha    = fill_alpha
         self.line_width    = float(line_width)
         self.show_last_dot = show_last_dot
-        self.css_class     = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class     = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         n = len(data)
         super().__init__(

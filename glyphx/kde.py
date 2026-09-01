@@ -17,6 +17,7 @@ import numpy as np
 
 from ._typing import AxesLike
 from .series import BaseSeries
+from .utils import series_fingerprint, stable_id
 from .violin_plot import _numpy_kde
 
 
@@ -61,7 +62,17 @@ class KDESeries(BaseSeries):
         self.filled   = filled
         self.alpha    = float(alpha)
         self.width    = int(width)
-        self.css_class = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         super().__init__(
             x     = self.kde_x,

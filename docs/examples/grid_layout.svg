@@ -1,118 +1,270 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-11-title glyphx-chart-11-desc" id="glyphx-chart-11" data-glyphx="true" width="800" height="580" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 580"><title id="glyphx-chart-11-title">Subplot Grid  —  Figure(rows=2, cols=2)</title><desc id="glyphx-chart-11-desc">Chart chart titled &quot;Subplot Grid  —  Figure(rows=2, cols=2)&quot;.</desc><rect width="800" height="580" fill="#ffffff"/>
-<text x="400" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Subplot Grid  —  Figure(rows=2, cols=2)</text>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-b9f55a3627fc-title glyphx-chart-b9f55a3627fc-desc" id="glyphx-chart-b9f55a3627fc" data-glyphx="true" width="800" height="580" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 580"><title id="glyphx-chart-b9f55a3627fc-title">2x2 Subplot Grid  —  Figure(rows=2, cols=2)</title><desc id="glyphx-chart-b9f55a3627fc-desc">Chart chart titled &quot;2x2 Subplot Grid  —  Figure(rows=2, cols=2)&quot;.</desc><rect width="800" height="580" fill="#ffffff"/>
+<text x="400" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">2x2 Subplot Grid  —  Figure(rows=2, cols=2)</text>
 <g transform="translate(0,0)"><line x1="50" y1="240" x2="350" y2="240" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="240" stroke="#333" /><line x1="50" x2="350" y1="240.0" y2="240.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4</text>
-<line x1="50" x2="350" y1="201.99999999999997" y2="201.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="205.99999999999997" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.40</text>
+<line x1="46.0" x2="50" y1="240.0" y2="240.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.49</text>
+<line x1="50" x2="350" y1="202.0" y2="202.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="202.0" y2="202.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.02</text>
 <line x1="50" x2="350" y1="164.0" y2="164.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.80</text>
-<line x1="50" x2="350" y1="125.99999999999999" y2="125.99999999999999" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.20</text>
-<line x1="50" x2="350" y1="88.00000000000003" y2="88.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="92.00000000000003" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.60</text>
+<line x1="46.0" x2="50" y1="164.0" y2="164.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.56</text>
+<line x1="50" x2="350" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="126.0" y2="126.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.09</text>
+<line x1="50" x2="350" y1="88.0" y2="88.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="88.0" y2="88.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="92.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.63</text>
 <line x1="50" x2="350" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">6</text>
-<line y1="50" y2="240" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >0.50</text>
-<line y1="50" y2="240" x1="110.0" x2="110.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="110.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >1.10</text>
-<line y1="50" y2="240" x1="170.0" x2="170.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="170.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >1.70</text>
-<line y1="50" y2="240" x1="230.0" x2="230.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="230.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >2.30</text>
-<line y1="50" y2="240" x1="290.0" x2="290.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="290.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >2.90</text>
-<line y1="50" y2="240" x1="350.0" x2="350.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="350.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >3.50</text><polyline class="series-5136" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="" points="100.0,240.0 200.0,145.0 300.0,50.0"/>
-<circle class="glyphx-point series-5136" tabindex="0" role="graphics-symbol" cx="100.0" cy="240.0" r="4" fill="#2563eb" data-x="1" data-y="4" data-label=""/>
-<circle class="glyphx-point series-5136" tabindex="0" role="graphics-symbol" cx="200.0" cy="145.0" r="4" fill="#2563eb" data-x="2" data-y="5" data-label=""/>
-<circle class="glyphx-point series-5136" tabindex="0" role="graphics-symbol" cx="300.0" cy="50.0" r="4" fill="#2563eb" data-x="3" data-y="6" data-label=""/></g>
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.16</text>
+<line y1="50" y2="240" x1="62.5" x2="62.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="62.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jan</text>
+<line y1="50" y2="240" x1="87.5" x2="87.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="87.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Feb</text>
+<line y1="50" y2="240" x1="112.5" x2="112.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="112.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mar</text>
+<line y1="50" y2="240" x1="137.5" x2="137.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="137.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Apr</text>
+<line y1="50" y2="240" x1="162.5" x2="162.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="162.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >May</text>
+<line y1="50" y2="240" x1="187.5" x2="187.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="187.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jun</text>
+<line y1="50" y2="240" x1="212.5" x2="212.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="212.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jul</text>
+<line y1="50" y2="240" x1="237.5" x2="237.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="237.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Aug</text>
+<line y1="50" y2="240" x1="262.5" x2="262.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="262.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Sep</text>
+<line y1="50" y2="240" x1="287.5" x2="287.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="287.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Oct</text>
+<line y1="50" y2="240" x1="312.5" x2="312.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="312.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Nov</text>
+<line y1="50" y2="240" x1="337.5" x2="337.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="337.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Dec</text><polyline class="series-1574c900" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="" points="62.5,189.33 87.5,178.69 112.5,204.93 137.5,153.87 162.5,171.6 187.5,139.68 212.5,125.5 237.5,150.32 262.5,111.31 287.5,129.04 312.5,90.04 337.5,61.67"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="62.5" cy="189.33" r="4" fill="#2563eb" data-x="0.5" data-y="1.2" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="87.5" cy="178.69" r="4" fill="#2563eb" data-x="1.5" data-y="1.35" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="112.5" cy="204.93" r="4" fill="#2563eb" data-x="2.5" data-y="0.98" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="137.5" cy="153.87" r="4" fill="#2563eb" data-x="3.5" data-y="1.7" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="162.5" cy="171.6" r="4" fill="#2563eb" data-x="4.5" data-y="1.45" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="187.5" cy="139.68" r="4" fill="#2563eb" data-x="5.5" data-y="1.9" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="212.5" cy="125.5" r="4" fill="#2563eb" data-x="6.5" data-y="2.1" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="237.5" cy="150.32" r="4" fill="#2563eb" data-x="7.5" data-y="1.75" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="262.5" cy="111.31" r="4" fill="#2563eb" data-x="8.5" data-y="2.3" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="287.5" cy="129.04" r="4" fill="#2563eb" data-x="9.5" data-y="2.05" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="312.5" cy="90.04" r="4" fill="#2563eb" data-x="10.5" data-y="2.6" data-label="Revenue"/>
+<circle class="glyphx-point series-1574c900" tabindex="0" role="graphics-symbol" cx="337.5" cy="61.67" r="4" fill="#2563eb" data-x="11.5" data-y="3.0" data-label="Revenue"/><polyline class="series-b6d7bc37" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="6,3" points="62.5,217.7 87.5,210.6 112.5,228.33 137.5,203.51 162.5,207.06 187.5,196.42 212.5,182.23 237.5,199.96 262.5,175.14 287.5,189.33 312.5,164.5 337.5,150.32"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="62.5" cy="217.7" r="4" fill="#dc2626" data-x="0.5" data-y="0.8" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="87.5" cy="210.6" r="4" fill="#dc2626" data-x="1.5" data-y="0.9" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="112.5" cy="228.33" r="4" fill="#dc2626" data-x="2.5" data-y="0.65" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="137.5" cy="203.51" r="4" fill="#dc2626" data-x="3.5" data-y="1.0" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="162.5" cy="207.06" r="4" fill="#dc2626" data-x="4.5" data-y="0.95" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="187.5" cy="196.42" r="4" fill="#dc2626" data-x="5.5" data-y="1.1" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="212.5" cy="182.23" r="4" fill="#dc2626" data-x="6.5" data-y="1.3" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="237.5" cy="199.96" r="4" fill="#dc2626" data-x="7.5" data-y="1.05" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="262.5" cy="175.14" r="4" fill="#dc2626" data-x="8.5" data-y="1.4" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="287.5" cy="189.33" r="4" fill="#dc2626" data-x="9.5" data-y="1.2" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="312.5" cy="164.5" r="4" fill="#dc2626" data-x="10.5" data-y="1.55" data-label="Costs"/>
+<circle class="glyphx-point series-b6d7bc37" tabindex="0" role="graphics-symbol" cx="337.5" cy="150.32" r="4" fill="#dc2626" data-x="11.5" data-y="1.75" data-label="Costs"/></g>
 <g transform="translate(400,0)"><line x1="50" y1="240" x2="350" y2="240" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="240" stroke="#333" /><line x1="50" x2="350" y1="240.0" y2="240.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="46.0" x2="50" y1="240.0" y2="240.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
 <line x1="50" x2="350" y1="202.0" y2="202.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.40</text>
+<line x1="46.0" x2="50" y1="202.0" y2="202.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">109</text>
 <line x1="50" x2="350" y1="164.0" y2="164.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.80</text>
+<line x1="46.0" x2="50" y1="164.0" y2="164.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">218</text>
 <line x1="50" x2="350" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.20</text>
+<line x1="46.0" x2="50" y1="126.0" y2="126.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">327</text>
 <line x1="50" x2="350" y1="88.0" y2="88.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="92.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.60</text>
+<line x1="46.0" x2="50" y1="88.0" y2="88.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="92.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">437</text>
 <line x1="50" x2="350" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">7</text>
-<line y1="50" y2="240" x1="100.0" x2="100.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="100.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >A</text>
-<line y1="50" y2="240" x1="200.0" x2="200.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="200.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >B</text>
-<line y1="50" y2="240" x1="300.0" x2="300.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="300.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >C</text><rect class="glyphx-point series-60224" tabindex="0" role="graphics-symbol" x="60.0" y="104.28571428571428" width="80.0" height="135.71428571428572" fill="#7c3aed" stroke="#00000033" data-x="A" data-y="5" data-label=""/>
-<rect class="glyphx-point series-60224" tabindex="0" role="graphics-symbol" x="160.0" y="158.57142857142856" width="80.0" height="81.42857142857144" fill="#7c3aed" stroke="#00000033" data-x="B" data-y="3" data-label=""/>
-<rect class="glyphx-point series-60224" tabindex="0" role="graphics-symbol" x="260.0" y="50.0" width="80.0" height="190.0" fill="#7c3aed" stroke="#00000033" data-x="C" data-y="7" data-label=""/></g>
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">546</text>
+<line y1="50" y2="240" x1="87.5" x2="87.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="87.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q1</text>
+<line y1="50" y2="240" x1="162.5" x2="162.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="162.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q2</text>
+<line y1="50" y2="240" x1="237.5" x2="237.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="237.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q3</text>
+<line y1="50" y2="240" x1="312.5" x2="312.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="312.5" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q4</text><rect class="glyphx-point series-08f8a874" tabindex="0" role="graphics-symbol" x="57.5" y="118.14" width="60.0" height="121.86" fill="#7c3aed" stroke="#00000033" data-x="Q1" data-y="350" data-label="Sales"/>
+<rect class="glyphx-point series-08f8a874" tabindex="0" role="graphics-symbol" x="132.5" y="93.77" width="60.0" height="146.23000000000002" fill="#7c3aed" stroke="#00000033" data-x="Q2" data-y="420" data-label="Sales"/>
+<rect class="glyphx-point series-08f8a874" tabindex="0" role="graphics-symbol" x="207.5" y="104.21" width="60.0" height="135.79000000000002" fill="#7c3aed" stroke="#00000033" data-x="Q3" data-y="390" data-label="Sales"/>
+<rect class="glyphx-point series-08f8a874" tabindex="0" role="graphics-symbol" x="282.5" y="62.43" width="60.0" height="177.57" fill="#7c3aed" stroke="#00000033" data-x="Q4" data-y="510" data-label="Sales"/></g>
 <g transform="translate(0,290)"><line x1="50" y1="240" x2="350" y2="240" stroke="#333" />
-<line x1="50" y1="50" x2="50" y2="240" stroke="#333" /><line x1="50" x2="350" y1="240.0" y2="240.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4</text>
-<line x1="50" x2="350" y1="201.99999999999997" y2="201.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="205.99999999999997" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.40</text>
+<line x1="50" y1="50" x2="50" y2="240" stroke="#333" /><line class="glyphx-zero-line" x1="50" y1="125.36" x2="350" y2="125.36" stroke="#333" stroke-width="1" opacity="0.6"/>
+<line x1="50" x2="350" y1="240.0" y2="240.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="240.0" y2="240.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-3.02</text>
+<line x1="50" x2="350" y1="202.0" y2="202.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="202.0" y2="202.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-2.02</text>
 <line x1="50" x2="350" y1="164.0" y2="164.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">4.80</text>
-<line x1="50" x2="350" y1="125.99999999999999" y2="125.99999999999999" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.20</text>
-<line x1="50" x2="350" y1="88.00000000000003" y2="88.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="92.00000000000003" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.60</text>
+<line x1="46.0" x2="50" y1="164.0" y2="164.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-1.02</text>
+<line x1="50" x2="350" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="126.0" y2="126.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-0.02</text>
+<line x1="50" x2="350" y1="88.0" y2="88.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="88.0" y2="88.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="92.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.98</text>
 <line x1="50" x2="350" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">6</text>
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.98</text>
 <line y1="50" y2="240" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >0.50</text>
+<line x1="50.0" x2="50.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="50.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-3.52</text>
 <line y1="50" y2="240" x1="110.0" x2="110.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="110.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >1.30</text>
+<line x1="110.0" x2="110.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="110.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-2.16</text>
 <line y1="50" y2="240" x1="170.0" x2="170.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="170.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >2.10</text>
+<line x1="170.0" x2="170.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="170.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-0.81</text>
 <line y1="50" y2="240" x1="230.0" x2="230.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="230.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >2.90</text>
+<line x1="230.0" x2="230.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="230.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >0.55</text>
 <line y1="50" y2="240" x1="290.0" x2="290.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="290.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >3.70</text>
+<line x1="290.0" x2="290.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="290.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >1.90</text>
 <line y1="50" y2="240" x1="350.0" x2="350.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="350.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >4.50</text><circle class="glyphx-point series-26368" tabindex="0" role="graphics-symbol" cx="87.5" cy="240.0" r="5" fill="#16a34a" data-x="1" data-y="4" data-label=""/>
-<circle class="glyphx-point series-26368" tabindex="0" role="graphics-symbol" cx="162.5" cy="145.0" r="5" fill="#16a34a" data-x="2" data-y="5" data-label=""/>
-<circle class="glyphx-point series-26368" tabindex="0" role="graphics-symbol" cx="237.5" cy="50.0" r="5" fill="#16a34a" data-x="3" data-y="6" data-label=""/>
-<circle class="glyphx-point series-26368" tabindex="0" role="graphics-symbol" cx="312.5" cy="145.0" r="5" fill="#16a34a" data-x="4" data-y="5" data-label=""/></g>
+<line x1="350.0" x2="350.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="350.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >3.26</text><circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="203.32" cy="140.03" r="5" fill="#16a34a" data-x="-0.05489400061628639" data-y="-0.3857823659759296" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="218.39" cy="125.54" r="5" fill="#16a34a" data-x="0.28555407485765694" data-y="-0.004753366656192165" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="228.81" cy="121.45" r="5" fill="#16a34a" data-x="0.5211224283793383" data-y="0.10274150089824052" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="234.3" cy="105.29" r="5" fill="#16a34a" data-x="0.645215585950057" data-y="0.5278283461819009" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="230.34" cy="126.21" r="5" fill="#16a34a" data-x="0.5556044660034485" data-y="-0.022286839988686358" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="209.71" cy="101.66" r="5" fill="#16a34a" data-x="0.08958068125524882" data-y="0.6232218105409099" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="197.02" cy="130.61" r="5" fill="#16a34a" data-x="-0.1973384203073261" data-y="-0.1380333617560297" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="199.06" cy="129.56" r="5" fill="#16a34a" data-x="-0.1512732836535117" data-y="-0.1105414591267654" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="197.12" cy="136.78" r="5" fill="#16a34a" data-x="-0.194908280352681" data-y="-0.30038315450333564" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="255.92" cy="92.23" r="5" fill="#16a34a" data-x="1.1337700968670645" data-y="0.8712344097364347" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="232.02" cy="93.88" r="5" fill="#16a34a" data-x="0.5935567222808619" data-y="0.8280388379304207" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="75.63" cy="220.1" r="5" fill="#16a34a" data-x="-2.9403886346642802" data-y="-2.4918371521204463" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="234.78" cy="120.41" r="5" fill="#16a34a" data-x="0.655900776529761" data-y="0.13007229903320433" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="214.37" cy="125.95" r="5" fill="#16a34a" data-x="0.19473619471877485" data-y="-0.015547678085189948" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="204.92" cy="151.44" r="5" fill="#16a34a" data-x="-0.018708756445897416" data-y="-0.6860315912487357" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="188.56" cy="151.27" r="5" fill="#16a34a" data-x="-0.38851845308888583" data-y="-0.6815918470229689" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="255.5" cy="104.49" r="5" fill="#16a34a" data-x="1.1241127199860135" data-y="0.5487684672178799" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="247.68" cy="83.52" r="5" fill="#16a34a" data-x="0.9475264621228578" data-y="1.1004631138423642" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="171.55" cy="140.94" r="5" fill="#16a34a" data-x="-0.7728776678236091" data-y="-0.40973370297556383" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="223.76" cy="110.84" r="5" fill="#16a34a" data-x="0.4070522871245351" data-y="0.3817315566709467" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="162.75" cy="135.04" r="5" fill="#16a34a" data-x="-0.971656734541286" data-y="-0.2547107330949141" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="144.7" cy="164.69" r="5" fill="#16a34a" data-x="-1.3796181647889305" data-y="-1.0344186095519496" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="178.02" cy="134.62" r="5" fill="#16a34a" data-x="-0.6267172245899651" data-y="-0.24346963224853077" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="243.91" cy="104.37" r="5" fill="#16a34a" data-x="0.8623934723827588" data-y="0.552064554201683" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="247.93" cy="94.95" r="5" fill="#16a34a" data-x="0.9531250453760867" data-y="0.7998687064630748" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="228.46" cy="122.78" r="5" fill="#16a34a" data-x="0.513085420097293" data-y="0.06778046526231402" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="237.84" cy="152.42" r="5" fill="#16a34a" data-x="0.7250957868479971" data-y="-0.7118415283446166" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="228.59" cy="114.17" r="5" fill="#16a34a" data-x="0.5161782871149584" data-y="0.2941852198873188" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="177.36" cy="115.38" r="5" fill="#16a34a" data-x="-0.6414815952229522" data-y="0.2623369513939035" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="224.86" cy="96.25" r="5" fill="#16a34a" data-x="0.43192254467394064" data-y="0.7654534823925546" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="241.17" cy="85.7" r="5" fill="#16a34a" data-x="0.8004095252276823" data-y="1.042985409954963" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="239.13" cy="81.78" r="5" fill="#16a34a" data-x="0.7542913298135743" data-y="1.1460692917726107" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="258.36" cy="92.03" r="5" fill="#16a34a" data-x="1.188913371474643" data-y="0.8765681555129687" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="237.09" cy="102.76" r="5" fill="#16a34a" data-x="0.7083038472010638" data-y="0.5944705467435424" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="221.3" cy="127.75" r="5" fill="#16a34a" data-x="0.3514482075415829" data-y="-0.06281220243806707" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="253.11" cy="102.88" r="5" fill="#16a34a" data-x="1.0701502383164274" data-y="0.5910687388079743" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="204.58" cy="114.36" r="5" fill="#16a34a" data-x="-0.026521259249060063" data-y="0.28932069341122874" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="166.72" cy="125.94" r="5" fill="#16a34a" data-x="-0.8818746512277178" data-y="-0.015370037274994308" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="198.53" cy="132.35" r="5" fill="#16a34a" data-x="-0.16306696394376388" data-y="-0.18387001260113447" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="172.79" cy="153.74" r="5" fill="#16a34a" data-x="-0.7449026448064491" data-y="-0.7465264837902201" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="175.87" cy="143.32" r="5" fill="#16a34a" data-x="-0.6751782749743815" data-y="-0.4723608130537684" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="199.35" cy="117.78" r="5" fill="#16a34a" data-x="-0.14451867071551783" data-y="0.19944030496369497" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="170.68" cy="173.9" r="5" fill="#16a34a" data-x="-0.7924199209999613" data-y="-1.2766213527667438" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="192.12" cy="177.21" r="5" fill="#16a34a" data-x="-0.3079615296390403" data-y="-1.3636635473159473" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="121.95" cy="186.22" r="5" fill="#16a34a" data-x="-1.8936146669537857" data-y="-1.6007986916134416" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="215.19" cy="142.89" r="5" fill="#16a34a" data-x="0.21329370737293857" data-y="-0.4610506177960223" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="205.8" cy="134.99" r="5" fill="#16a34a" data-x="0.0012054753622242368" data-y="-0.25322626607009846" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="169.59" cy="149.91" r="5" fill="#16a34a" data-x="-0.8170886310681906" data-y="-0.6458522011564691" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="234.92" cy="116.43" r="5" fill="#16a34a" data-x="0.6592456684324051" data-y="0.23484776339117683" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="247.24" cy="72.79" r="5" fill="#16a34a" data-x="0.9375701376265584" data-y="1.3825328635739635" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="134.61" cy="161.93" r="5" fill="#16a34a" data-x="-1.6075598643689741" data-y="-0.9619195227571219" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="172.0" cy="139.95" r="5" fill="#16a34a" data-x="-0.7627247785662142" data-y="-0.3836701651909358" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="171.71" cy="134.0" r="5" fill="#16a34a" data-x="-0.7691423497872982" data-y="-0.22729607282940772" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="164.16" cy="172.02" r="5" fill="#16a34a" data-x="-0.9399031011088647" data-y="-1.22734872966659" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="242.46" cy="83.53" r="5" fill="#16a34a" data-x="0.8294748419317485" data-y="1.1001882830623582" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="197.17" cy="131.96" r="5" fill="#16a34a" data-x="-0.19382613877280352" data-y="-0.1735604404086924" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="194.04" cy="119.65" r="5" fill="#16a34a" data-x="-0.26451484131061076" data-y="0.15007991970317874" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="117.07" cy="199.07" r="5" fill="#16a34a" data-x="-2.0038623644067535" data-y="-1.938632271604805" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="233.87" cy="137.98" r="5" fill="#16a34a" data-x="0.6354180302092264" data-y="-0.3320867618615737" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="150.91" cy="142.79" r="5" fill="#16a34a" data-x="-1.2392583948534726" data-y="-0.45853604738491643" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="208.4" cy="116.61" r="5" fill="#16a34a" data-x="0.05993263026632825" data-y="0.23015760423518808" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="218.02" cy="135.12" r="5" fill="#16a34a" data-x="0.2773769379581917" data-y="-0.25686192060802104" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="265.96" cy="105.68" r="5" fill="#16a34a" data-x="1.360658595838651" data-y="0.5176294764497085" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="147.83" cy="138.8" r="5" fill="#16a34a" data-x="-1.308820399119112" data-y="-0.35345688717599366" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="72.13" cy="228.33" r="5" fill="#16a34a" data-x="-3.0195121558208253" data-y="-2.7083644555082413" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="213.89" cy="89.24" r="5" fill="#16a34a" data-x="0.18384954475369486" data-y="0.9500311579555681" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="285.43" cy="94.56" r="5" fill="#16a34a" data-x="1.8005111815108537" data-y="0.8100474597336631" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="260.58" cy="80.25" r="5" fill="#16a34a" data-x="1.2389463529394373" data-y="1.1864584098617976" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="215.03" cy="126.03" r="5" fill="#16a34a" data-x="0.20965941527462578" data-y="-0.017547647182254267" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="183.99" cy="126.98" r="5" fill="#16a34a" data-x="-0.49163618563204736" data-y="-0.042551614401261595" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="241.47" cy="114.22" r="5" fill="#16a34a" data-x="0.8071225966373103" data-y="0.2929288165890209" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="162.67" cy="154.36" r="5" fill="#16a34a" data-x="-0.9735461997044687" data-y="-0.7628787928292751" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="226.83" cy="111.9" r="5" fill="#16a34a" data-x="0.47635776935621926" data-y="0.353910026247214" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="228.12" cy="130.96" r="5" fill="#16a34a" data-x="0.5054701591666269" data-y="-0.1472646164740976" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="252.67" cy="83.06" r="5" fill="#16a34a" data-x="1.0602099074988798" data-y="1.1125591079592787" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="327.87" cy="61.67" r="5" fill="#16a34a" data-x="2.7596600389110777" data-y="1.6751552440019617" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="223.12" cy="119.26" r="5" fill="#16a34a" data-x="0.39241596717876703" data-y="0.16039121935512762" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="183.23" cy="157.81" r="5" fill="#16a34a" data-x="-0.5089636257074988" data-y="-0.8534492252995052" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="204.62" cy="174.75" r="5" fill="#16a34a" data-x="-0.025574312191994436" data-y="-1.2990688479320514" data-label=""/>
+<circle class="glyphx-point series-94233456" tabindex="0" role="graphics-symbol" cx="127.46" cy="176.07" r="5" fill="#16a34a" data-x="-1.7690759048891183" data-y="-1.3338670147224672" data-label=""/></g>
 <g transform="translate(400,290)"><line x1="50" y1="240" x2="350" y2="240" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="240" stroke="#333" /><line x1="50" x2="350" y1="240.0" y2="240.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1</text>
+<line x1="46.0" x2="50" y1="240.0" y2="240.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="244.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
 <line x1="50" x2="350" y1="202.0" y2="202.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">7.80</text>
+<line x1="46.0" x2="50" y1="202.0" y2="202.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="206.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">7.92</text>
 <line x1="50" x2="350" y1="164.0" y2="164.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">14.6</text>
-<line x1="50" x2="350" y1="126.00000000000001" y2="126.00000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">21.4</text>
-<line x1="50" x2="350" y1="87.99999999999997" y2="87.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="91.99999999999997" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">28.2</text>
+<line x1="46.0" x2="50" y1="164.0" y2="164.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="168.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">15.8</text>
+<line x1="50" x2="350" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="126.0" y2="126.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">23.8</text>
+<line x1="50" x2="350" y1="88.0" y2="88.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="88.0" y2="88.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="92.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">31.7</text>
 <line x1="50" x2="350" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">35</text>
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">39.6</text>
 <line y1="50" y2="240" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="50.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >27.2</text>
-<line y1="50" y2="240" x1="110.00000000000001" x2="110.00000000000001" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="110.00000000000001" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >36.9</text>
-<line y1="50" y2="240" x1="170.00000000000003" x2="170.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="170.00000000000003" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >46.6</text>
-<line y1="50" y2="240" x1="229.99999999999997" x2="229.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="229.99999999999997" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >56.3</text>
-<line y1="50" y2="240" x1="290.00000000000006" x2="290.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="290.00000000000006" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >65.9</text>
+<line x1="50.0" x2="50.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="50.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >18.2</text>
+<line y1="50" y2="240" x1="110.0" x2="110.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="110.0" x2="110.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="110.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >32.2</text>
+<line y1="50" y2="240" x1="170.0" x2="170.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="170.0" x2="170.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="170.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >46.1</text>
+<line y1="50" y2="240" x1="230.0" x2="230.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="230.0" x2="230.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="230.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >60.0</text>
+<line y1="50" y2="240" x1="290.0" x2="290.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="290.0" x2="290.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="290.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >73.9</text>
 <line y1="50" y2="240" x1="350.0" x2="350.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="350.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >75.6</text><rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="43.13287580227757" y="234.41176470588235" width="19.936290031817556" height="11.176470588235304" fill="#0891b2" stroke="#fff" data-x="27.7" data-y="2" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="64.11844425682236" y="228.8235294117647" width="19.936290031817556" height="16.764705882352956" fill="#0891b2" stroke="#fff" data-x="31.1" data-y="3" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="85.10401271136719" y="178.52941176470588" width="19.936290031817556" height="67.05882352941177" fill="#0891b2" stroke="#fff" data-x="34.5" data-y="12" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="106.08958116591197" y="195.29411764705884" width="19.936290031817556" height="50.29411764705881" fill="#0891b2" stroke="#fff" data-x="37.9" data-y="9" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="127.0751496204568" y="128.23529411764707" width="19.936290031817556" height="117.35294117647058" fill="#0891b2" stroke="#fff" data-x="41.3" data-y="21" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="148.06071807500163" y="145.0" width="19.936290031817556" height="100.58823529411765" fill="#0891b2" stroke="#fff" data-x="44.7" data-y="18" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="169.0462865295464" y="128.23529411764707" width="19.936290031817556" height="117.35294117647058" fill="#0891b2" stroke="#fff" data-x="48" data-y="21" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="190.0318549840912" y="50.0" width="19.936290031817556" height="195.58823529411765" fill="#0891b2" stroke="#fff" data-x="51.4" data-y="35" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="211.017423438636" y="94.70588235294119" width="19.936290031817556" height="150.88235294117646" fill="#0891b2" stroke="#fff" data-x="54.8" data-y="27" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="232.00299189318085" y="133.8235294117647" width="19.936290031817556" height="111.76470588235296" fill="#0891b2" stroke="#fff" data-x="58.2" data-y="20" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="252.98856034772567" y="145.0" width="19.936290031817556" height="100.58823529411765" fill="#0891b2" stroke="#fff" data-x="61.6" data-y="18" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="273.9741288022704" y="212.05882352941177" width="19.936290031817556" height="33.529411764705884" fill="#0891b2" stroke="#fff" data-x="65" data-y="6" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="294.9596972568152" y="223.23529411764707" width="19.936290031817556" height="22.35294117647058" fill="#0891b2" stroke="#fff" data-x="68.3" data-y="4" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="315.94526571136004" y="228.8235294117647" width="19.936290031817556" height="16.764705882352956" fill="#0891b2" stroke="#fff" data-x="71.7" data-y="3" data-label=""/>
-<rect class="glyphx-point series-24768" tabindex="0" role="graphics-symbol" x="336.93083416590486" y="240.0" width="19.936290031817556" height="5.588235294117652" fill="#0891b2" stroke="#fff" data-x="75.1" data-y="1" data-label=""/></g></svg>
+<line x1="350.0" x2="350.0" y1="240" y2="244.0" stroke="#000000" stroke-width="1"/>
+<text x="350.0" y="256" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >87.8</text><rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="52.570499999999996" y="235.2" width="15.599" height="4.800000000000011" fill="#0891b2" stroke="#fff" data-x="20.7" data-y="1" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="69.0005" y="225.6" width="15.599" height="14.400000000000006" fill="#0891b2" stroke="#fff" data-x="24.5" data-y="3" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="85.4205" y="211.2" width="15.599" height="28.80000000000001" fill="#0891b2" stroke="#fff" data-x="28.3" data-y="6" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="101.85050000000001" y="163.21" width="15.599" height="76.78999999999999" fill="#0891b2" stroke="#fff" data-x="32.1" data-y="16" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="118.2805" y="129.62" width="15.599" height="110.38" fill="#0891b2" stroke="#fff" data-x="35.9" data-y="23" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="134.7105" y="139.22" width="15.599" height="100.78" fill="#0891b2" stroke="#fff" data-x="39.7" data-y="21" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="151.1305" y="76.83" width="15.599" height="163.17000000000002" fill="#0891b2" stroke="#fff" data-x="43.5" data-y="34" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="167.56050000000002" y="72.03" width="15.599" height="167.97" fill="#0891b2" stroke="#fff" data-x="47.3" data-y="35" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="183.9905" y="67.23" width="15.599" height="172.76999999999998" fill="#0891b2" stroke="#fff" data-x="51.1" data-y="36" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="200.4105" y="62.43" width="15.599" height="177.57" fill="#0891b2" stroke="#fff" data-x="54.9" data-y="37" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="216.8405" y="67.23" width="15.599" height="172.76999999999998" fill="#0891b2" stroke="#fff" data-x="58.7" data-y="36" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="233.2705" y="153.61" width="15.599" height="86.38999999999999" fill="#0891b2" stroke="#fff" data-x="62.6" data-y="18" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="249.69050000000001" y="172.81" width="15.599" height="67.19" fill="#0891b2" stroke="#fff" data-x="66.4" data-y="14" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="266.1205" y="182.41" width="15.599" height="57.59" fill="#0891b2" stroke="#fff" data-x="70.2" data-y="12" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="282.5505" y="211.2" width="15.599" height="28.80000000000001" fill="#0891b2" stroke="#fff" data-x="74" data-y="6" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="298.98049999999995" y="235.2" width="15.599" height="4.800000000000011" fill="#0891b2" stroke="#fff" data-x="77.8" data-y="1" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="315.40049999999997" y="240.0" width="15.599" height="0.0" fill="#0891b2" stroke="#fff" data-x="81.6" data-y="0" data-label=""/>
+<rect class="glyphx-point series-26131305" tabindex="0" role="graphics-symbol" x="331.8305" y="235.2" width="15.599" height="4.800000000000011" fill="#0891b2" stroke="#fff" data-x="85.4" data-y="1" data-label=""/></g></svg>

@@ -11,6 +11,7 @@ import numpy as np
 
 from .colormaps import apply_colormap
 from .projection3d import Camera3D, normalize
+from .utils import series_fingerprint, stable_id
 
 
 class Surface3DSeries:
@@ -49,7 +50,17 @@ class Surface3DSeries:
         self.label                = label
         self.threshold            = None
         self.last_downsample_info = None
-        self.css_class            = f"series3d-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class            = "series3d-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Pre-compute face colours from Z values
         z_arr = np.asarray(z, dtype=float)

@@ -1,22 +1,22 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-19-title glyphx-chart-19-desc" id="glyphx-chart-19" data-glyphx="true" width="500" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440"><title id="glyphx-chart-19-title">Pie Chart  —  PieSeries</title><desc id="glyphx-chart-19-desc">Pie chart titled &quot;Pie Chart  —  PieSeries&quot;. Contains 5 slices. Largest: GlyphX (38 of 100).</desc><rect width="500" height="440" fill="#ffffff"/>
-<text x="250" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Pie Chart  —  PieSeries</text>
-<path class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" d="M 250,220 L 371.0,220.0 A 121.00000000000001,121.00000000000001 0 0,1 161.79479608200919,302.8301998173713 Z" fill="#0d0887" stroke="#fff" stroke-width="1" data-label="GlyphX" data-value="38"/>
-<line x1="294.543070874846" y1="332.5029547924784" x2="309.5075514878101" y2="370.2989184031493" stroke="#666" stroke-width="1"/>
-<line x1="309.5075514878101" y1="370.2989184031493" x2="339.5075514878101" y2="370.2989184031493" stroke="#666" stroke-width="1"/>
-<text x="339.5075514878101" y="374.2989184031493" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">GlyphX</text>
-<path class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" d="M 250,220 L 161.79479608200919,302.8301998173713 A 121.00000000000001,121.00000000000001 0 0,1 167.16980018262865,131.79479608200919 Z" fill="#7d08a4" stroke="#fff" stroke-width="1" data-label="Matplotlib" data-value="25"/>
-<line x1="129.05970619574646" y1="216.19929815154646" x2="110.15889683880371" y2="215.60531628826052" stroke="#666" stroke-width="1"/>
-<line x1="110.15889683880371" y1="215.60531628826052" x2="80.15889683880371" y2="215.60531628826052" stroke="#666" stroke-width="1"/>
-<text x="80.15889683880371" y="219.60531628826052" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Matplotlib</text>
-<path class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" d="M 250,220 L 167.16980018262865,131.79479608200919 A 121.00000000000001,121.00000000000001 0 0,1 294.5430708748461,107.49704520752158 Z" fill="#c94778" stroke="#fff" stroke-width="1" data-label="Plotly" data-value="18"/>
-<line x1="227.32686093512743" y1="101.14324266182864" x2="219.47158298791194" y2="59.964433581855076" stroke="#666" stroke-width="1"/>
-<line x1="219.47158298791194" y1="59.964433581855076" x2="189.47158298791194" y2="59.964433581855076" stroke="#666" stroke-width="1"/>
-<text x="189.47158298791194" y="63.964433581855076" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Plotly</text>
-<path class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" d="M 250,220 L 294.5430708748461,107.49704520752158 A 121.00000000000001,121.00000000000001 0 0,1 356.03310828530755,161.70780543369253 Z" fill="#f69541" stroke="#fff" stroke-width="1" data-label="Seaborn" data-value="11"/>
-<line x1="330.0187357041619" y1="129.2365605747144" x2="354.02613394569136" y2="102.00551253479347" stroke="#666" stroke-width="1"/>
-<line x1="354.02613394569136" y1="102.00551253479347" x2="384.02613394569136" y2="102.00551253479347" stroke="#666" stroke-width="1"/>
-<text x="384.02613394569136" y="106.00551253479347" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Seaborn</text>
-<path class="glyphx-point series-20464" tabindex="0" role="graphics-symbol" d="M 250,220 L 356.03310828530755,161.70780543369253 A 121.00000000000001,121.00000000000001 0 0,1 371.0,220.00000000000009 Z" fill="#f0f921" stroke="#fff" stroke-width="1" data-label="Other" data-value="8"/>
-<line x1="367.19856249656436" y1="189.9085236530526" x2="390.6075663276798" y2="183.89811302954126" stroke="#666" stroke-width="1"/>
-<line x1="390.6075663276798" y1="183.89811302954126" x2="420.6075663276798" y2="183.89811302954126" stroke="#666" stroke-width="1"/>
-<text x="420.6075663276798" y="187.89811302954126" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Other</text></svg>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-d8a37b75e324-title glyphx-chart-d8a37b75e324-desc" id="glyphx-chart-d8a37b75e324" data-glyphx="true" width="500" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440"><title id="glyphx-chart-d8a37b75e324-title">Market Share 2024  —  PieSeries</title><desc id="glyphx-chart-d8a37b75e324-desc">Pie chart titled &quot;Market Share 2024  —  PieSeries&quot;. Contains 5 slices. Largest: GlyphX (38 of 100).</desc><rect width="500" height="440" fill="#ffffff"/>
+<text x="250" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Market Share 2024  —  PieSeries</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 286.75,220.0 A 101.75000000000001,101.75000000000001 0 0,1 110.82744215987135,289.6526680282441 Z" fill="#0d0887" stroke="#fff" stroke-width="1" data-label="GlyphX" data-value="38"/>
+<line x1="222.456673235666" y1="314.60475743912957" x2="235.0404410238403" y2="346.3877268390119" stroke="#666" stroke-width="1"/>
+<line x1="235.0404410238403" y1="346.3877268390119" x2="265.0404410238403" y2="346.3877268390119" stroke="#666" stroke-width="1"/>
+<text x="265.0404410238403" y="350.3877268390119" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">GlyphX</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 110.82744215987135,289.6526680282441 A 101.75000000000001,101.75000000000001 0 0,1 115.34733197175592,145.82744215987137 Z" fill="#7d08a4" stroke="#fff" stroke-width="1" data-label="Matplotlib" data-value="25"/>
+<line x1="83.30020748278679" y1="216.80395526380042" x2="67.40634506899406" y2="216.30447051512814" stroke="#666" stroke-width="1"/>
+<line x1="67.40634506899406" y1="216.30447051512814" x2="37.40634506899406" y2="216.30447051512814" stroke="#666" stroke-width="1"/>
+<text x="37.40634506899406" y="220.30447051512814" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Matplotlib</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 115.34733197175592,145.82744215987137 A 101.75000000000001,101.75000000000001 0 0,1 222.45667323566602,125.39524256087043 Z" fill="#ca4778" stroke="#fff" stroke-width="1" data-label="Plotly" data-value="18"/>
+<line x1="165.93395124090262" y1="120.0522722383559" x2="159.3283766034714" y2="85.4246373301963" stroke="#666" stroke-width="1"/>
+<line x1="159.3283766034714" y1="85.4246373301963" x2="129.3283766034714" y2="85.4246373301963" stroke="#666" stroke-width="1"/>
+<text x="129.3283766034714" y="89.4246373301963" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Plotly</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 222.45667323566602,125.39524256087043 A 101.75000000000001,101.75000000000001 0 0,1 274.1642046944632,170.98156366015053 Z" fill="#f69541" stroke="#fff" stroke-width="1" data-label="Seaborn" data-value="11"/>
+<line x1="252.2884822966816" y1="143.67619866510074" x2="272.47652172705864" y2="120.77736281334904" stroke="#666" stroke-width="1"/>
+<line x1="272.47652172705864" y1="120.77736281334904" x2="302.47652172705864" y2="120.77736281334904" stroke="#666" stroke-width="1"/>
+<text x="302.47652172705864" y="124.77736281334904" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Seaborn</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 274.1642046944632,170.98156366015053 A 101.75000000000001,101.75000000000001 0 0,1 286.75,220.00000000000006 Z" fill="#f0f921" stroke="#fff" stroke-width="1" data-label="Other" data-value="8"/>
+<line x1="283.5533366448382" y1="194.69580398097605" x2="303.2381807755489" y2="189.64159504756879" stroke="#666" stroke-width="1"/>
+<line x1="303.2381807755489" y1="189.64159504756879" x2="333.2381807755489" y2="189.64159504756879" stroke="#666" stroke-width="1"/>
+<text x="333.2381807755489" y="193.64159504756879" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Other</text></svg>

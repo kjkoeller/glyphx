@@ -16,6 +16,7 @@ import numpy as np
 
 from ._typing import AxesLike
 from .series import BaseSeries
+from .utils import series_fingerprint, stable_id
 
 
 class FillBetweenSeries(BaseSeries):
@@ -57,7 +58,17 @@ class FillBetweenSeries(BaseSeries):
         self.alpha      = float(alpha)
         self.line_width = int(line_width)
         self.line_color = line_color or color
-        self.css_class  = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class  = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Domain: x spans full range; y spans both bounds
         all_y = self.y1 + self.y2

@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .colormaps import apply_colormap
-from .utils import _format_tick, svg_escape
+from .utils import _format_tick, series_fingerprint, stable_id, svg_escape
 
 # Squarification algorithm
 
@@ -150,7 +150,17 @@ class TreemapSeries:
         self.show_values = show_values
         self.min_font = min_font
         self.label    = label
-        self.css_class = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         if colors:
             # Re-sort colors to stay aligned with the sorted labels/values.

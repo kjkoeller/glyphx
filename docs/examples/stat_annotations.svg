@@ -1,48 +1,54 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-9-title glyphx-chart-9-desc" id="glyphx-chart-9" data-glyphx="true" width="640" height="500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 500"><title id="glyphx-chart-9-title">Significance Brackets  —  add_stat_annotation()</title><desc id="glyphx-chart-9-desc">Bar chart titled &quot;Significance Brackets  —  add_stat_annotation()&quot;. X axis: Group. Y axis: Outcome Score. Series &quot;Mean ± SE&quot;: 3 data points. Ranges from 46.3 (at Control) to 61.5 (at Drug A).</desc><rect width="640" height="500" fill="#ffffff"/>
-<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Significance Brackets  —  add_stat_annotation()</text>
-<line x1="90" y1="410" x2="550" y2="410" stroke="#333" />
-<line x1="90" y1="90" x2="90" y2="410" stroke="#333" />
-<text x="320" y="490" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Group</text>
-<text x="15" y="250" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 250)">Outcome Score</text>
-<line x1="90" x2="550" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
-<line x1="90" x2="550" y1="346.0" y2="346.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="350.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">12.3</text>
-<line x1="90" x2="550" y1="282.0" y2="282.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="286.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">24.6</text>
-<line x1="90" x2="550" y1="218.00000000000003" y2="218.00000000000003" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="222.00000000000003" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">36.9</text>
-<line x1="90" x2="550" y1="153.99999999999994" y2="153.99999999999994" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="157.99999999999994" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">49.2</text>
-<line x1="90" x2="550" y1="90.00000000000006" y2="90.00000000000006" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="82" y="94.00000000000006" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">61.5</text>
-<line y1="90" y2="410" x1="166.66666666666669" x2="166.66666666666669" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="166.66666666666669" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Control</text>
-<line y1="90" y2="410" x1="320.0" x2="320.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="320.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug A</text>
-<line y1="90" y2="410" x1="473.3333333333333" x2="473.3333333333333" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="473.3333333333333" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug B</text>
-<rect class="glyphx-point series-7936" tabindex="0" role="graphics-symbol" x="105.33333333333334" y="169.1469785490804" width="122.66666666666669" height="240.8530214509196" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="46.25857280582905" data-label="Mean ± SE"/>
-<line x1="166.66666666666669" x2="166.66666666666669" y1="173.95542670072948" y2="164.3385303974313" stroke="#333" stroke-width="1.5"/>
-<line x1="161.66666666666669" x2="171.66666666666669" y1="173.95542670072948" y2="173.95542670072948" stroke="#333" stroke-width="1.5"/>
-<line x1="161.66666666666669" x2="171.66666666666669" y1="164.3385303974313" y2="164.3385303974313" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-7936" tabindex="0" role="graphics-symbol" x="258.66666666666663" y="90.00000000000006" width="122.66666666666669" height="319.99999999999994" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="61.45965372861954" data-label="Mean ± SE"/>
-<line x1="320.0" x2="320.0" y1="94.80844815164909" y2="85.19155184835085" stroke="#333" stroke-width="1.5"/>
-<line x1="315.0" x2="325.0" y1="94.80844815164909" y2="94.80844815164909" stroke="#333" stroke-width="1.5"/>
-<line x1="315.0" x2="325.0" y1="85.19155184835085" y2="85.19155184835085" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-7936" tabindex="0" role="graphics-symbol" x="412.0" y="101.95085198402444" width="122.66666666666669" height="308.04914801597556" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="59.16435615143163" data-label="Mean ± SE"/>
-<line x1="473.3333333333333" x2="473.3333333333333" y1="106.75930013567358" y2="97.14240383237541" stroke="#333" stroke-width="1.5"/>
-<line x1="468.3333333333333" x2="478.3333333333333" y1="106.75930013567358" y2="106.75930013567358" stroke="#333" stroke-width="1.5"/>
-<line x1="468.3333333333333" x2="478.3333333333333" y1="97.14240383237541" y2="97.14240383237541" stroke="#333" stroke-width="1.5"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-450d66e67fa4-title glyphx-chart-450d66e67fa4-desc" id="glyphx-chart-450d66e67fa4" data-glyphx="true" width="640" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460"><title id="glyphx-chart-450d66e67fa4-title">Significance Brackets  —  fig.add_stat_annotation()</title><desc id="glyphx-chart-450d66e67fa4-desc">Bar chart titled &quot;Significance Brackets  —  fig.add_stat_annotation()&quot;. X axis: Treatment Group. Y axis: Outcome Score (mean ± SE). Series &quot;Mean Score&quot;: 3 data points. Ranges from 44.9 (at Control) to 63.6 (at Drug A).</desc><rect width="640" height="460" fill="#ffffff"/>
+<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Significance Brackets  —  fig.add_stat_annotation()</text>
+<line x1="50" y1="410" x2="460" y2="410" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
+<text x="255" y="450" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Treatment Group</text>
+<text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Outcome Score (mean ± SE)</text>
+<line x1="50" x2="460" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="460" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">13.6</text>
+<line x1="50" x2="460" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">27.2</text>
+<line x1="50" x2="460" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">40.8</text>
+<line x1="50" x2="460" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">54.4</text>
+<line x1="50" x2="460" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">68.0</text>
+<line y1="50" y2="410" x1="118.33" x2="118.33" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="118.33" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Control</text>
+<line y1="50" y2="410" x1="255.0" x2="255.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="255.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug A</text>
+<line y1="50" y2="410" x1="391.67" x2="391.67" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="391.67" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug B</text>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="63.662" y="172.55" width="109.336" height="237.45" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="44.8764758513449" data-label="Mean Score"/>
+<line x1="118.33" x2="118.33" y1="177.0" y2="168.09" stroke="#333" stroke-width="1.5"/>
+<line x1="113.33" x2="123.33" y1="177.0" y2="177.0" stroke="#333" stroke-width="1.5"/>
+<line x1="113.33" x2="123.33" y1="168.09" y2="168.09" stroke="#333" stroke-width="1.5"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="200.332" y="73.55" width="109.336" height="336.45" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="63.58584886583668" data-label="Mean Score"/>
+<line x1="255.0" x2="255.0" y1="78.0" y2="69.1" stroke="#333" stroke-width="1.5"/>
+<line x1="250.0" x2="260.0" y1="78.0" y2="78.0" stroke="#333" stroke-width="1.5"/>
+<line x1="250.0" x2="260.0" y1="69.1" y2="69.1" stroke="#333" stroke-width="1.5"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="337.002" y="110.21" width="109.336" height="299.79" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="56.65792166525963" data-label="Mean Score"/>
+<line x1="391.67" x2="391.67" y1="114.66" y2="105.76" stroke="#333" stroke-width="1.5"/>
+<line x1="386.67" x2="396.67" y1="114.66" y2="114.66" stroke="#333" stroke-width="1.5"/>
+<line x1="386.67" x2="396.67" y1="105.76" y2="105.76" stroke="#333" stroke-width="1.5"/>
 <g class="glyphx-legend">
-<rect x="527" y="20" width="12" height="12" fill="#60a5fa" class="legend-icon" data-target="series-7936" />
-<text x="547" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-7936">Mean ± SE</text>
+<rect x="518" y="219" width="12" height="12" fill="#60a5fa" class="legend-icon" data-target="series-e0ca731b" />
+<text x="538" y="229" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-e0ca731b">Mean Score</text>
 </g>
-<line x1="166.66666666666669" x2="166.66666666666669" y1="82.00000000000006" y2="74.00000000000006" stroke="#222" stroke-width="1.5"/>
-<line x1="166.66666666666669" x2="320.0" y1="74.00000000000006" y2="74.00000000000006" stroke="#222" stroke-width="1.5"/>
-<line x1="320.0" x2="320.0" y1="74.00000000000006" y2="82.00000000000006" stroke="#222" stroke-width="1.5"/>
-<text x="243.33333333333334" y="70.00000000000006" text-anchor="middle" font-size="16" fill="#222">***</text>
-<line x1="166.66666666666669" x2="166.66666666666669" y1="50.00000000000006" y2="42.00000000000006" stroke="#222" stroke-width="1.5"/>
-<line x1="166.66666666666669" x2="473.3333333333333" y1="42.00000000000006" y2="42.00000000000006" stroke="#222" stroke-width="1.5"/>
-<line x1="473.3333333333333" x2="473.3333333333333" y1="42.00000000000006" y2="50.00000000000006" stroke="#222" stroke-width="1.5"/>
-<text x="320.0" y="38.00000000000006" text-anchor="middle" font-size="16" fill="#222">*</text></svg>
+<line x1="118.33" x2="118.33" y1="42.0" y2="34.0" stroke="#222" stroke-width="1.5"/>
+<line x1="118.33" x2="255.0" y1="34.0" y2="34.0" stroke="#222" stroke-width="1.5"/>
+<line x1="255.0" x2="255.0" y1="34.0" y2="42.0" stroke="#222" stroke-width="1.5"/>
+<text x="186.665" y="30.0" text-anchor="middle" font-size="16" fill="#222">***</text>
+<line x1="118.33" x2="118.33" y1="10.0" y2="2.0" stroke="#222" stroke-width="1.5"/>
+<line x1="118.33" x2="391.67" y1="2.0" y2="2.0" stroke="#222" stroke-width="1.5"/>
+<line x1="391.67" x2="391.67" y1="2.0" y2="10.0" stroke="#222" stroke-width="1.5"/>
+<text x="255.0" y="-2.0" text-anchor="middle" font-size="16" fill="#222">*</text></svg>

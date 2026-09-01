@@ -36,7 +36,7 @@ from typing import Any
 from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .series import BaseSeries
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 
 
 def _to_date(v) -> date:
@@ -108,7 +108,17 @@ class GanttSeries(BaseSeries):
         self.show_today  = show_today
         self.today_color = today_color
         self.show_grid   = show_grid
-        self.css_class   = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class   = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Parse all dates
         self._starts = [_to_date(t["start"]) for t in tasks]

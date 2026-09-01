@@ -113,7 +113,7 @@ testpaths = ["tests"]
 filterwarnings = ["ignore::DeprecationWarning"]
 markers = [
     "browser: renders in a real browser via playwright (slow; needs chromium)",
-    "slow: drives a real Jupyter kernel or marimo runtime",
+    "slow: drives a real Jupyter kernel, marimo runtime, or re-runs examples.py",
 ]
 
 [tool.ruff]

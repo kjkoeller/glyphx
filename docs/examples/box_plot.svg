@@ -1,55 +1,70 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-2-title glyphx-chart-2-desc" id="glyphx-chart-2" data-glyphx="true" width="680" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440"><title id="glyphx-chart-2-title">Box Plot  —  BoxPlotSeries</title><desc id="glyphx-chart-2-desc">Box plot chart titled &quot;Box Plot  —  BoxPlotSeries&quot;. Y axis: Score. Series: 4 data points. Ranges from 20.6 (at 0.5) to 88.4 (at 1.5).</desc><rect width="680" height="440" fill="#ffffff"/>
-<text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Box Plot  —  BoxPlotSeries</text>
-<line x1="50" y1="390" x2="630" y2="390" stroke="#333" />
-<line x1="50" y1="50" x2="50" y2="390" stroke="#333" />
-<text x="15" y="220" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 220)">Score</text>
-<line x1="50" x2="630" y1="390.0" y2="390.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="394.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">20.6</text>
-<line x1="50" x2="630" y1="322.0" y2="322.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="326.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">34.1</text>
-<line x1="50" x2="630" y1="253.99999999999997" y2="253.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="258.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">47.7</text>
-<line x1="50" x2="630" y1="186.0" y2="186.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="190.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">61.3</text>
-<line x1="50" x2="630" y1="117.99999999999994" y2="117.99999999999994" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="121.99999999999994" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">74.8</text>
-<line x1="50" x2="630" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">88.4</text>
-<line y1="50" y2="390" x1="122.5" x2="122.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="122.5" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Control</text>
-<line y1="50" y2="390" x1="267.5" x2="267.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="267.5" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug A</text>
-<line y1="50" y2="390" x1="412.5" x2="412.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="412.5" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug B</text>
-<line y1="50" y2="390" x1="557.5" x2="557.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="557.5" y="406" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug C</text>
-<line x1="122.5" x2="122.5" y1="341.61298232082385" y2="266.48016538409104" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="122.5" x2="122.5" y1="210.79322512213685" y2="127.2628147292055" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="107.5" x2="137.5" y1="341.61298232082385" y2="341.61298232082385" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="107.5" x2="137.5" y1="127.2628147292055" y2="127.2628147292055" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-16768" tabindex="0" role="graphics-symbol" x="107.5" y="210.79322512213685" width="30" height="55.68694026195419" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Control" data-q1="45.2" data-q2="51" data-q3="56.3"/>
-<line x1="107.5" x2="137.5" y1="237.23064002236444" y2="237.23064002236444" stroke="#7c3aed" stroke-width="2.5"/>
-<circle cx="122.5" cy="122.84214005999075" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
-<circle cx="122.5" cy="122.35390383693061" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
-<circle cx="122.5" cy="118.6958988529131" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="267.5" x2="267.5" y1="258.08184173751" y2="186.52019791135456" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="267.5" x2="267.5" y1="138.81243536058426" y2="68.31898084929196" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="252.5" x2="282.5" y1="258.08184173751" y2="258.08184173751" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="252.5" x2="282.5" y1="68.31898084929196" y2="68.31898084929196" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-16768" tabindex="0" role="graphics-symbol" x="252.5" y="138.81243536058426" width="30" height="47.7077625507703" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug A" data-q1="61.2" data-q2="65.6" data-q3="70.7"/>
-<line x1="252.5" x2="282.5" y1="164.2735102975907" y2="164.2735102975907" stroke="#7c3aed" stroke-width="2.5"/>
-<circle cx="267.5" cy="286.7509313613299" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="412.5" x2="412.5" y1="390.0" y2="262.4359242876334" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="412.5" x2="412.5" y1="172.65611911606095" y2="50.0" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="397.5" x2="427.5" y1="390.0" y2="390.0" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="397.5" x2="427.5" y1="50.0" y2="50.0" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-16768" tabindex="0" role="graphics-symbol" x="397.5" y="172.65611911606095" width="30" height="89.77980517157243" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug B" data-q1="46" data-q2="56.5" data-q3="63.9"/>
-<line x1="397.5" x2="427.5" y1="209.78421040759315" y2="209.78421040759315" stroke="#7c3aed" stroke-width="2.5"/>
-<line x1="557.5" x2="557.5" y1="204.1941926866363" y2="152.83047185364558" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="557.5" x2="557.5" y1="112.6262725015921" y2="52.31997347351199" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="542.5" x2="572.5" y1="204.1941926866363" y2="204.1941926866363" stroke="#7c3aed" stroke-width="1.5"/>
-<line x1="542.5" x2="572.5" y1="52.31997347351199" y2="52.31997347351199" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-16768" tabindex="0" role="graphics-symbol" x="542.5" y="112.6262725015921" width="30" height="40.20419935205348" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug C" data-q1="67.9" data-q2="73" data-q3="75.9"/>
-<line x1="542.5" x2="572.5" y1="126.90404183644335" y2="126.90404183644335" stroke="#7c3aed" stroke-width="2.5"/>
-<circle cx="557.5" cy="51.48573334336862" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-e6d3dbd79a74-title glyphx-chart-e6d3dbd79a74-desc" id="glyphx-chart-e6d3dbd79a74" data-glyphx="true" width="680" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460"><title id="glyphx-chart-e6d3dbd79a74-title">Multi-Group Box Plot  —  BoxPlotSeries</title><desc id="glyphx-chart-e6d3dbd79a74-desc">Box plot chart titled &quot;Multi-Group Box Plot  —  BoxPlotSeries&quot;. Y axis: Test Score. Series: 5 data points. Ranges from 25.5 (at 0.5) to 87.6 (at 1.5).</desc><rect width="680" height="460" fill="#ffffff"/>
+<text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Multi-Group Box Plot  —  BoxPlotSeries</text>
+<line x1="50" y1="410" x2="500" y2="410" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
+<text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Test Score</text>
+<line x1="50" x2="500" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<line x1="50" x2="500" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">18.7</text>
+<line x1="50" x2="500" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">37.5</text>
+<line x1="50" x2="500" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">56.2</text>
+<line x1="50" x2="500" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">75.0</text>
+<line x1="50" x2="500" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">93.7</text>
+<line y1="50" y2="410" x1="95.0" x2="95.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="95.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Control</text>
+<line y1="50" y2="410" x1="185.0" x2="185.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="185.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug A</text>
+<line y1="50" y2="410" x1="275.0" x2="275.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="275.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug B</text>
+<line y1="50" y2="410" x1="365.0" x2="365.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="365.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug C</text>
+<line y1="50" y2="410" x1="455.0" x2="455.0" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="455.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug D</text>
+<line x1="95.0" x2="95.0" y1="294.55" y2="244.68" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="95.0" x2="95.0" y1="196.44" y2="124.08" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="80.0" x2="110.0" y1="294.55" y2="294.55" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="80.0" x2="110.0" y1="124.08" y2="124.08" stroke="#7c3aed" stroke-width="1.5"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="80.0" y="196.44" width="30" height="48.24000000000001" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Control" data-q1="43" data-q2="50.4" data-q3="55.6"/>
+<line x1="80.0" x2="110.0" y1="216.55" y2="216.55" stroke="#7c3aed" stroke-width="2.5"/>
+<circle cx="95.0" cy="118.92" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="185.0" x2="185.0" y1="233.03" y2="179.65" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="185.0" x2="185.0" y1="144.06" y2="90.67" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="170.0" x2="200.0" y1="233.03" y2="233.03" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="170.0" x2="200.0" y1="90.67" y2="90.67" stroke="#7c3aed" stroke-width="1.5"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="170.0" y="144.06" width="30" height="35.59" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug A" data-q1="60" data-q2="65" data-q3="69.3"/>
+<line x1="170.0" x2="200.0" y1="160.43" y2="160.43" stroke="#7c3aed" stroke-width="2.5"/>
+<circle cx="185.0" cy="83.79" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<circle cx="185.0" cy="238.84" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<circle cx="185.0" cy="239.98" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="275.0" x2="275.0" y1="312.05" y2="233.67" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="275.0" x2="275.0" y1="148.25" y2="74.07" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="260.0" x2="290.0" y1="312.05" y2="312.05" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="260.0" x2="290.0" y1="74.07" y2="74.07" stroke="#7c3aed" stroke-width="1.5"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="260.0" y="148.25" width="30" height="85.41999999999999" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug B" data-q1="45.9" data-q2="56.9" data-q3="68.2"/>
+<line x1="260.0" x2="290.0" y1="191.41" y2="191.41" stroke="#7c3aed" stroke-width="2.5"/>
+<line x1="365.0" x2="365.0" y1="176.51" y2="146.2" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="365.0" x2="365.0" y1="114.68" y2="73.55" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="350.0" x2="380.0" y1="176.51" y2="176.51" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="350.0" x2="380.0" y1="73.55" y2="73.55" stroke="#7c3aed" stroke-width="1.5"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="350.0" y="114.68" width="30" height="31.519999999999982" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug C" data-q1="68.7" data-q2="73.2" data-q3="76.9"/>
+<line x1="350.0" x2="380.0" y1="128.78" y2="128.78" stroke="#7c3aed" stroke-width="2.5"/>
+<line x1="455.0" x2="455.0" y1="299.33" y2="213.99" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="455.0" x2="455.0" y1="157.09" y2="92.67" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="440.0" x2="470.0" y1="299.33" y2="299.33" stroke="#7c3aed" stroke-width="1.5"/>
+<line x1="440.0" x2="470.0" y1="92.67" y2="92.67" stroke="#7c3aed" stroke-width="1.5"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="440.0" y="157.09" width="30" height="56.900000000000006" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-label="Drug D" data-q1="51" data-q2="59.3" data-q3="65.9"/>
+<line x1="440.0" x2="470.0" y1="182.45" y2="182.45" stroke="#7c3aed" stroke-width="2.5"/>
+<circle cx="455.0" cy="300.92" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
+<circle cx="455.0" cy="302.99" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
 </svg>
