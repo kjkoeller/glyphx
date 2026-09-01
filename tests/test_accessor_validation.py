@@ -107,3 +107,103 @@ def test_valid_column_names_are_unaffected(df, call):
 def test_correct_x_column_is_actually_plotted(df):
     fig = df.glyphx.line(x="month", y="revenue", auto_display=False)
     assert list(fig.axes.series[0].x) == ["Jan", "Feb", "Mar", "Jan"]
+
+
+# ---------------------------------------------------------------------------
+# Shared presentation options
+# ---------------------------------------------------------------------------
+
+PRESENTATION_OPTIONS = {
+    "title": "T",
+    "theme": "dark",
+    "legend": "top-left",
+    "width": 900,
+    "height": 700,
+    "xlabel": "XL",
+    "ylabel": "YL",
+}
+
+
+def _chart_methods(frame):
+    return {
+        "line":    lambda **k: frame.glyphx.line(x="month", y="revenue", **k),
+        "bar":     lambda **k: frame.glyphx.bar(x="month", y="revenue", **k),
+        "scatter": lambda **k: frame.glyphx.scatter(x="month", y="revenue", **k),
+        "hist":    lambda **k: frame.glyphx.hist(col="revenue", **k),
+        "box":     lambda **k: frame.glyphx.box(col="revenue", **k),
+        "pie":     lambda **k: frame.glyphx.pie(labels="month", values="revenue", **k),
+        "donut":   lambda **k: frame.glyphx.donut(labels="month", values="revenue", **k),
+        "heatmap": lambda **k: frame.glyphx.heatmap(**k),
+    }
+
+
+@pytest.mark.parametrize("option, value", sorted(PRESENTATION_OPTIONS.items()))
+def test_every_chart_method_accepts_every_presentation_option(df, option, value):
+    """
+    The eight presentation parameters were copy-pasted per method, and the
+    copies had diverged: `legend` was missing from hist, and `legend`,
+    `xlabel` and `ylabel` from box, pie, donut and heatmap. `**kwargs`
+    swallowed them, so `hist(legend="top-left")` was accepted and silently
+    ignored while `pie(ylabel=...)` raised a TypeError blaming PieSeries.
+    """
+    for name, call in _chart_methods(df).items():
+        call(**{option: value, "auto_display": False})
+
+
+def test_legend_option_takes_effect_rather_than_being_swallowed(df):
+    fig = df.glyphx.hist(col="revenue", legend="top-left", auto_display=False)
+    assert fig.legend_pos == "top-left"
+
+
+def test_axis_label_options_take_effect_on_box(df):
+    fig = df.glyphx.box(col="revenue", xlabel="Month", auto_display=False)
+    assert fig.axes.xlabel == "Month"
+
+
+def test_explicit_labels_beat_the_column_derived_defaults(df):
+    fig = df.glyphx.line(x="month", y="revenue", xlabel="Period",
+                         ylabel="USD", auto_display=False)
+    assert (fig.axes.xlabel, fig.axes.ylabel) == ("Period", "USD")
+
+
+def test_column_names_are_still_used_when_no_label_is_given(df):
+    fig = df.glyphx.line(x="month", y="revenue", auto_display=False)
+    assert (fig.axes.xlabel, fig.axes.ylabel) == ("month", "revenue")
+
+
+@pytest.mark.parametrize("method", ["pie", "donut"])
+def test_pie_and_donut_keep_their_square_canvas(df, method):
+    """Sharing the options block must not flatten their 480x480 default."""
+    fig = _chart_methods(df)[method](auto_display=False)
+    assert (fig.width, fig.height) == (480, 480)
+
+
+@pytest.mark.parametrize("method", ["pie", "donut"])
+def test_explicit_size_overrides_the_per_chart_default(df, method):
+    fig = _chart_methods(df)[method](width=900, height=300, auto_display=False)
+    assert (fig.width, fig.height) == (900, 300)
+
+
+def test_options_are_declared_in_exactly_one_place():
+    """Guard against the block being copy-pasted back into a signature."""
+    import ast
+    from pathlib import Path
+
+    from glyphx.accessor import _FIGURE_OPTION_KEYS
+
+    source = Path(__file__).resolve().parent.parent / "glyphx" / "accessor.py"
+    tree = ast.parse(source.read_text(encoding="utf-8"))
+
+    offenders = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.FunctionDef) or node.name.startswith("_"):
+            continue
+        names = {a.arg for a in node.args.args + node.args.kwonlyargs}
+        leaked = names & _FIGURE_OPTION_KEYS
+        if leaked:
+            offenders.append(f"{node.name} declares {sorted(leaked)}")
+
+    assert offenders == [], (
+        "presentation options belong in FigureOptions, not in a signature: "
+        f"{offenders}"
+    )

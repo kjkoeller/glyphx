@@ -24,9 +24,41 @@ column names::
 """
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypedDict
 
 import pandas as pd
+
+
+class FigureOptions(TypedDict, total=False):
+    """
+    Presentation options every chart method accepts.
+
+    Declared once and consumed through ``**kwargs`` by every chart method,
+    rather than the same eight parameters being written out per method.
+    Not applied as ``Unpack[FigureOptions]``: these methods also take
+    ``hue`` and forward any remaining keywords to the series constructor,
+    so the signature is genuinely open and declaring it closed would be
+    inaccurate. That repetition had
+    already drifted: ``auto_display`` was ``bool = True`` in three methods
+    and ``bool | None = None`` in a fourth, and ``legend``, ``xlabel`` and
+    ``ylabel`` were simply missing from several -- where ``**kwargs``
+    swallowed them, so ``hist(legend="top-left")`` was accepted and
+    silently ignored.
+    """
+
+    title: str | None
+    theme: str | dict | None
+    legend: str | bool | None
+    width: int
+    height: int
+    xlabel: str | None
+    ylabel: str | None
+    auto_display: bool
+
+
+#: Runtime view of the above, for splitting presentation kwargs from the
+#: series-specific ones. A TypedDict has no runtime membership test.
+_FIGURE_OPTION_KEYS = frozenset(FigureOptions.__annotations__)
 
 
 @pd.api.extensions.register_dataframe_accessor("glyphx")
@@ -110,6 +142,42 @@ class GlyphXAccessor:
             fig.axes.ylabel = ylabel
         return fig
 
+    def _split_options(self, kwargs: dict) -> dict:
+        """
+        Pull the presentation options out of ``kwargs``, leaving the rest.
+
+        Mutates ``kwargs`` so what remains is exactly the series-specific
+        arguments, which get forwarded to the series constructor.
+        """
+        return {k: kwargs.pop(k) for k in list(kwargs) if k in _FIGURE_OPTION_KEYS}
+
+    def _figure_for(self, kwargs: dict, xlabel: str | None = None,
+                    ylabel: str | None = None, *,
+                    width: int = 640, height: int = 480,
+                    legend: str | bool | None = "top-right"):
+        """
+        Build the Figure for a chart method from its presentation kwargs.
+
+        ``xlabel``/``ylabel`` are the column-derived fallbacks and
+        ``width``/``height``/``legend`` the per-chart defaults -- pie and
+        donut want a square canvas and no legend gutter, for instance. An
+        option the caller passed always wins over any of them.
+
+        Every chart method routes through here, so they all accept the same
+        set and none can quietly drop one.
+        """
+        opts = self._split_options(kwargs)
+        return self._fig(
+            opts.get("title"),
+            opts.get("theme"),
+            opts.get("legend", legend),
+            opts.get("width", width),
+            opts.get("height", height),
+            opts.get("xlabel") or xlabel,
+            opts.get("ylabel") or ylabel,
+            opts.get("auto_display", True),
+        )
+
     # Chart methods
 
     def line(
@@ -120,14 +188,6 @@ class GlyphXAccessor:
         label: str | None = None,
         linestyle: str = "solid",
         yerr: str | None = None,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        legend: str | bool | None = "top-right",
-        width: int = 640,
-        height: int = 480,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """
@@ -144,10 +204,9 @@ class GlyphXAccessor:
         """
         from .series import LineSeries
 
-        fig = self._fig(title, theme, legend, width, height,
-                        xlabel or x, ylabel or y, auto_display)
         hue = kwargs.pop("hue", None)
         self._check_column(hue, "hue")
+        fig = self._figure_for(kwargs, xlabel=x, ylabel=y)
         if hue and hue in self._df.columns:
             theme_colors = fig.theme.get("colors", ["#1f77b4", "#ff7f0e", "#2ca02c"])
             for i, (grp_val, grp_df) in enumerate(self._df.groupby(hue)):
@@ -182,14 +241,6 @@ class GlyphXAccessor:
         groupby: str | None = None,
         hue: str | None = None,
         agg: str = "sum",
-        title: str | None = None,
-        theme: str | dict | None = None,
-        legend: str | bool | None = "top-right",
-        width: int = 640,
-        height: int = 480,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """
@@ -207,8 +258,7 @@ class GlyphXAccessor:
         # Resolve hue alias: hue splits without aggregation
         effective_groupby = hue or groupby or None
 
-        fig = self._fig(title, theme, legend, width, height,
-                        xlabel or x, ylabel or y, auto_display)
+        fig = self._figure_for(kwargs, xlabel=x, ylabel=y)
 
         self._check_column(effective_groupby, "hue/groupby")
         if effective_groupby and effective_groupby in self._df.columns:
@@ -277,21 +327,12 @@ class GlyphXAccessor:
         label: str | None = None,
         size: int = 5,
         marker: str = "circle",
-        title: str | None = None,
-        theme: str | dict | None = None,
-        legend: str | bool | None = "top-right",
-        width: int = 640,
-        height: int = 480,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """Create a scatter plot from DataFrame columns. Returns :class:`~glyphx.Figure`."""
         from .series import ScatterSeries
 
-        fig = self._fig(title, theme, legend, width, height,
-                        xlabel or x, ylabel or y, auto_display)
+        fig = self._figure_for(kwargs, xlabel=x, ylabel=y)
         hue = kwargs.pop("hue", None)
         self._check_column(hue, "hue")
         if hue and hue in self._df.columns:
@@ -321,13 +362,6 @@ class GlyphXAccessor:
         bins: int = 10,
         color: str | None = None,
         label: str | None = None,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        width: int = 640,
-        height: int = 480,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """Create a histogram of a numeric column. Returns :class:`~glyphx.Figure`."""
@@ -336,8 +370,7 @@ class GlyphXAccessor:
         target = col or self._df.select_dtypes("number").columns[0]
         data   = self._df[target].dropna().tolist()
 
-        fig = self._fig(title, theme, "top-right", width, height,
-                        xlabel or target, ylabel or "Count", auto_display)
+        fig = self._figure_for(kwargs, xlabel=target, ylabel="Count")
         fig.add(HistogramSeries(data, bins=bins, color=color, label=label or target))
         return fig
 
@@ -346,18 +379,13 @@ class GlyphXAccessor:
         col: str | None = None,
         groupby: str | None = None,
         color: str | None = None,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        width: int = 640,
-        height: int = 480,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """Create a box plot. Pass ``groupby`` for multi-box comparison. Returns :class:`~glyphx.Figure`."""
         from .series import BoxPlotSeries
 
         target = col or self._df.select_dtypes("number").columns[0]
-        fig    = self._fig(title, theme, False, width, height, None, target, auto_display)
+        fig    = self._figure_for(kwargs, ylabel=target)
 
         self._check_column(groupby, "groupby")
         if groupby and groupby in self._df.columns:
@@ -378,11 +406,6 @@ class GlyphXAccessor:
         self,
         labels: str | None = None,
         values: str | None = None,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        width: int = 480,
-        height: int = 480,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """Create a pie chart. Returns :class:`~glyphx.Figure`."""
@@ -391,7 +414,7 @@ class GlyphXAccessor:
         lbl_data = self._col(labels)
         val_data = self._col(values) or self._df.select_dtypes("number").iloc[:, 0].tolist()
 
-        fig = self._fig(title, theme, False, width, height, None, None, auto_display)
+        fig = self._figure_for(kwargs, width=480, height=480, legend=False)
         fig.add(PieSeries(val_data, labels=lbl_data, **kwargs))
         return fig
 
@@ -399,11 +422,6 @@ class GlyphXAccessor:
         self,
         labels: str | None = None,
         values: str | None = None,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        width: int = 480,
-        height: int = 480,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """Create a donut chart. Returns :class:`~glyphx.Figure`."""
@@ -412,17 +430,12 @@ class GlyphXAccessor:
         lbl_data = [str(v) for v in (self._col(labels) or range(len(self._df)))]
         val_data = self._col(values) or self._df.select_dtypes("number").iloc[:, 0].tolist()
 
-        fig = self._fig(title, theme, False, width, height, None, None, auto_display)
+        fig = self._figure_for(kwargs, width=480, height=480, legend=False)
         fig.add(DonutSeries(val_data, labels=lbl_data, **kwargs))
         return fig
 
     def heatmap(
         self,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        width: int = 640,
-        height: int = 480,
-        auto_display: bool = True,
         **kwargs: Any,
     ):
         """
@@ -440,7 +453,7 @@ class GlyphXAccessor:
         num_df = self._df.select_dtypes("number")
         matrix = num_df.values.tolist()
 
-        fig = self._fig(title, theme, False, width, height, None, None, auto_display)
+        fig = self._figure_for(kwargs)
         fig.add(HeatmapSeries(
             matrix,
             col_labels=num_df.columns.tolist(),
@@ -456,15 +469,7 @@ class GlyphXAccessor:
         stack: str,
         normalize: bool = False,
         bar_width: float = 0.75,
-        title: str | None = None,
-        theme: str | dict | None = None,
-        legend: str | bool | None = "top-right",
-        width: int = 640,
-        height: int = 480,
-        xlabel: str | None = None,
-        ylabel: str | None = None,
-        auto_display: bool | None = None,
-        **kwargs,
+        **kwargs: Any,
     ):
         """
         Stacked bar chart from a long-format DataFrame.
@@ -513,8 +518,7 @@ class GlyphXAccessor:
             for name in pivot.columns
         }
 
-        fig = self._fig(title, theme, legend, width, height,
-                        xlabel or x, ylabel or y, auto_display)
+        fig = self._figure_for(kwargs, xlabel=x, ylabel=y)
         fig.add(StackedBarSeries(
             x=categories,
             series=series,
