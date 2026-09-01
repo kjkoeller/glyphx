@@ -56,10 +56,13 @@
       svg.setAttribute('viewBox', viewBox.join(' '));
     }, { passive: false });
 
-    // Double-click resets zoom
-    svg.addEventListener('dblclick', () => {
-      const vb = svg.getAttribute('viewBox').split(' ').map(Number);
-      // Reset to original (stored on first load)
+    // Double-click on empty space resets the view. On a data point it means
+    // "focus this series" instead (interact.js), so ignore those -- one
+    // gesture doing both at once was the previous behaviour and read as a
+    // glitch: the chart would isolate a series and jump back to full extent
+    // in the same motion.
+    svg.addEventListener('dblclick', (e) => {
+      if (e.target.closest('[data-x], [data-label]')) return;
       if (svg.dataset.originalViewBox) {
         svg.setAttribute('viewBox', svg.dataset.originalViewBox);
         viewBox = svg.dataset.originalViewBox.split(' ').map(Number);

@@ -137,9 +137,9 @@
     <div class="glyphx-card">
       <div class="glyphx-toolbar">
         <span>GlyphX . <kbd>Shift</kbd>+drag to brush . scroll to zoom . drag to pan . dbl-click to reset</span>
-        <button class="glyphx-btn" onclick="glyphxDownload('svg')">v SVG</button>
-        <button class="glyphx-btn" onclick="glyphxDownload('png')">v PNG</button>
-        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">[hex] Share</button>
+        <button class="glyphx-btn" onclick="glyphxDownload('svg')">Download SVG</button>
+        <button class="glyphx-btn" onclick="glyphxDownload('png')">Download PNG</button>
+        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">Copy HTML</button>
       </div>
       <div class="glyphx-chart-area">
         <div><div style="display:flex"><div style="margin:20px"><svg role="img" focusable="false" aria-labelledby="glyphx-chart-e043e0ae7950-title glyphx-chart-e043e0ae7950-desc" id="glyphx-chart-e043e0ae7950" data-glyphx="true" data-glyphx-crossfilter="true" width="420" height="320" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320"><title id="glyphx-chart-e043e0ae7950-title">Revenue</title><desc id="glyphx-chart-e043e0ae7950-desc">Bar chart titled &quot;Revenue&quot;. Series: 6 data points. Ranges from 0.98 (at Mar) to 1.9 (at Jun).</desc><rect width="420" height="320" fill="#ffffff"/>
@@ -393,10 +393,13 @@
       svg.setAttribute('viewBox', viewBox.join(' '));
     }, { passive: false });
 
-    // Double-click resets zoom
-    svg.addEventListener('dblclick', () => {
-      const vb = svg.getAttribute('viewBox').split(' ').map(Number);
-      // Reset to original (stored on first load)
+    // Double-click on empty space resets the view. On a data point it means
+    // "focus this series" instead (interact.js), so ignore those -- one
+    // gesture doing both at once was the previous behaviour and read as a
+    // glitch: the chart would isolate a series and jump back to full extent
+    // in the same motion.
+    svg.addEventListener('dblclick', (e) => {
+      if (e.target.closest('[data-x], [data-label]')) return;
       if (svg.dataset.originalViewBox) {
         svg.setAttribute('viewBox', svg.dataset.originalViewBox);
         viewBox = svg.dataset.originalViewBox.split(' ').map(Number);
@@ -510,7 +513,7 @@
     }
     hint = document.createElement('div');
     hint.className = 'glyphx-brush-hint';
-    hint.textContent = '[hex] Brush mode  .  Shift+drag to select  .  Esc to clear';
+    hint.textContent = 'Brush mode: shift and drag to select, Esc to clear';
     Object.assign(hint.style, {
       position:      'absolute',
       top:           '8px',
@@ -686,7 +689,7 @@
       const v = el.getAttribute(a);
       if (v !== null) attrs[a.replace('data-','')] = v;
     });
-    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">[chart] Data Point</div>';
+    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">Data point</div>';
     Object.entries(attrs).forEach(([k, v]) => {
       html += `<div><span style="opacity:0.55;min-width:52px;display:inline-block">${k}</span><b>${v}</b></div>`;
     });
@@ -712,7 +715,7 @@
                 padding:28px 34px;max-width:380px;width:90%;
                 box-shadow:0 20px 60px rgba(0,0,0,0.5)">
       <div style="font-size:16px;font-weight:700;margin-bottom:16px">
-        [keyboard] GlyphX Keyboard Shortcuts
+        GlyphX keyboard shortcuts
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px">
         <tr><td style="padding:4px 0;opacity:0.55;width:110px"><kbd>Click</kbd></td>
@@ -893,7 +896,7 @@
     document.querySelectorAll('.glyphx-toolbar').forEach(tb => {
       const btn = document.createElement('button');
       btn.className = 'glyphx-btn';
-      btn.textContent = '? Shortcuts';
+      btn.textContent = 'Keyboard shortcuts';
       btn.title = 'Show keyboard shortcuts (H)';
       btn.addEventListener('click', showHelp);
       tb.appendChild(btn);
@@ -901,7 +904,7 @@
 
     // Update toolbar hint
     document.querySelectorAll('.glyphx-toolbar span').forEach(s => {
-      s.textContent = 'GlyphX . click=highlight . shift+click=inspect . dbl-click=isolate . H=shortcuts';
+      s.textContent = 'Scroll to zoom \u00b7 drag to pan \u00b7 click a series to highlight it \u00b7 press ? for all shortcuts';
     });
   });
 

@@ -100,7 +100,7 @@
     }
     hint = document.createElement('div');
     hint.className = 'glyphx-brush-hint';
-    hint.textContent = '[hex] Brush mode  .  Shift+drag to select  .  Esc to clear';
+    hint.textContent = 'Brush mode: shift and drag to select, Esc to clear';
     Object.assign(hint.style, {
       position:      'absolute',
       top:           '8px',
