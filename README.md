@@ -18,36 +18,30 @@ View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index
 ## Why GlyphX?
 
 | Feature | GlyphX | Matplotlib | Seaborn | Plotly |
-|---|:---:|:---:|:---:|:---:|
-| Auto-display (no `show()`) | ✅ | ❌ | ❌ | ❌ |
-| Method chaining API | ✅ | ❌ | ❌ | Partial |
-| DataFrame accessor (`df.glyphx.*`) | ✅ | ❌ | Partial | ❌ |
-| Linked interactive brushing | ✅ | ❌ | ❌ | ✅ (needs server) |
-| Self-contained shareable HTML | ✅ | ❌ | ❌ | ❌ |
-| Statistical significance brackets | ✅ | ❌ | ❌ | ❌ |
-| ECDF plot | ✅ | ❌ | ✅ | ❌ |
-| Raincloud plot | ✅ | ❌ | ❌ | ❌ |
-| 3-D scatter / surface / line / bar | ✅ (WebGL + SVG) | ❌ | ❌ | ✅ (WebGL) |
-| Bubble chart | ✅ | ✅ | ❌ | ✅ |
-| Sunburst chart | ✅ | ❌ | ❌ | ✅ |
-| Parallel coordinates | ✅ | ❌ | ✅ | ✅ |
-| Diverging bar | ✅ | ❌ | ❌ | ✅ |
-| Auto large-data downsampling (SVG) | ✅ M4+LTTB+voxel | Rasterises | ❌ | ❌ |
-| Perceptually-uniform colormaps | ✅ (9 built-in) | ✅ | ✅ | ✅ |
-| Continuous color encoding (scatter) | ✅ | ✅ | ✅ | ✅ |
-| Candlestick / OHLC | ✅ | ❌ | ❌ | ✅ |
-| Waterfall / bridge chart | ✅ | ❌ | ❌ | ✅ |
-| Treemap (squarified) | ✅ | ❌ | ❌ | ✅ |
-| Streaming / real-time series | ✅ (no server) | ❌ | ❌ | ✅ (needs server) |
-| Synchronized crosshair | ✅ | ❌ | ❌ | ✅ (needs server) |
-| PPTX export | ✅ | ❌ | ❌ | ❌ |
-| CLI tool (`glyphx plot data.csv`) | ✅ | ❌ | ❌ | ❌ |
-| Full ARIA / WCAG 2.1 AA accessibility | ✅ | ❌ | ❌ | Partial |
-| Full type annotations (`py.typed`) | ✅ | ❌ | ❌ | Partial |
-| `tight_layout()` | ✅ auto | Manual | Auto | Auto |
-| Log-scale axes | ✅ | ✅ | ✅ | ✅ |
-| Dual Y-axis | ✅ | ✅ | ❌ | ✅ |
-| Error bars (X and Y) | ✅ | ✅ | ✅ | ✅ |
+|---|---|---|---|---|
+| Auto-display (no `show()`) | Yes | No | No | No |
+| Method chaining API | Yes | No | No | Partial |
+| DataFrame accessor (`df.glyphx.*`) | Yes | No | Partial | No |
+| Linked interactive brushing | Yes | No | No | Needs a server |
+| Cross-chart click-to-filter | Yes | No | No | Needs Dash |
+| Self-contained shareable HTML | Yes | No | No | No |
+| Statistical significance brackets | Yes | No | No | No |
+| ECDF plot | Yes | No | Yes | No |
+| Raincloud plot | Yes | No | No | No |
+| 3-D scatter / surface / line / bar | WebGL and SVG | No | No | WebGL |
+| Sunburst chart | Yes | No | No | Yes |
+| Diverging bar | Yes | No | No | Yes |
+| Candlestick / OHLC | Yes | No | No | Yes |
+| Waterfall / bridge chart | Yes | No | No | Yes |
+| Treemap (squarified) | Yes | No | No | Yes |
+| Auto large-data downsampling (SVG) | M4, LTTB and voxel | Rasterises instead | No | No |
+| Streaming / real-time series | Yes, no server | No | No | Needs a server |
+| Synchronized crosshair | Yes | No | No | Needs a server |
+| PPTX export | Yes | No | No | No |
+| CLI tool (`glyphx plot data.csv`) | Yes | No | No | No |
+| Full ARIA / WCAG 2.1 AA accessibility | Yes | No | No | Partial |
+| Full type annotations (`py.typed`) | Yes | No | No | Partial |
+| `tight_layout()` | Automatic | Manual | Automatic | Automatic |
 
 ---
 
