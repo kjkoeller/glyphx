@@ -282,7 +282,7 @@ class Axes:
 
         Example::
 
-            ax.set_tick_wrap()   # "Product Engineering" -> "Product" / "Engineering"
+            ax.set_tick_wrap()   # "Product Engineering" wraps onto two lines
         """
         self._tick_wrap = enabled
         return self

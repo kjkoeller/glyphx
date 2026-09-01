@@ -793,7 +793,7 @@ def draw_legend(
     elif position == "right":
         x = width  - legend_width - padding
         y = (height - legend_height) // 2
-    # default / "top-left" -> x=padding, y=padding (already set)
+    # default and "top-left" both keep x=padding, y=padding (already set)
 
     items = []
     for i, s in enumerate(normalized):

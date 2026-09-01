@@ -456,7 +456,7 @@ makeSprite(LABELS.zlabel, [-S-0.45, 0,     -S],      0.7);
 // Series rendering
 // =======================================================================
 const hitObjects   = [];   // for raycasting
-const seriesGroups = {};   // css_class -> THREE.Group for legend toggle
+const seriesGroups = {};   // keyed by css_class, for the legend toggle
 const surfaceMeshes = [];  // for surface value probe
 
 DATA.forEach((series, si) => {
@@ -1135,8 +1135,8 @@ class Figure3D:
         """
         Save the figure to disk.
 
-        ``.html`` -> interactive Three.js WebGL viewer (default)
-        ``.svg``  -> static orthographic SVG
+        ``.html`` gives the interactive Three.js WebGL viewer (default)
+        ``.svg``  gives a static orthographic SVG
 
         Returns ``self`` for chaining.
         """

@@ -11,12 +11,12 @@ dataframe interchange protocol (``__dataframe__``, PEP-ish standard adopted
 by pandas 1.5+, Polars, cuDF, Vaex, and PyArrow) with a small number of
 faster paths for the libraries that expose a simpler column API.
 
-The public surface is deliberately tiny:
+The public surface is deliberately tiny::
 
-    is_dataframe(obj)   -> bool
-    column_names(df)    -> list[str]
-    get_column(df, name)-> list
-    to_columns(df)      -> dict[str, list]
+    is_dataframe(obj)    -> bool
+    column_names(df)     -> list[str]
+    get_column(df, name) -> list
+    to_columns(df)       -> dict[str, list]
 """
 
 from __future__ import annotations
@@ -51,7 +51,7 @@ def is_dataframe(obj: Any) -> bool:
     if obj is None:
         return False
     if isinstance(obj, dict):
-        # A mapping of column name -> sequence counts as a dataframe.
+        # A dict of column names to sequences counts as a dataframe.
         return bool(obj) and all(
             hasattr(v, "__len__") and not isinstance(v, (str, bytes))
             for v in obj.values()

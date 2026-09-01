@@ -331,7 +331,7 @@ count.
 .. code-block:: python
 
    fig.axes.set_yticks([10, 20, 30, 40])   # 4 ticks on the left
-   # -> 4 ticks on the right, on the same pixel rows
+   # the right axis gets 4 ticks too, on the same pixel rows
 
 Tick formatting
 ~~~~~~~~~~~~~~~

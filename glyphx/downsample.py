@@ -7,7 +7,7 @@ algorithms chosen per series type.
 
 Algorithm summary::
 
-    2-D line series   : Two-stage M4 -> LTTB pipeline.
+    2-D line series   : Two-stage pipeline, M4 then LTTB.
     2-D scatter series: 2-D voxel grid thinning.
     3-D line series   : LTTB on vectorised camera-projected screen coords,
                         result cached in a WeakKeyDictionary keyed on camera
@@ -723,5 +723,5 @@ def cull_faces(
 def _ds_comment(original_n: int, thinned_n: int, algorithm: str) -> str:
     """Build the SVG comment recording what was thinned and by which algorithm."""
     return (
-        f"<!-- glyphx: {algorithm} downsampled {original_n} -> {thinned_n} points -->"
+        f"<!-- glyphx: {algorithm} downsampled {original_n} points to {thinned_n} -->"
     )

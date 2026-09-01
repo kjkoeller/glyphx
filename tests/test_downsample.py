@@ -489,7 +489,7 @@ def run_benchmarks():
     for n in [10_000, 100_000, 500_000]:
         x, y = _line(n)
         g = dict(_g, _x=x.copy(), _y=y.copy())
-        bench.run(f"lttb n={n:>7} -> 5k",
+        bench.run(f"lttb n={n:>7} down to 5k",
                   "lttb(_x, _y, 5000)", g, number=5,
                   note="vectorised inner loop")
 
@@ -534,7 +534,7 @@ def run_benchmarks():
     for n in [10_000, 100_000]:
         x, y, z = _helix(n)
         g = dict(_g, _x=x.copy(), _y=y.copy(), _z=z.copy(), _cam=_cam())
-        bench.run(f"lttb_3d n={n:>7} -> 5k",
+        bench.run(f"lttb_3d n={n:>7} down to 5k",
                   "lttb_3d(_x, _y, _z, _cam, threshold=5000)", g, number=5,
                   note="vectorised projection + inner loop")
 

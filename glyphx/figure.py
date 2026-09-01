@@ -1089,7 +1089,8 @@ class Figure:
     ) -> str:
         """Emit every annotation: its text, and a leader arrow where one was asked for."""
         elements: list[str] = []
-        # Build a category->numeric map from all registered series
+        # Build the map from category name to numeric position, across every
+        # registered series
         cat_map: dict = {}
         for s, _ in self.series:
             if hasattr(s, "_x_categories") and s._x_categories:
@@ -1774,7 +1775,7 @@ def _add_pptx_slide(cairosvg, prs, svg: str, title: str | None = None) -> None:
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Inches, Pt
 
-    # SVG -> PNG at 2x for crisp rendering
+    # Rasterise at 2x so the slide image stays crisp
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 

@@ -628,7 +628,7 @@ register_theme(
 Figure(theme="acme").line(x, y).show()
 df.glyphx.scatter(x="a", y="b", theme="acme")
 
-list_themes()          # -> ['acme', 'colorblind', 'dark', 'default', ...]
+list_themes()          # ['acme', 'colorblind', 'dark', 'default', ...]
 ```
 
 `register_theme` validates as it goes: a misspelled key (`colours`) or a bad

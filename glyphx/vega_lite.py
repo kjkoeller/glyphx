@@ -1,5 +1,5 @@
 """
-GlyphX -> Vega-Lite JSON export.
+Vega-Lite JSON export for GlyphX figures.
 
 Converts a GlyphX :class:`~glyphx.Figure` to a Vega-Lite v5 specification
 dict.  The spec can be used in Observable, any Vega-compatible tool, or

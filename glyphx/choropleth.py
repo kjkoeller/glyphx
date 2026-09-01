@@ -12,7 +12,7 @@ no CDN dependency -- pure SVG paths projected from GeoJSON coordinates.
     with open("world.geojson", encoding="utf-8") as fh:
         geo = json.load(fh)
 
-    # Attach data: map feature property -> numeric value
+    # Attach data: each feature property keys a numeric value
     data = {"USA": 63000, "GBR": 42000, "DEU": 51000, "FRA": 45000}
 
     fig = Figure(width=900, height=500, auto_display=False)

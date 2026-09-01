@@ -223,7 +223,7 @@ class GanttSeries(BaseSeries):
             is_mile = task.get("milestone", False)
             prog    = task.get("progress")
             tip_txt = task.get("tooltip") or (
-                f"{task['task']}: {start.isoformat()} -> {end.isoformat()}"
+                f"{task['task']}: {start.isoformat()} to {end.isoformat()}"
             )
 
             # Task label on left
