@@ -99,3 +99,80 @@ def test_submodules_remain_importable_in_their_own_right():
     """)
     assert r.returncode == 0, r.stderr
     assert "ok" in r.stdout
+
+
+def test_type_checking_block_matches_the_lazy_map():
+    """
+    The TYPE_CHECKING re-declarations exist so analysers, type checkers and
+    IDEs can see the lazily-exported names -- pyflakes otherwise reports all
+    53 as undefined names in __all__. That only holds while the block lists
+    the same names _LAZY_ATTRS does, and nothing else keeps them in step.
+    """
+    import ast
+    from pathlib import Path
+
+    import glyphx
+
+    source = Path(glyphx.__file__)
+    tree = ast.parse(source.read_text(encoding="utf-8"))
+
+    declared = set()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.If):
+            continue
+        test = node.test
+        if not (isinstance(test, ast.Name) and test.id == "_TYPE_CHECKING"):
+            continue
+        for stmt in ast.walk(node):
+            if isinstance(stmt, ast.ImportFrom):
+                for alias in stmt.names:
+                    declared.add(alias.asname or alias.name)
+
+    lazy = set(glyphx._LAZY_ATTRS)
+    assert declared == lazy, (
+        f"TYPE_CHECKING block out of step with _LAZY_ATTRS.\n"
+        f"  missing from the block: {sorted(lazy - declared)}\n"
+        f"  in the block but not lazy: {sorted(declared - lazy)}"
+    )
+
+
+def test_no_undefined_names_in_dunder_all():
+    """Every exported name must be visible to a static analyser."""
+    import ast
+    from pathlib import Path
+
+    import glyphx
+
+    tree = ast.parse(Path(glyphx.__file__).read_text(encoding="utf-8"))
+
+    bound = set()
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            for alias in node.names:
+                bound.add(alias.asname or alias.name.split(".")[0])
+        elif isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    bound.add(target.id)
+        elif isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+            bound.add(node.name)
+
+    undefined = [n for n in glyphx.__all__ if n not in bound]
+    assert undefined == [], f"__all__ names a static checker cannot see: {undefined}"
+
+
+def test_the_type_checking_block_does_not_make_imports_eager():
+    """The whole point of the lazy map is that these are not imported."""
+    r = _run("""
+        import sys
+        import glyphx
+        loaded = {m for m in sys.modules if m.startswith("glyphx.")}
+        eager = loaded & {"glyphx." + n for n in
+                          ("ecdf", "raincloud", "treemap", "bar3d", "clustermap",
+                           "choropleth", "gantt", "vega_lite", "figure3d")}
+        assert not eager, f"imported eagerly: {sorted(eager)}"
+        assert "pandas" not in sys.modules, "pandas was imported eagerly"
+        print("ok")
+    """)
+    assert r.returncode == 0, r.stderr
+    assert "ok" in r.stdout

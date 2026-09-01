@@ -34,6 +34,7 @@ import importlib.abc as _importlib_abc  # noqa: F401  -- populates _importlib.ab
 import importlib.util as _importlib_util  # noqa: F401  -- populates _importlib.util
 import sys as _sys
 import types as _types
+from typing import TYPE_CHECKING as _TYPE_CHECKING
 
 try:
     # Written at build time by setuptools_scm.
@@ -141,6 +142,80 @@ _LAZY_ATTRS = {
     "voxel_thin_2d": ".downsample",
     "voxel_thin_3d": ".downsample",
 }
+
+
+# Everything in _LAZY_ATTRS is resolved at runtime by the __getattr__ below,
+# which no static analyser can see through: pyflakes reports every one of
+# these as an undefined name in __all__, type checkers cannot check them,
+# and editors offer no completion for `from glyphx import ECDFSeries`.
+#
+# Re-declaring them under TYPE_CHECKING is the documented fix for a PEP 562
+# lazy module. The block is never executed, so nothing is imported eagerly
+# and the startup cost the lazy map exists to avoid is unchanged -- but
+# analysers, type checkers and IDEs now see real bindings.
+#
+# tests/test_lazy_imports.py fails if this drifts out of step with
+# _LAZY_ATTRS, since the two have to list the same names to stay useful.
+if _TYPE_CHECKING:  # pragma: no cover
+    from .bar3d import Bar3DSeries
+    from .bubble import BubbleSeries
+    from .bump_chart import BumpChartSeries
+    from .candlestick import CandlestickSeries
+    from .choropleth import ChoroplethSeries
+    from .clustermap import clustermap
+    from .colormaps import apply_colormap, colormap_colors, get_colormap, list_colormaps
+    from .contour import ContourSeries
+    from .count_plot import CountPlotSeries
+    from .diverging_bar import DivergingBarSeries
+    from .downsample import (
+        AUTO_THRESHOLD,
+        cull_faces,
+        decimate_grid,
+        lttb,
+        lttb_3d,
+        m4,
+        maybe_downsample,
+        maybe_downsample_line,
+        voxel_thin_2d,
+        voxel_thin_3d,
+    )
+    from .downsample import (
+        disable as ds_disable,
+    )
+    from .downsample import (
+        enable as ds_enable,
+    )
+    from .downsample import (
+        is_enabled as ds_is_enabled,
+    )
+    from .ecdf import ECDFSeries
+    from .facet_grid import FacetGrid
+    from .facet_plot import facet_plot
+    from .figure3d import Figure3D
+    from .fill_between import FillBetweenSeries
+    from .gantt import GanttSeries
+    from .grouped_bar import GroupedBarSeries
+    from .jointplot import jointplot
+    from .kde import KDESeries
+    from .line3d import Line3DSeries
+    from .lmplot import lmplot
+    from .pairplot import pairplot
+    from .parallel_coords import ParallelCoordinatesSeries
+    from .plot3d import plot3d
+    from .raincloud import RaincloudSeries
+    from .regplot import regplot
+    from .scatter3d import Scatter3DSeries
+    from .sparkline import SparklineSeries, sparkline_svg
+    from .stacked_bar import StackedBarSeries
+    from .stat_annotation import StatAnnotation, pvalue_to_label
+    from .streaming import StreamingSeries
+    from .sunburst import SunburstSeries
+    from .surface3d import Surface3DSeries
+    from .swarm_plot import SwarmPlotSeries
+    from .treemap import TreemapSeries
+    from .vega_lite import save_vega_lite, to_vega_lite
+    from .violin_plot import ViolinPlotSeries
+    from .waterfall import WaterfallSeries
 
 
 def __getattr__(name: str):
