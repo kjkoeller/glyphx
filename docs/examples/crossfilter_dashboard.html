@@ -1327,6 +1327,23 @@
     return cls || null;
   }
 
+  // Everything else the element carries, keyed without the "data-" prefix:
+  // a pie slice has percent, a box plot has q1/q2/q3, a candlestick has
+  // open/high/low/close. Surfacing them generically means a listener gets
+  // whatever that chart type knows about the thing that was clicked, rather
+  // than only the four fields every type happens to share.
+  function dataAttrs(el) {
+    var out = {};
+    var skip = { x: 1, y: 1, label: 1, meta: 1 };
+    Array.prototype.forEach.call(el.attributes, function (attr) {
+      if (attr.name.indexOf("data-") !== 0) return;
+      var key = attr.name.slice(5);
+      if (skip[key]) return;
+      out[key] = attr.value;
+    });
+    return out;
+  }
+
   function detailFor(el) {
     return {
       x: el.getAttribute("data-x"),
@@ -1334,6 +1351,7 @@
       label: el.getAttribute("data-label"),
       series: seriesOf(el),
       meta: parseMeta(el),
+      data: dataAttrs(el),
       element: el,
     };
   }
@@ -1490,10 +1508,13 @@
       // An explicit field list also fixes the order, which Object.keys()
       // would not guarantee across browsers for numeric-looking keys.
       cfg.fields.forEach(function (field) {
+        // metadata first, then the point's own fields, then anything else
+        // the chart type emitted (percent on a pie, q1/q2/q3 on a box plot).
         var value = meta[field];
         if (value === undefined && field === "x") value = detail.x;
         if (value === undefined && field === "y") value = detail.y;
         if (value === undefined && field === "label") value = detail.label;
+        if (value === undefined && detail.data) value = detail.data[field];
         if (value === undefined) return;      // absent for this point
         row(dl, field, value);
       });

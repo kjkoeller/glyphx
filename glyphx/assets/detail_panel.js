@@ -88,10 +88,13 @@
       // An explicit field list also fixes the order, which Object.keys()
       // would not guarantee across browsers for numeric-looking keys.
       cfg.fields.forEach(function (field) {
+        // metadata first, then the point's own fields, then anything else
+        // the chart type emitted (percent on a pie, q1/q2/q3 on a box plot).
         var value = meta[field];
         if (value === undefined && field === "x") value = detail.x;
         if (value === undefined && field === "y") value = detail.y;
         if (value === undefined && field === "label") value = detail.label;
+        if (value === undefined && detail.data) value = detail.data[field];
         if (value === undefined) return;      // absent for this point
         row(dl, field, value);
       });

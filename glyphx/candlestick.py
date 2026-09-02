@@ -110,6 +110,9 @@ class CandlestickSeries(BaseSeries):
             body_h   = max(abs(py_o - py_c), 1)    # at least 1px visible
             tooltip  = (
                 f'data-x="{svg_escape(str(date))}" '
+                f'data-y="{svg_escape(str(c))}" '
+                f'data-open="{svg_escape(str(o))}" data-high="{svg_escape(str(h))}" '
+                f'data-low="{svg_escape(str(l))}" data-close="{svg_escape(str(c))}" '
                 f'data-label="{svg_escape(self.label or str(date))}" '
                 f'data-value="O:{o} H:{h} L:{l} C:{c}"'
             )

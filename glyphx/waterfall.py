@@ -121,6 +121,7 @@ class WaterfallSeries(BaseSeries):
 
             tooltip = (
                 f'data-x="{svg_escape(lbl)}" '
+                f'data-y="{svg_escape(str(delta))}" '
                 f'data-value="{svg_escape(_format_tick(delta))}" '
                 f'data-label="{svg_escape(self.label or lbl)}"'
             )

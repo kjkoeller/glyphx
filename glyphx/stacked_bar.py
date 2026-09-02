@@ -162,6 +162,7 @@ class StackedBarSeries(BaseSeries):
                 label_txt = f"{val:.1f}{'%' if self.normalize else ''}"
                 tooltip = (
                     f'data-x="{svg_escape(str(cat))}" '
+                    f'data-y="{svg_escape(str(val))}" '
                     f'data-label="{svg_escape(name)}" '
                     f'data-value="{svg_escape(label_txt)}"'
                 )

@@ -22,6 +22,7 @@ from .utils import (
     drop_index,
     has_data,
     is_finite,
+    point_attrs,
     stable_id,
     svg_escape,
 )
@@ -652,9 +653,18 @@ class PieSeries(BaseSeries):
                     f'data-value="{v}"'
                 )
 
+            # Slices carry the share of the whole as well as the raw value:
+            # "28%" is what a pie is actually read for.
+            slice_attrs = point_attrs(
+                self.labels[i] if self.labels else i,
+                v,
+                label=to_plain_text(self.title or "") or None,
+                percent=f"{v / total * 100:.1f}",
+            )
             elements.append(
                 f'<path class="glyphx-point {self.css_class}" '
-                f'd="{path}" fill="{color}" stroke="#fff" stroke-width="1" {tooltip}/>'
+                f'd="{path}" fill="{color}" stroke="#fff" stroke-width="1"'
+                f'{slice_attrs} {tooltip}/>'
             )
 
             if self.labels:
@@ -764,9 +774,12 @@ class DonutSeries(BaseSeries):
             color_val    = self.colors[idx % len(self.colors)]
             hover_class  = f"glyphx-point {self.css_class}" if self.hover_animate else self.css_class
 
+            slice_attrs = point_attrs(
+                label, v, percent=f"{v / total * 100:.1f}" if total else None,
+            )
             elements.append(
-                f'<path d="{path}" fill="{color_val}" class="{hover_class}" '
-                f'data-label="{svg_escape(str(label))}" data-value="{v}"/>'
+                f'<path d="{path}" fill="{color_val}" class="{hover_class}"'
+                f'{slice_attrs} data-value="{v}"/>'
             )
 
             if self.show_labels:
@@ -999,7 +1012,9 @@ class BoxPlotSeries(BaseSeries):
                 f'x="{cx - hw}" y="{box_top}" '
                 f'width="{self.box_width}" height="{box_h}" '
                 f'fill="{box_color}" fill-opacity="0.35" '
-                f'stroke="{box_color}" stroke-width="1.5" {tooltip}/>'
+                f'stroke="{box_color}" stroke-width="1.5"'
+                f'{point_attrs(self.categories[i], f"{q2:.3g}", median=f"{q2:.3g}")}'
+                f' {tooltip}/>'
             )
             # Median line
             elements.append(

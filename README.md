@@ -713,7 +713,30 @@ and omits anything else; leave it out to show whatever each point carries.
 
 It is an ordinary listener on the same `glyphx:select` event, so it composes
 rather than competes — your own listeners still fire for the same click, and
-cross-filtering still applies. Values render as text, never markup. The selected
+cross-filtering still applies. Values render as text, never markup.
+
+#### What each chart type reports
+
+Every chart type answers a click with the values it is read for, so a pie
+gives you a share and a candlestick gives you OHLC:
+
+| Chart | `x` | `y` | also in `detail.data` |
+|---|---|---|---|
+| line, scatter, bar | category or position | value | |
+| pie, donut | slice label | value | `percent` |
+| treemap | tile label | value | `percent` |
+| sunburst | node label | value | |
+| box plot | category | median | `q1`, `q2`, `q3`, `median` |
+| candlestick | date | close | `open`, `high`, `low`, `close` |
+| stacked, grouped bar | category | segment value | |
+| waterfall, diverging bar | step label | delta | |
+| histogram | bin | count | |
+| ECDF (`show_points=True`) | value | cumulative probability | |
+
+`detail.data` carries every `data-` attribute the element has, so a listener
+receives whatever that chart type knows about the thing that was clicked
+rather than only the fields all types share. Any of those names can also go
+straight into `add_detail_panel(fields=[...])`. The selected
 point gets an outline rather than a colour change, since colour is data.
 
 Events rather than a callback registry: any number of listeners can attach

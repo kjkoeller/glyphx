@@ -145,6 +145,7 @@ class DivergingBarSeries:
 
             tooltip = (
                 f'data-x="{svg_escape(cat)}" '
+                f'data-y="{svg_escape(str(val))}" '
                 f'data-value="{svg_escape(sign + _format_tick(val))}" '
                 f'data-label="{svg_escape(self.label or cat)}"'
             )

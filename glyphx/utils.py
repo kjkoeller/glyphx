@@ -19,6 +19,40 @@ from pathlib import Path
 SVG_PRECISION = 2
 
 
+def point_attrs(x, y, label=None, **extra) -> str:
+    """
+    Build the ``data-*`` attributes that make an element selectable.
+
+    ``select.js`` binds to ``[data-x]``, so an element without these is
+    invisible to selection, the detail panel, cross-filtering and the
+    tooltip -- which is why clicking a pie slice or a treemap tile used to
+    do nothing at all while a bar responded.
+
+    Args:
+        x:     Category or position for this element.
+        y:     Its value.
+        label: Series name, for the tooltip heading.
+        **extra: Further ``data-`` attributes. Underscores become hyphens,
+            so ``percent=12.5`` emits ``data-percent="12.5"``. ``None``
+            values are dropped rather than written as "None".
+
+    Returns:
+        str: A leading-space-prefixed attribute string, ready to drop into
+        an element's opening tag.
+    """
+    parts = [
+        f'data-x="{svg_escape(str(x))}"',
+        f'data-y="{svg_escape(str(y))}"',
+    ]
+    if label is not None:
+        parts.append(f'data-label="{svg_escape(str(label))}"')
+    for key, value in extra.items():
+        if value is None:
+            continue
+        parts.append(f'data-{key.replace("_", "-")}="{svg_escape(str(value))}"')
+    return " " + " ".join(parts)
+
+
 def series_fingerprint(series) -> tuple:
     """
     A cheap, stable summary of a series' data, for deriving its CSS class.

@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .colormaps import apply_colormap
-from .utils import _format_tick, series_fingerprint, stable_id, svg_escape
+from .utils import _format_tick, point_attrs, series_fingerprint, stable_id, svg_escape
 
 # Squarification algorithm
 
@@ -219,7 +219,8 @@ class TreemapSeries:
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{rx:.1f}" y="{ry:.1f}" '
                 f'width="{rw:.1f}" height="{rh:.1f}" '
-                f'fill="{color}" rx="3" {tooltip}/>'
+                f'fill="{color}" rx="3"'
+                f'{point_attrs(lbl, val, percent=f"{pct:.1f}")} {tooltip}/>'
             )
 
             # Label - only if rect is large enough

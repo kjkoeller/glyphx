@@ -58,6 +58,23 @@
     return cls || null;
   }
 
+  // Everything else the element carries, keyed without the "data-" prefix:
+  // a pie slice has percent, a box plot has q1/q2/q3, a candlestick has
+  // open/high/low/close. Surfacing them generically means a listener gets
+  // whatever that chart type knows about the thing that was clicked, rather
+  // than only the four fields every type happens to share.
+  function dataAttrs(el) {
+    var out = {};
+    var skip = { x: 1, y: 1, label: 1, meta: 1 };
+    Array.prototype.forEach.call(el.attributes, function (attr) {
+      if (attr.name.indexOf("data-") !== 0) return;
+      var key = attr.name.slice(5);
+      if (skip[key]) return;
+      out[key] = attr.value;
+    });
+    return out;
+  }
+
   function detailFor(el) {
     return {
       x: el.getAttribute("data-x"),
@@ -65,6 +82,7 @@
       label: el.getAttribute("data-label"),
       series: seriesOf(el),
       meta: parseMeta(el),
+      data: dataAttrs(el),
       element: el,
     };
   }

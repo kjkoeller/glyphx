@@ -23,7 +23,7 @@ from collections import defaultdict
 
 from ._typing import AxesLike
 from .colormaps import colormap_colors
-from .utils import _format_tick, series_fingerprint, stable_id, svg_escape
+from .utils import _format_tick, point_attrs, series_fingerprint, stable_id, svg_escape
 
 
 class SunburstSeries:
@@ -246,8 +246,8 @@ class SunburstSeries:
             )
             elements.append(
                 f'<path class="glyphx-point {self.css_class}" '
-                f'd="{path}" {fill_attr} stroke="#fff" stroke-width="0.8" '
-                f'{tooltip}/>'
+                f'd="{path}" {fill_attr} stroke="#fff" stroke-width="0.8"'
+                f'{point_attrs(node, val)} {tooltip}/>'
             )
 
             # Label - only if arc is wide enough

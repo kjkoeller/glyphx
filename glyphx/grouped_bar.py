@@ -105,6 +105,7 @@ class GroupedBarSeries(BaseSeries):
 
                 tooltip = (
                     f'data-x="{svg_escape(str(gname))}" '
+                    f'data-y="{svg_escape(str(val))}" '
                     f'data-label="{svg_escape(str(cat))}" '
                     f'data-value="{svg_escape(_format_tick(val))}"'
                 )
