@@ -62,6 +62,9 @@
     document.querySelectorAll('.glyphx-brush-hint').forEach(h => {
       h.style.opacity = '0';
     });
+    document.querySelectorAll('.glyphx-brush-stats').forEach(b => {
+      b.style.opacity = '0';
+    });
   }
 
   // -- Brush rectangle -----------------------------------------------------
@@ -124,6 +127,133 @@
     return hint;
   }
 
+  // -- Selection statistics -------------------------------------------------
+  //
+  // Brushing used to select points and say nothing about them: everything
+  // outside faded, and you were left counting dots by eye. The numbers are
+  // already in data-y on every element, so summarising them is free.
+
+  // Set when a brush drag finishes, so the click it generates is swallowed
+  // before any other handler treats it as a plain click on the chart.
+  let suppressNextClick = false;
+  document.addEventListener('click', e => {
+    if (!suppressNextClick) return;
+    suppressNextClick = false;
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
+
+  function ensureStats(svg) {
+    const parent = svg.parentElement;
+    let box = parent.querySelector('.glyphx-brush-stats');
+    if (box) return box;
+
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    box = document.createElement('div');
+    box.className = 'glyphx-brush-stats';
+    box.setAttribute('role', 'status');
+    box.setAttribute('aria-live', 'polite');
+    Object.assign(box.style, {
+      position:      'absolute',
+      top:           '8px',
+      right:         '8px',
+      background:    'rgba(17,24,39,0.92)',
+      color:         '#fff',
+      padding:       '8px 12px',
+      borderRadius:  '8px',
+      fontSize:      '12px',
+      fontFamily:    'system-ui, sans-serif',
+      lineHeight:    '1.5',
+      pointerEvents: 'none',
+      opacity:       '0',
+      transition:    'opacity 0.15s',
+      zIndex:        '100',
+      boxShadow:     '0 2px 8px rgba(0,0,0,0.25)',
+      fontVariantNumeric: 'tabular-nums',
+    });
+    parent.appendChild(box);
+    return box;
+  }
+
+  // Significant figures rather than fixed decimals: a selection spanning
+  // 0.002 and one spanning 20000 both need to read sensibly.
+  function fmt(v) {
+    if (!isFinite(v)) return '--';
+    const abs = Math.abs(v);
+    if (abs === 0) return '0';
+    if (abs >= 1000) return v.toFixed(0);
+    if (abs >= 10) return v.toFixed(1);
+    if (abs >= 1) return v.toFixed(2);
+    return v.toPrecision(3);
+  }
+
+  function elementsInside(svg, bx, by, bw, bh) {
+    const hits = [];
+    svg.querySelectorAll('.glyphx-point').forEach(el => {
+      const c = elementCenter(el);
+      if (c && c.x >= bx && c.x <= bx + bw && c.y >= by && c.y <= by + bh) {
+        hits.push(el);
+      }
+    });
+    return hits;
+  }
+
+  function summarise(elements) {
+    const ys = [];
+    elements.forEach(el => {
+      const raw = el.getAttribute('data-y');
+      if (raw === null) return;
+      const n = Number(raw);
+      if (isFinite(n)) ys.push(n);          // categorical y is skipped
+    });
+    if (!ys.length) return { count: elements.length, numeric: 0 };
+
+    let sum = 0, min = Infinity, max = -Infinity;
+    ys.forEach(v => { sum += v; if (v < min) min = v; if (v > max) max = v; });
+    return {
+      count: elements.length,
+      numeric: ys.length,
+      sum: sum,
+      mean: sum / ys.length,
+      min: min,
+      max: max,
+    };
+  }
+
+  function renderStats(svg, stats) {
+    const box = ensureStats(svg);
+    if (!stats || !stats.count) { box.style.opacity = '0'; return; }
+
+    const rows = [['selected', String(stats.count)]];
+    if (stats.numeric) {
+      rows.push(['mean', fmt(stats.mean)]);
+      rows.push(['sum', fmt(stats.sum)]);
+      rows.push(['range', fmt(stats.min) + ' to ' + fmt(stats.max)]);
+    }
+    // textContent per cell, never innerHTML: these values come from the
+    // plotted data.
+    box.textContent = '';
+    rows.forEach(([term, value]) => {
+      const line = document.createElement('div');
+      const k = document.createElement('span');
+      k.textContent = term + ': ';
+      k.style.opacity = '0.65';
+      const v = document.createElement('span');
+      v.textContent = value;
+      line.appendChild(k); line.appendChild(v);
+      box.appendChild(line);
+    });
+    box.style.opacity = '1';
+  }
+
+  function hideStats() {
+    document.querySelectorAll('.glyphx-brush-stats').forEach(b => {
+      b.style.opacity = '0';
+    });
+  }
+
   // -- Wire a single chart SVG ---------------------------------------------
   function wireChart(svg) {
     svg.addEventListener('mousedown', e => {
@@ -145,6 +275,12 @@
       const cur = svgPoint(svg, e);
       const r   = ensureBrushRect(svg);
       updateBrushRect(r, startPt.x, startPt.y, cur.x, cur.y);
+
+      // Update as the rectangle grows, so the numbers guide the drag
+      // rather than only reporting on it afterwards.
+      renderStats(svg, summarise(elementsInside(
+        svg, +r.getAttribute('x'), +r.getAttribute('y'),
+        +r.getAttribute('width'), +r.getAttribute('height'))));
     });
 
     svg.addEventListener('mouseup', e => {
@@ -160,7 +296,9 @@
       const bh = +r.getAttribute('height');
 
       // Tiny drag = clear
-      if (bw < 6 && bh < 6) { clearSelection(); return; }
+      if (bw < 6 && bh < 6) { clearSelection(); hideStats(); return; }
+
+      renderStats(svg, summarise(elementsInside(svg, bx, by, bw, bh)));
 
       // Collect data-x keys inside the brush on THIS chart
       const selected = new Set();
@@ -173,6 +311,12 @@
       });
 
       applySelection(selected.size ? selected : null);
+
+      // A click event follows every mousedown/mouseup pair, and interact.js
+      // handles clicks by resetting every point's opacity -- which wiped the
+      // selection the instant it was applied, so brushing never actually
+      // highlighted anything. Swallow that one click.
+      suppressNextClick = true;
     });
 
     // Cancel if mouse leaves while dragging

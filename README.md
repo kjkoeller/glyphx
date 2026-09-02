@@ -753,6 +753,16 @@ rest of the drawing.
 
 Linear axes only; a log axis keeps its original ticks.
 
+### Brushing
+
+Shift and drag to select a region. Matching points stay lit, the rest fade,
+and a readout shows what you selected — count, mean, sum and range — updating
+live as the rectangle grows rather than only once you let go. Escape clears it.
+
+Non-numeric values are skipped, so a categorical axis still reports a count.
+The readout is an ARIA live region, so the numbers are announced rather than
+being visual-only.
+
 ### Cross-chart filtering
 
 Click a bar, point or slice and every other opted-in chart on the page dims
