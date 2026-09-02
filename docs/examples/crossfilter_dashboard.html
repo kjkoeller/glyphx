@@ -1266,6 +1266,282 @@
     ensureStyle();
   }
 })();
+</script><script>
+/*
+ * GlyphX -- selection events.
+ *
+ * Clicking a data point dispatches a `glyphx:select` CustomEvent on
+ * `document`, and clicking empty space dispatches `glyphx:deselect`. That is
+ * the whole extension surface: anything on the page -- a detail panel, a
+ * table, a second chart, an <img>, a fetch to your own endpoint -- can listen
+ * and update itself.
+ *
+ *   document.addEventListener('glyphx:select', (e) => {
+ *     const { x, y, label, series, meta, element } = e.detail;
+ *     document.getElementById('detail').textContent = meta.customer;
+ *   });
+ *
+ * `meta` is whatever was passed to the series as `meta=[...]` in Python,
+ * parsed back from JSON, so the listener receives the same structure the
+ * caller wrote rather than a flattened string.
+ *
+ * Events rather than a callback registry: any number of listeners can attach
+ * without knowing about each other, they can be removed, and nothing here
+ * needs to know what they do. No server, no callback round-trip -- this all
+ * runs in the exported file.
+ */
+(function () {
+  "use strict";
+
+  var SELECTED_CLASS = "glyphx-selected";
+  var selected = null;
+
+  function ensureStyle() {
+    if (document.getElementById("glyphx-select-style")) return;
+    var style = document.createElement("style");
+    style.id = "glyphx-select-style";
+    // An outline rather than a fill change, so the point keeps its encoded
+    // colour -- the colour is data, the selection is not.
+    style.textContent =
+      "." + SELECTED_CLASS + " { stroke: currentColor; stroke-width: 2.5px; " +
+      "paint-order: stroke; }";
+    document.head.appendChild(style);
+  }
+
+  function parseMeta(el) {
+    var raw = el.getAttribute("data-meta");
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      // Malformed metadata should not take the whole page down; hand the
+      // listener the raw string and let it decide.
+      return raw;
+    }
+  }
+
+  function seriesOf(el) {
+    var cls = Array.prototype.find.call(el.classList, function (c) {
+      return c.indexOf("series-") === 0 || c.indexOf("series3d-") === 0;
+    });
+    return cls || null;
+  }
+
+  function detailFor(el) {
+    return {
+      x: el.getAttribute("data-x"),
+      y: el.getAttribute("data-y"),
+      label: el.getAttribute("data-label"),
+      series: seriesOf(el),
+      meta: parseMeta(el),
+      element: el,
+    };
+  }
+
+  function clearSelection() {
+    if (!selected) return;
+    selected.classList.remove(SELECTED_CLASS);
+    selected = null;
+    document.dispatchEvent(new CustomEvent("glyphx:deselect"));
+  }
+
+  function select(el) {
+    if (selected === el) {          // clicking the same point again clears
+      clearSelection();
+      return;
+    }
+    if (selected) selected.classList.remove(SELECTED_CLASS);
+    selected = el;
+    el.classList.add(SELECTED_CLASS);
+    document.dispatchEvent(new CustomEvent("glyphx:select", {
+      detail: detailFor(el),
+    }));
+  }
+
+  // Capture phase, because crossfilter.js also claims plain clicks and calls
+  // stopPropagation() there -- a bubble-phase listener would never run on a
+  // chart with filtering enabled. Both are capture listeners on `document`,
+  // and stopPropagation does not stop siblings on the same node, so the two
+  // features compose: one click both filters and emits a selection.
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest) return;
+    var el = e.target.closest("[data-x]");
+    if (!el || !el.closest("svg[data-glyphx]")) {
+      // A click on the chart background means "nothing is selected".
+      if (e.target.closest && e.target.closest("svg[data-glyphx]")) {
+        clearSelection();
+      }
+      return;
+    }
+    // Modified clicks belong to the inspector and the other interact.js
+    // gestures; only a plain click is a selection.
+    if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey) return;
+    select(el);
+  }, true);
+
+  // Keyboard parity: points already carry tabindex="0".
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      clearSelection();
+      return;
+    }
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = document.activeElement;
+    if (!el || !el.getAttribute || el.getAttribute("data-x") === null) return;
+    if (!el.closest("svg[data-glyphx]")) return;
+    e.preventDefault();
+    select(el);
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureStyle);
+  } else {
+    ensureStyle();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- selection detail panel.
+ *
+ * A panel that fills itself in when a point is clicked, so the common case
+ * ("click a point, show its details") needs no JavaScript from the caller.
+ * Configured entirely from Python:
+ *
+ *     fig.add_detail_panel(fields=["customer", "region"])
+ *
+ * which emits a <div data-glyphx-detail-panel='{...}'> next to the chart.
+ * This reads that config and subscribes to the `glyphx:select` event that
+ * select.js already dispatches -- it is an ordinary consumer of the public
+ * event, not a special case wired into the chart. Anything else on the page
+ * can listen to the same event at the same time.
+ */
+(function () {
+  "use strict";
+
+  var STYLE_ID = "glyphx-detail-panel-style";
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    var style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = [
+      ".glyphx-detail-panel {",
+      "  font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;",
+      "  border: 1px solid rgba(0,0,0,.12); border-radius: 8px;",
+      "  padding: 12px 14px; min-width: 180px; background: #fff;",
+      "}",
+      ".glyphx-detail-panel[data-empty='true'] { color: #6b7280; }",
+      ".glyphx-detail-panel dl { margin: 0; display: grid;",
+      "  grid-template-columns: auto 1fr; gap: 4px 12px; }",
+      ".glyphx-detail-panel dt { color: #6b7280; white-space: nowrap; }",
+      ".glyphx-detail-panel dd { margin: 0; font-variant-numeric: tabular-nums; }",
+      ".glyphx-detail-panel h4 { margin: 0 0 8px; font-size: 13px; }",
+      // Put the panel beside the chart when there is room, and below it on
+      // a narrow screen, without the caller writing any layout CSS. The
+      // template sets `svg { width: 100% }`, which would take the whole row
+      // and push the panel onto the next line, so the SVG is given a flex
+      // basis it can shrink from instead.
+      ".glyphx-chart-area:has(.glyphx-detail-panel) {",
+      "  display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;",
+      "}",
+      ".glyphx-chart-area:has(.glyphx-detail-panel) > svg {",
+      "  flex: 1 1 340px; min-width: 0; width: auto;",
+      "}",
+      ".glyphx-chart-area > .glyphx-detail-panel { flex: 0 1 220px; }",
+    ].join("\n");
+    document.head.appendChild(style);
+  }
+
+  function config(panel) {
+    try {
+      return JSON.parse(panel.getAttribute("data-glyphx-detail-panel")) || {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  // Text, never markup: the values come from the chart's own data, which is
+  // whatever the caller plotted. Building innerHTML from it would make any
+  // dataset containing a "<" an injection vector.
+  function row(dl, term, value) {
+    var dt = document.createElement("dt");
+    dt.textContent = term;
+    var dd = document.createElement("dd");
+    dd.textContent = value;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+  }
+
+  function render(panel, detail) {
+    var cfg = config(panel);
+    panel.textContent = "";
+    panel.setAttribute("data-empty", "false");
+
+    if (cfg.title) {
+      var heading = document.createElement("h4");
+      heading.textContent = cfg.title;
+      panel.appendChild(heading);
+    }
+
+    var dl = document.createElement("dl");
+    var meta = (detail.meta && typeof detail.meta === "object") ? detail.meta : {};
+
+    if (cfg.fields && cfg.fields.length) {
+      // An explicit field list also fixes the order, which Object.keys()
+      // would not guarantee across browsers for numeric-looking keys.
+      cfg.fields.forEach(function (field) {
+        var value = meta[field];
+        if (value === undefined && field === "x") value = detail.x;
+        if (value === undefined && field === "y") value = detail.y;
+        if (value === undefined && field === "label") value = detail.label;
+        if (value === undefined) return;      // absent for this point
+        row(dl, field, value);
+      });
+    } else {
+      // No field list: show whatever the point carries, metadata first.
+      Object.keys(meta).forEach(function (k) { row(dl, k, meta[k]); });
+      if (!Object.keys(meta).length) {
+        row(dl, "x", detail.x);
+        row(dl, "y", detail.y);
+        if (detail.label) row(dl, "series", detail.label);
+      }
+    }
+
+    panel.appendChild(dl);
+  }
+
+  function clear(panel) {
+    var cfg = config(panel);
+    panel.textContent = cfg.empty || "Click a point to see its details.";
+    panel.setAttribute("data-empty", "true");
+  }
+
+  function panels() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll("[data-glyphx-detail-panel]")
+    );
+  }
+
+  function init() {
+    var found = panels();
+    if (!found.length) return;
+    ensureStyle();
+    found.forEach(clear);
+
+    document.addEventListener("glyphx:select", function (e) {
+      panels().forEach(function (panel) { render(panel, e.detail); });
+    });
+    document.addEventListener("glyphx:deselect", function () {
+      panels().forEach(clear);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
 </script>
 </body>
 </html>

@@ -121,6 +121,8 @@ class Figure:
         self._insets:        list[tuple] = []
         # Opt-in marker read by crossfilter.js; see enable_crossfilter().
         self._crossfilter:   bool = False
+        # Config for detail_panel.js, or None; see add_detail_panel().
+        self._detail_panel:  dict | None = None
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -160,6 +162,62 @@ class Figure:
         """Set the Y-axis label and return ``self``."""
         self.axes.ylabel = label
         return self
+
+    def add_detail_panel(self, fields: list[str] | None = None, *,
+                         title: str | None = None,
+                         empty: str | None = None) -> Figure:
+        """
+        Show a panel that fills in with a point's details when it is clicked.
+
+        The common case for selection events without
+        writing any JavaScript. Pass ``meta=[...]`` to the series and the
+        panel lists those values for whichever point is selected; click the
+        same point again, or press Escape, and it goes back to its empty
+        message.
+
+        Under the hood this is an ordinary listener on the public
+        ``glyphx:select`` event, so it composes rather than competes: your
+        own listeners still fire for the same click, and cross-filtering
+        still applies.
+
+        Args:
+            fields: Metadata keys to show, in this order. ``"x"``, ``"y"``
+                and ``"label"`` are also accepted and fall back to the
+                point's own values. A key a given point lacks is skipped.
+                Defaults to every key that point's ``meta`` carries, or to
+                x/y/series for a series plotted without metadata.
+            title:  Heading for the panel.
+            empty:  Text shown before anything is selected.
+
+        Returns:
+            ``self`` for chaining.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined.
+
+        Example::
+
+            fig.add(ScatterSeries(x, y, meta=records))
+            fig.add_detail_panel(["customer", "region"], title="Selected")
+            fig.share("chart.html")
+        """
+        self._detail_panel = {
+            "fields": list(fields) if fields else [],
+            "title": title,
+            "empty": empty or "Click a point to see its details.",
+        }
+        return self
+
+    def _detail_panel_html(self) -> str:
+        """Markup for the detail panel, or an empty string when unused."""
+        if not self._detail_panel:
+            return ""
+        import html as _html
+        import json as _json
+
+        config = _html.escape(_json.dumps(self._detail_panel), quote=True)
+        return (f'<div class="glyphx-detail-panel" '
+                f"data-glyphx-detail-panel='{config}'></div>")
 
     def enable_crossfilter(self, enabled: bool = True) -> Figure:
         """
@@ -1494,7 +1552,7 @@ class Figure:
             except Exception:
                 pass
 
-        html = wrap_svg_with_template(svg_string)
+        html = wrap_svg_with_template(svg_string + self._detail_panel_html())
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
         tmp.close()
@@ -1722,7 +1780,9 @@ class Figure:
             Complete HTML document string.
         """
         from .utils import make_shareable_html
-        svg   = self.render_svg()
+        # The panel sits alongside the chart inside the same content block,
+        # so it travels with the SVG through both export paths.
+        svg   = self.render_svg() + self._detail_panel_html()
         label = title or self.title or "GlyphX Chart"
         html  = make_shareable_html(svg, title=label)
         if filename:

@@ -477,12 +477,32 @@ def wrap_svg_with_template(svg_string: str) -> str:
 
     # Cross-chart filtering. Inert unless a chart on the page carries
     # data-glyphx-crossfilter, so it costs nothing when unused.
+    select_path = Path(__file__).parent / "assets" / "select.js"
+    select_js = ""
+    if select_path.exists():
+        select_js = (
+            "<script>\n"
+            + _strip_script_tags(select_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
     xfilter_path = Path(__file__).parent / "assets" / "crossfilter.js"
     xfilter_js = ""
     if xfilter_path.exists():
         xfilter_js = (
             "<script>\n"
             + _strip_script_tags(xfilter_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
+    # Consumes the glyphx:select event select.js emits, so it must be loaded
+    # after it; the concatenation order below reflects that.
+    detail_path = Path(__file__).parent / "assets" / "detail_panel.js"
+    detail_js = ""
+    if detail_path.exists():
+        detail_js = (
+            "<script>\n"
+            + _strip_script_tags(detail_path.read_text(encoding="utf-8"))
             + "\n</script>"
         )
 
@@ -515,7 +535,8 @@ def wrap_svg_with_template(svg_string: str) -> str:
         html_content
         .replace("{{svg_content}}", svg_string)
         .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script
-                 + interact_script + a11y_script + legend_js + xfilter_js)
+                 + interact_script + a11y_script + legend_js + xfilter_js
+                 + select_js + detail_js)
     )
 
 
@@ -885,6 +906,8 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     export_js   = _read_js("export.js")
     legend_js   = _read_js("legend.js")
     xfilter_js  = _read_js("crossfilter.js")
+    detail_js   = _read_js("detail_panel.js")
+    select_js   = _read_js("select.js")
 
     # Read template and replace placeholders
     template_path = assets_dir / "responsive_template.html"
@@ -905,6 +928,8 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         f"<script>\n{export_js}\n</script>"   if export_js   else "",
         f"<script>\n{legend_js}\n</script>"   if legend_js   else "",
         f"<script>\n{xfilter_js}\n</script>"  if xfilter_js  else "",
+        f"<script>\n{select_js}\n</script>"   if select_js   else "",
+        f"<script>\n{detail_js}\n</script>"   if detail_js   else "",
     ]))
 
     # Metadata comment

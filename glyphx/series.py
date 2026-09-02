@@ -443,7 +443,7 @@ class ScatterSeries(BaseSeries):
                  size=5, marker="circle", title=None,
                  c=None, cmap="viridis",
                  sizes=None, style=None, style_order=None,
-                 threshold=None):
+                 threshold=None, meta=None):
         """Set up the points, including any size, colour or marker-style encoding."""
         check_xy_lengths(x, y, self.__class__.__name__)
         super().__init__(x, y, color, label=label or legend, title=title)
@@ -455,7 +455,23 @@ class ScatterSeries(BaseSeries):
         self.style                = style    # per-point style labels
         self.style_order          = style_order  # explicit style ordering
         self.threshold            = threshold    # overrides AUTO_THRESHOLD
+        self.meta                 = meta     # per-point payload, one entry per x
         self.last_downsample_info = None
+
+    def _meta_attr(self, index: int) -> str:
+        """
+        Render this point's ``meta`` entry as a ``data-meta`` attribute.
+
+        Serialised as JSON so a listener gets back the structure that was
+        passed in rather than a flattened string. Returns an empty string
+        when the series carries no metadata, so the ordinary case adds
+        nothing to the output.
+        """
+        meta = self.meta
+        if not meta or index >= len(meta):
+            return ""
+        import json
+        return f' data-meta="{svg_escape(json.dumps(meta[index], default=str))}"'
 
     def _point_color(self, idx: int, total: int) -> str:
         """Return per-point color via colormap encoding or flat color."""
@@ -519,6 +535,7 @@ class ScatterSeries(BaseSeries):
                 f'data-x="{svg_escape(str(orig_x))}" '
                 f'data-y="{svg_escape(str(y))}" '
                 f'data-label="{svg_escape(to_plain_text(self.label or ""))}"'
+                f'{self._meta_attr(kept_idx[i] if kept_idx else i)}'
             )
             if self.marker == "square":
                 elements.append(

@@ -667,6 +667,60 @@ html_str = fig.share(title="Q3 Report")      # custom <title> tag
 `fig.share()` inlines all JavaScript so the output works in:
 email clients · Confluence · Notion · GitHub Pages · air-gapped environments
 
+### Reacting to a clicked point
+
+Clicking a point dispatches a `glyphx:select` event on `document`, so anything
+else on the page can update itself — a detail panel, a table, an image, a
+second chart, a request to your own endpoint. Clicking the same point again,
+or pressing Escape, dispatches `glyphx:deselect`.
+
+```python
+fig.add(ScatterSeries(
+    x, y,
+    meta=[{"customer": "Acme", "orders": 42},
+          {"customer": "Beta", "orders": 17}],
+))
+fig.share("chart.html")
+```
+
+```html
+<div id="detail">Click a point</div>
+<script>
+  document.addEventListener('glyphx:select', (e) => {
+    const { x, y, label, series, meta } = e.detail;
+    detail.textContent = `${meta.customer} — ${meta.orders} orders`;
+  });
+</script>
+```
+
+`meta` is whatever you passed in Python, parsed back from JSON, so the listener
+receives the structure you wrote rather than a flattened string.
+
+#### A detail panel without writing JavaScript
+
+For the common case — click a point, show its record — `add_detail_panel()`
+does the wiring for you:
+
+```python
+fig.add(ScatterSeries(x, y, meta=records))
+fig.add_detail_panel(["customer", "region", "tier"], title="Selected customer")
+fig.share("chart.html")
+```
+
+The panel renders beside the chart, fills in on click, and returns to its
+empty message on Escape or a second click. `fields` fixes the display order
+and omits anything else; leave it out to show whatever each point carries.
+
+It is an ordinary listener on the same `glyphx:select` event, so it composes
+rather than competes — your own listeners still fire for the same click, and
+cross-filtering still applies. Values render as text, never markup. The selected
+point gets an outline rather than a colour change, since colour is data.
+
+Events rather than a callback registry: any number of listeners can attach
+without knowing about each other, and it composes with the rest — on a chart
+with `enable_crossfilter()`, one click both filters the other charts and emits
+the selection. Everything runs in the exported file; there is no server.
+
 ### Cross-chart filtering
 
 Click a bar, point or slice and every other opted-in chart on the page dims
