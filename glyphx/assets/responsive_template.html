@@ -34,6 +34,10 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      /* Wrap rather than overflow: on a phone the row is wider than the
+         screen, and without this the leftmost buttons are cut off with no
+         way to scroll to them. */
+      flex-wrap: wrap;
       gap: 8px;
       padding: 10px 14px;
       background: #fafafa;
@@ -42,6 +46,9 @@
 
     .glyphx-toolbar span {
       margin-right: auto;
+      /* The hint takes the whole first line on a narrow screen, so the
+         buttons wrap beneath it instead of squeezing it to one word. */
+      flex: 1 1 100%;
       font-size: 11px;
       color: #888;
       letter-spacing: 0.04em;

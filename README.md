@@ -753,6 +753,11 @@ rest of the drawing.
 
 Linear axes only; a log axis keeps its original ticks.
 
+On a touch device, one finger pans and two pinch to zoom, anchored on the
+midpoint between them. The toolbar wraps rather than overflowing a phone
+screen, so a chart you share by email is usable on the device most people
+will open it on.
+
 A **Reset view** button appears in the toolbar as soon as the view moves, and
 disappears once you are back to the default — so the way out is visible
 exactly when it is wanted, rather than relying on knowing the double-click

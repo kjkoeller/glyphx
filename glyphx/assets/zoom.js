@@ -243,6 +243,94 @@
       }
     });
 
+    // -- Touch ------------------------------------------------------------
+    //
+    // Only mouse events were bound, so on a phone or tablet the chart was a
+    // static image -- while still advertising cursor: grab, promising a
+    // drag the device could not perform. One finger pans, two pinch to zoom,
+    // mirroring the mouse behaviour above.
+
+    let touchStart  = null;   // {x, y} for a one-finger pan
+    let pinchStart  = null;   // {dist, cx, cy, box} for a two-finger pinch
+
+    function touchMid(touches) {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2,
+      };
+    }
+
+    function touchDist(touches) {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    svg.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        pinchStart = null;
+      } else if (e.touches.length === 2) {
+        touchStart = null;
+        pinchStart = {
+          dist: touchDist(e.touches),
+          mid:  touchMid(e.touches),
+          box:  viewBox.slice(),
+        };
+      }
+    }, { passive: true });
+
+    svg.addEventListener('touchmove', e => {
+      const rect = svg.getBoundingClientRect();
+
+      if (e.touches.length === 1 && touchStart) {
+        // Pan. preventDefault stops the page scrolling underneath the drag,
+        // which otherwise makes the chart feel stuck.
+        e.preventDefault();
+        const dx = (e.touches[0].clientX - touchStart.x) * (viewBox[2] / rect.width);
+        const dy = (e.touches[0].clientY - touchStart.y) * (viewBox[3] / rect.height);
+        viewBox[0] -= dx;
+        viewBox[1] -= dy;
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        svg.setAttribute('viewBox', viewBox.join(' '));
+        relabel(svg);
+        updateResetButton();
+        return;
+      }
+
+      if (e.touches.length === 2 && pinchStart) {
+        e.preventDefault();
+        const ratio = pinchStart.dist / Math.max(1, touchDist(e.touches));
+        const box   = pinchStart.box;
+        // Anchor on the midpoint between the fingers, so the chart zooms
+        // around what is being pinched rather than around the corner.
+        const mx = (pinchStart.mid.x - rect.left) / rect.width;
+        const my = (pinchStart.mid.y - rect.top) / rect.height;
+        const nw = box[2] * ratio;
+        const nh = box[3] * ratio;
+        viewBox = [
+          box[0] + mx * (box[2] - nw),
+          box[1] + my * (box[3] - nh),
+          nw, nh,
+        ];
+        svg.setAttribute('viewBox', viewBox.join(' '));
+        relabel(svg);
+        updateResetButton();
+      }
+    }, { passive: false });
+
+    svg.addEventListener('touchend', e => {
+      if (e.touches.length === 0) { touchStart = null; pinchStart = null; }
+      else if (e.touches.length === 1) {
+        pinchStart = null;
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    }, { passive: true });
+
+    // Without this the browser claims the gesture for page scroll and
+    // pinch-zoom, and touchmove never fires often enough to be usable.
+    svg.style.touchAction = 'none';
+
     // Store original viewBox for reset
     svg.dataset.originalViewBox = viewBox.join(' ');
     // resetAll() runs outside this closure; without this the button would
