@@ -844,7 +844,8 @@ class Axes:
 
     def _tick_label_svg(self, x_p: float, y_label: float, label, *,
                         anchor: str, font: str, text_color: str,
-                        transform: str = "", wrap_chars: float | None = None) -> str:
+                        transform: str = "", wrap_chars: float | None = None,
+                        tick_value=None) -> str:
         """
         Build the ``<text>`` element for one X-axis tick label.
 
@@ -879,10 +880,35 @@ class Axes:
             body = tspans
 
         transform_attr = f'transform="{transform}"' if transform else ""
+        tick_attr = "" if tick_value is None else f' data-tick="{tick_value}"'
         return (
             f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-            f'font-size="11" font-family="{font}" fill="{text_color}" {transform_attr}>'
+            f'font-size="11" font-family="{font}" fill="{text_color}" '
+            f'class="glyphx-tick glyphx-xtick"{tick_attr} {transform_attr}>'
             f'{body}</text>'
+        )
+
+    def axis_metadata(self) -> str:
+        """
+        The plot rectangle and data domains, as ``data-`` attributes.
+
+        Zooming rewrites the SVG's ``viewBox``, which crops the axis labels
+        along with everything else -- they are static text positioned for
+        the original domain. Publishing the geometry lets zoom.js map the
+        visible region back to data coordinates and redraw the ticks for
+        whatever is actually on screen.
+
+        Returns:
+            str: Attribute string, or ``""`` when there is no domain yet.
+        """
+        if not self._x_domain or not self._y_domain:
+            return ""
+        pad = self.padding
+        return (
+            f' data-plot="{pad},{pad},{self.width - pad},{self.height - pad}"'
+            f' data-domain-x="{self._x_domain[0]},{self._x_domain[1]}"'
+            f' data-domain-y="{self._y_domain[0]},{self._y_domain[1]}"'
+            f' data-xscale="{self.xscale}" data-yscale="{self.yscale}"'
         )
 
     def render_grid(self, ticks=5):
@@ -988,7 +1014,8 @@ class Axes:
             # Label
             elements.append(
                 f'<text x="{pad - self._tick_length - 4}" y="{y_p + 4}" text-anchor="end" '
-                f'font-size="11" font-family="{font}" fill="{text_color}">'
+                f'font-size="11" font-family="{font}" fill="{text_color}" '
+                f'class="glyphx-tick glyphx-ytick" data-tick="{y_v}">'
                 f'{svg_label(_fmt(y_v, lbl_ovr))}</text>'
             )
 
@@ -1105,7 +1132,7 @@ class Axes:
                     elements.append(self._tick_label_svg(
                         x_p, y_label, tick_label, anchor=anchor, font=font,
                         text_color=text_color, transform=rot,
-                        wrap_chars=wrap_chars))
+                        wrap_chars=wrap_chars, tick_value=x_v))
             # Minor X ticks
             if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
                 for j in range(len(_x_tick_vals) - 1):

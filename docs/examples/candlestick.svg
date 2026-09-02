@@ -1,4 +1,4 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-48442a6da879-title glyphx-chart-48442a6da879-desc" id="glyphx-chart-48442a6da879" data-glyphx="true" width="700" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460"><title id="glyphx-chart-48442a6da879-title">OHLC Candlestick Chart  —  CandlestickSeries</title><desc id="glyphx-chart-48442a6da879-desc">Candlestick chart titled &quot;OHLC Candlestick Chart  —  CandlestickSeries&quot;. X axis: Trading Session. Y axis: Price (USD). Series &quot;AAPL&quot;: 10 data points. Ranges from 147 (at 9) to 155 (at 0).</desc><rect width="700" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-a72c9cc2be78-title glyphx-chart-a72c9cc2be78-desc" id="glyphx-chart-a72c9cc2be78" data-glyphx="true" data-plot="50,50,520,410" data-domain-x="-0.5,9.5" data-domain-y="143.79410000000001,155.61589999999998" data-xscale="linear" data-yscale="linear" width="700" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 460"><title id="glyphx-chart-a72c9cc2be78-title">OHLC Candlestick Chart  —  CandlestickSeries</title><desc id="glyphx-chart-a72c9cc2be78-desc">Candlestick chart titled &quot;OHLC Candlestick Chart  —  CandlestickSeries&quot;. X axis: Trading Session. Y axis: Price (USD). Series &quot;AAPL&quot;: 10 data points. Ranges from 147 (at 9) to 155 (at 0).</desc><rect width="700" height="460" fill="#ffffff"/>
 <text x="350" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">OHLC Candlestick Chart  —  CandlestickSeries</text>
 <line x1="50" y1="410" x2="520" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
@@ -6,42 +6,42 @@
 <text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Price (USD)</text>
 <line x1="50" x2="520" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">144</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="143.79410000000001">144</text>
 <line x1="50" x2="520" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">146</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="146.15846000000002">146</text>
 <line x1="50" x2="520" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">149</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="148.52282">149</text>
 <line x1="50" x2="520" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">151</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="150.88718">151</text>
 <line x1="50" x2="520" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">153</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="153.25153999999998">153</text>
 <line x1="50" x2="520" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">156</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="155.61589999999998">156</text>
 <line y1="50" y2="410" x1="97.0" x2="97.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="97.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mon</text>
+<text x="97.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mon</text>
 <line y1="50" y2="410" x1="144.0" x2="144.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="144.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Tue</text>
+<text x="144.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Tue</text>
 <line y1="50" y2="410" x1="191.0" x2="191.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="191.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Wed</text>
+<text x="191.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Wed</text>
 <line y1="50" y2="410" x1="238.0" x2="238.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="238.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Thu</text>
+<text x="238.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Thu</text>
 <line y1="50" y2="410" x1="285.0" x2="285.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="285.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Fri</text>
+<text x="285.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Fri</text>
 <line y1="50" y2="410" x1="332.0" x2="332.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="332.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mon</text>
+<text x="332.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mon</text>
 <line y1="50" y2="410" x1="379.0" x2="379.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="379.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Tue</text>
+<text x="379.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Tue</text>
 <line y1="50" y2="410" x1="426.0" x2="426.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="426.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Wed</text>
+<text x="426.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Wed</text>
 <line y1="50" y2="410" x1="473.0" x2="473.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="473.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Thu</text>
+<text x="473.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Thu</text>
 <line y1="50" y2="410" x1="520.0" x2="520.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="520.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Fri</text>
+<text x="520.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Fri</text>
 <line x1="97.0" x2="97.0" y1="72.11" y2="319.07" stroke="#26a641" stroke-width="1.5"/>
 <rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="82.9" y="117.17" width="28.2" height="164.75" fill="#26a641" data-x="Mon" data-y="153.41" data-open="148.0" data-high="154.89" data-low="146.78" data-close="153.41" data-label="AAPL" data-value="O:148.0 H:154.89 L:146.78 C:153.41"/>
 <line x1="144.0" x2="144.0" y1="101.95" y2="169.25" stroke="#d73027" stroke-width="1.5"/>

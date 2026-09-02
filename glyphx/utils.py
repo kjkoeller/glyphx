@@ -575,7 +575,8 @@ def wrap_svg_with_template(svg_string: str) -> str:
 
 
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
-                    has_math: bool = False, crossfilter: bool = False) -> str:
+                    has_math: bool = False, crossfilter: bool = False,
+                    axis_metadata: str = "") -> str:
     """
     Wrap raw SVG elements in a full <svg> root element.
 
@@ -604,7 +605,8 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     math_attr = ' data-has-math="true"' if has_math else ""
     xfilter_attr = ' data-glyphx-crossfilter="true"' if crossfilter else ""
     return (
-        f'<svg id="{chart_id}" data-glyphx="true"{math_attr}{xfilter_attr} '
+        f'<svg id="{chart_id}" data-glyphx="true"{math_attr}{xfilter_attr}'
+        f'{axis_metadata} '
         f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {width} {height}">{svg_content}</svg>'
     )

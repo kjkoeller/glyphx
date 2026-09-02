@@ -1,39 +1,39 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-8d4f456c2e01-title glyphx-chart-8d4f456c2e01-desc" id="glyphx-chart-8d4f456c2e01" data-glyphx="true" width="720" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460"><title id="glyphx-chart-8d4f456c2e01-title">Revenue Bridge  —  WaterfallSeries  (None = auto total)</title><desc id="glyphx-chart-8d4f456c2e01-desc">Waterfall chart titled &quot;Revenue Bridge  —  WaterfallSeries  (None = auto total)&quot;. Series: 7 data points. Ranges from 0 (at 0) to 11.9 (at 1).</desc><rect width="720" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-c3e5b990c1f6-title glyphx-chart-c3e5b990c1f6-desc" id="glyphx-chart-c3e5b990c1f6" data-glyphx="true" data-plot="50,50,540,410" data-domain-x="-0.5,6.5" data-domain-y="0,12.732999999999999" data-xscale="linear" data-yscale="linear" width="720" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460"><title id="glyphx-chart-c3e5b990c1f6-title">Revenue Bridge  —  WaterfallSeries  (None = auto total)</title><desc id="glyphx-chart-c3e5b990c1f6-desc">Waterfall chart titled &quot;Revenue Bridge  —  WaterfallSeries  (None = auto total)&quot;. Series: 7 data points. Ranges from 0 (at 0) to 11.9 (at 1).</desc><rect width="720" height="460" fill="#ffffff"/>
 <text x="360" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Revenue Bridge  —  WaterfallSeries  (None = auto total)</text>
 <line x1="50" y1="410" x2="540" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
 <line x1="50" x2="540" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
 <line x1="50" x2="540" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.55</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="2.5465999999999998">2.55</text>
 <line x1="50" x2="540" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.09</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="5.0931999999999995">5.09</text>
 <line x1="50" x2="540" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">7.64</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="7.639799999999999">7.64</text>
 <line x1="50" x2="540" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">10.2</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="10.186399999999999">10.2</text>
 <line x1="50" x2="540" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">12.7</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="12.732999999999999">12.7</text>
 <line y1="50" y2="410" x1="120.0" x2="120.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="120.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q2 Revenue</text>
+<text x="120.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Q2 Revenue</text>
 <line y1="50" y2="410" x1="190.0" x2="190.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="190.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >New Logos</text>
+<text x="190.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >New Logos</text>
 <line y1="50" y2="410" x1="260.0" x2="260.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="260.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Expansions</text>
+<text x="260.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Expansions</text>
 <line y1="50" y2="410" x1="330.0" x2="330.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="330.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Renewals</text>
+<text x="330.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Renewals</text>
 <line y1="50" y2="410" x1="400.0" x2="400.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="400.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Churn</text>
+<text x="400.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Churn</text>
 <line y1="50" y2="410" x1="470.0" x2="470.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="470.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Discounts</text>
+<text x="470.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Discounts</text>
 <line y1="50" y2="410" x1="540.0" x2="540.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="540.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Q3 Revenue</text>
+<text x="540.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Q3 Revenue</text>
 <rect class="glyphx-point series-c2738605" tabindex="0" role="graphics-symbol" x="99.0" y="178.16" width="42.0" height="231.84" fill="#16a34a" data-x="Q2 Revenue" data-y="8.2" data-value="8.20" data-label="Q2 Revenue"/>
 <text x="120.0" y="174.16" text-anchor="middle" font-size="10" fill="#16a34a" font-weight="600">+8.20</text>
 <rect class="glyphx-point series-c2738605" tabindex="0" role="graphics-symbol" x="169.0" y="118.79" width="42.0" height="59.36999999999999" fill="#16a34a" data-x="New Logos" data-y="2.1" data-value="2.10" data-label="New Logos"/>

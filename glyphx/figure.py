@@ -1399,6 +1399,7 @@ class Figure:
             height=self.height,
             has_math=_has_math,
             crossfilter=self._crossfilter,
+            axis_metadata=self.axes.axis_metadata(),
         )
 
         # Accessibility injection

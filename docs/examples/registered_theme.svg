@@ -1,49 +1,49 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-5f6a0a6e96a4-title glyphx-chart-5f6a0a6e96a4-desc" id="glyphx-chart-5f6a0a6e96a4" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-5f6a0a6e96a4-title">Custom theme  —  register_theme(&quot;acme&quot;, base=&quot;dark&quot;, ...)</title><desc id="glyphx-chart-5f6a0a6e96a4-desc">Line chart titled &quot;Custom theme  —  register_theme(&quot;acme&quot;, base=&quot;dark&quot;, ...)&quot;. Series &quot;North&quot;: 12 data points. Ranges from 9.8 (at Mar) to 30 (at Dec). Series &quot;South&quot;: 12 data points. Ranges from 15.8 (at Mar) to 36 (at Dec). Series &quot;East&quot;: 12 data points. Ranges from 21.8 (at Mar) to 42 (at Dec). Series &quot;West&quot;: 12 data points. Ranges from 27.8 (at Mar) to 48 (at Dec).</desc><rect width="760" height="460" fill="#1e1e1e"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-650c27d5729a-title glyphx-chart-650c27d5729a-desc" id="glyphx-chart-650c27d5729a" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="0.0,12.0" data-domain-y="7.126,50.674" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-650c27d5729a-title">Custom theme  —  register_theme(&quot;acme&quot;, base=&quot;dark&quot;, ...)</title><desc id="glyphx-chart-650c27d5729a-desc">Line chart titled &quot;Custom theme  —  register_theme(&quot;acme&quot;, base=&quot;dark&quot;, ...)&quot;. Series &quot;North&quot;: 12 data points. Ranges from 9.8 (at Mar) to 30 (at Dec). Series &quot;South&quot;: 12 data points. Ranges from 15.8 (at Mar) to 36 (at Dec). Series &quot;East&quot;: 12 data points. Ranges from 21.8 (at Mar) to 42 (at Dec). Series &quot;West&quot;: 12 data points. Ranges from 27.8 (at Mar) to 48 (at Dec).</desc><rect width="760" height="460" fill="#1e1e1e"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">Custom theme  —  register_theme("acme", base="dark", ...)</text>
 <line x1="50" y1="410" x2="580" y2="410" stroke="#cccccc" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#cccccc" />
 <line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">7.13</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="7.126">7.13</text>
 <line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">15.8</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="15.8356">15.8</text>
 <line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">24.5</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="24.5452">24.5</text>
 <line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">33.3</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="33.2548">33.3</text>
 <line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">42.0</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="41.9644">42.0</text>
 <line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#444444" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#ffffff" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff">50.7</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-ytick" data-tick="50.674">50.7</text>
 <line y1="50" y2="410" x1="72.08" x2="72.08" stroke="#444444" stroke-dasharray="3,3" />
-<text x="72.08" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Jan</text>
+<text x="72.08" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Jan</text>
 <line y1="50" y2="410" x1="116.25" x2="116.25" stroke="#444444" stroke-dasharray="3,3" />
-<text x="116.25" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Feb</text>
+<text x="116.25" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Feb</text>
 <line y1="50" y2="410" x1="160.42" x2="160.42" stroke="#444444" stroke-dasharray="3,3" />
-<text x="160.42" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Mar</text>
+<text x="160.42" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Mar</text>
 <line y1="50" y2="410" x1="204.58" x2="204.58" stroke="#444444" stroke-dasharray="3,3" />
-<text x="204.58" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Apr</text>
+<text x="204.58" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Apr</text>
 <line y1="50" y2="410" x1="248.75" x2="248.75" stroke="#444444" stroke-dasharray="3,3" />
-<text x="248.75" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >May</text>
+<text x="248.75" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >May</text>
 <line y1="50" y2="410" x1="292.92" x2="292.92" stroke="#444444" stroke-dasharray="3,3" />
-<text x="292.92" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Jun</text>
+<text x="292.92" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Jun</text>
 <line y1="50" y2="410" x1="337.08" x2="337.08" stroke="#444444" stroke-dasharray="3,3" />
-<text x="337.08" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Jul</text>
+<text x="337.08" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Jul</text>
 <line y1="50" y2="410" x1="381.25" x2="381.25" stroke="#444444" stroke-dasharray="3,3" />
-<text x="381.25" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Aug</text>
+<text x="381.25" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Aug</text>
 <line y1="50" y2="410" x1="425.42" x2="425.42" stroke="#444444" stroke-dasharray="3,3" />
-<text x="425.42" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Sep</text>
+<text x="425.42" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Sep</text>
 <line y1="50" y2="410" x1="469.58" x2="469.58" stroke="#444444" stroke-dasharray="3,3" />
-<text x="469.58" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Oct</text>
+<text x="469.58" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Oct</text>
 <line y1="50" y2="410" x1="513.75" x2="513.75" stroke="#444444" stroke-dasharray="3,3" />
-<text x="513.75" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Nov</text>
+<text x="513.75" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Nov</text>
 <line y1="50" y2="410" x1="557.92" x2="557.92" stroke="#444444" stroke-dasharray="3,3" />
-<text x="557.92" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" >Dec</text>
+<text x="557.92" y="426" text-anchor="middle" font-size="11" font-family="Inter, Helvetica, sans-serif" fill="#ffffff" class="glyphx-tick glyphx-xtick" >Dec</text>
 <polyline class="series-0194736a" fill="none" stroke="#e6194b" stroke-width="2" stroke-dasharray="" points="72.08,369.71 116.25,357.31 160.42,387.89 204.58,328.37 248.75,349.04 292.92,311.84 337.08,295.31 381.25,324.24 425.42,278.77 469.58,299.44 513.75,253.97 557.92,220.91"/>
 <circle class="glyphx-point series-0194736a" tabindex="0" role="graphics-symbol" cx="72.08" cy="369.71" r="4" fill="#e6194b" data-x="0.5" data-y="12.0" data-label="North"/>
 <circle class="glyphx-point series-0194736a" tabindex="0" role="graphics-symbol" cx="116.25" cy="357.31" r="4" fill="#e6194b" data-x="1.5" data-y="13.5" data-label="North"/>

@@ -744,6 +744,15 @@ without knowing about each other, and it composes with the rest — on a chart
 with `enable_crossfilter()`, one click both filters the other charts and emits
 the selection. Everything runs in the exported file; there is no server.
 
+### Zoom and pan
+
+Scroll to zoom, drag to pan, double-click empty space to reset. Axis labels
+are redrawn for whatever region is visible, so a zoomed chart still tells you
+what you are looking at — they are not static text that scrolls away with the
+rest of the drawing.
+
+Linear axes only; a log axis keeps its original ticks.
+
 ### Cross-chart filtering
 
 Click a bar, point or slice and every other opted-in chart on the page dims

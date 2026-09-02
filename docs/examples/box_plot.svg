@@ -1,36 +1,36 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-128f59e1e1ce-title glyphx-chart-128f59e1e1ce-desc" id="glyphx-chart-128f59e1e1ce" data-glyphx="true" width="680" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460"><title id="glyphx-chart-128f59e1e1ce-title">Multi-Group Box Plot  —  BoxPlotSeries</title><desc id="glyphx-chart-128f59e1e1ce-desc">Box plot chart titled &quot;Multi-Group Box Plot  —  BoxPlotSeries&quot;. Y axis: Test Score. Series: 5 data points. Ranges from 25.5 (at 0.5) to 87.6 (at 1.5).</desc><rect width="680" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-226689f0cdd3-title glyphx-chart-226689f0cdd3-desc" id="glyphx-chart-226689f0cdd3" data-glyphx="true" data-plot="50,50,500,410" data-domain-x="0.0,5.0" data-domain-y="0,93.74280559303813" data-xscale="linear" data-yscale="linear" width="680" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460"><title id="glyphx-chart-226689f0cdd3-title">Multi-Group Box Plot  —  BoxPlotSeries</title><desc id="glyphx-chart-226689f0cdd3-desc">Box plot chart titled &quot;Multi-Group Box Plot  —  BoxPlotSeries&quot;. Y axis: Test Score. Series: 5 data points. Ranges from 25.5 (at 0.5) to 87.6 (at 1.5).</desc><rect width="680" height="460" fill="#ffffff"/>
 <text x="340" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Multi-Group Box Plot  —  BoxPlotSeries</text>
 <line x1="50" y1="410" x2="500" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
 <text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">Test Score</text>
 <line x1="50" x2="500" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
 <line x1="50" x2="500" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">18.7</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="18.748561118607626">18.7</text>
 <line x1="50" x2="500" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">37.5</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="37.49712223721525">37.5</text>
 <line x1="50" x2="500" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">56.2</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="56.24568335582287">56.2</text>
 <line x1="50" x2="500" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">75.0</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="74.9942444744305">75.0</text>
 <line x1="50" x2="500" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">93.7</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="93.74280559303813">93.7</text>
 <line y1="50" y2="410" x1="95.0" x2="95.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="95.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Control</text>
+<text x="95.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Control</text>
 <line y1="50" y2="410" x1="185.0" x2="185.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="185.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug A</text>
+<text x="185.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug A</text>
 <line y1="50" y2="410" x1="275.0" x2="275.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="275.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug B</text>
+<text x="275.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug B</text>
 <line y1="50" y2="410" x1="365.0" x2="365.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="365.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug C</text>
+<text x="365.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug C</text>
 <line y1="50" y2="410" x1="455.0" x2="455.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="455.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Drug D</text>
+<text x="455.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug D</text>
 <line x1="95.0" x2="95.0" y1="294.55" y2="244.68" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="95.0" x2="95.0" y1="196.44" y2="124.08" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="80.0" x2="110.0" y1="294.55" y2="294.55" stroke="#7c3aed" stroke-width="1.5"/>

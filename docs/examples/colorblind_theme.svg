@@ -1,4 +1,4 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-877582ef6347-title glyphx-chart-877582ef6347-desc" id="glyphx-chart-877582ef6347" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-877582ef6347-title">Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)</title><desc id="glyphx-chart-877582ef6347-desc">Line chart titled &quot;Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)&quot;. X axis: Month. Y axis: USD ($M). Series &quot;Revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec). Series &quot;Costs&quot;: 12 data points. Ranges from 0.65 (at Mar) to 1.75 (at Dec). Series &quot;Margin&quot;: 12 data points. Ranges from 0.33 (at Mar) to 1.25 (at Dec).</desc><rect width="760" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-5e079d5d4a8a-title glyphx-chart-5e079d5d4a8a-desc" id="glyphx-chart-5e079d5d4a8a" data-glyphx="true" data-plot="68,68,562,392" data-domain-x="0.0,12.0" data-domain-y="0,3.21" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-5e079d5d4a8a-title">Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)</title><desc id="glyphx-chart-5e079d5d4a8a-desc">Line chart titled &quot;Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme=&#x27;colorblind&#x27;)&quot;. X axis: Month. Y axis: USD ($M). Series &quot;Revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec). Series &quot;Costs&quot;: 12 data points. Ranges from 0.65 (at Mar) to 1.75 (at Dec). Series &quot;Margin&quot;: 12 data points. Ranges from 0.33 (at Mar) to 1.25 (at Dec).</desc><rect width="760" height="460" fill="#ffffff"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Colorblind-Safe Theme  —  Okabe-Ito Palette  (theme='colorblind')</text>
 <line x1="68" y1="392" x2="562" y2="392" stroke="#000000" />
 <line x1="68" y1="68" x2="68" y2="392" stroke="#000000" />
@@ -6,46 +6,46 @@
 <text x="15" y="230" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 230)">USD ($M)</text>
 <line x1="68" x2="562" y1="392.0" y2="392.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="392.0" y2="392.0" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="396.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
+<text x="60.0" y="396.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
 <line x1="68" x2="562" y1="327.2" y2="327.2" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="327.2" y2="327.2" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="331.2" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.64</text>
+<text x="60.0" y="331.2" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.642">0.64</text>
 <line x1="68" x2="562" y1="262.4" y2="262.4" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="262.4" y2="262.4" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="266.4" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.28</text>
+<text x="60.0" y="266.4" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.284">1.28</text>
 <line x1="68" x2="562" y1="197.6" y2="197.6" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="197.6" y2="197.6" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="201.6" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.93</text>
+<text x="60.0" y="201.6" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.9259999999999997">1.93</text>
 <line x1="68" x2="562" y1="132.8" y2="132.8" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="132.8" y2="132.8" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="136.8" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.57</text>
+<text x="60.0" y="136.8" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="2.568">2.57</text>
 <line x1="68" x2="562" y1="68.0" y2="68.0" stroke="#bbbbbb" stroke-dasharray="3,3" />
 <line x1="64.0" x2="68" y1="68.0" y2="68.0" stroke="#000000" stroke-width="1"/>
-<text x="60.0" y="72.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.21</text>
+<text x="60.0" y="72.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="3.21">3.21</text>
 <line y1="68" y2="392" x1="88.58" x2="88.58" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="88.58" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jan</text>
+<text x="88.58" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jan</text>
 <line y1="68" y2="392" x1="129.75" x2="129.75" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="129.75" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Feb</text>
+<text x="129.75" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Feb</text>
 <line y1="68" y2="392" x1="170.92" x2="170.92" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="170.92" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Mar</text>
+<text x="170.92" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mar</text>
 <line y1="68" y2="392" x1="212.08" x2="212.08" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="212.08" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Apr</text>
+<text x="212.08" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Apr</text>
 <line y1="68" y2="392" x1="253.25" x2="253.25" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="253.25" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >May</text>
+<text x="253.25" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
 <line y1="68" y2="392" x1="294.42" x2="294.42" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="294.42" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jun</text>
+<text x="294.42" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
 <line y1="68" y2="392" x1="335.58" x2="335.58" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="335.58" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Jul</text>
+<text x="335.58" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jul</text>
 <line y1="68" y2="392" x1="376.75" x2="376.75" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="376.75" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Aug</text>
+<text x="376.75" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Aug</text>
 <line y1="68" y2="392" x1="417.92" x2="417.92" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="417.92" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Sep</text>
+<text x="417.92" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Sep</text>
 <line y1="68" y2="392" x1="459.08" x2="459.08" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="459.08" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Oct</text>
+<text x="459.08" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Oct</text>
 <line y1="68" y2="392" x1="500.25" x2="500.25" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="500.25" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Nov</text>
+<text x="500.25" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Nov</text>
 <line y1="68" y2="392" x1="541.42" x2="541.42" stroke="#bbbbbb" stroke-dasharray="3,3" />
-<text x="541.42" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >Dec</text>
+<text x="541.42" y="408" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Dec</text>
 <polyline class="series-4003651c" fill="none" stroke="#E69F00" stroke-width="2.5" stroke-dasharray="" points="88.58,270.88 129.75,255.74 170.92,293.08 212.08,220.41 253.25,245.64 294.42,200.22 335.58,180.04 376.75,215.36 417.92,159.85 459.08,185.08 500.25,129.57 541.42,89.2"/>
 <circle class="glyphx-point series-4003651c" tabindex="0" role="graphics-symbol" cx="88.58" cy="270.88" r="4" fill="#E69F00" data-x="0.5" data-y="1.2" data-label="Revenue"/>
 <circle class="glyphx-point series-4003651c" tabindex="0" role="graphics-symbol" cx="129.75" cy="255.74" r="4" fill="#E69F00" data-x="1.5" data-y="1.35" data-label="Revenue"/>

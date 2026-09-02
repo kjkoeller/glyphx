@@ -1,4 +1,4 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-bf628239b026-title glyphx-chart-bf628239b026-desc" id="glyphx-chart-bf628239b026" data-glyphx="true" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-bf628239b026-title">Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)</title><desc id="glyphx-chart-bf628239b026-desc">Scatter chart titled &quot;Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)&quot;. X axis: Feature X. Y axis: Feature Y. Series: 200 data points. Ranges from -2.66 (at -1.1063349740060282) to 2.66 (at 0.5425600435859647).</desc><rect width="760" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-5c32b9731689-title glyphx-chart-5c32b9731689-desc" id="glyphx-chart-5c32b9731689" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="-3.1197451040897444,3.220169166589619" data-domain-y="-3.0368508113361967,3.0372755969145446" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-5c32b9731689-title">Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)</title><desc id="glyphx-chart-5c32b9731689-desc">Scatter chart titled &quot;Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)&quot;. X axis: Feature X. Y axis: Feature Y. Series: 200 data points. Ranges from -2.66 (at -1.1063349740060282) to 2.66 (at 0.5425600435859647).</desc><rect width="760" height="460" fill="#ffffff"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Scatter with Continuous Colormap Encoding  (cmap='viridis')</text>
 <line x1="50" y1="410" x2="580" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
@@ -7,37 +7,37 @@
 <line class="glyphx-zero-line" x1="50" y1="230.01" x2="580" y2="230.01" stroke="#333" stroke-width="1" opacity="0.6"/>
 <line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-3.04</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-3.0368508113361967">-3.04</text>
 <line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-1.82</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-1.8220255296860484">-1.82</text>
 <line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">-0.61</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-0.6072002480359">-0.61</text>
 <line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0.61</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.6076250336142479">0.61</text>
 <line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.82</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.8224503152643967">1.82</text>
 <line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.04</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="3.0372755969145446">3.04</text>
 <line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="50.0" x2="50.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-3.12</text>
+<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-3.1197451040897444" >-3.12</text>
 <line y1="50" y2="410" x1="156.0" x2="156.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="156.0" x2="156.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="156.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-1.85</text>
+<text x="156.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-1.8517622499538717" >-1.85</text>
 <line y1="50" y2="410" x1="262.0" x2="262.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="262.0" x2="262.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="262.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >-0.58</text>
+<text x="262.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-0.5837793958179991" >-0.58</text>
 <line y1="50" y2="410" x1="368.0" x2="368.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="368.0" x2="368.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="368.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >0.68</text>
+<text x="368.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="0.6842034583178735" >0.68</text>
 <line y1="50" y2="410" x1="474.0" x2="474.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="474.0" x2="474.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="474.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >1.95</text>
+<text x="474.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="1.9521863124537462" >1.95</text>
 <circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="352.33" cy="198.15" r="7" fill="#56c567" data-x="0.4967141530112327" data-y="0.5375366156662712" data-label=""/>
 <circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="299.24" cy="215.4" r="7" fill="#27ab81" data-x="-0.13826430117118466" data-y="0.2465989200596706" data-label=""/>
 <circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="364.95" cy="166.55" r="7" fill="#74ce54" data-x="0.6476885381006925" data-y="1.0708282956706163" data-label=""/>
