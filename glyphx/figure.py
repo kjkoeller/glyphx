@@ -123,6 +123,8 @@ class Figure:
         self._crossfilter:   bool = False
         # Config for detail_panel.js, or None; see add_detail_panel().
         self._detail_panel:  dict | None = None
+        # Config for controls.js, or None; see add_controls().
+        self._controls:      dict | None = None
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -162,6 +164,84 @@ class Figure:
         """Set the Y-axis label and return ``self``."""
         self.axes.ylabel = label
         return self
+
+    def add_controls(self, *, checkboxes: str | None = None,
+                     radio: str | None = None, search: str | None = None,
+                     title: str | None = None, reset: bool = True,
+                     labels: dict[str, str] | None = None,
+                     placeholder: str | None = None) -> Figure:
+        """
+        Add filter controls beside the chart: checkboxes, radios, a search box.
+
+        Each control narrows what the chart shows, in the browser, with no
+        server and no callback. Pass the name of a field and GlyphX reads
+        the distinct values out of the data and builds one control per
+        value -- you do not enumerate them yourself.
+
+        A field is looked up wherever it lives: in a point's ``meta``, in its
+        own ``data-`` attributes (``percent`` on a pie, ``close`` on a
+        candlestick), or as the series label via ``"series"``. Callers should
+        not have to know which, since it differs per chart type.
+
+        Filters combine with AND, which is how a stack of controls reads:
+        tick two regions and type a name, and you get that name within those
+        regions. A running "Showing 12 of 40" sits underneath, announced to
+        screen readers.
+
+        Args:
+            checkboxes: Field to build a checkbox per value from. All start
+                ticked -- a panel that hides the data on load looks broken.
+            radio:      Field to build a radio group from. Gets an "All"
+                option, or there is no way back to unfiltered.
+            search:     Field a text box filters on, case-insensitive
+                substring.
+            title:      Heading for the panel.
+            reset:      Include a "Show all" button. ``False`` to omit.
+            labels:     Friendlier captions per control, keyed ``"checkboxes"``,
+                ``"radio"``, ``"search"``. Defaults to the field name.
+            placeholder: Placeholder for the search box.
+
+        Returns:
+            ``self`` for chaining.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined.
+
+        Example::
+
+            fig.add(ScatterSeries(x, y, meta=records))
+            fig.add_controls(checkboxes="region", search="customer",
+                             title="Filter")
+        """
+        if not any((checkboxes, radio, search)):
+            raise ValueError(
+                "add_controls() needs at least one of checkboxes=, radio= "
+                "or search= to have anything to control."
+            )
+        labels = labels or {}
+        self._controls = {
+            "checkboxes": checkboxes,
+            "radio": radio,
+            "search": search,
+            "title": title,
+            "reset": reset,
+            "checkbox_label": labels.get("checkboxes"),
+            "radio_label": labels.get("radio"),
+            "search_label": labels.get("search"),
+            "placeholder": placeholder,
+        }
+        return self
+
+    def _controls_html(self) -> str:
+        """Markup for the control panel, or an empty string when unused."""
+        if not self._controls:
+            return ""
+        import html as _html
+        import json as _json
+
+        config = _html.escape(_json.dumps(self._controls), quote=True)
+        return (f'<div class="glyphx-controls" '
+                f"data-glyphx-controls='{config}'></div>")
 
     def add_detail_panel(self, fields: list[str] | None = None, *,
                          title: str | None = None,
@@ -1553,7 +1633,8 @@ class Figure:
             except Exception:
                 pass
 
-        html = wrap_svg_with_template(svg_string + self._detail_panel_html())
+        html = wrap_svg_with_template(svg_string + self._controls_html()
+                                      + self._detail_panel_html())
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
         tmp.close()
@@ -1783,7 +1864,8 @@ class Figure:
         from .utils import make_shareable_html
         # The panel sits alongside the chart inside the same content block,
         # so it travels with the SVG through both export paths.
-        svg   = self.render_svg() + self._detail_panel_html()
+        svg   = (self.render_svg() + self._controls_html()
+                 + self._detail_panel_html())
         label = title or self.title or "GlyphX Chart"
         html  = make_shareable_html(svg, title=label)
         if filename:

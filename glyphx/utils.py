@@ -520,6 +520,15 @@ def wrap_svg_with_template(svg_string: str) -> str:
             + "\n</script>"
         )
 
+    controls_path = Path(__file__).parent / "assets" / "controls.js"
+    controls_js = ""
+    if controls_path.exists():
+        controls_js = (
+            "<script>\n"
+            + _strip_script_tags(controls_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
     xfilter_path = Path(__file__).parent / "assets" / "crossfilter.js"
     xfilter_js = ""
     if xfilter_path.exists():
@@ -570,7 +579,7 @@ def wrap_svg_with_template(svg_string: str) -> str:
         .replace("{{svg_content}}", svg_string)
         .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script
                  + interact_script + a11y_script + legend_js + xfilter_js
-                 + select_js + detail_js)
+                 + select_js + detail_js + controls_js)
     )
 
 
@@ -943,6 +952,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     legend_js   = _read_js("legend.js")
     xfilter_js  = _read_js("crossfilter.js")
     detail_js   = _read_js("detail_panel.js")
+    controls_js = _read_js("controls.js")
     select_js   = _read_js("select.js")
 
     # Read template and replace placeholders
@@ -966,6 +976,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         f"<script>\n{xfilter_js}\n</script>"  if xfilter_js  else "",
         f"<script>\n{select_js}\n</script>"   if select_js   else "",
         f"<script>\n{detail_js}\n</script>"   if detail_js   else "",
+        f"<script>\n{controls_js}\n</script>" if controls_js else "",
     ]))
 
     # Metadata comment

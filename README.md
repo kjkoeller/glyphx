@@ -774,6 +774,31 @@ Non-numeric values are skipped, so a categorical axis still reports a count.
 The readout is an ARIA live region, so the numbers are announced rather than
 being visual-only.
 
+### Filter controls
+
+Checkboxes, radio buttons and a search box that filter the chart in the
+browser — no server, no callbacks:
+
+```python
+fig.add(ScatterSeries(x, y, meta=records))
+fig.add_controls(checkboxes="region", radio="tier", search="customer",
+                 title="Filter")
+```
+
+You name a *field*; GlyphX reads the distinct values out of the data and
+builds one control per value. A field is found wherever it lives — in a
+point's `meta`, in its own `data-` attributes (`percent` on a pie, `close` on
+a candlestick), or as the series label via `"series"`.
+
+Filters combine with AND, which is how a stack of controls reads: tick two
+regions and type a name and you get that name within those regions. A running
+"Showing 12 of 40" sits underneath and is announced to screen readers.
+
+Checkboxes start ticked, and radio groups get an "All" option — a panel that
+hides your data on load looks broken, and a radio group without "All" is a
+one-way trip. `labels=` gives friendlier captions, `reset=False` drops the
+"Show all" button.
+
 ### Cross-chart filtering
 
 Click a bar, point or slice and every other opted-in chart on the page dims
