@@ -753,6 +753,12 @@ rest of the drawing.
 
 Linear axes only; a log axis keeps its original ticks.
 
+A **Reset view** button appears in the toolbar as soon as the view moves, and
+disappears once you are back to the default — so the way out is visible
+exactly when it is wanted, rather than relying on knowing the double-click
+gesture. It restores zoom, position and axis labels together, and resets every
+chart on the page.
+
 ### Brushing
 
 Shift and drag to select a region. Matching points stay lit, the rest fade,

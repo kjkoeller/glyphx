@@ -267,7 +267,7 @@
 
     // Update toolbar hint
     document.querySelectorAll('.glyphx-toolbar span').forEach(s => {
-      s.textContent = 'Scroll to zoom \u00b7 drag to pan \u00b7 click a series to highlight it \u00b7 press ? for all shortcuts';
+      s.textContent = 'Scroll to zoom \u00b7 drag to pan \u00b7 double-click to reset \u00b7 press ? for all shortcuts';
     });
   });
 

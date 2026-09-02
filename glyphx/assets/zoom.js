@@ -72,6 +72,55 @@
     });
   }
 
+  // -- Reset control --------------------------------------------------------
+  //
+  // Resetting was a double-click on empty space and nothing else -- no
+  // button, and the toolbar hint never mentioned it, so a user who zoomed in
+  // had no visible way back. The button appears only once the view has
+  // actually moved, which both keeps the toolbar quiet for people who never
+  // zoom and makes the affordance show up exactly when it is wanted.
+
+  function atDefault(svg) {
+    return !svg.dataset.originalViewBox ||
+           svg.getAttribute('viewBox') === svg.dataset.originalViewBox;
+  }
+
+  function resetAll() {
+    document.querySelectorAll('svg[data-glyphx]').forEach(svg => {
+      if (!svg.dataset.originalViewBox) return;
+      svg.setAttribute('viewBox', svg.dataset.originalViewBox);
+      restore(svg);
+      if (svg.__glyphxSyncViewBox) svg.__glyphxSyncViewBox();
+    });
+    updateResetButton();
+  }
+
+  function resetButton() {
+    const toolbar = document.querySelector('.glyphx-toolbar');
+    if (!toolbar) return null;
+    let btn = toolbar.querySelector('.glyphx-reset-view');
+    if (btn) return btn;
+
+    btn = document.createElement('button');
+    btn.className = 'glyphx-btn glyphx-reset-view';
+    btn.textContent = 'Reset view';
+    btn.title = 'Back to the original zoom and position (or double-click the chart)';
+    btn.style.display = 'none';
+    btn.addEventListener('click', resetAll);
+    toolbar.insertBefore(btn, toolbar.firstElementChild
+      && toolbar.querySelector('.glyphx-btn'));
+    return btn;
+  }
+
+  function updateResetButton() {
+    const btn = resetButton();
+    if (!btn) return;
+    const moved = Array.prototype.slice
+      .call(document.querySelectorAll('svg[data-glyphx]'))
+      .some(svg => !atDefault(svg));
+    btn.style.display = moved ? '' : 'none';
+  }
+
   function relabel(svg) {
     snapshot(svg);
     const plot = nums(svg, 'data-plot');
@@ -151,6 +200,7 @@
       viewBox[1] -= dy;
       svg.setAttribute('viewBox', viewBox.join(' '));
       relabel(svg);
+      updateResetButton();
       startX = e.clientX;
       startY = e.clientY;
     });
@@ -175,6 +225,7 @@
       viewBox = [x + mx * (w - nw), y + my * (h - nh), nw, nh];
       svg.setAttribute('viewBox', viewBox.join(' '));
       relabel(svg);
+      updateResetButton();
     }, { passive: false });
 
     // Double-click on empty space resets the view. On a data point it means
@@ -188,10 +239,17 @@
         svg.setAttribute('viewBox', svg.dataset.originalViewBox);
         viewBox = svg.dataset.originalViewBox.split(' ').map(Number);
         restore(svg);
+        updateResetButton();
       }
     });
 
     // Store original viewBox for reset
     svg.dataset.originalViewBox = viewBox.join(' ');
+    // resetAll() runs outside this closure; without this the button would
+    // reset the attribute while the next scroll kept zooming from the old
+    // value, so the chart would jump.
+    svg.__glyphxSyncViewBox = () => {
+      viewBox = svg.getAttribute('viewBox').split(' ').map(Number);
+    };
   });
 })();
