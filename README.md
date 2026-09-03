@@ -144,6 +144,35 @@ fig = (
 )
 ```
 
+### Drop-in pandas backend
+
+Existing `df.plot()` code becomes GlyphX with one line — no rewrite:
+
+```python
+import pandas as pd
+pd.options.plotting.backend = "glyphx"
+
+df.plot(x="month", y="revenue")            # returns a glyphx Figure
+df.plot.bar(x="month", y=["revenue", "costs"])
+df.plot.scatter(x="spend", y="revenue")
+df.plot(x="month", y=["revenue", "costs"], subplots=True, sharex=True)
+```
+
+Supports `line`, `bar`, `area`, `scatter`, `hist`, `kde`/`density`, `box` and
+`pie`, for both `DataFrame` and `Series`, plus the usual keyword arguments —
+`figsize`, `title`, `xlabel`/`ylabel`, `legend`, `grid`, `logx`/`logy`,
+`colormap`, `subplots`, `sharex`, `stacked`. Column resolution matches
+matplotlib's: omit `x` and the index is used, omit `y` and every numeric
+column is drawn.
+
+Anything not supported — `hexbin`, `barh`, `ax=`, `secondary_y=` — raises
+`NotImplementedError` naming exactly what is missing, rather than silently
+dropping part of your call and handing back a chart that looks finished.
+
+The one difference from matplotlib's backend is the return value: you get a
+`glyphx.Figure`, not an `Axes`, so `.show()`, `.share()` and `.save()` are
+available on it.
+
 ### DataFrame Accessor
 
 Import `glyphx` once — every `pd.DataFrame` gains `.glyphx`:
