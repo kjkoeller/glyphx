@@ -65,7 +65,8 @@ def available_backends() -> list[str]:
     Returns:
         list[str]: Backend names, best first.  Empty if none are installed.
     """
-    found = []
+    # Always present: pure standard library, nothing to install.
+    found = ["builtin"]
     if _have("resvg_py"):
         found.append("resvg")
     if _have("cairosvg"):
@@ -79,6 +80,7 @@ def _no_backend_error(ext: str) -> ExportError:
     """Build the error listing every backend that was tried for this format."""
     return ExportError(
         f"Saving '{ext}' needs a rendering backend, and none is installed.\n"
+        f"(PDF needs none -- it is written by the built-in writer.)\n"
         f"\n"
         f"  pip install 'glyphx[export]'    resvg -- prebuilt wheels, no system deps (recommended)\n"
         f"  pip install 'glyphx[cairo]'     cairosvg -- also does PDF, needs libcairo\n"
@@ -127,6 +129,22 @@ def _render_resvg(svg: str, path: str, ext: str, dpi: int) -> None:
     image.save(path)
 
 
+def _render_builtin(svg: str, path: str, ext: str, dpi: int) -> None:
+    """
+    Write vector PDF with the bundled pure-Python writer.
+
+    Needs nothing beyond the standard library, which is the point: it is
+    tried before cairosvg and Playwright so a PDF works in a bare
+    environment rather than only where libcairo or a browser happens to be
+    installed.
+    """
+    from .pdf_writer import svg_to_pdf
+
+    if ext != ".pdf":
+        raise ExportError("the built-in writer only produces PDF")
+    svg_to_pdf(svg, path)
+
+
 def _render_cairosvg(svg: str, path: str, ext: str, dpi: int) -> None:
     """Rasterise via cairosvg. Needs the system libcairo to be present."""
     import cairosvg
@@ -170,6 +188,7 @@ def _render_playwright(svg: str, path: str, ext: str, dpi: int) -> None:
 
 
 _BACKENDS: dict[str, Callable[[str, str, str, int], None]] = {
+    "builtin": _render_builtin,
     "resvg": _render_resvg,
     "cairosvg": _render_cairosvg,
     "playwright": _render_playwright,
@@ -181,7 +200,9 @@ _PREFERENCE: dict[str, tuple[str, ...]] = {
     ".jpg":  ("resvg", "playwright"),
     ".jpeg": ("resvg", "playwright"),
     ".webp": ("resvg", "playwright"),
-    ".pdf":  ("cairosvg", "playwright"),
+    # builtin first: it is always available, so a PDF never depends on a
+    # system library or a browser being present.
+    ".pdf":  ("builtin", "cairosvg", "playwright"),
 }
 
 

@@ -55,7 +55,7 @@ pip install glyphx
 
 # Optional extras
 pip install "glyphx[export]"  # PNG/JPG raster export   (resvg-py + pillow)
-pip install "glyphx[cairo]"   # PDF export              (cairosvg)
+pip install "glyphx[cairo]"   # alternative PDF backend (cairosvg; PDF needs nothing)
 pip install "glyphx[pptx]"    # PowerPoint export        (python-pptx + cairosvg)
 pip install "glyphx[all]"     # Everything
 ```
@@ -683,9 +683,15 @@ raincloud, bump) keep their `cmap`.
 ```python
 fig.save("chart.svg")          # SVG vector — scales to any size
 fig.save("chart.html")         # interactive HTML with tooltips, zoom, export buttons
+fig.save("chart.pdf")          # vector PDF — no extra packages needed
 fig.save("chart.png")          # raster PNG  (requires: pip install "glyphx[export]")
 fig.save("chart.jpg")          # raster JPG  (requires: pip install "glyphx[export]")
 fig.save("chart.pptx")         # PowerPoint slide (requires: pip install "glyphx[pptx]")
+
+# PDF is written by a built-in pure-Python writer, so it works in a bare
+# virtualenv or CI container with no system libraries and no browser. The
+# output is true vector — paths stay paths and text stays selectable, so it
+# scales without pixelation and can be searched and copied.
 
 # Self-contained HTML — all JS inlined, works fully offline
 html_str = fig.share()                       # returns string
