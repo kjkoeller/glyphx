@@ -16,8 +16,12 @@ Install optional extras depending on what you need:
 
    pip install "glyphx[pptx]"    # PowerPoint export (python-pptx + cairosvg)
    pip install "glyphx[export]"  # PNG / JPG raster export (resvg-py + pillow)
-   pip install "glyphx[cairo]"   # PDF export (cairosvg)
+   pip install "glyphx[cairo]"   # alternative PDF backend (cairosvg)
    pip install "glyphx[all]"     # Everything
+
+SVG, HTML and PDF need nothing beyond the base install. PDF is written by a
+pure-Python backend, so it works in a bare virtualenv; the ``cairo`` extra is
+only an alternative renderer.
 
 .. note::
    PNG/JPG export needs no system libraries -- ``resvg-py`` ships prebuilt

@@ -352,6 +352,85 @@ Y2:
    dropped with a warning, as on any log axis.
 
 
+Aggregation with Confidence Bands
+----------------------------------
+
+Repeated measurements -- several y values per x, from several subjects,
+trials or runs -- are collapsed into an estimate per x with a bootstrapped
+confidence band, without a manual ``groupby`` first:
+
+.. code-block:: python
+
+   fig = Figure(title="Recovery score by treatment arm")
+   fig.aggregate_line(df, x="week", y="score", hue="arm")
+   fig.set_ylabel("Score (mean, 95% CI)")
+   fig.show()
+
+``estimator`` accepts ``"mean"`` (the default), ``"median"``, ``"sum"``,
+``"min"``, ``"max"``, ``"count"``, or any callable reducing an array to a
+scalar. ``ci`` accepts a confidence level, ``"sd"`` for one standard
+deviation, ``"se"`` for standard error, or ``None`` for the line alone.
+
+.. note::
+
+   The bootstrap is seeded, so the same data always produces the same band --
+   a figure in a paper should not shift between renders. Pass ``seed=`` to
+   change it. A group with only one observation gets no interval rather than
+   a fabricated one, since a single value has no spread to resample.
+
+Each band takes its own line's colour, so groups stay readable when ``hue``
+splits the data.
+
+For the underlying numbers without a chart, :func:`glyphx.aggregate.aggregate`
+returns ``(xs, centre, lower, upper)`` directly.
+
+
+Math in Labels
+--------------
+
+Any label -- title, axis label, legend entry, annotation -- can contain a
+``$...$`` span:
+
+.. code-block:: python
+
+   fig.set_ylabel(r"Rate $\frac{dN}{dt}$")
+   fig.set_xlabel(r"Inverse temperature $\frac{1}{T}$ (K$^{-1}$)")
+
+Fractions render stacked with a rule over the numerator. Superscripts,
+subscripts, Greek letters and the common operators (``\sum``, ``\int``,
+``\partial``, ``\nabla``, ``\sqrt``) are supported.
+
+This is a shorthand rather than a full typesetting engine -- there are no
+matrices or alignment environments -- and it needs no LaTeX installation.
+Screen readers receive the spoken form, so ``$\frac{dN}{dt}$`` is announced
+as ``dN/dt`` rather than as markup.
+
+
+Shared X Axis
+-------------
+
+Stacked panels that all plot against one X range -- the usual layout for a
+price/volume/indicator stack, or any set of series measured over the same
+period:
+
+.. code-block:: python
+
+   fig = Figure(rows=3, cols=1, shared_x=True)
+   fig.add_axes(0, 0).add_series(LineSeries(t, price))
+   fig.add_axes(1, 0).add_series(LineSeries(t, volume))
+   fig.add_axes(2, 0).add_series(LineSeries(t, rsi))
+
+Every cell receives the union of all cells' X domains, so panels line up
+vertically even when their series cover different spans. X tick labels are
+drawn only on the lowest occupied cell in each column; grid lines and tick
+marks stay on all of them, so the alignment remains readable. Sparse grids
+work -- if a column's bottom row is empty, the lowest cell that exists keeps
+its labels.
+
+Zoom and pan are already synchronised, because a subplot grid renders as a
+single ``<svg>`` and the zoom script operates on its ``viewBox``.
+
+
 Auto Display
 ------------
 
@@ -376,6 +455,7 @@ Export and Sharing
 
    fig.save("chart.svg")        # vector SVG
    fig.save("chart.html")       # interactive HTML (zoom, pan, tooltips, export buttons)
+   fig.save("chart.pdf")        # vector PDF  — no extra packages needed
    fig.save("chart.png")        # raster PNG  — requires: pip install "glyphx[export]"
    fig.save("chart.jpg")        # raster JPG  — requires: pip install "glyphx[export]"
    fig.save("chart.pptx")       # PowerPoint  — requires: pip install "glyphx[pptx]"
@@ -387,6 +467,48 @@ Export and Sharing
 
 ``fig.share()`` inlines all JavaScript into a single file that works in email
 clients, Confluence, Notion, GitHub Pages, and offline environments.
+
+PDF is written by a built-in pure-Python writer, so it needs no system
+libraries and no browser -- it works in a bare virtualenv or CI container,
+which is usually where a camera-ready figure is wanted. The output is true
+vector: paths stay paths and text stays selectable, so it scales without
+pixelation and can be searched and copied.
+
+Features with no faithful PDF equivalent here -- gradients, clipping paths,
+filters -- raise :class:`glyphx.pdf_writer.UnsupportedSVGError` rather than
+being dropped, so the file is never quietly missing part of the chart.
+
+
+pandas Plotting Backend
+-----------------------
+
+Existing ``df.plot()`` code becomes GlyphX with one line, and no rewrite:
+
+.. code-block:: python
+
+   import pandas as pd
+   pd.options.plotting.backend = "glyphx"
+
+   df.plot(x="month", y="revenue")
+   df.plot.bar(x="month", y=["revenue", "costs"])
+   df.plot(x="month", y=["revenue", "costs"], subplots=True, sharex=True)
+
+Supports ``line``, ``bar``, ``area``, ``scatter``, ``hist``,
+``kde``/``density``, ``box`` and ``pie``, for both ``DataFrame`` and
+``Series``, plus ``figsize``, ``title``, ``xlabel``/``ylabel``, ``legend``,
+``grid``, ``logx``/``logy``, ``colormap``, ``subplots``, ``sharex`` and
+``stacked``. Column resolution matches matplotlib's: omit ``x`` and the index
+is used, omit ``y`` and every numeric column is drawn.
+
+.. note::
+
+   Anything unsupported -- ``hexbin``, ``barh``, ``ax=``, ``secondary_y=`` --
+   raises ``NotImplementedError`` naming what is missing, rather than
+   silently dropping part of the call and returning a chart that looks
+   finished.
+
+The return value is a :class:`glyphx.Figure` rather than a matplotlib
+``Axes``, so ``.show()``, ``.share()`` and ``.save()`` are available on it.
 
 
 Log Scale
