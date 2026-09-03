@@ -107,10 +107,12 @@ def test_mathrm_stays_upright():
     assert '<tspan font-style="normal">d</tspan>' in markup
 
 
-def test_frac_renders_inline():
+def test_frac_output_is_well_formed_svg():
+    """Superseded test_frac_renders_inline: fractions now stack, so the
+    literal "/" is gone. _wrap still checks the markup parses."""
     markup = render(r"$\frac{a}{b}$")
     _wrap(markup)
-    assert ">/<" in markup
+    assert "overline" in markup
 
 
 def test_sqrt_parenthesises_its_argument():
@@ -244,3 +246,71 @@ def test_currency_labels_are_not_treated_as_math():
     svg = fig.render_svg()
     ET.fromstring(svg)
     assert "USD" in svg
+
+
+# ---------------------------------------------------------------------------
+# Stacked fractions
+# ---------------------------------------------------------------------------
+
+def test_frac_renders_stacked_not_inline():
+    """
+    \\frac used to come out as inline "a/b", which is readable but is not
+    what a fraction looks like in a paper.
+    """
+    markup = render(r"$\frac{a}{b}$")
+    assert "dy=" in markup, "no vertical stacking"
+    assert "overline" in markup, "no fraction bar"
+
+
+def test_frac_bar_sits_over_the_numerator():
+    markup = render(r"$\frac{a}{b}$")
+    numerator_span = markup.split("</tspan>")[0]
+    assert "overline" in numerator_span
+    assert numerator_span.rstrip().endswith("a"), numerator_span
+
+
+def test_frac_rows_are_centred_over_each_other():
+    """Uneven rows need a dx lead so the shorter one is centred."""
+    markup = render(r"$\frac{abcd}{x}$")
+    assert 'dx="0.000em"' not in markup.split("</tspan>")[1]
+
+
+def test_frac_advances_the_pen_past_the_wider_row():
+    """
+    Without the trailing dx the rest of the label would overlap the
+    fraction, because the pen stops wherever the denominator ended.
+    """
+    markup = render(r"$\frac{a}{bcde}$")
+    assert markup.rstrip().endswith("</tspan>")
+    tail = markup.split("<tspan")[-1]
+    assert "dx=" in tail
+
+
+def test_frac_still_reads_as_a_slash_for_screen_readers():
+    """Markup is useless to a screen reader; the spoken form is unchanged."""
+    assert to_plain_text(r"$\frac{dN}{dt}$") == "dN/dt"
+
+
+def test_frac_width_is_one_row_not_the_slash_form():
+    """
+    Layout sizes gutters from this. Measuring "dN/dt" would reserve roughly
+    double what a stacked fraction actually occupies.
+    """
+    assert estimate_width(r"$\frac{dN}{dt}$", 12) == estimate_width("dN", 12)
+
+
+def test_nested_expressions_inside_a_fraction():
+    markup = render(r"$\frac{x^2}{\sigma}$")
+    assert "baseline-shift" in markup      # the superscript survived
+    assert "\u03c3" in markup              # and the sigma
+
+
+def test_fraction_inside_a_larger_label():
+    markup = render(r"Rate $\frac{dN}{dt}$ over time")
+    assert markup.startswith("Rate ")
+    assert markup.endswith(" over time")
+
+
+def test_multiple_fractions_in_one_label():
+    markup = render(r"$\frac{a}{b}$ and $\frac{c}{d}$")
+    assert markup.count("overline") == 2

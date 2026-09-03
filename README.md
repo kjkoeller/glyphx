@@ -144,6 +144,45 @@ fig = (
 )
 ```
 
+### Math in labels
+
+Any label — title, axis label, legend entry, annotation — can carry a `$...$`
+span:
+
+```python
+fig.set_ylabel(r"Rate $\frac{dN}{dt}$")
+fig.set_xlabel(r"Inverse temperature $\frac{1}{T}$ (K$^{-1}$)")
+```
+
+Fractions render stacked with a rule over the numerator, and superscripts and
+subscripts, Greek letters and the common operators (`\sum`, `\int`,
+`\partial`, `\nabla`, `\sqrt`) are all supported. It is a shorthand rather
+than a full typesetting engine — no matrices or alignment environments — and
+no LaTeX installation is required.
+
+Screen readers get the spoken form, so `$\frac{dN}{dt}$` is announced as
+`dN/dt` rather than as a pile of markup.
+
+### Aggregation with confidence bands
+
+Hand it raw repeated measurements — several y values per x, from several
+subjects, trials or runs — and it draws the estimate per x with a
+bootstrapped confidence band, with no manual `groupby` first:
+
+```python
+fig.aggregate_line(df, x="week", y="score", hue="arm")
+```
+
+`estimator=` takes `"mean"` (default), `"median"`, `"sum"`, `"min"`, `"max"`,
+`"count"`, or any callable reducing an array to a scalar. `ci=` takes a
+confidence level, `"sd"` for one standard deviation, `"se"` for standard
+error, or `None` for the line alone.
+
+The bootstrap is seeded, so redrawing the same data gives an identical band —
+a figure in a paper should not shift between renders. A group with a single
+observation gets no interval rather than a fabricated one, and each band takes
+its own line's colour.
+
 ### Drop-in pandas backend
 
 Existing `df.plot()` code becomes GlyphX with one line — no rewrite:

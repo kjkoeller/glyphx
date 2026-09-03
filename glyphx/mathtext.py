@@ -197,21 +197,11 @@ def _render_expr(expr: str, italic: bool = True) -> str:
                 out.append(f"\u221a<tspan>(</tspan>{inner}<tspan>)</tspan>")
                 continue
 
-            # TODO: stacked fractions. Needs a rule and two shifted rows,
-            # which won't sit on a single text baseline without pushing the
-            # surrounding label around. Inline a/b until someone asks.
             if name == "frac":
                 numerator, index = _split_group(expr, index)
                 denominator, index = _split_group(expr, index)
                 flush()
-                # Rendered inline as a/b: a stacked fraction needs a rule and
-                # two shifted rows, which cannot align on a single text
-                # baseline without breaking the surrounding layout.
-                out.append(
-                    f"{_render_expr(numerator, italic)}"
-                    f'<tspan font-style="normal">/</tspan>'
-                    f"{_render_expr(denominator, italic)}"
-                )
+                out.append(_stacked_fraction(numerator, denominator, italic))
                 continue
 
             if name in SYMBOLS:
@@ -249,6 +239,63 @@ def _render_expr(expr: str, italic: bool = True) -> str:
 
     flush()
     return "".join(out)
+
+
+#: Vertical offsets for a stacked fraction, in em. The numerator sits above
+#: the baseline and the denominator below, so the whole fraction stays
+#: centred on the surrounding text rather than hanging off it.
+_FRAC_RISE = 0.55
+_FRAC_DROP = 1.10
+
+#: Rough advance width of one character, in em. Used to centre the two rows
+#: of a fraction over each other; SVG text has no metrics API, and the same
+#: 0.6 figure is what estimate_width() already assumes.
+_EM_PER_CHAR = 0.6
+
+
+def _stacked_fraction(numerator: str, denominator: str, italic: bool) -> str:
+    """
+    Render ``\\frac{a}{b}`` as a real stacked fraction.
+
+    Previously this came out as inline ``a/b``, which is readable but is not
+    what a fraction looks like in a paper. SVG ``<text>`` cannot contain a
+    drawn rule, so the bar is an ``overline`` on the numerator, and the two
+    rows are stacked with ``dy`` shifts and centred over each other with
+    ``dx``.
+
+    The horizontal arithmetic walks the text pen: after the numerator the
+    pen has advanced past it, so the denominator needs a negative ``dx`` to
+    come back and start under it, and a final positive ``dx`` puts the pen
+    where the wider of the two rows ends -- otherwise the rest of the label
+    would overlap the fraction.
+
+    Args:
+        numerator:   Expression above the bar.
+        denominator: Expression below it.
+        italic:      Whether variables render italic, as in the enclosing run.
+
+    Returns:
+        str: ``<tspan>`` markup for placing inside an SVG ``<text>``.
+    """
+    num_markup = _render_expr(numerator, italic)
+    den_markup = _render_expr(denominator, italic)
+
+    # Widths from the plain form: the markup is full of tags, and scripts
+    # and commands do not occupy one character each.
+    w_num = len(to_plain_text(f"${numerator}$")) * _EM_PER_CHAR
+    w_den = len(to_plain_text(f"${denominator}$")) * _EM_PER_CHAR
+    width = max(w_num, w_den)
+
+    lead = (width - w_num) / 2                 # centre the numerator
+    back = -(w_num + w_den) / 2                # pen back under the numerator
+    tail = (width - w_den) / 2                 # advance past the wider row
+
+    return (
+        f'<tspan dy="-{_FRAC_RISE}em" dx="{lead:.3f}em" '
+        f'text-decoration="overline">{num_markup}</tspan>'
+        f'<tspan dy="{_FRAC_DROP}em" dx="{back:.3f}em">{den_markup}</tspan>'
+        f'<tspan dy="-{_FRAC_RISE}em" dx="{tail:.3f}em"></tspan>'
+    )
 
 
 def render(text: str) -> str:
@@ -328,6 +375,16 @@ def estimate_width(text: str, font_size: float) -> float:
     Returns:
         float: Estimated width in pixels.
     """
+    # A stacked fraction occupies the width of its wider row, not the width
+    # of "a/b" -- measuring the plain form would reserve roughly double the
+    # gutter a fraction actually needs.
+    def _frac_width(match: re.Match) -> str:
+        """Stand-in text as wide as the fraction's wider row."""
+        numerator, denominator = match.group(1), match.group(2)
+        return "x" * max(len(numerator), len(denominator))
+
+    text = re.sub(r"\\frac\{([^}]*)\}\{([^}]*)\}", _frac_width, str(text))
+
     plain = to_plain_text(text)
     # Scripts render at ~72% size; treat them as a whole character anyway,
     # which errs toward reserving slightly too much room rather than clipping.

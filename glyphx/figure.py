@@ -165,6 +165,104 @@ class Figure:
         self.axes.ylabel = label
         return self
 
+    def aggregate_line(self, data=None, x=None, y=None, *, hue=None,
+                       estimator="mean", ci=95, n_boot=1000, n_std=1.0,
+                       band_alpha: float = 0.2, label: str | None = None,
+                       color: str | None = None, seed: int = 42) -> Figure:
+        """
+        Plot the estimate of repeated measurements per x, with a CI band.
+
+        The equivalent of ``seaborn.lineplot()``: hand it raw
+        repeated-measures data -- several y values per x, from several
+        subjects, trials or runs -- and it draws the mean per x with a
+        bootstrapped confidence band, without a manual ``groupby`` first.
+
+        Args:
+            data: A DataFrame, or ``None`` to pass ``x``/``y`` as sequences.
+            x: Column name, or the x of each observation. Repeats are the
+                point: every observation sharing an x forms one group.
+            y: Column name, or the observed value of each.
+            hue: Column to split into one line and band per group.
+            estimator: ``"mean"``, ``"median"``, ``"sum"``, ``"min"``,
+                ``"max"``, ``"count"``, or a callable reducing an array to a
+                scalar.
+            ci: Confidence level 0-100 for a bootstrap interval, ``"sd"``,
+                ``"se"``, or ``None`` for the line alone.
+            n_boot: Bootstrap resamples when ``ci`` is a number.
+            n_std: Multiplier for the ``"sd"`` and ``"se"`` intervals.
+            band_alpha: Opacity of the band.
+            label: Series label. Defaults to the y column name.
+            color: Line colour. Defaults to the theme palette.
+            seed: Fixed, so redrawing the same data gives an identical band.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.aggregate_line(df, x="timepoint", y="score", hue="treatment")
+        """
+        from .aggregate import aggregate
+        from .fill_between import FillBetweenSeries
+        from .series import LineSeries
+
+        if data is not None:
+            from .dataframes import get_column
+
+            if x is None or y is None:
+                raise ValueError(
+                    "aggregate_line(data=...) needs x= and y= column names."
+                )
+            x_values = get_column(data, x)
+            y_values = get_column(data, y)
+            hue_values = get_column(data, hue) if hue else None
+            default_label = str(y)
+        else:
+            if x is None or y is None:
+                raise ValueError("aggregate_line() needs x and y.")
+            x_values, y_values = list(x), list(y)
+            hue_values = list(hue) if hue is not None else None
+            default_label = label or ""
+
+        if hue_values is None:
+            groups = [(label or default_label, x_values, y_values)]
+        else:
+            # dict.fromkeys keeps first-seen order, so the legend follows the
+            # data rather than being alphabetised.
+            split: dict = {}
+            for xv, yv, hv in zip(x_values, y_values, hue_values):
+                split.setdefault(hv, ([], []))
+                split[hv][0].append(xv)
+                split[hv][1].append(yv)
+            groups = [(str(k), gx, gy) for k, (gx, gy) in split.items()]
+
+        # A band belongs to its line, so both get the same colour. Left to
+        # the theme they would take consecutive palette slots independently,
+        # and a group's band would come out a different colour from its line.
+        palette = (self.theme or {}).get("colors") or []
+
+        for index, (group_label, gx, gy) in enumerate(groups):
+            xs, centre, lower, upper = aggregate(
+                gx, gy, estimator=estimator, ci=ci,
+                n_boot=n_boot, n_std=n_std, seed=seed,
+            )
+            group_color = color or (palette[index % len(palette)]
+                                    if palette else None)
+            # Band first, so the line draws on top of it. FillBetweenSeries
+            # types color as str with its own default, so the argument is
+            # omitted rather than passed as None.
+            if lower is not None:
+                if group_color:
+                    band = FillBetweenSeries(xs, lower, upper,
+                                             color=group_color, alpha=band_alpha)
+                else:
+                    band = FillBetweenSeries(xs, lower, upper, alpha=band_alpha)
+                self.add(band)
+            self.add(LineSeries(xs, centre, label=group_label,
+                                color=group_color))
+
+        return self
+
     def add_controls(self, *, checkboxes: str | None = None,
                      radio: str | None = None, search: str | None = None,
                      title: str | None = None, reset: bool = True,
