@@ -7,6 +7,7 @@ GlyphX utility functions: SVG helpers, display detection, legend rendering.
 import html
 import math
 import os
+import re
 import tempfile
 import webbrowser
 from pathlib import Path
@@ -583,6 +584,55 @@ def wrap_svg_with_template(svg_string: str) -> str:
     )
 
 
+def round_svg_geometry(svg: str, precision: int = SVG_PRECISION) -> str:
+    """
+    Round the geometry numbers in rendered SVG to a fixed precision.
+
+    Coordinates are computed with numpy and libm, whose last bits differ
+    between platforms -- the same chart rendered on Linux and on Windows
+    produced ``28.600002002128278`` and ``28.600002002128274``. That is far
+    below a pixel and invisible, but it made the output non-reproducible,
+    so a byte comparison of committed example files failed on Windows CI
+    while passing everywhere else.
+
+    Only geometry is touched. ``data-`` attributes carry the actual values
+    behind tooltips, selection and the detail panel, so rounding those would
+    corrupt what a reader is shown. At the default of two decimals the
+    change is 0.01 user units, well under one pixel on any real canvas, and
+    it makes files noticeably smaller as a side effect.
+
+    Args:
+        svg: Rendered SVG markup.
+        precision: Decimal places to keep.
+
+    Returns:
+        str: The same markup with geometry numbers rounded.
+    """
+    def _fmt(match: re.Match) -> str:
+        """Round one number, dropping a trailing .0 and normalising -0.0."""
+        value = round(float(match.group(0)), precision)
+        # Normalise -0.0, which differs textually but not numerically, and
+        # drop a trailing ".0" so integers stay integers.
+        if value == 0:
+            value = 0.0
+        return f"{value:g}"
+
+    number = r"-?\d+\.\d{3,}(?:[eE][-+]?\d+)?"
+
+    def _round_attr(match: re.Match) -> str:
+        """Round every number inside one attribute's value."""
+        name, body = match.group(1), match.group(2)
+        return f'{name}="{re.sub(number, _fmt, body)}"'
+
+    # Named geometry attributes, plus the ones whose values are number soup.
+    attrs = ("x|y|cx|cy|r|rx|ry|width|height|x1|y1|x2|y2|dx|dy"
+             r"|d|points|transform|viewBox|font-size|stroke-width|offset")
+    # The lookbehind is essential: \b treats "-" as a boundary, so a plain
+    # word-boundary match would also rewrite the "y" inside data-y and round
+    # away the values behind tooltips and selection.
+    return re.sub(rf'(?<![\w-])({attrs})="([^"]*)"', _round_attr, svg)
+
+
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
                     has_math: bool = False, crossfilter: bool = False,
                     axis_metadata: str = "") -> str:
@@ -611,6 +661,10 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
         str: Complete SVG document string.
     """
     chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
+    # Rounded once here, at the single point every render passes through,
+    # rather than at the dozens of f-strings that build the markup.
+    svg_content = round_svg_geometry(svg_content)
+
     math_attr = ' data-has-math="true"' if has_math else ""
     xfilter_attr = ' data-glyphx-crossfilter="true"' if crossfilter else ""
     return (

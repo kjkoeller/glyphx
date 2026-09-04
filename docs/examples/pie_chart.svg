@@ -1,22 +1,22 @@
 <svg role="img" focusable="false" aria-labelledby="glyphx-chart-112058efb737-title glyphx-chart-112058efb737-desc" id="glyphx-chart-112058efb737" data-glyphx="true" width="500" height="440" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 440"><title id="glyphx-chart-112058efb737-title">Market Share 2024  —  PieSeries</title><desc id="glyphx-chart-112058efb737-desc">Pie chart titled &quot;Market Share 2024  —  PieSeries&quot;. Contains 5 slices. Largest: GlyphX (38 of 100).</desc><rect width="500" height="440" fill="#ffffff"/>
 <text x="250" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Market Share 2024  —  PieSeries</text>
-<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 286.75,220.0 A 101.75000000000001,101.75000000000001 0 0,1 110.82744215987135,289.6526680282441 Z" fill="#0d0887" stroke="#fff" stroke-width="1" data-x="GlyphX" data-y="38" data-percent="38.0" data-label="GlyphX" data-value="38"/>
-<line x1="222.456673235666" y1="314.60475743912957" x2="235.0404410238403" y2="346.3877268390119" stroke="#666" stroke-width="1"/>
-<line x1="235.0404410238403" y1="346.3877268390119" x2="265.0404410238403" y2="346.3877268390119" stroke="#666" stroke-width="1"/>
-<text x="265.0404410238403" y="350.3877268390119" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">GlyphX</text>
-<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 110.82744215987135,289.6526680282441 A 101.75000000000001,101.75000000000001 0 0,1 115.34733197175592,145.82744215987137 Z" fill="#7d08a4" stroke="#fff" stroke-width="1" data-x="Matplotlib" data-y="25" data-percent="25.0" data-label="Matplotlib" data-value="25"/>
-<line x1="83.30020748278679" y1="216.80395526380042" x2="67.40634506899406" y2="216.30447051512814" stroke="#666" stroke-width="1"/>
-<line x1="67.40634506899406" y1="216.30447051512814" x2="37.40634506899406" y2="216.30447051512814" stroke="#666" stroke-width="1"/>
-<text x="37.40634506899406" y="220.30447051512814" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Matplotlib</text>
-<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 115.34733197175592,145.82744215987137 A 101.75000000000001,101.75000000000001 0 0,1 222.45667323566602,125.39524256087043 Z" fill="#ca4778" stroke="#fff" stroke-width="1" data-x="Plotly" data-y="18" data-percent="18.0" data-label="Plotly" data-value="18"/>
-<line x1="165.93395124090262" y1="120.0522722383559" x2="159.3283766034714" y2="85.4246373301963" stroke="#666" stroke-width="1"/>
-<line x1="159.3283766034714" y1="85.4246373301963" x2="129.3283766034714" y2="85.4246373301963" stroke="#666" stroke-width="1"/>
-<text x="129.3283766034714" y="89.4246373301963" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Plotly</text>
-<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 222.45667323566602,125.39524256087043 A 101.75000000000001,101.75000000000001 0 0,1 274.1642046944632,170.98156366015053 Z" fill="#f69541" stroke="#fff" stroke-width="1" data-x="Seaborn" data-y="11" data-percent="11.0" data-label="Seaborn" data-value="11"/>
-<line x1="252.2884822966816" y1="143.67619866510074" x2="272.47652172705864" y2="120.77736281334904" stroke="#666" stroke-width="1"/>
-<line x1="272.47652172705864" y1="120.77736281334904" x2="302.47652172705864" y2="120.77736281334904" stroke="#666" stroke-width="1"/>
-<text x="302.47652172705864" y="124.77736281334904" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Seaborn</text>
-<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 274.1642046944632,170.98156366015053 A 101.75000000000001,101.75000000000001 0 0,1 286.75,220.00000000000006 Z" fill="#f0f921" stroke="#fff" stroke-width="1" data-x="Other" data-y="8" data-percent="8.0" data-label="Other" data-value="8"/>
-<line x1="283.5533366448382" y1="194.69580398097605" x2="303.2381807755489" y2="189.64159504756879" stroke="#666" stroke-width="1"/>
-<line x1="303.2381807755489" y1="189.64159504756879" x2="333.2381807755489" y2="189.64159504756879" stroke="#666" stroke-width="1"/>
-<text x="333.2381807755489" y="193.64159504756879" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Other</text></svg>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 286.75,220.0 A 101.75,101.75 0 0,1 110.83,289.65 Z" fill="#0d0887" stroke="#fff" stroke-width="1" data-x="GlyphX" data-y="38" data-percent="38.0" data-label="GlyphX" data-value="38"/>
+<line x1="222.46" y1="314.6" x2="235.04" y2="346.39" stroke="#666" stroke-width="1"/>
+<line x1="235.04" y1="346.39" x2="265.04" y2="346.39" stroke="#666" stroke-width="1"/>
+<text x="265.04" y="350.39" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">GlyphX</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 110.83,289.65 A 101.75,101.75 0 0,1 115.35,145.83 Z" fill="#7d08a4" stroke="#fff" stroke-width="1" data-x="Matplotlib" data-y="25" data-percent="25.0" data-label="Matplotlib" data-value="25"/>
+<line x1="83.3" y1="216.8" x2="67.41" y2="216.3" stroke="#666" stroke-width="1"/>
+<line x1="67.41" y1="216.3" x2="37.41" y2="216.3" stroke="#666" stroke-width="1"/>
+<text x="37.41" y="220.3" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Matplotlib</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 115.35,145.83 A 101.75,101.75 0 0,1 222.46,125.4 Z" fill="#ca4778" stroke="#fff" stroke-width="1" data-x="Plotly" data-y="18" data-percent="18.0" data-label="Plotly" data-value="18"/>
+<line x1="165.93" y1="120.05" x2="159.33" y2="85.42" stroke="#666" stroke-width="1"/>
+<line x1="159.33" y1="85.42" x2="129.33" y2="85.42" stroke="#666" stroke-width="1"/>
+<text x="129.33" y="89.42" text-anchor="end" font-size="12" font-family="sans-serif" fill="#000">Plotly</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 222.46,125.4 A 101.75,101.75 0 0,1 274.16,170.98 Z" fill="#f69541" stroke="#fff" stroke-width="1" data-x="Seaborn" data-y="11" data-percent="11.0" data-label="Seaborn" data-value="11"/>
+<line x1="252.29" y1="143.68" x2="272.48" y2="120.78" stroke="#666" stroke-width="1"/>
+<line x1="272.48" y1="120.78" x2="302.48" y2="120.78" stroke="#666" stroke-width="1"/>
+<text x="302.48" y="124.78" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Seaborn</text>
+<path class="glyphx-point series-01c7e551" tabindex="0" role="graphics-symbol" d="M 185,220 L 274.16,170.98 A 101.75,101.75 0 0,1 286.75,220 Z" fill="#f0f921" stroke="#fff" stroke-width="1" data-x="Other" data-y="8" data-percent="8.0" data-label="Other" data-value="8"/>
+<line x1="283.55" y1="194.7" x2="303.24" y2="189.64" stroke="#666" stroke-width="1"/>
+<line x1="303.24" y1="189.64" x2="333.24" y2="189.64" stroke="#666" stroke-width="1"/>
+<text x="333.24" y="193.64" text-anchor="start" font-size="12" font-family="sans-serif" fill="#000">Other</text></svg>

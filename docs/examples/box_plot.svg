@@ -35,7 +35,7 @@
 <line x1="95.0" x2="95.0" y1="196.44" y2="124.08" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="80.0" x2="110.0" y1="294.55" y2="294.55" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="80.0" x2="110.0" y1="124.08" y2="124.08" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="80.0" y="196.44" width="30" height="48.24000000000001" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Control" data-y="50.4" data-median="50.4" data-label="Control" data-q1="43" data-q2="50.4" data-q3="55.6"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="80.0" y="196.44" width="30" height="48.24" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Control" data-y="50.4" data-median="50.4" data-label="Control" data-q1="43" data-q2="50.4" data-q3="55.6"/>
 <line x1="80.0" x2="110.0" y1="216.55" y2="216.55" stroke="#7c3aed" stroke-width="2.5"/>
 <circle cx="95.0" cy="118.92" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="185.0" x2="185.0" y1="233.03" y2="179.65" stroke="#7c3aed" stroke-width="1.5"/>
@@ -51,19 +51,19 @@
 <line x1="275.0" x2="275.0" y1="148.25" y2="74.07" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="260.0" x2="290.0" y1="312.05" y2="312.05" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="260.0" x2="290.0" y1="74.07" y2="74.07" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="260.0" y="148.25" width="30" height="85.41999999999999" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug B" data-y="56.9" data-median="56.9" data-label="Drug B" data-q1="45.9" data-q2="56.9" data-q3="68.2"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="260.0" y="148.25" width="30" height="85.42" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug B" data-y="56.9" data-median="56.9" data-label="Drug B" data-q1="45.9" data-q2="56.9" data-q3="68.2"/>
 <line x1="260.0" x2="290.0" y1="191.41" y2="191.41" stroke="#7c3aed" stroke-width="2.5"/>
 <line x1="365.0" x2="365.0" y1="176.51" y2="146.2" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="365.0" x2="365.0" y1="114.68" y2="73.55" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="350.0" x2="380.0" y1="176.51" y2="176.51" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="350.0" x2="380.0" y1="73.55" y2="73.55" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="350.0" y="114.68" width="30" height="31.519999999999982" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug C" data-y="73.2" data-median="73.2" data-label="Drug C" data-q1="68.7" data-q2="73.2" data-q3="76.9"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="350.0" y="114.68" width="30" height="31.52" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug C" data-y="73.2" data-median="73.2" data-label="Drug C" data-q1="68.7" data-q2="73.2" data-q3="76.9"/>
 <line x1="350.0" x2="380.0" y1="128.78" y2="128.78" stroke="#7c3aed" stroke-width="2.5"/>
 <line x1="455.0" x2="455.0" y1="299.33" y2="213.99" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="455.0" x2="455.0" y1="157.09" y2="92.67" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="440.0" x2="470.0" y1="299.33" y2="299.33" stroke="#7c3aed" stroke-width="1.5"/>
 <line x1="440.0" x2="470.0" y1="92.67" y2="92.67" stroke="#7c3aed" stroke-width="1.5"/>
-<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="440.0" y="157.09" width="30" height="56.900000000000006" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug D" data-y="59.3" data-median="59.3" data-label="Drug D" data-q1="51" data-q2="59.3" data-q3="65.9"/>
+<rect class="glyphx-point series-13796bc5" tabindex="0" role="graphics-symbol" x="440.0" y="157.09" width="30" height="56.9" fill="#7c3aed" fill-opacity="0.35" stroke="#7c3aed" stroke-width="1.5" data-x="Drug D" data-y="59.3" data-median="59.3" data-label="Drug D" data-q1="51" data-q2="59.3" data-q3="65.9"/>
 <line x1="440.0" x2="470.0" y1="182.45" y2="182.45" stroke="#7c3aed" stroke-width="2.5"/>
 <circle cx="455.0" cy="300.92" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>
 <circle cx="455.0" cy="302.99" r="3" fill="none" stroke="#7c3aed" stroke-width="1.5"/>

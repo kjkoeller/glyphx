@@ -46,18 +46,18 @@
 <text x="395.25" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Nov</text>
 <line y1="68" y2="412" x1="426.42" x2="426.42" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="426.42" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Dec</text>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="71.112" y="283.4" width="24.936000000000003" height="128.60000000000002" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="102.282" y="267.33" width="24.936000000000003" height="144.67000000000002" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="133.452" y="306.98" width="24.936000000000003" height="105.01999999999998" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="164.61200000000002" y="229.82" width="24.936000000000003" height="182.18" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="195.782" y="256.61" width="24.936000000000003" height="155.39" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="226.952" y="208.39" width="24.936000000000003" height="203.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="258.11199999999997" y="186.95" width="24.936000000000003" height="225.05" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="2.1" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="289.282" y="224.46" width="24.936000000000003" height="187.54" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="1.75" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="320.452" y="165.52" width="24.936000000000003" height="246.48" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="2.3" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="351.61199999999997" y="192.31" width="24.936000000000003" height="219.69" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="2.05" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="382.782" y="133.37" width="24.936000000000003" height="278.63" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="2.6" data-label="revenue"/>
-<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="413.952" y="90.5" width="24.936000000000003" height="321.5" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="3.0" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="71.11" y="283.4" width="24.94" height="128.6" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="102.28" y="267.33" width="24.94" height="144.67" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="133.45" y="306.98" width="24.94" height="105.02" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="164.61" y="229.82" width="24.94" height="182.18" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="195.78" y="256.61" width="24.94" height="155.39" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="226.95" y="208.39" width="24.94" height="203.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="258.11" y="186.95" width="24.94" height="225.05" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="2.1" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="289.28" y="224.46" width="24.94" height="187.54" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="1.75" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="320.45" y="165.52" width="24.94" height="246.48" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="2.3" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="351.61" y="192.31" width="24.94" height="219.69" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="2.05" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="382.78" y="133.37" width="24.94" height="278.63" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="2.6" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="413.95" y="90.5" width="24.94" height="321.5" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="3.0" data-label="revenue"/>
 <g class="glyphx-legend">
 <rect x="518" y="229" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-8ca4d364" />
 <text x="538" y="239" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-8ca4d364">revenue</text>

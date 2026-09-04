@@ -84,3 +84,54 @@ def test_examples_script_covers_the_public_layout_and_theme_api():
     ]
     missing = [name for name in expected if name not in source]
     assert missing == [], f"examples.py has no example for: {missing}"
+
+
+# ---------------------------------------------------------------------------
+# Cross-platform reproducibility
+# ---------------------------------------------------------------------------
+
+def test_geometry_is_rounded_so_output_is_platform_stable():
+    """
+    Coordinates come from numpy and libm, whose last bits differ between
+    platforms: the same chart produced 28.600002002128278 on Linux and
+    ...274 on Windows. Invisible at well under a pixel, but it made the
+    committed examples fail a byte comparison on Windows CI only.
+    """
+    import re
+
+    import numpy as np
+
+    from glyphx import Figure
+
+    xs = list(np.linspace(0, 120, 200))
+    ys = [float(v) for v in np.sin(np.array(xs) / 9) * 10 + 40]
+    svg = Figure(auto_display=False).line(xs, ys).render_svg()
+
+    unrounded = re.findall(
+        r'(?<![\w-])(?:x|y|cx|cy|x1|y1|x2|y2|d|points|width|height)'
+        r'="[^"]*?\d\.\d{4,}', svg)
+    assert unrounded == [], f"unrounded geometry survives: {unrounded[:3]}"
+
+
+def test_rounding_leaves_data_attributes_alone():
+    """
+    data- attributes carry the values behind tooltips, selection and the
+    detail panel. Rounding those would change what a reader is shown, and
+    \\b alone would have done exactly that by matching the "y" in data-y.
+    """
+    from glyphx.utils import round_svg_geometry
+
+    markup = ('<circle cx="28.600002002128278" data-y="28.600002002128278" '
+              'data-x="1.23456789012"/>')
+    out = round_svg_geometry(markup)
+    assert 'cx="28.6"' in out
+    assert 'data-y="28.600002002128278"' in out
+    assert 'data-x="1.23456789012"' in out
+
+
+def test_rounding_is_idempotent():
+    """Re-rendering must not drift a second time."""
+    from glyphx.utils import round_svg_geometry
+
+    once = round_svg_geometry('<rect x="1.23456789" width="9.87654321"/>')
+    assert round_svg_geometry(once) == once

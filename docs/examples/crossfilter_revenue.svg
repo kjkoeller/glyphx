@@ -32,10 +32,10 @@
 <text x="192.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
 <line y1="50" y2="270" x1="224.17" x2="224.17" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="224.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="53.162" y="140.14" width="25.336000000000002" height="129.86" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label=""/>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="84.832" y="123.91" width="25.336000000000002" height="146.09" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label=""/>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="116.50199999999998" y="163.95" width="25.336000000000002" height="106.05000000000001" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label=""/>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="148.162" y="86.04" width="25.336000000000002" height="183.95999999999998" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label=""/>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="179.832" y="113.09" width="25.336000000000002" height="156.91" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label=""/>
-<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="211.50199999999998" y="64.39" width="25.336000000000002" height="205.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="53.16" y="140.14" width="25.34" height="129.86" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="84.83" y="123.91" width="25.34" height="146.09" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="116.5" y="163.95" width="25.34" height="106.05" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="148.16" y="86.04" width="25.34" height="183.96" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="179.83" y="113.09" width="25.34" height="156.91" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="211.5" y="64.39" width="25.34" height="205.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label=""/>
 </svg>

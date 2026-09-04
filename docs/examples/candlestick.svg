@@ -45,11 +45,11 @@
 <line x1="97.0" x2="97.0" y1="72.11" y2="319.07" stroke="#26a641" stroke-width="1.5"/>
 <rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="82.9" y="117.17" width="28.2" height="164.75" fill="#26a641" data-x="Mon" data-y="153.41" data-open="148.0" data-high="154.89" data-low="146.78" data-close="153.41" data-label="AAPL" data-value="O:148.0 H:154.89 L:146.78 C:153.41"/>
 <line x1="144.0" x2="144.0" y1="101.95" y2="169.25" stroke="#d73027" stroke-width="1.5"/>
-<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="129.9" y="117.17" width="28.2" height="45.38000000000001" fill="#d73027" data-x="Tue" data-y="151.92" data-open="153.41" data-high="153.91" data-low="151.7" data-close="151.92" data-label="AAPL" data-value="O:153.41 H:153.91 L:151.7 C:151.92"/>
+<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="129.9" y="117.17" width="28.2" height="45.38" fill="#d73027" data-x="Tue" data-y="151.92" data-open="153.41" data-high="153.91" data-low="151.7" data-close="151.92" data-label="AAPL" data-value="O:153.41 H:153.91 L:151.7 C:151.92"/>
 <line x1="191.0" x2="191.0" y1="133.01" y2="233.2" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="176.9" y="159.2" width="28.2" height="3.3500000000000227" fill="#26a641" data-x="Wed" data-y="152.03" data-open="151.92" data-high="152.89" data-low="149.6" data-close="152.03" data-label="AAPL" data-value="O:151.92 H:152.89 L:149.6 C:152.03"/>
+<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="176.9" y="159.2" width="28.2" height="3.35" fill="#26a641" data-x="Wed" data-y="152.03" data-open="151.92" data-high="152.89" data-low="149.6" data-close="152.03" data-label="AAPL" data-value="O:151.92 H:152.89 L:149.6 C:152.03"/>
 <line x1="238.0" x2="238.0" y1="76.98" y2="193.31" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="223.9" y="119.61" width="28.2" height="39.58999999999999" fill="#26a641" data-x="Thu" data-y="153.33" data-open="152.03" data-high="154.73" data-low="150.91" data-close="153.33" data-label="AAPL" data-value="O:152.03 H:154.73 L:150.91 C:153.33"/>
+<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="223.9" y="119.61" width="28.2" height="39.59" fill="#26a641" data-x="Thu" data-y="153.33" data-open="152.03" data-high="154.73" data-low="150.91" data-close="153.33" data-label="AAPL" data-value="O:152.03 H:154.73 L:150.91 C:153.33"/>
 <line x1="285.0" x2="285.0" y1="95.55" y2="217.36" stroke="#d73027" stroke-width="1.5"/>
 <rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="270.9" y="119.61" width="28.2" height="76.74" fill="#d73027" data-x="Fri" data-y="150.81" data-open="153.33" data-high="154.12" data-low="150.12" data-close="150.81" data-label="AAPL" data-value="O:153.33 H:154.12 L:150.12 C:150.81"/>
 <line x1="332.0" x2="332.0" y1="171.38" y2="276.14" stroke="#26a641" stroke-width="1.5"/>
@@ -59,7 +59,7 @@
 <line x1="426.0" x2="426.0" y1="152.19" y2="372.06" stroke="#d73027" stroke-width="1.5"/>
 <rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="411.9" y="196.05" width="28.2" height="171.14" fill="#d73027" data-x="Wed" data-y="145.2" data-open="150.82" data-high="152.26" data-low="145.04" data-close="145.2" data-label="AAPL" data-value="O:150.82 H:152.26 L:145.04 C:145.2"/>
 <line x1="473.0" x2="473.0" y1="234.42" y2="387.89" stroke="#26a641" stroke-width="1.5"/>
-<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="458.9" y="267.91" width="28.2" height="99.27999999999997" fill="#26a641" data-x="Thu" data-y="148.46" data-open="145.2" data-high="149.56" data-low="144.52" data-close="148.46" data-label="AAPL" data-value="O:145.2 H:149.56 L:144.52 C:148.46"/>
+<rect class="glyphx-point series-cf0284f5" tabindex="0" role="graphics-symbol" x="458.9" y="267.91" width="28.2" height="99.28" fill="#26a641" data-x="Thu" data-y="148.46" data-open="145.2" data-high="149.56" data-low="144.52" data-close="148.46" data-label="AAPL" data-value="O:145.2 H:149.56 L:144.52 C:148.46"/>
 <g class="glyphx-legend">
 <rect x="578" y="219" width="12" height="12" fill="#26a641" class="legend-icon" data-target="series-cf0284f5" />
 <text x="598" y="229" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-cf0284f5">AAPL</text>

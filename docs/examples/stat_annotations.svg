@@ -28,15 +28,15 @@
 <text x="255.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug A</text>
 <line y1="50" y2="410" x1="391.67" x2="391.67" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="391.67" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug B</text>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="63.662" y="172.55" width="109.336" height="237.45" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="44.8764758513449" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="63.66" y="172.55" width="109.34" height="237.45" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="44.8764758513449" data-label="Mean Score"/>
 <line x1="118.33" x2="118.33" y1="177.0" y2="168.09" stroke="#333" stroke-width="1.5"/>
 <line x1="113.33" x2="123.33" y1="177.0" y2="177.0" stroke="#333" stroke-width="1.5"/>
 <line x1="113.33" x2="123.33" y1="168.09" y2="168.09" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="200.332" y="73.55" width="109.336" height="336.45" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="63.58584886583668" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="200.33" y="73.55" width="109.34" height="336.45" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="63.58584886583668" data-label="Mean Score"/>
 <line x1="255.0" x2="255.0" y1="78.0" y2="69.1" stroke="#333" stroke-width="1.5"/>
 <line x1="250.0" x2="260.0" y1="78.0" y2="78.0" stroke="#333" stroke-width="1.5"/>
 <line x1="250.0" x2="260.0" y1="69.1" y2="69.1" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="337.002" y="110.21" width="109.336" height="299.79" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="56.65792166525963" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="337" y="110.21" width="109.34" height="299.79" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="56.65792166525963" data-label="Mean Score"/>
 <line x1="391.67" x2="391.67" y1="114.66" y2="105.76" stroke="#333" stroke-width="1.5"/>
 <line x1="386.67" x2="396.67" y1="114.66" y2="114.66" stroke="#333" stroke-width="1.5"/>
 <line x1="386.67" x2="396.67" y1="105.76" y2="105.76" stroke="#333" stroke-width="1.5"/>
@@ -47,7 +47,7 @@
 <line x1="118.33" x2="118.33" y1="42.0" y2="34.0" stroke="#222" stroke-width="1.5"/>
 <line x1="118.33" x2="255.0" y1="34.0" y2="34.0" stroke="#222" stroke-width="1.5"/>
 <line x1="255.0" x2="255.0" y1="34.0" y2="42.0" stroke="#222" stroke-width="1.5"/>
-<text x="186.665" y="30.0" text-anchor="middle" font-size="16" fill="#222">***</text>
+<text x="186.66" y="30.0" text-anchor="middle" font-size="16" fill="#222">***</text>
 <line x1="118.33" x2="118.33" y1="10.0" y2="2.0" stroke="#222" stroke-width="1.5"/>
 <line x1="118.33" x2="391.67" y1="2.0" y2="2.0" stroke="#222" stroke-width="1.5"/>
 <line x1="391.67" x2="391.67" y1="2.0" y2="10.0" stroke="#222" stroke-width="1.5"/>
