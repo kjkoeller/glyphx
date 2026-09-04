@@ -1057,10 +1057,40 @@ class HeatmapSeries(BaseSeries):
     """
 
     def __init__(self, matrix, cmap=None, row_labels=None,
-                 col_labels=None, show_values=False, **kwargs):
-        """Set up the grid and normalise the matrix ready for colour mapping."""
+                 col_labels=None, show_values=False, *,
+                 vmin=None, vmax=None, center=None, **kwargs):
+        """
+        Set up the grid and work out the range the colours span.
+
+        ``cmap`` accepts a colormap *name*, as it does on every other series
+        that takes one. It previously accepted only a list of hex stops, so
+        ``cmap="coolwarm"`` was sliced character by character and died with
+        ``invalid literal for int() with base 16`` -- none of the nine named
+        colormaps could be used on a heatmap at all.
+
+        ``vmin``/``vmax``/``center`` pin the colour range instead of taking
+        it from the data. Without them every heatmap normalises over its own
+        min and max, which makes two panels incomparable and puts a
+        diverging colormap's neutral midpoint wherever the data happens to
+        land rather than at the value it is meant to mark.
+        """
+        from .colormaps import get_colormap, list_colormaps
+
         self.matrix     = matrix
-        self.cmap       = cmap or ["#fff7fb", "#d0d1e6", "#74a9cf", "#0570b0", "#023858"]
+        if isinstance(cmap, str):
+            if cmap not in list_colormaps():
+                raise ValueError(
+                    f"Unknown colormap {cmap!r}. Available: "
+                    f"{', '.join(list_colormaps())}. Pass a list of hex "
+                    f"colours for a custom ramp."
+                )
+            self.cmap = get_colormap(cmap)
+        else:
+            self.cmap = cmap or ["#fff7fb", "#d0d1e6", "#74a9cf",
+                                 "#0570b0", "#023858"]
+        self.vmin       = vmin
+        self.vmax       = vmax
+        self.center     = center
         self.row_labels = row_labels
         self.col_labels = col_labels
         self.show_values = show_values
@@ -1091,7 +1121,18 @@ class HeatmapSeries(BaseSeries):
         rows    = len(self.matrix)
         cols    = len(self.matrix[0])
         flat    = [v for row in self.matrix for v in row]
-        vmin, vmax = min(flat), max(flat)
+        vmin = min(flat) if self.vmin is None else self.vmin
+        vmax = max(flat) if self.vmax is None else self.vmax
+
+        if self.center is not None:
+            # Widen the narrower side so the centre value sits exactly at the
+            # midpoint of the ramp. Otherwise a diverging colormap puts its
+            # neutral colour wherever the data happens to straddle: on a
+            # correlation matrix spanning -0.2 to 1.0, zero would land 17%
+            # up the ramp and half the negative range would read as positive.
+            reach = max(abs(vmax - self.center), abs(self.center - vmin))
+            vmin, vmax = self.center - reach, self.center + reach
+
         v_range = vmax - vmin or 1
 
         pad = ax.padding
@@ -1103,7 +1144,7 @@ class HeatmapSeries(BaseSeries):
 
         for i, row in enumerate(self.matrix):
             for j, val in enumerate(row):
-                norm  = (val - vmin) / v_range
+                norm  = min(1.0, max(0.0, (val - vmin) / v_range))
                 color = self._interp_color(norm)
                 x     = pad + j * cw
                 y     = pad + i * ch

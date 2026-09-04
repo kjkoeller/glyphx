@@ -163,6 +163,25 @@ no LaTeX installation is required.
 Screen readers get the spoken form, so `$\frac{dN}{dt}$` is announced as
 `dN/dt` rather than as a pile of markup.
 
+### Heatmap colour ranges
+
+`cmap` takes any of the named colormaps, and the range can be pinned rather
+than taken from the data:
+
+```python
+fig.add(HeatmapSeries(corr, cmap="coolwarm", center=0))     # 0 stays neutral
+fig.add(HeatmapSeries(a, cmap="viridis", vmin=0, vmax=100)) # comparable panels
+```
+
+`center=` matters for diverging colormaps. By default a heatmap normalises
+over its own min and max, so on a correlation matrix spanning −0.2 to 1.0
+zero lands 17% up the ramp — mildly positive values render with the colour
+that reads as negative. `center=0` widens the narrower side so the neutral
+colour sits exactly at zero.
+
+`vmin`/`vmax` pin the range so two panels can be read side by side; values
+outside it clamp.
+
 ### Aggregation with confidence bands
 
 Hand it raw repeated measurements — several y values per x, from several

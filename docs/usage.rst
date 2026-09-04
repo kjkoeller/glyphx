@@ -352,6 +352,37 @@ Y2:
    dropped with a warning, as on any log axis.
 
 
+Heatmap Colour Ranges
+---------------------
+
+``cmap`` accepts any of the named colormaps, the same as every other series
+that takes one:
+
+.. code-block:: python
+
+   fig.add(HeatmapSeries(matrix, cmap="coolwarm"))
+
+The range is taken from the data unless it is pinned:
+
+.. code-block:: python
+
+   fig.add(HeatmapSeries(corr, cmap="coolwarm", center=0))
+   fig.add(HeatmapSeries(panel_a, cmap="viridis", vmin=0, vmax=100))
+
+.. note::
+
+   ``center`` matters for diverging colormaps such as ``coolwarm`` and
+   ``rdbu``, whose whole purpose is a neutral midpoint. Normalising over the
+   data's own range puts that midpoint wherever the values happen to
+   straddle: on a correlation matrix spanning -0.2 to 1.0, zero lands 17% up
+   the ramp and mildly positive correlations render with the colour that
+   reads as negative. ``center=0`` widens the narrower side so the neutral
+   colour marks zero exactly.
+
+``vmin`` and ``vmax`` pin the range so two panels are comparable; values
+outside it clamp to the ends of the ramp.
+
+
 Aggregation with Confidence Bands
 ----------------------------------
 
