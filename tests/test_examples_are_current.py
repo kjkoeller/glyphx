@@ -1,6 +1,14 @@
 """
 Guard: docs/examples/ must match what examples.py produces.
 
+The byte comparison runs only when ``GLYPHX_CHECK_EXAMPLES=1``, which CI
+sets on the ubuntu-py312 job alone. To run it locally::
+
+    GLYPHX_CHECK_EXAMPLES=1 pytest tests/test_examples_are_current.py
+
+The other checks in this file -- that examples.py covers the public API, and
+that rendering rounds to platform-stable values -- run everywhere.
+
 Twenty-one committed SVGs had silently gone stale. The worst was
 colorblind_theme.svg, which still rendered every series in the default blue
 because the theme palette never reached the series -- so the image
@@ -10,6 +18,7 @@ demonstrate, long after the bug itself was fixed.
 Regenerating is one command; noticing it was needed was the hard part.
 """
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -26,11 +35,27 @@ def _svg_snapshot():
 
 
 @pytest.mark.slow
+@pytest.mark.skipif(
+    os.environ.get("GLYPHX_CHECK_EXAMPLES") != "1",
+    reason="byte comparison is only meaningful in the one environment the "
+           "committed images were generated in; set GLYPHX_CHECK_EXAMPLES=1",
+)
 def test_committed_examples_match_a_fresh_run(tmp_path):
     """
-    Re-runs examples.py and compares. Rendering is deterministic -- chart ids
-    are content hashes, not UUIDs -- so a difference means the committed
-    images are behind the code.
+    Re-runs examples.py and compares, to catch a change to rendering that
+    was not followed by regenerating the images.
+
+    Deliberately gated to a single environment. The comparison is
+    byte-for-byte, and identical bytes are not achievable across numpy
+    versions or platforms: ``np.histogram`` computes its bin edges with
+    ``linspace``, whose last bits differ between builds, and an edge that
+    moves by one ulp can push a value into the neighbouring bin. That
+    changes a bar height, not just a coordinate -- no amount of rounding
+    fixes it, and it is not a real difference in the library.
+
+    Running it everywhere produced a different set of "stale" files in each
+    CI job while the code was fine. Run it in one canonical job; that is
+    where forgetting to regenerate would be caught anyway.
     """
     pytest.importorskip("pandas")
     before = _svg_snapshot()
