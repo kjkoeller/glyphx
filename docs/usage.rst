@@ -427,9 +427,23 @@ Any label -- title, axis label, legend entry, annotation -- can contain a
    fig.set_ylabel(r"Rate $\frac{dN}{dt}$")
    fig.set_xlabel(r"Inverse temperature $\frac{1}{T}$ (K$^{-1}$)")
 
-Fractions render stacked with a rule over the numerator. Superscripts,
-subscripts, Greek letters and the common operators (``\sum``, ``\int``,
-``\partial``, ``\nabla``, ``\sqrt``) are supported.
+Around 300 symbols are recognised: all Greek including variants, relations,
+binary and large operators, arrows, delimiters and miscellaneous signs.
+Fractions render stacked with a rule over the numerator.
+
+Beyond bare symbols:
+
+* **Function names** -- ``\sin``, ``\log``, ``\lim``, ``\max``, ``\det``,
+  ``\arg`` and around forty more set upright, since rendering ``sin`` in
+  italic makes it read as the product of three variables.
+* **Accents** -- ``\hat``, ``\bar``, ``\vec``, ``\tilde``, ``\dot``,
+  ``\ddot``, ``\check``, ``\breve``.
+* **Alphabets** -- ``\mathbb{R}``, ``\mathcal{L}``, ``\mathfrak{g}``, plus
+  ``\mathrm``, ``\mathbf`` and ``\text``.
+* **Spacing** -- ``\,``, ``\:``, ``\;``, ``\!``, ``\quad``, ``\qquad``.
+* ``\left`` and ``\right`` are accepted and ignored: there is no delimiter
+  sizing, but printing the word "left" into a label would be worse than
+  rendering the bracket at its normal size.
 
 This is a shorthand rather than a full typesetting engine -- there are no
 matrices or alignment environments -- and it needs no LaTeX installation.

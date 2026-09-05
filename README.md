@@ -154,11 +154,25 @@ fig.set_ylabel(r"Rate $\frac{dN}{dt}$")
 fig.set_xlabel(r"Inverse temperature $\frac{1}{T}$ (K$^{-1}$)")
 ```
 
-Fractions render stacked with a rule over the numerator, and superscripts and
-subscripts, Greek letters and the common operators (`\sum`, `\int`,
-`\partial`, `\nabla`, `\sqrt`) are all supported. It is a shorthand rather
-than a full typesetting engine — no matrices or alignment environments — and
-no LaTeX installation is required.
+What's covered:
+
+| | |
+|---|---|
+| Greek | all lower and upper case, plus variants (`\varepsilon`, `\varrho`, `\varpi`) |
+| Scripts | `x^2`, `x_i`, braced groups `x^{n+1}` |
+| Fractions | `\frac{a}{b}`, stacked with a rule |
+| Functions | `\sin`, `\log`, `\lim`, `\max`, `\det`, `\arg` and ~40 more, set upright |
+| Accents | `\hat`, `\bar`, `\vec`, `\tilde`, `\dot`, `\ddot`, `\check`, `\breve` |
+| Alphabets | `\mathbb{R}`, `\mathcal{L}`, `\mathfrak{g}`, `\mathrm`, `\mathbf` |
+| Relations | `\leq`, `\subseteq`, `\cong`, `\prec`, `\models`, `\asymp`, … |
+| Operators | `\oplus`, `\otimes`, `\wedge`, `\setminus`, `\bigcup`, `\oint`, … |
+| Arrows | `\to`, `\mapsto`, `\longrightarrow`, `\Leftrightarrow`, `\hookrightarrow`, … |
+| Delimiters | `\langle`, `\lceil`, `\lfloor`, and `\left`/`\right` (accepted, no sizing) |
+| Spacing | `\,` `\:` `\;` `\!` `\quad` `\qquad` |
+
+Around 300 symbols in total. It is a shorthand rather than a full
+typesetting engine — no matrices or alignment environments, and no delimiter
+sizing — and it needs no LaTeX installation.
 
 Screen readers get the spoken form, so `$\frac{dN}{dt}$` is announced as
 `dN/dt` rather than as a pile of markup.

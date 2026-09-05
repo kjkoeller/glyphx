@@ -54,16 +54,23 @@ def test_plain_text_is_escaped_and_unchanged():
 
 
 def test_superscript_becomes_a_raised_tspan():
+    """
+    This asserted -0.42em, which *lowers* the text -- the constants were
+    inverted, and the test locked that in while reading as if it checked
+    the opposite. It now asserts the direction rather than a literal.
+    """
     markup = render(r"$x^2$")
     _wrap(markup)
-    assert 'baseline-shift="-0.42em"' in markup
+    shift = re.search(r'baseline-shift="([^"]+)"', markup).group(1)
+    assert not shift.startswith("-")
     assert ">2<" in markup
 
 
 def test_subscript_becomes_a_lowered_tspan():
     markup = render(r"$x_i$")
     _wrap(markup)
-    assert 'baseline-shift="0.28em"' in markup
+    shift = re.search(r'baseline-shift="([^"]+)"', markup).group(1)
+    assert shift.startswith("-")
 
 
 def test_braced_scripts_keep_all_characters():
@@ -314,3 +321,112 @@ def test_fraction_inside_a_larger_label():
 def test_multiple_fractions_in_one_label():
     markup = render(r"$\frac{a}{b}$ and $\frac{c}{d}$")
     assert markup.count("overline") == 2
+
+
+# ---------------------------------------------------------------------------
+# Script direction
+# ---------------------------------------------------------------------------
+
+def test_superscript_is_raised_and_subscript_lowered():
+    """
+    SVG baseline-shift raises for a positive length. The constants were the
+    other way round, so every superscript in every chart rendered as a
+    subscript: x^2 put the 2 below the baseline and x_2 put it above.
+    """
+    from glyphx.mathtext import _SUB_SHIFT, _SUP_SHIFT
+
+    assert not _SUP_SHIFT.startswith("-"), "superscript must raise"
+    assert _SUB_SHIFT.startswith("-"), "subscript must lower"
+
+
+def test_superscript_markup_shifts_upward():
+    markup = render(r"$x^2$")
+    shift = re.search(r'baseline-shift="([^"]+)"', markup).group(1)
+    assert not shift.startswith("-")
+
+
+def test_subscript_markup_shifts_downward():
+    markup = render(r"$x_2$")
+    shift = re.search(r'baseline-shift="([^"]+)"', markup).group(1)
+    assert shift.startswith("-")
+
+
+# ---------------------------------------------------------------------------
+# Catalog breadth
+# ---------------------------------------------------------------------------
+
+def test_symbol_catalog_is_comprehensive():
+    from glyphx.mathtext import SYMBOLS
+    assert len(SYMBOLS) >= 300
+
+
+@pytest.mark.parametrize("command, expected", [
+    (r"\oplus", "\u2295"), (r"\otimes", "\u2297"), (r"\bigcup", "\u22c3"),
+    (r"\bigcap", "\u22c2"), (r"\subseteq", "\u2286"), (r"\supseteq", "\u2287"),
+    (r"\longrightarrow", "\u27f6"), (r"\Leftrightarrow", "\u21d4"),
+    (r"\mapsto", "\u21a6"), (r"\uparrow", "\u2191"), (r"\varnothing", "\u2205"),
+    (r"\langle", "\u27e8"), (r"\rangle", "\u27e9"), (r"\vdots", "\u22ee"),
+    (r"\oint", "\u222e"), (r"\coprod", "\u2210"), (r"\wedge", "\u2227"),
+    (r"\vee", "\u2228"), (r"\cong", "\u2245"), (r"\prec", "\u227a"),
+])
+def test_new_symbols_resolve(command, expected):
+    assert expected in to_plain_text(f"${command}$")
+
+
+@pytest.mark.parametrize("fn", ["sin", "cos", "tan", "log", "ln", "exp",
+                                "max", "min", "lim", "det", "arg"])
+def test_function_names_set_upright(fn):
+    """
+    Rendering "sin" in italic makes it read as the product of three
+    variables rather than as a function.
+    """
+    markup = render(rf"$\{fn}(x)$")
+    assert f'<tspan font-style="normal">{fn}</tspan>' in markup
+
+
+def test_function_name_reads_as_itself_in_plain_text():
+    assert to_plain_text(r"$\sin(x) + \log(y)$") == "sin(x) + log(y)"
+
+
+@pytest.mark.parametrize("accent, mark", [
+    ("hat", "\u0302"), ("bar", "\u0304"), ("vec", "\u20d7"),
+    ("tilde", "\u0303"), ("dot", "\u0307"), ("ddot", "\u0308"),
+])
+def test_accents_apply_a_combining_mark(accent, mark):
+    """A combining mark follows the character it modifies."""
+    assert to_plain_text(rf"$\{accent}{{x}}$") == f"x{mark}"
+
+
+@pytest.mark.parametrize("command, expected", [
+    (r"\mathbb{R}", "\u211d"), (r"\mathbb{N}", "\u2115"),
+    (r"\mathbb{Z}", "\u2124"), (r"\mathbb{Q}", "\u211a"),
+    (r"\mathcal{L}", "\u2112"), (r"\mathcal{F}", "\u2131"),
+    (r"\mathfrak{g}", "g"),
+])
+def test_alternate_alphabets(command, expected):
+    assert to_plain_text(f"${command}$") == expected
+
+
+def test_delimiter_sizing_commands_are_dropped_not_printed():
+    """
+    There is no delimiter sizing here, but printing the word "left" into the
+    middle of a label would be worse than rendering it at normal size.
+    """
+    assert to_plain_text(r"$\left( x \right)$") == "( x )"
+    assert "left" not in render(r"$\left( x \right)$")
+
+
+def test_a_shorter_command_is_not_matched_inside_a_longer_one():
+    r"""Plain substring replacement made \left match \le and print "≤ft"."""
+    assert to_plain_text(r"$\left( a \le b \right)$") == "( a \u2264 b )"
+
+
+def test_spacing_commands_render_as_space():
+    assert "\u2003" in to_plain_text(r"$x \quad y$")
+
+
+def test_a_full_statistics_expression_round_trips():
+    expr = r"$\hat{\beta} = (X^T X)^{-1} X^T y$"
+    plain = to_plain_text(expr)
+    assert plain.startswith("\u03b2\u0302 =")
+    assert "left" not in plain and "\\" not in plain
