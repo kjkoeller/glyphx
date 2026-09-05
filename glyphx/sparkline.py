@@ -22,6 +22,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .series import BaseSeries
+from .utils import series_fingerprint, stable_id
 
 # Standalone helper - returns a raw SVG string with no Figure overhead
 
@@ -66,9 +67,11 @@ def sparkline_svg(
     ph    = height - 2 * padding
 
     def sx(i: int) -> float:
+        """Pixel x for the i-th point, spread evenly across the width."""
         return padding + i * pw / (n - 1)
 
     def sy(v: float) -> float:
+        """Pixel y for a value, inverted so larger values sit higher."""
         return padding + ph - (v - lo) / span * ph
 
     parts: list[str] = [
@@ -150,13 +153,24 @@ class SparklineSeries(BaseSeries):
         show_last_dot: bool = True,
         label: str | None   = None,
     ) -> None:
+        """Store the values and the optional marker/fill styling."""
         self.data          = list(data)
         self.kind          = kind
         self.fill          = fill
         self.fill_alpha    = fill_alpha
         self.line_width    = float(line_width)
         self.show_last_dot = show_last_dot
-        self.css_class     = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class     = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         n = len(data)
         super().__init__(
@@ -167,6 +181,7 @@ class SparklineSeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the sparkline, plus any min/max/last markers that were enabled."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.x)
         n       = len(x_vals)

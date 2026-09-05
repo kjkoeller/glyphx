@@ -27,9 +27,11 @@ without extra configuration.
 significance annotation (requiring the third-party ``statannotations`` package).
 GlyphX ships raincloud plots, ECDF curves, and ``fig.add_stat_annotation()`` out of the box.
 
-**vs Plotly** — Plotly's interactivity requires a CDN dependency or a running Dash server.
-GlyphX's ``fig.share()`` produces a completely self-contained HTML file — no CDN,
-no server, works offline and in air-gapped environments.
+**vs Plotly** — Plotly's ``write_html`` is also self-contained by default, but it
+inlines about 3 MB of ``plotly.js`` to get there; the smaller output needs a CDN at
+view time. GlyphX's ``fig.share()`` is self-contained *and* a few tens of KB, with
+no variant to choose between. Linked views across charts are the sharper difference:
+Plotly needs Dash for those, while ``enable_crossfilter()`` runs in the static file.
 
 
 Architecture Overview

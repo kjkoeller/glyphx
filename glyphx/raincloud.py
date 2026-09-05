@@ -25,7 +25,7 @@ import numpy as np
 
 from ._typing import AxesLike
 from .colormaps import colormap_colors
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 from .violin_plot import _numpy_kde
 
 
@@ -57,6 +57,7 @@ class RaincloudSeries:
         seed: int = 42,
         label: str | None = None,
     ) -> None:
+        """Store one dataset per category and cycle colours to match."""
         self.datasets     = [np.asarray(d, dtype=float) for d in data]
         self.categories   = categories or [str(i) for i in range(len(data))]
         self.jitter_width = jitter_width
@@ -65,7 +66,17 @@ class RaincloudSeries:
         self.box_width    = box_width
         self.seed         = seed
         self.label        = label
-        self.css_class    = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class    = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         n_cats = len(self.datasets)
         self.colors = (colors or colormap_colors("viridis", n_cats))[:n_cats]
@@ -78,6 +89,7 @@ class RaincloudSeries:
         self.y   = [float(all_vals.min()), float(all_vals.max())]
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw each group as a half violin, a box, and its jittered points."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         rng      = np.random.default_rng(self.seed)
         elements: list[str] = []

@@ -1,0 +1,41 @@
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-053dc2c4254e-title glyphx-chart-053dc2c4254e-desc" id="glyphx-chart-053dc2c4254e" data-glyphx="true" data-glyphx-crossfilter="true" data-plot="50,50,240,270" data-domain-x="0.0,6.0" data-domain-y="0,2.033" data-xscale="linear" data-yscale="linear" width="420" height="320" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320"><title id="glyphx-chart-053dc2c4254e-title">Revenue</title><desc id="glyphx-chart-053dc2c4254e-desc">Bar chart titled &quot;Revenue&quot;. Series: 6 data points. Ranges from 0.98 (at Mar) to 1.9 (at Jun).</desc><rect width="420" height="320" fill="#ffffff"/>
+<text x="210" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Revenue</text>
+<line x1="50" y1="270" x2="240" y2="270" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="270" stroke="#333" />
+<line x1="50" x2="240" y1="270.0" y2="270.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="270.0" y2="270.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="274.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
+<line x1="50" x2="240" y1="226.0" y2="226.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="226.0" y2="226.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="230.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.4066">0.41</text>
+<line x1="50" x2="240" y1="182.0" y2="182.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="182.0" y2="182.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="186.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.8132">0.81</text>
+<line x1="50" x2="240" y1="138.0" y2="138.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="138.0" y2="138.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="142.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.2198">1.22</text>
+<line x1="50" x2="240" y1="94.0" y2="94.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="94.0" y2="94.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="98.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.6264">1.63</text>
+<line x1="50" x2="240" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="2.033">2.03</text>
+<line y1="50" y2="270" x1="65.83" x2="65.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="65.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jan</text>
+<line y1="50" y2="270" x1="97.5" x2="97.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="97.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Feb</text>
+<line y1="50" y2="270" x1="129.17" x2="129.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="129.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mar</text>
+<line y1="50" y2="270" x1="160.83" x2="160.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="160.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Apr</text>
+<line y1="50" y2="270" x1="192.5" x2="192.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="192.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
+<line y1="50" y2="270" x1="224.17" x2="224.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="224.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="53.16" y="140.14" width="25.34" height="129.86" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="84.83" y="123.91" width="25.34" height="146.09" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="116.5" y="163.95" width="25.34" height="106.05" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="148.16" y="86.04" width="25.34" height="183.96" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="179.83" y="113.09" width="25.34" height="156.91" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="211.5" y="64.39" width="25.34" height="205.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label=""/>
+</svg>

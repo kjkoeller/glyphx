@@ -10,6 +10,7 @@ from .violin_plot import _numpy_kde
 def jointplot(df, x: str, y: str, kind: str = "scatter",
               marginal: str = "hist", theme: str = "default",
               hue: str | None = None):
+    """Scatter of two columns with their marginal distributions alongside."""
     # A joint plot is a 2x2 arrangement: the main panel plus a marginal
     # distribution along each axis. The grid has to be sized for that up
     # front, or add_axes() indexes past the default 1x1 grid.

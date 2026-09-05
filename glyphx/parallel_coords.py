@@ -27,7 +27,7 @@ import numpy as np
 
 from ._typing import AxesLike
 from .colormaps import apply_colormap, colormap_colors
-from .utils import LEGEND_GUTTER, _format_tick, svg_escape
+from .utils import LEGEND_GUTTER, _format_tick, series_fingerprint, stable_id, svg_escape
 
 
 class ParallelCoordinatesSeries:
@@ -63,13 +63,24 @@ class ParallelCoordinatesSeries:
         show_axes: bool            = True,
         label: str | None          = None,
     ) -> None:
+        """Store the matrix and normalise each axis to its own range."""
         self.matrix     = np.asarray(data, dtype=float)
         self.axes_names = list(axes)
         self.alpha      = float(alpha)
         self.line_width = float(line_width)
         self.show_axes  = show_axes
         self.label      = label
-        self.css_class  = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class  = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
         self.cmap       = cmap
         self.hue        = hue
 
@@ -126,6 +137,7 @@ class ParallelCoordinatesSeries:
         self.y = None
 
     def to_svg(self, ax: AxesLike = None) -> str:
+        """Draw one polyline per row, crossing every vertical axis."""
         if ax is None:
             pad_x, pad_y = 60, 50
             w, h = 740, 400

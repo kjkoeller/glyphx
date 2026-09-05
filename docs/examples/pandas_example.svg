@@ -1,52 +1,64 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-4-title glyphx-chart-4-desc" id="glyphx-chart-4" data-glyphx="true" width="640" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><title id="glyphx-chart-4-title">Revenue by Region  —  df.glyphx.bar(groupby=&#x27;region&#x27;, y=&#x27;revenue&#x27;, agg=&#x27;sum&#x27;)</title><desc id="glyphx-chart-4-desc">Bar chart titled &quot;Revenue by Region  —  df.glyphx.bar(groupby=&#x27;region&#x27;, y=&#x27;revenue&#x27;, agg=&#x27;sum&#x27;)&quot;. X axis: Region. Y axis: Total Revenue ($M). Series &quot;East&quot;: 4 data points. Ranges from 4.95 (at North) to 6.45 (at West). Series &quot;North&quot;: 4 data points. Ranges from 4.95 (at North) to 6.45 (at West). Series &quot;South&quot;: 4 data points. Ranges from 4.95 (at North) to 6.45 (at West). Series &quot;West&quot;: 4 data points. Ranges from 4.95 (at North) to 6.45 (at West).</desc><rect width="640" height="480" fill="#ffffff"/>
-<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Revenue by Region  —  df.glyphx.bar(groupby=&#x27;region&#x27;, y=&#x27;revenue&#x27;, agg=&#x27;sum&#x27;)</text>
-<line x1="50" y1="430" x2="590" y2="430" stroke="#333" />
-<line x1="50" y1="50" x2="50" y2="430" stroke="#333" />
-<text x="320" y="470" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Region</text>
-<text x="15" y="240" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 240)">Total Revenue ($M)</text>
-<line x1="50" x2="590" y1="430.0" y2="430.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="434.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">0</text>
-<line x1="50" x2="590" y1="354.0" y2="354.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="358.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">1.29</text>
-<line x1="50" x2="590" y1="278.0" y2="278.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="282.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">2.58</text>
-<line x1="50" x2="590" y1="201.99999999999997" y2="201.99999999999997" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="205.99999999999997" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">3.87</text>
-<line x1="50" x2="590" y1="126.0" y2="126.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="130.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">5.16</text>
-<line x1="50" x2="590" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="42" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000">6.45</text>
-<line y1="50" y2="430" x1="117.5" x2="117.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="117.5" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >East</text>
-<line y1="50" y2="430" x1="252.5" x2="252.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="252.5" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >North</text>
-<line y1="50" y2="430" x1="387.5" x2="387.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="387.5" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >South</text>
-<line y1="50" y2="430" x1="522.5" x2="522.5" stroke="#ddd" stroke-dasharray="3,3" />
-<text x="522.5" y="446" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" >West</text>
-<rect class="glyphx-point series-83936" tabindex="0" role="graphics-symbol" x="63.5" y="95.36434108527129" width="108.0" height="334.6356589147287" fill="#1f77b4" stroke="#00000033" data-x="East" data-y="5.68" data-label="East"/>
-<rect class="glyphx-point series-83936" tabindex="0" role="graphics-symbol" x="198.5" y="138.37209302325584" width="108.0" height="291.62790697674416" fill="#1f77b4" stroke="#00000033" data-x="North" data-y="4.949999999999999" data-label="East"/>
-<rect class="glyphx-point series-83936" tabindex="0" role="graphics-symbol" x="333.5" y="117.75193798449612" width="108.0" height="312.2480620155039" fill="#1f77b4" stroke="#00000033" data-x="South" data-y="5.3" data-label="East"/>
-<rect class="glyphx-point series-83936" tabindex="0" role="graphics-symbol" x="468.5" y="50.0" width="108.0" height="380.0" fill="#1f77b4" stroke="#00000033" data-x="West" data-y="6.45" data-label="East"/>
-<rect class="glyphx-point series-84368" tabindex="0" role="graphics-symbol" x="63.5" y="95.36434108527129" width="108.0" height="334.6356589147287" fill="#ff7f0e" stroke="#00000033" data-x="East" data-y="5.68" data-label="North"/>
-<rect class="glyphx-point series-84368" tabindex="0" role="graphics-symbol" x="198.5" y="138.37209302325584" width="108.0" height="291.62790697674416" fill="#ff7f0e" stroke="#00000033" data-x="North" data-y="4.949999999999999" data-label="North"/>
-<rect class="glyphx-point series-84368" tabindex="0" role="graphics-symbol" x="333.5" y="117.75193798449612" width="108.0" height="312.2480620155039" fill="#ff7f0e" stroke="#00000033" data-x="South" data-y="5.3" data-label="North"/>
-<rect class="glyphx-point series-84368" tabindex="0" role="graphics-symbol" x="468.5" y="50.0" width="108.0" height="380.0" fill="#ff7f0e" stroke="#00000033" data-x="West" data-y="6.45" data-label="North"/>
-<rect class="glyphx-point series-84176" tabindex="0" role="graphics-symbol" x="63.5" y="95.36434108527129" width="108.0" height="334.6356589147287" fill="#2ca02c" stroke="#00000033" data-x="East" data-y="5.68" data-label="South"/>
-<rect class="glyphx-point series-84176" tabindex="0" role="graphics-symbol" x="198.5" y="138.37209302325584" width="108.0" height="291.62790697674416" fill="#2ca02c" stroke="#00000033" data-x="North" data-y="4.949999999999999" data-label="South"/>
-<rect class="glyphx-point series-84176" tabindex="0" role="graphics-symbol" x="333.5" y="117.75193798449612" width="108.0" height="312.2480620155039" fill="#2ca02c" stroke="#00000033" data-x="South" data-y="5.3" data-label="South"/>
-<rect class="glyphx-point series-84176" tabindex="0" role="graphics-symbol" x="468.5" y="50.0" width="108.0" height="380.0" fill="#2ca02c" stroke="#00000033" data-x="West" data-y="6.45" data-label="South"/>
-<rect class="glyphx-point series-81968" tabindex="0" role="graphics-symbol" x="63.5" y="95.36434108527129" width="108.0" height="334.6356589147287" fill="#d62728" stroke="#00000033" data-x="East" data-y="5.68" data-label="West"/>
-<rect class="glyphx-point series-81968" tabindex="0" role="graphics-symbol" x="198.5" y="138.37209302325584" width="108.0" height="291.62790697674416" fill="#d62728" stroke="#00000033" data-x="North" data-y="4.949999999999999" data-label="West"/>
-<rect class="glyphx-point series-81968" tabindex="0" role="graphics-symbol" x="333.5" y="117.75193798449612" width="108.0" height="312.2480620155039" fill="#d62728" stroke="#00000033" data-x="South" data-y="5.3" data-label="West"/>
-<rect class="glyphx-point series-81968" tabindex="0" role="graphics-symbol" x="468.5" y="50.0" width="108.0" height="380.0" fill="#d62728" stroke="#00000033" data-x="West" data-y="6.45" data-label="West"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-27f805cda405-title glyphx-chart-27f805cda405-desc" id="glyphx-chart-27f805cda405" data-glyphx="true" data-plot="68,68,442,412" data-domain-x="0.0,12.0" data-domain-y="0,3.21" data-xscale="linear" data-yscale="linear" width="640" height="480" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480"><title id="glyphx-chart-27f805cda405-title">Monthly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)</title><desc id="glyphx-chart-27f805cda405-desc">Bar chart titled &quot;Monthly Revenue  —  df.glyphx.bar(x=&#x27;month&#x27;, y=&#x27;revenue&#x27;)&quot;. X axis: Month. Y axis: Revenue ($M). Series &quot;revenue&quot;: 12 data points. Ranges from 0.98 (at Mar) to 3 (at Dec).</desc><rect width="640" height="480" fill="#ffffff"/>
+<text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Monthly Revenue  —  df.glyphx.bar(x='month', y='revenue')</text>
+<line x1="68" y1="412" x2="442" y2="412" stroke="#333" />
+<line x1="68" y1="68" x2="68" y2="412" stroke="#333" />
+<text x="255" y="470" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000">Month</text>
+<text x="15" y="240" text-anchor="middle" font-size="13" font-family="sans-serif" fill="#000000" transform="rotate(-90, 15, 240)">Revenue ($M)</text>
+<line x1="68" x2="442" y1="412.0" y2="412.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="412.0" y2="412.0" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="416.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
+<line x1="68" x2="442" y1="343.2" y2="343.2" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="343.2" y2="343.2" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="347.2" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.642">0.64</text>
+<line x1="68" x2="442" y1="274.4" y2="274.4" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="274.4" y2="274.4" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="278.4" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.284">1.28</text>
+<line x1="68" x2="442" y1="205.6" y2="205.6" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="205.6" y2="205.6" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="209.6" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.926">1.93</text>
+<line x1="68" x2="442" y1="136.8" y2="136.8" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="136.8" y2="136.8" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="140.8" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="2.568">2.57</text>
+<line x1="68" x2="442" y1="68.0" y2="68.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="64.0" x2="68" y1="68.0" y2="68.0" stroke="#000000" stroke-width="1"/>
+<text x="60.0" y="72.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="3.21">3.21</text>
+<line y1="68" y2="412" x1="83.58" x2="83.58" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="83.58" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jan</text>
+<line y1="68" y2="412" x1="114.75" x2="114.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="114.75" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Feb</text>
+<line y1="68" y2="412" x1="145.92" x2="145.92" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="145.92" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mar</text>
+<line y1="68" y2="412" x1="177.08" x2="177.08" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="177.08" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Apr</text>
+<line y1="68" y2="412" x1="208.25" x2="208.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="208.25" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
+<line y1="68" y2="412" x1="239.42" x2="239.42" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="239.42" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
+<line y1="68" y2="412" x1="270.58" x2="270.58" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="270.58" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jul</text>
+<line y1="68" y2="412" x1="301.75" x2="301.75" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="301.75" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Aug</text>
+<line y1="68" y2="412" x1="332.92" x2="332.92" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="332.92" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Sep</text>
+<line y1="68" y2="412" x1="364.08" x2="364.08" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="364.08" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Oct</text>
+<line y1="68" y2="412" x1="395.25" x2="395.25" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="395.25" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Nov</text>
+<line y1="68" y2="412" x1="426.42" x2="426.42" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="426.42" y="428" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Dec</text>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="71.11" y="283.4" width="24.94" height="128.6" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="102.28" y="267.33" width="24.94" height="144.67" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="133.45" y="306.98" width="24.94" height="105.02" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="164.61" y="229.82" width="24.94" height="182.18" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="195.78" y="256.61" width="24.94" height="155.39" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="226.95" y="208.39" width="24.94" height="203.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="258.11" y="186.95" width="24.94" height="225.05" fill="#1f77b4" stroke="#00000033" data-x="Jul" data-y="2.1" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="289.28" y="224.46" width="24.94" height="187.54" fill="#1f77b4" stroke="#00000033" data-x="Aug" data-y="1.75" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="320.45" y="165.52" width="24.94" height="246.48" fill="#1f77b4" stroke="#00000033" data-x="Sep" data-y="2.3" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="351.61" y="192.31" width="24.94" height="219.69" fill="#1f77b4" stroke="#00000033" data-x="Oct" data-y="2.05" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="382.78" y="133.37" width="24.94" height="278.63" fill="#1f77b4" stroke="#00000033" data-x="Nov" data-y="2.6" data-label="revenue"/>
+<rect class="glyphx-point series-8ca4d364" tabindex="0" role="graphics-symbol" x="413.95" y="90.5" width="24.94" height="321.5" fill="#1f77b4" stroke="#00000033" data-x="Dec" data-y="3.0" data-label="revenue"/>
 <g class="glyphx-legend">
-<rect x="555" y="20" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-83936" />
-<text x="575" y="30" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-83936">East</text>
-<rect x="555" y="42" width="12" height="12" fill="#ff7f0e" class="legend-icon" data-target="series-84368" />
-<text x="575" y="52" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-84368">North</text>
-<rect x="555" y="64" width="12" height="12" fill="#2ca02c" class="legend-icon" data-target="series-84176" />
-<text x="575" y="74" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-84176">South</text>
-<rect x="555" y="86" width="12" height="12" fill="#d62728" class="legend-icon" data-target="series-81968" />
-<text x="575" y="96" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-81968">West</text>
+<rect x="518" y="229" width="12" height="12" fill="#1f77b4" class="legend-icon" data-target="series-8ca4d364" />
+<text x="538" y="239" font-size="12" font-family="sans-serif" fill="#000000" class="legend-label" data-target="series-8ca4d364">revenue</text>
 </g></svg>

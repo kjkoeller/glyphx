@@ -7,7 +7,7 @@ algorithms chosen per series type.
 
 Algorithm summary::
 
-    2-D line series   : Two-stage M4 -> LTTB pipeline.
+    2-D line series   : Two-stage pipeline, M4 then LTTB.
     2-D scatter series: 2-D voxel grid thinning.
     3-D line series   : LTTB on vectorised camera-projected screen coords,
                         result cached in a WeakKeyDictionary keyed on camera
@@ -59,6 +59,7 @@ _local = threading.local()
 
 
 def _enabled() -> bool:
+    """Is downsampling on for this thread? Toggled by the context manager."""
     return getattr(_local, "enabled", True)
 
 
@@ -434,6 +435,12 @@ def _data_fingerprint(
     More collision-resistant than first/mid/last while remaining cheap.
     """
     def _sig(arr: np.ndarray) -> tuple:
+        """
+        Cheap fingerprint of an array, for the projection cache key.
+
+        Length plus the endpoints, rather than hashing every element: the cache
+        only needs to notice when the data has been swapped out.
+        """
         n = len(arr)
         indices = np.linspace(0, n - 1, min(8, n), dtype=int)
         return (n,) + tuple(float(arr[i]) for i in indices)
@@ -601,6 +608,7 @@ def voxel_thin_3d(
     grid_k = max(1, int(math.ceil(max_points ** (1.0 / 3.0))))
 
     def _cell(arr: np.ndarray) -> np.ndarray:
+        """Bucket values into voxel cell indices across their own range."""
         lo, hi = arr.min(), arr.max()
         span = hi - lo or 1.0
         return np.clip(((arr - lo) / span * grid_k).astype(int), 0, grid_k - 1)
@@ -713,6 +721,7 @@ def cull_faces(
 # SVG annotation helper
 
 def _ds_comment(original_n: int, thinned_n: int, algorithm: str) -> str:
+    """Build the SVG comment recording what was thinned and by which algorithm."""
     return (
-        f"<!-- glyphx: {algorithm} downsampled {original_n} -> {thinned_n} points -->"
+        f"<!-- glyphx: {algorithm} downsampled {original_n} points to {thinned_n} -->"
     )

@@ -32,6 +32,7 @@ class Bar3DSeries:
         alpha: float        = 0.85,
         label: str | None   = None,
     ) -> None:
+        """Flatten the input grids and work out the Z range used for colouring."""
         self.x_1d  = list(x)
         self.y_1d  = list(y)
         self.cmap  = cmap
@@ -59,10 +60,18 @@ class Bar3DSeries:
         self._dy = dy if dy else (self.y_1d[1] - self.y_1d[0]) * 0.7 if len(self.y_1d) > 1 else 0.5
 
     def _bar_color(self, z_val: float) -> str:
+        """Pick this bar's colour by where its height sits in the Z range."""
         norm = (z_val - self._z_min) / self._z_span
         return apply_colormap(norm, self.cmap)
 
     def to_svg(self, cam: Camera3D, x_range, y_range, z_range) -> str:
+        """
+        Project every bar to screen space and draw it back to front.
+
+        Bars are sorted by camera depth before drawing, because SVG has no
+        z-buffer: whatever is painted last ends up on top, so far bars have to
+        go down first or near ones get hidden behind them.
+        """
         xn, xlo, xhi = normalize(self.x_1d)
         yn, ylo, yhi = normalize(self.y_1d)
 
@@ -73,6 +82,7 @@ class Bar3DSeries:
         dy_n = self._dy / y_span
 
         def zn_scale(z):
+            """Squash a Z value into the cube, leaving headroom at the top."""
             return z / (self._z_max or 1) * 1.8 - 0.9
 
 
@@ -89,6 +99,7 @@ class Bar3DSeries:
 
         # Sort back-to-front
         def _bar_depth(b):
+            """Camera depth of a bar's base, used to sort far-to-near."""
             return cam.project(b[0], b[1], 0).depth
         bars.sort(key=_bar_depth)
 
@@ -108,6 +119,7 @@ class Bar3DSeries:
             c = [cam.project(*pt) for pt in corners_3d]
 
             def face(indices, shade=1.0):
+                """Emit one shaded quad of the bar from four projected corners."""
                 pts = " ".join(f"{c[k].px:.1f},{c[k].py:.1f}" for k in indices)
                 r, g, b_ = int(col[1:3],16), int(col[3:5],16), int(col[5:7],16)
                 sr = min(255, int(r * shade))
@@ -124,6 +136,7 @@ class Bar3DSeries:
         return "\n".join(elements)
 
     def to_threejs_data(self) -> dict:
+        """Export the bars as plain dicts for the Three.js renderer to consume."""
         bars = []
         if self.paired:
             for xi, yi, zi in zip(self.x_1d, self.y_1d, self.z_vals):

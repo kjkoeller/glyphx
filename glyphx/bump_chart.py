@@ -25,7 +25,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .colormaps import colormap_colors
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 
 #: Space reserved at the left for the "#N" rank labels, before the width of
 #: the longest series name is added on.
@@ -61,13 +61,24 @@ class BumpChartSeries:
         show_labels: bool        = True,
         label: str | None        = None,
     ) -> None:
+        """Store the periods and per-entity rankings, one series row per entity."""
         self.x_labels    = list(x)
         self.rankings    = rankings
         self.line_width  = float(line_width)
         self.dot_radius  = float(dot_radius)
         self.show_labels = show_labels
         self.label       = label
-        self.css_class   = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class   = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         n_series = len(rankings)
         self.colors = colors or colormap_colors("viridis", max(n_series, 2))
@@ -81,6 +92,7 @@ class BumpChartSeries:
         self.y = None
 
     def to_svg(self, ax: AxesLike = None) -> str:   # type: ignore
+        """Draw one line per entity across the periods, ranked top to bottom."""
         # The gutter holds both the "#N" rank labels and the series name
         # anchored to the first dot. At a fixed 30px they landed on top of
         # each other, so size it to the longest name.
@@ -109,12 +121,14 @@ class BumpChartSeries:
 
         # Map period index → pixel x
         def px(period_i: int) -> float:
+            """Pixel x for a period index. A single period sits mid-plot."""
             if n_periods <= 1:
                 return pad_x + plot_w / 2
             return pad_x + period_i * plot_w / (n_periods - 1)
 
         # Map rank → pixel y  (rank 1 = top)
         def py(rank: int) -> float:
+            """Pixel y for a rank, counting downward so rank 1 is at the top."""
             if n_ranks <= 1:
                 return pad_y + plot_h / 2
             return pad_y + (rank - 1) * plot_h / (n_ranks - 1)

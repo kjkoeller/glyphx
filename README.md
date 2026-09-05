@@ -18,36 +18,33 @@ View the documentation page [here](https://glyphx.readthedocs.io/en/latest/index
 ## Why GlyphX?
 
 | Feature | GlyphX | Matplotlib | Seaborn | Plotly |
-|---|:---:|:---:|:---:|:---:|
-| Auto-display (no `show()`) | ✅ | ❌ | ❌ | ❌ |
-| Method chaining API | ✅ | ❌ | ❌ | Partial |
-| DataFrame accessor (`df.glyphx.*`) | ✅ | ❌ | Partial | ❌ |
-| Linked interactive brushing | ✅ | ❌ | ❌ | ✅ (needs server) |
-| Self-contained shareable HTML | ✅ | ❌ | ❌ | ❌ |
-| Statistical significance brackets | ✅ | ❌ | ❌ | ❌ |
-| ECDF plot | ✅ | ❌ | ✅ | ❌ |
-| Raincloud plot | ✅ | ❌ | ❌ | ❌ |
-| 3-D scatter / surface / line / bar | ✅ (WebGL + SVG) | ❌ | ❌ | ✅ (WebGL) |
-| Bubble chart | ✅ | ✅ | ❌ | ✅ |
-| Sunburst chart | ✅ | ❌ | ❌ | ✅ |
-| Parallel coordinates | ✅ | ❌ | ✅ | ✅ |
-| Diverging bar | ✅ | ❌ | ❌ | ✅ |
-| Auto large-data downsampling (SVG) | ✅ M4+LTTB+voxel | Rasterises | ❌ | ❌ |
-| Perceptually-uniform colormaps | ✅ (9 built-in) | ✅ | ✅ | ✅ |
-| Continuous color encoding (scatter) | ✅ | ✅ | ✅ | ✅ |
-| Candlestick / OHLC | ✅ | ❌ | ❌ | ✅ |
-| Waterfall / bridge chart | ✅ | ❌ | ❌ | ✅ |
-| Treemap (squarified) | ✅ | ❌ | ❌ | ✅ |
-| Streaming / real-time series | ✅ (no server) | ❌ | ❌ | ✅ (needs server) |
-| Synchronized crosshair | ✅ | ❌ | ❌ | ✅ (needs server) |
-| PPTX export | ✅ | ❌ | ❌ | ❌ |
-| CLI tool (`glyphx plot data.csv`) | ✅ | ❌ | ❌ | ❌ |
-| Full ARIA / WCAG 2.1 AA accessibility | ✅ | ❌ | ❌ | Partial |
-| Full type annotations (`py.typed`) | ✅ | ❌ | ❌ | Partial |
-| `tight_layout()` | ✅ auto | Manual | Auto | Auto |
-| Log-scale axes | ✅ | ✅ | ✅ | ✅ |
-| Dual Y-axis | ✅ | ✅ | ❌ | ✅ |
-| Error bars (X and Y) | ✅ | ✅ | ✅ | ✅ |
+|---|---|---|---|---|
+| Auto-display (no `show()`) | Everywhere | Notebooks only | Notebooks only | Notebooks only |
+| Method chaining API | Yes | No | No | Partial |
+| DataFrame accessor (`df.glyphx.*`) | Yes | No | Partial | No |
+| Self-contained HTML size | Tens of KB | n/a | n/a | ~3 MB (inlines plotly.js) |
+| Cross-chart click-to-filter | Yes, no server | No | No | Needs Dash |
+| Linked interactive brushing | Yes, no server | No | No | Needs Dash |
+| Streaming / real-time series | Yes, no server | No | No | Needs a server |
+| Statistical significance brackets | Yes | No | Third-party | No |
+| Raincloud plot | Yes | No | Third-party | No |
+| Sunburst chart | Yes | No | No | Yes |
+| Diverging bar | Yes | No | No | Yes |
+| Candlestick / OHLC | Yes | Third-party | No | Yes |
+| Waterfall / bridge chart | Yes | No | No | Yes |
+| Treemap (squarified) | Yes | Third-party | No | Yes |
+| Auto large-data downsampling | M4, LTTB and voxel | Rasterises instead | No | No |
+| PPTX export | Yes | No | No | No |
+| CLI tool (`glyphx plot data.csv`) | Yes | No | No | No |
+| Full ARIA / WCAG 2.1 AA accessibility | Yes | No | No | Partial |
+| `tight_layout()` | Automatic | Manual | Automatic | Automatic |
+
+Matplotlib and Plotly are both mature and broadly capable; the rows above are
+where GlyphX differs, not a general scorecard. Notably, both have things
+GlyphX does not: Matplotlib ships 3-D plotting (`mpl_toolkits.mplot3d`), an
+`ecdf` method, and type hints for most public APIs since 3.8, and Plotly's
+`write_html` already produces a fully self-contained offline file — GlyphX's
+is simply two orders of magnitude smaller.
 
 ---
 
@@ -58,7 +55,7 @@ pip install glyphx
 
 # Optional extras
 pip install "glyphx[export]"  # PNG/JPG raster export   (resvg-py + pillow)
-pip install "glyphx[cairo]"   # PDF export              (cairosvg)
+pip install "glyphx[cairo]"   # alternative PDF backend (cairosvg; PDF needs nothing)
 pip install "glyphx[pptx]"    # PowerPoint export        (python-pptx + cairosvg)
 pip install "glyphx[all]"     # Everything
 ```
@@ -146,6 +143,107 @@ fig = (
     .share("dashboard.html")
 )
 ```
+
+### Math in labels
+
+Any label — title, axis label, legend entry, annotation — can carry a `$...$`
+span:
+
+```python
+fig.set_ylabel(r"Rate $\frac{dN}{dt}$")
+fig.set_xlabel(r"Inverse temperature $\frac{1}{T}$ (K$^{-1}$)")
+```
+
+What's covered:
+
+| | |
+|---|---|
+| Greek | all lower and upper case, plus variants (`\varepsilon`, `\varrho`, `\varpi`) |
+| Scripts | `x^2`, `x_i`, braced groups `x^{n+1}` |
+| Fractions | `\frac{a}{b}`, stacked with a rule |
+| Functions | `\sin`, `\log`, `\lim`, `\max`, `\det`, `\arg` and ~40 more, set upright |
+| Accents | `\hat`, `\bar`, `\vec`, `\tilde`, `\dot`, `\ddot`, `\check`, `\breve` |
+| Alphabets | `\mathbb{R}`, `\mathcal{L}`, `\mathfrak{g}`, `\mathrm`, `\mathbf` |
+| Relations | `\leq`, `\subseteq`, `\cong`, `\prec`, `\models`, `\asymp`, … |
+| Operators | `\oplus`, `\otimes`, `\wedge`, `\setminus`, `\bigcup`, `\oint`, … |
+| Arrows | `\to`, `\mapsto`, `\longrightarrow`, `\Leftrightarrow`, `\hookrightarrow`, … |
+| Delimiters | `\langle`, `\lceil`, `\lfloor`, and `\left`/`\right` (accepted, no sizing) |
+| Spacing | `\,` `\:` `\;` `\!` `\quad` `\qquad` |
+
+Around 300 symbols in total. It is a shorthand rather than a full
+typesetting engine — no matrices or alignment environments, and no delimiter
+sizing — and it needs no LaTeX installation.
+
+Screen readers get the spoken form, so `$\frac{dN}{dt}$` is announced as
+`dN/dt` rather than as a pile of markup.
+
+### Heatmap colour ranges
+
+`cmap` takes any of the named colormaps, and the range can be pinned rather
+than taken from the data:
+
+```python
+fig.add(HeatmapSeries(corr, cmap="coolwarm", center=0))     # 0 stays neutral
+fig.add(HeatmapSeries(a, cmap="viridis", vmin=0, vmax=100)) # comparable panels
+```
+
+`center=` matters for diverging colormaps. By default a heatmap normalises
+over its own min and max, so on a correlation matrix spanning −0.2 to 1.0
+zero lands 17% up the ramp — mildly positive values render with the colour
+that reads as negative. `center=0` widens the narrower side so the neutral
+colour sits exactly at zero.
+
+`vmin`/`vmax` pin the range so two panels can be read side by side; values
+outside it clamp.
+
+### Aggregation with confidence bands
+
+Hand it raw repeated measurements — several y values per x, from several
+subjects, trials or runs — and it draws the estimate per x with a
+bootstrapped confidence band, with no manual `groupby` first:
+
+```python
+fig.aggregate_line(df, x="week", y="score", hue="arm")
+```
+
+`estimator=` takes `"mean"` (default), `"median"`, `"sum"`, `"min"`, `"max"`,
+`"count"`, or any callable reducing an array to a scalar. `ci=` takes a
+confidence level, `"sd"` for one standard deviation, `"se"` for standard
+error, or `None` for the line alone.
+
+The bootstrap is seeded, so redrawing the same data gives an identical band —
+a figure in a paper should not shift between renders. A group with a single
+observation gets no interval rather than a fabricated one, and each band takes
+its own line's colour.
+
+### Drop-in pandas backend
+
+Existing `df.plot()` code becomes GlyphX with one line — no rewrite:
+
+```python
+import pandas as pd
+pd.options.plotting.backend = "glyphx"
+
+df.plot(x="month", y="revenue")            # returns a glyphx Figure
+df.plot.bar(x="month", y=["revenue", "costs"])
+df.plot.scatter(x="spend", y="revenue")
+df.plot(x="month", y=["revenue", "costs"], subplots=True, sharex=True)
+```
+
+Supports `line`, `bar`, `area`, `scatter`, `hist`, `kde`/`density`, `box` and
+`pie`, for both `DataFrame` and `Series`, plus the usual keyword arguments —
+`figsize`, `title`, `xlabel`/`ylabel`, `legend`, `grid`, `logx`/`logy`,
+`colormap`, `subplots`, `sharex`, `stacked`. Column resolution matches
+matplotlib's: omit `x` and the index is used, omit `y` and every numeric
+column is drawn.
+
+Anything not supported — `hexbin`, `barh`, `ax=`, `secondary_y=` — raises
+`NotImplementedError` naming exactly what is missing, rather than silently
+dropping part of your call and handing back a chart that looks finished.
+
+The one difference from matplotlib's backend is the return value: you get a
+`glyphx.Figure`, not an `Axes`, so `.show()`, `.share()` and `.save()` are
+available on it.
 
 ### DataFrame Accessor
 
@@ -628,7 +726,7 @@ register_theme(
 Figure(theme="acme").line(x, y).show()
 df.glyphx.scatter(x="a", y="b", theme="acme")
 
-list_themes()          # -> ['acme', 'colorblind', 'dark', 'default', ...]
+list_themes()          # ['acme', 'colorblind', 'dark', 'default', ...]
 ```
 
 `register_theme` validates as it goes: a misspelled key (`colours`) or a bad
@@ -657,9 +755,15 @@ raincloud, bump) keep their `cmap`.
 ```python
 fig.save("chart.svg")          # SVG vector — scales to any size
 fig.save("chart.html")         # interactive HTML with tooltips, zoom, export buttons
+fig.save("chart.pdf")          # vector PDF — no extra packages needed
 fig.save("chart.png")          # raster PNG  (requires: pip install "glyphx[export]")
 fig.save("chart.jpg")          # raster JPG  (requires: pip install "glyphx[export]")
 fig.save("chart.pptx")         # PowerPoint slide (requires: pip install "glyphx[pptx]")
+
+# PDF is written by a built-in pure-Python writer, so it works in a bare
+# virtualenv or CI container with no system libraries and no browser. The
+# output is true vector — paths stay paths and text stays selectable, so it
+# scales without pixelation and can be searched and copied.
 
 # Self-contained HTML — all JS inlined, works fully offline
 html_str = fig.share()                       # returns string
@@ -669,6 +773,162 @@ html_str = fig.share(title="Q3 Report")      # custom <title> tag
 
 `fig.share()` inlines all JavaScript so the output works in:
 email clients · Confluence · Notion · GitHub Pages · air-gapped environments
+
+### Reacting to a clicked point
+
+Clicking a point dispatches a `glyphx:select` event on `document`, so anything
+else on the page can update itself — a detail panel, a table, an image, a
+second chart, a request to your own endpoint. Clicking the same point again,
+or pressing Escape, dispatches `glyphx:deselect`.
+
+```python
+fig.add(ScatterSeries(
+    x, y,
+    meta=[{"customer": "Acme", "orders": 42},
+          {"customer": "Beta", "orders": 17}],
+))
+fig.share("chart.html")
+```
+
+```html
+<div id="detail">Click a point</div>
+<script>
+  document.addEventListener('glyphx:select', (e) => {
+    const { x, y, label, series, meta } = e.detail;
+    detail.textContent = `${meta.customer} — ${meta.orders} orders`;
+  });
+</script>
+```
+
+`meta` is whatever you passed in Python, parsed back from JSON, so the listener
+receives the structure you wrote rather than a flattened string.
+
+#### A detail panel without writing JavaScript
+
+For the common case — click a point, show its record — `add_detail_panel()`
+does the wiring for you:
+
+```python
+fig.add(ScatterSeries(x, y, meta=records))
+fig.add_detail_panel(["customer", "region", "tier"], title="Selected customer")
+fig.share("chart.html")
+```
+
+The panel renders beside the chart, fills in on click, and returns to its
+empty message on Escape or a second click. `fields` fixes the display order
+and omits anything else; leave it out to show whatever each point carries.
+
+It is an ordinary listener on the same `glyphx:select` event, so it composes
+rather than competes — your own listeners still fire for the same click, and
+cross-filtering still applies. Values render as text, never markup.
+
+#### What each chart type reports
+
+Every chart type answers a click with the values it is read for, so a pie
+gives you a share and a candlestick gives you OHLC:
+
+| Chart | `x` | `y` | also in `detail.data` |
+|---|---|---|---|
+| line, scatter, bar | category or position | value | |
+| pie, donut | slice label | value | `percent` |
+| treemap | tile label | value | `percent` |
+| sunburst | node label | value | |
+| box plot | category | median | `q1`, `q2`, `q3`, `median` |
+| candlestick | date | close | `open`, `high`, `low`, `close` |
+| stacked, grouped bar | category | segment value | |
+| waterfall, diverging bar | step label | delta | |
+| histogram | bin | count | |
+| ECDF (`show_points=True`) | value | cumulative probability | |
+
+`detail.data` carries every `data-` attribute the element has, so a listener
+receives whatever that chart type knows about the thing that was clicked
+rather than only the fields all types share. Any of those names can also go
+straight into `add_detail_panel(fields=[...])`. The selected
+point gets an outline rather than a colour change, since colour is data.
+
+Events rather than a callback registry: any number of listeners can attach
+without knowing about each other, and it composes with the rest — on a chart
+with `enable_crossfilter()`, one click both filters the other charts and emits
+the selection. Everything runs in the exported file; there is no server.
+
+### Zoom and pan
+
+Scroll to zoom, drag to pan, double-click empty space to reset. Axis labels
+are redrawn for whatever region is visible, so a zoomed chart still tells you
+what you are looking at — they are not static text that scrolls away with the
+rest of the drawing.
+
+Linear axes only; a log axis keeps its original ticks.
+
+On a touch device, one finger pans and two pinch to zoom, anchored on the
+midpoint between them. The toolbar wraps rather than overflowing a phone
+screen, so a chart you share by email is usable on the device most people
+will open it on.
+
+A **Reset view** button appears in the toolbar as soon as the view moves, and
+disappears once you are back to the default — so the way out is visible
+exactly when it is wanted, rather than relying on knowing the double-click
+gesture. It restores zoom, position and axis labels together, and resets every
+chart on the page.
+
+### Brushing
+
+Shift and drag to select a region. Matching points stay lit, the rest fade,
+and a readout shows what you selected — count, mean, sum and range — updating
+live as the rectangle grows rather than only once you let go. Escape clears it.
+
+Non-numeric values are skipped, so a categorical axis still reports a count.
+The readout is an ARIA live region, so the numbers are announced rather than
+being visual-only.
+
+### Filter controls
+
+Checkboxes, radio buttons and a search box that filter the chart in the
+browser — no server, no callbacks:
+
+```python
+fig.add(ScatterSeries(x, y, meta=records))
+fig.add_controls(checkboxes="region", radio="tier", search="customer",
+                 title="Filter")
+```
+
+You name a *field*; GlyphX reads the distinct values out of the data and
+builds one control per value. A field is found wherever it lives — in a
+point's `meta`, in its own `data-` attributes (`percent` on a pie, `close` on
+a candlestick), or as the series label via `"series"`.
+
+Filters combine with AND, which is how a stack of controls reads: tick two
+regions and type a name and you get that name within those regions. A running
+"Showing 12 of 40" sits underneath and is announced to screen readers.
+
+Checkboxes start ticked, and radio groups get an "All" option — a panel that
+hides your data on load looks broken, and a radio group without "All" is a
+one-way trip. `labels=` gives friendlier captions, `reset=False` drops the
+"Show all" button.
+
+### Cross-chart filtering
+
+Click a bar, point or slice and every other opted-in chart on the page dims
+everything that doesn't share that x value:
+
+```python
+revenue = Figure().bar(months, revenue).enable_crossfilter()
+costs   = Figure().bar(months, costs).enable_crossfilter()
+
+SubplotGrid(1, 2).add(revenue, 0, 0).add(costs, 0, 1).save("dashboard.html")
+```
+
+Click "Feb" in either chart and February stays lit in both while the other
+months recede. Click it again, or press Escape, to clear.
+
+This runs entirely inside the exported HTML — no server, no callback
+round-trip, nothing leaving the page. Linked views in Plotly need Dash, and in
+Bokeh need a Bokeh server; here it's a static file you can email.
+
+Charts opt in individually, so a page can mix filtered and independent charts.
+The x value is the join key, since `data-x` is already on every drawn element.
+Filter changes are announced through an ARIA live region, and elements are
+keyboard-reachable, so `Enter` and `Space` filter as well as clicking.
 
 ### Multi-figure export
 
@@ -766,7 +1026,7 @@ Works with **mypy**, **pyright**, and all major IDEs out of the box.
 ## Comparison with Matplotlib
 
 ```python
-# Matplotlib — 12 lines, no interactivity, no shareable output
+# Matplotlib — 12 lines, and the output is a static image
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 ax.plot(months, revenue, color="blue",  label="Revenue")
@@ -810,14 +1070,19 @@ annotator.apply_and_annotate()
 ## Comparison with Plotly
 
 ```python
-# Plotly — HTML has CDN dependency, breaks offline
+# Plotly — self-contained by default, but inlines ~3 MB of plotly.js
 import plotly.express as px
 fig = px.line(df, x="month", y="revenue")
-fig.write_html("chart.html")   # requires CDN at view time
+fig.write_html("chart.html")            # ~3 MB, works offline
+fig.write_html("chart.html", include_plotlyjs="cdn")   # ~40 KB, needs the CDN
 
-# GlyphX — truly self-contained, works on a USB stick
-fig.share("chart.html")        # all JS inlined, zero dependencies
+# GlyphX — self-contained *and* small; there is no CDN variant to pick
+fig.share("chart.html")                 # tens of KB, all JS inlined
 ```
+
+Both produce a file you can open offline. The difference is that Plotly makes
+you trade size against a CDN dependency, and GlyphX does not — its inlined
+JavaScript is a few tens of KB rather than three megabytes.
 
 ---
 

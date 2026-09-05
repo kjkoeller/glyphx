@@ -38,6 +38,72 @@ from __future__ import annotations
 import re
 
 #: Recognised ``\name`` sequences and the character they render as.
+
+#: Function names that set upright, not italic. ``\sin x`` is a function
+#: applied to a variable, and rendering the name in italic makes it read as
+#: the product of three variables instead.
+FUNCTION_NAMES: frozenset[str] = frozenset({
+    "arccos", "arcsin", "arctan", "arg", "cos", "cosh", "cot", "coth",
+    "csc", "deg", "det", "dim", "exp", "gcd", "hom", "inf", "injlim",
+    "ker", "lg", "lim", "liminf", "limsup", "ln", "log", "max", "min",
+    "Pr", "projlim", "sec", "sin", "sinh", "sup", "tan", "tanh",
+    "argmax", "argmin", "sgn", "erf", "erfc", "median", "var", "cov",
+    "corr", "diag", "tr", "rank", "span", "Var", "Cov", "Corr", "E",
+})
+
+#: Accents, as Unicode combining marks placed after the character they
+#: modify. ``\hat{x}`` becomes "x" followed by U+0302, which the text
+#: renderer composes into a single glyph.
+ACCENTS: dict[str, str] = {
+    "hat": "\u0302", "widehat": "\u0302",
+    "bar": "\u0304", "overline": "\u0304",
+    "vec": "\u20d7", "overrightarrow": "\u20d7",
+    "tilde": "\u0303", "widetilde": "\u0303",
+    "dot": "\u0307", "ddot": "\u0308", "dddot": "\u20db",
+    "acute": "\u0301", "grave": "\u0300", "breve": "\u0306",
+    "check": "\u030c", "mathring": "\u030a", "underline": "\u0332",
+}
+
+#: Blackboard-bold (``\mathbb``) for the capitals that have a dedicated
+#: Unicode codepoint. R, N, Z, Q and C are the ones that actually come up.
+BLACKBOARD: dict[str, str] = {
+    "A": "\U0001d538", "B": "\U0001d539", "C": "\u2102", "D": "\U0001d53b",
+    "E": "\U0001d53c", "F": "\U0001d53d", "G": "\U0001d53e", "H": "\u210d",
+    "I": "\U0001d540", "J": "\U0001d541", "K": "\U0001d542", "L": "\U0001d543",
+    "M": "\U0001d544", "N": "\u2115", "O": "\U0001d546", "P": "\u2119",
+    "Q": "\u211a", "R": "\u211d", "S": "\U0001d54a", "T": "\U0001d54b",
+    "U": "\U0001d54c", "V": "\U0001d54d", "W": "\U0001d54e", "X": "\U0001d54f",
+    "Y": "\U0001d550", "Z": "\u2124",
+}
+
+#: Script / calligraphic (``\mathcal``).
+CALLIGRAPHIC: dict[str, str] = {
+    "A": "\U0001d49c", "B": "\u212c", "C": "\U0001d49e", "D": "\U0001d49f",
+    "E": "\u2130", "F": "\u2131", "G": "\U0001d4a2", "H": "\u210b",
+    "I": "\u2110", "J": "\U0001d4a5", "K": "\U0001d4a6", "L": "\u2112",
+    "M": "\u2133", "N": "\U0001d4a9", "O": "\U0001d4aa", "P": "\U0001d4ab",
+    "Q": "\U0001d4ac", "R": "\u211b", "S": "\U0001d4ae", "T": "\U0001d4af",
+    "U": "\U0001d4b0", "V": "\U0001d4b1", "W": "\U0001d4b2", "X": "\U0001d4b3",
+    "Y": "\U0001d4b4", "Z": "\U0001d4b5",
+}
+
+#: Fraktur (``\mathfrak``).
+FRAKTUR: dict[str, str] = {
+    "A": "\U0001d504", "B": "\U0001d505", "C": "\u212d", "D": "\U0001d507",
+    "E": "\U0001d508", "F": "\U0001d509", "G": "\U0001d50a", "H": "\u210c",
+    "I": "\u2111", "J": "\U0001d50d", "K": "\U0001d50e", "L": "\U0001d50f",
+    "M": "\U0001d510", "N": "\U0001d511", "O": "\U0001d512", "P": "\U0001d513",
+    "Q": "\U0001d514", "R": "\u211c", "S": "\U0001d516", "T": "\U0001d517",
+    "U": "\U0001d518", "V": "\U0001d519", "W": "\U0001d51a", "X": "\U0001d51b",
+    "Y": "\U0001d51c", "Z": "\u2128",
+}
+
+#: Explicit spacing commands, in em.
+SPACING: dict[str, float] = {
+    ",": 0.167, ":": 0.222, ";": 0.278, "!": -0.167,
+    "quad": 1.0, "qquad": 2.0, " ": 0.25,
+}
+
 SYMBOLS: dict[str, str] = {
     # lowercase Greek
     "alpha": "\u03b1", "beta": "\u03b2", "gamma": "\u03b3", "delta": "\u03b4",
@@ -73,6 +139,90 @@ SYMBOLS: dict[str, str] = {
     # spacing
     "quad": "\u2003", "qquad": "\u2003\u2003", ",": "\u2009", ";": "\u2004",
     " ": " ",
+    # -- Greek variants -----------------------------------------------------
+    "varrho": "\u03f1", "varpi": "\u03d6", "varkappa": "\u03f0",
+    "digamma": "\u03dd", "varDelta": "\u0394", "varGamma": "\u0393",
+    "varLambda": "\u039b", "varOmega": "\u03a9", "varPhi": "\u03a6",
+    "varPi": "\u03a0", "varPsi": "\u03a8", "varSigma": "\u03a3",
+    "varTheta": "\u0398", "varUpsilon": "\u03a5", "varXi": "\u039e",
+
+    # -- Relations ----------------------------------------------------------
+    "leqslant": "\u2a7d", "geqslant": "\u2a7e", "prec": "\u227a",
+    "succ": "\u227b", "preceq": "\u2aaf", "succeq": "\u2ab0",
+    "subseteq": "\u2286", "supset": "\u2283", "supseteq": "\u2287",
+    "subsetneq": "\u228a", "supsetneq": "\u228b",
+    "sqsubset": "\u228f", "sqsupset": "\u2290",
+    "sqsubseteq": "\u2291", "sqsupseteq": "\u2292",
+    "models": "\u22a8", "vdash": "\u22a2", "dashv": "\u22a3",
+    "asymp": "\u224d", "cong": "\u2245", "simeq": "\u2243",
+    "doteq": "\u2250", "ni": "\u220b", "owns": "\u220b",
+    "nsubseteq": "\u2288", "nsupseteq": "\u2289", "nmid": "\u2224",
+    "mid": "\u2223", "smile": "\u2323", "frown": "\u2322",
+    "bowtie": "\u22c8", "lll": "\u22d8", "ggg": "\u22d9",
+    "triangleq": "\u225c", "between": "\u226c", "ncong": "\u2247",
+    "nsim": "\u2241", "nparallel": "\u2226", "lesssim": "\u2272",
+    "gtrsim": "\u2273", "nless": "\u226e", "ngtr": "\u226f",
+    "nleq": "\u2270", "ngeq": "\u2271", "equal": "=",
+
+    # -- Binary operators ---------------------------------------------------
+    "oplus": "\u2295", "ominus": "\u2296", "otimes": "\u2297",
+    "oslash": "\u2298", "odot": "\u2299", "bigcirc": "\u25cb",
+    "dagger": "\u2020", "ddagger": "\u2021", "amalg": "\u2a3f",
+    "uplus": "\u228e", "sqcap": "\u2293", "sqcup": "\u2294",
+    "vee": "\u2228", "wedge": "\u2227", "lor": "\u2228", "land": "\u2227",
+    "setminus": "\u2216", "wr": "\u2240", "bullet": "\u2219",
+    "ast": "\u2217", "diamond": "\u22c4", "triangleleft": "\u25c1",
+    "triangleright": "\u25b7", "bigtriangleup": "\u25b3",
+    "bigtriangledown": "\u25bd", "cdotp": "\u00b7", "boxplus": "\u229e",
+    "boxminus": "\u229f", "boxtimes": "\u22a0", "boxdot": "\u22a1",
+    "ltimes": "\u22c9", "rtimes": "\u22ca", "divideontimes": "\u22c7",
+    "centerdot": "\u00b7", "intercal": "\u22ba",
+
+    # -- Large operators ----------------------------------------------------
+    "bigcup": "\u22c3", "bigcap": "\u22c2", "bigoplus": "\u2a01",
+    "bigotimes": "\u2a02", "bigodot": "\u2a00", "bigvee": "\u22c1",
+    "bigwedge": "\u22c0", "biguplus": "\u2a04", "bigsqcup": "\u2a06",
+    "coprod": "\u2210", "oint": "\u222e", "iint": "\u222c",
+    "iiint": "\u222d", "oiint": "\u222f",
+
+    # -- Arrows -------------------------------------------------------------
+    "uparrow": "\u2191", "downarrow": "\u2193", "updownarrow": "\u2195",
+    "Uparrow": "\u21d1", "Downarrow": "\u21d3", "Updownarrow": "\u21d5",
+    "nearrow": "\u2197", "searrow": "\u2198", "swarrow": "\u2199",
+    "nwarrow": "\u2196", "mapsto": "\u21a6", "longmapsto": "\u27fc",
+    "hookrightarrow": "\u21aa", "hookleftarrow": "\u21a9",
+    "rightharpoonup": "\u21c0", "rightharpoondown": "\u21c1",
+    "leftharpoonup": "\u21bc", "leftharpoondown": "\u21bd",
+    "rightleftharpoons": "\u21cc", "leftrightharpoons": "\u21cb",
+    "longrightarrow": "\u27f6", "longleftarrow": "\u27f5",
+    "longleftrightarrow": "\u27f7", "Longrightarrow": "\u27f9",
+    "Longleftarrow": "\u27f8", "Longleftrightarrow": "\u27fa",
+    "Leftrightarrow": "\u21d4", "iff": "\u27fa", "implies": "\u27f9",
+    "impliedby": "\u27f8", "gets": "\u2190", "rightsquigarrow": "\u21dd",
+    "leadsto": "\u21dd", "twoheadrightarrow": "\u21a0",
+    "rightarrowtail": "\u21a3", "circlearrowleft": "\u21ba",
+    "circlearrowright": "\u21bb", "nrightarrow": "\u219b",
+    "nleftarrow": "\u219a", "nLeftrightarrow": "\u21ce",
+
+    # -- Miscellaneous symbols ----------------------------------------------
+    "nexists": "\u2204", "complement": "\u2201", "varnothing": "\u2205",
+    "top": "\u22a4", "bot": "\u22a5", "neg": "\u00ac", "lnot": "\u00ac",
+    "flat": "\u266d", "natural": "\u266e", "sharp": "\u266f",
+    "clubsuit": "\u2663", "diamondsuit": "\u2662", "heartsuit": "\u2661",
+    "spadesuit": "\u2660", "wp": "\u2118", "imath": "\u0131",
+    "jmath": "\u0237", "mho": "\u2127", "backslash": "\\",
+    "vert": "|", "Vert": "\u2016", "langle": "\u27e8", "rangle": "\u27e9",
+    "lceil": "\u2308", "rceil": "\u2309", "lfloor": "\u230a",
+    "rfloor": "\u230b", "vdots": "\u22ee", "ddots": "\u22f1",
+    "triangle": "\u25b3", "square": "\u25a1", "blacksquare": "\u25a0",
+    "checkmark": "\u2713", "maltese": "\u2720", "S": "\u00a7",
+    "P": "\u00b6", "copyright": "\u00a9", "pounds": "\u00a3",
+    "euro": "\u20ac", "yen": "\u00a5", "celsius": "\u2103",
+    "angstrom": "\u212b", "micro": "\u00b5", "permil": "\u2030",
+    "bigstar": "\u2605", "circledS": "\u24c8", "Finv": "\u2132",
+    "Game": "\u2141", "eth": "\u00f0", "hslash": "\u210f",
+    "backprime": "\u2035", "varprime": "\u2032",
+
 }
 
 #: Wrapped in ``$...$``.
@@ -80,8 +230,11 @@ _MATH_SPAN = re.compile(r"(?<!\\)\$(.+?)(?<!\\)\$", re.DOTALL)
 
 #: Superscript/subscript offsets, as a fraction of the surrounding font size.
 _SCRIPT_SIZE = 0.72
-_SUP_SHIFT = "-0.42em"
-_SUB_SHIFT = "0.28em"
+# SVG baseline-shift raises the text for a positive length. These were the
+# other way round, so every superscript rendered as a subscript and vice
+# versa: x^2 put the 2 below the baseline and x_2 put it above.
+_SUP_SHIFT = "0.42em"
+_SUB_SHIFT = "-0.28em"
 
 
 def contains_math(text: object) -> bool:
@@ -149,6 +302,7 @@ def _render_expr(expr: str, italic: bool = True) -> str:
     plain: list[str] = []
 
     def flush() -> None:
+        """Emit any buffered plain text before switching to a math run."""
         if plain:
             out.append(_escape("".join(plain)))
             plain.clear()
@@ -167,6 +321,47 @@ def _render_expr(expr: str, italic: bool = True) -> str:
 
             name = match.group(1)
             index += len(match.group(0))
+
+            # Function names set upright. Rendering "sin" in italic makes it
+            # read as the product of three variables rather than a function.
+            if name in FUNCTION_NAMES:
+                flush()
+                out.append(f'<tspan font-style="normal">{name}</tspan>')
+                continue
+
+            if name in ACCENTS:
+                arg, index = _split_group(expr, index)
+                flush()
+                # A combining mark follows the character it modifies, so the
+                # accent is appended rather than wrapped around.
+                out.append(f"{_render_expr(arg, italic)}{ACCENTS[name]}")
+                continue
+
+            if name in ("mathbb", "mathcal", "mathfrak"):
+                arg, index = _split_group(expr, index)
+                flush()
+                table = {"mathbb": BLACKBOARD, "mathcal": CALLIGRAPHIC,
+                         "mathfrak": FRAKTUR}[name]
+                # Only the capitals have dedicated codepoints; anything else
+                # passes through so the label degrades to plain text rather
+                # than to a box.
+                out.append(_escape("".join(table.get(c, c) for c in arg)))
+                continue
+
+            if name in SPACING:
+                flush()
+                out.append(f'<tspan dx="{SPACING[name]:.3f}em"></tspan>')
+                continue
+
+            # \left( and \right) size delimiters in real TeX. There is no
+            # sizing here, so the command is dropped and the delimiter it
+            # introduces renders at its normal size -- better than printing
+            # the word "left" into the middle of a label.
+            if name in ("left", "right", "bigl", "bigr", "Bigl", "Bigr",
+                        "biggl", "biggr", "Biggl", "Biggr", "big", "Big",
+                        "bigg", "Bigg", "displaystyle", "textstyle",
+                        "limits", "nolimits"):
+                continue
 
             if name in ("mathrm", "text", "mathsf", "operatorname"):
                 arg, index = _split_group(expr, index)
@@ -196,21 +391,11 @@ def _render_expr(expr: str, italic: bool = True) -> str:
                 out.append(f"\u221a<tspan>(</tspan>{inner}<tspan>)</tspan>")
                 continue
 
-            # TODO: stacked fractions. Needs a rule and two shifted rows,
-            # which won't sit on a single text baseline without pushing the
-            # surrounding label around. Inline a/b until someone asks.
             if name == "frac":
                 numerator, index = _split_group(expr, index)
                 denominator, index = _split_group(expr, index)
                 flush()
-                # Rendered inline as a/b: a stacked fraction needs a rule and
-                # two shifted rows, which cannot align on a single text
-                # baseline without breaking the surrounding layout.
-                out.append(
-                    f"{_render_expr(numerator, italic)}"
-                    f'<tspan font-style="normal">/</tspan>'
-                    f"{_render_expr(denominator, italic)}"
-                )
+                out.append(_stacked_fraction(numerator, denominator, italic))
                 continue
 
             if name in SYMBOLS:
@@ -248,6 +433,63 @@ def _render_expr(expr: str, italic: bool = True) -> str:
 
     flush()
     return "".join(out)
+
+
+#: Vertical offsets for a stacked fraction, in em. The numerator sits above
+#: the baseline and the denominator below, so the whole fraction stays
+#: centred on the surrounding text rather than hanging off it.
+_FRAC_RISE = 0.55
+_FRAC_DROP = 1.10
+
+#: Rough advance width of one character, in em. Used to centre the two rows
+#: of a fraction over each other; SVG text has no metrics API, and the same
+#: 0.6 figure is what estimate_width() already assumes.
+_EM_PER_CHAR = 0.6
+
+
+def _stacked_fraction(numerator: str, denominator: str, italic: bool) -> str:
+    """
+    Render ``\\frac{a}{b}`` as a real stacked fraction.
+
+    Previously this came out as inline ``a/b``, which is readable but is not
+    what a fraction looks like in a paper. SVG ``<text>`` cannot contain a
+    drawn rule, so the bar is an ``overline`` on the numerator, and the two
+    rows are stacked with ``dy`` shifts and centred over each other with
+    ``dx``.
+
+    The horizontal arithmetic walks the text pen: after the numerator the
+    pen has advanced past it, so the denominator needs a negative ``dx`` to
+    come back and start under it, and a final positive ``dx`` puts the pen
+    where the wider of the two rows ends -- otherwise the rest of the label
+    would overlap the fraction.
+
+    Args:
+        numerator:   Expression above the bar.
+        denominator: Expression below it.
+        italic:      Whether variables render italic, as in the enclosing run.
+
+    Returns:
+        str: ``<tspan>`` markup for placing inside an SVG ``<text>``.
+    """
+    num_markup = _render_expr(numerator, italic)
+    den_markup = _render_expr(denominator, italic)
+
+    # Widths from the plain form: the markup is full of tags, and scripts
+    # and commands do not occupy one character each.
+    w_num = len(to_plain_text(f"${numerator}$")) * _EM_PER_CHAR
+    w_den = len(to_plain_text(f"${denominator}$")) * _EM_PER_CHAR
+    width = max(w_num, w_den)
+
+    lead = (width - w_num) / 2                 # centre the numerator
+    back = -(w_num + w_den) / 2                # pen back under the numerator
+    tail = (width - w_den) / 2                 # advance past the wider row
+
+    return (
+        f'<tspan dy="-{_FRAC_RISE}em" dx="{lead:.3f}em" '
+        f'text-decoration="overline">{num_markup}</tspan>'
+        f'<tspan dy="{_FRAC_DROP}em" dx="{back:.3f}em">{den_markup}</tspan>'
+        f'<tspan dy="-{_FRAC_RISE}em" dx="{tail:.3f}em"></tspan>'
+    )
 
 
 def render(text: str) -> str:
@@ -296,6 +538,7 @@ def to_plain_text(text: str) -> str:
         return str(text)
 
     def _plain(match: re.Match) -> str:
+        """Strip the math markers, returning the expression as plain text."""
         expr = match.group(1)
         # Structural commands first: \sqrt is also in SYMBOLS, and replacing
         # it as a bare glyph would strip the parentheses off its argument.
@@ -303,8 +546,42 @@ def to_plain_text(text: str) -> str:
                       r"\1", expr)
         expr = re.sub(r"\\frac\{([^}]*)\}\{([^}]*)\}", r"\1/\2", expr)
         expr = re.sub(r"\\sqrt\{([^}]*)\}", "\u221a(\\1)", expr)
-        for name, char in sorted(SYMBOLS.items(), key=lambda kv: -len(kv[0])):
-            expr = expr.replace("\\" + name, char)
+
+        # Alphabet swaps and accents take an argument, so they run before the
+        # bare-symbol pass.
+        def _alphabet(match: re.Match) -> str:
+            """Swap each letter for its blackboard, script or fraktur form."""
+            table = {"mathbb": BLACKBOARD, "mathcal": CALLIGRAPHIC,
+                     "mathfrak": FRAKTUR}[match.group(1)]
+            return "".join(table.get(c, c) for c in match.group(2))
+
+        expr = re.sub(r"\\(mathbb|mathcal|mathfrak)\{([^}]*)\}",
+                      _alphabet, expr)
+        expr = re.sub(r"\\(" + "|".join(ACCENTS) + r")\{([^}]*)\}",
+                      lambda m: m.group(2) + ACCENTS[m.group(1)], expr)
+
+        # Sizing and style commands carry no content of their own; the
+        # delimiter after \left is kept, the word "left" is not.
+        expr = re.sub(r"\\(?:left|right|[Bb]ig{1,2}[lr]?|displaystyle"
+                      r"|textstyle|limits|nolimits)(?![A-Za-z])", "", expr)
+
+        # One pass over every remaining command, longest name first and with
+        # a letter lookahead. Replacing by plain substring made "\left" match
+        # the shorter "\le" and come out as "≤ft".
+        names = sorted(set(SYMBOLS) | set(FUNCTION_NAMES) | set(SPACING),
+                       key=len, reverse=True)
+        pattern = r"\\(" + "|".join(re.escape(n) for n in names) + r")(?![A-Za-z])"
+
+        def _one(match: re.Match) -> str:
+            """Resolve one command to its spoken text."""
+            name = match.group(1)
+            if name in SYMBOLS:
+                return SYMBOLS[name]
+            if name in FUNCTION_NAMES:
+                return name
+            return " "                    # spacing commands
+
+        expr = re.sub(pattern, _one, expr)
         expr = expr.replace("{", "").replace("}", "")
         return expr
 
@@ -326,6 +603,16 @@ def estimate_width(text: str, font_size: float) -> float:
     Returns:
         float: Estimated width in pixels.
     """
+    # A stacked fraction occupies the width of its wider row, not the width
+    # of "a/b" -- measuring the plain form would reserve roughly double the
+    # gutter a fraction actually needs.
+    def _frac_width(match: re.Match) -> str:
+        """Stand-in text as wide as the fraction's wider row."""
+        numerator, denominator = match.group(1), match.group(2)
+        return "x" * max(len(numerator), len(denominator))
+
+    text = re.sub(r"\\frac\{([^}]*)\}\{([^}]*)\}", _frac_width, str(text))
+
     plain = to_plain_text(text)
     # Scripts render at ~72% size; treat them as a whole character anyway,
     # which errs toward reserving slightly too much room rather than clipping.
