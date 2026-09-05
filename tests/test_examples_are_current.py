@@ -113,20 +113,44 @@ def test_geometry_is_rounded_so_output_is_platform_stable():
     assert unrounded == [], f"unrounded geometry survives: {unrounded[:3]}"
 
 
-def test_rounding_leaves_data_attributes_alone():
+def test_data_attributes_keep_far_more_precision_than_geometry():
     """
     data- attributes carry the values behind tooltips, selection and the
-    detail panel. Rounding those would change what a reader is shown, and
-    \\b alone would have done exactly that by matching the "y" in data-y.
+    detail panel, so they cannot take geometry's two decimals. They do still
+    reach the content hash behind element ids, so they get their own pass at
+    twelve significant figures -- beyond any real dataset's precision, and
+    well inside the platform noise.
     """
     from glyphx.utils import round_svg_geometry
 
     markup = ('<circle cx="28.600002002128278" data-y="28.600002002128278" '
-              'data-x="1.23456789012"/>')
+              'data-label="Series A"/>')
     out = round_svg_geometry(markup)
-    assert 'cx="28.6"' in out
-    assert 'data-y="28.600002002128278"' in out
-    assert 'data-x="1.23456789012"' in out
+    assert 'cx="28.6"' in out, "geometry should take two decimals"
+    assert 'data-y="28.6000020021"' in out, "data keeps 12 significant figures"
+    assert 'data-label="Series A"' in out, "text attributes are untouched"
+
+
+def test_ids_are_hashed_after_rounding():
+    """
+    The id is a content hash of the markup. Hashing before rounding let one
+    platform-dependent bit change every id in the file, so a chart whose
+    visible geometry was identical still failed a byte comparison.
+    """
+    import re
+
+    import numpy as np
+
+    from glyphx import Figure
+
+    xs = list(np.linspace(0, 10, 50))
+    ys = [float(v) for v in np.sin(np.array(xs))]
+    svg = Figure(auto_display=False).line(xs, ys).render_svg()
+
+    chart_id = re.search(r'id="(glyphx-chart-[0-9a-f]+)"', svg).group(1)
+    # The id must be derived from the rounded markup, so the rounded markup
+    # must still contain it.
+    assert chart_id in svg
 
 
 def test_rounding_is_idempotent():

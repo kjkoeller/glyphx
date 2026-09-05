@@ -1,4 +1,4 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-5c32b9731689-title glyphx-chart-5c32b9731689-desc" id="glyphx-chart-5c32b9731689" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="-3.1197451040897444,3.220169166589619" data-domain-y="-3.0368508113361967,3.0372755969145446" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-5c32b9731689-title">Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)</title><desc id="glyphx-chart-5c32b9731689-desc">Scatter chart titled &quot;Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)&quot;. X axis: Feature X. Y axis: Feature Y. Series: 200 data points. Ranges from -2.66 (at -1.1063349740060282) to 2.66 (at 0.5425600435859647).</desc><rect width="760" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-490d89d31ffe-title glyphx-chart-490d89d31ffe-desc" id="glyphx-chart-490d89d31ffe" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="-3.11974510409,3.22016916659" data-domain-y="-3.03685081134,3.03727559691" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-490d89d31ffe-title">Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)</title><desc id="glyphx-chart-490d89d31ffe-desc">Scatter chart titled &quot;Scatter with Continuous Colormap Encoding  (cmap=&#x27;viridis&#x27;)&quot;. X axis: Feature X. Y axis: Feature Y. Series: 200 data points. Ranges from -2.66 (at -1.1063349740060282) to 2.66 (at 0.5425600435859647).</desc><rect width="760" height="460" fill="#ffffff"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Scatter with Continuous Colormap Encoding  (cmap='viridis')</text>
 <line x1="50" y1="410" x2="580" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
@@ -7,237 +7,237 @@
 <line class="glyphx-zero-line" x1="50" y1="230.01" x2="580" y2="230.01" stroke="#333" stroke-width="1" opacity="0.6"/>
 <line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-3.0368508113361967">-3.04</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-3.03685081134">-3.04</text>
 <line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-1.8220255296860484">-1.82</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-1.82202552969">-1.82</text>
 <line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-0.6072002480359">-0.61</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="-0.607200248036">-0.61</text>
 <line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.6076250336142479">0.61</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.607625033614">0.61</text>
 <line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.8224503152643967">1.82</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.82245031526">1.82</text>
 <line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="3.0372755969145446">3.04</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="3.03727559691">3.04</text>
 <line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="50.0" x2="50.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-3.1197451040897444" >-3.12</text>
+<text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-3.11974510409" >-3.12</text>
 <line y1="50" y2="410" x1="156.0" x2="156.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="156.0" x2="156.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="156.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-1.8517622499538717" >-1.85</text>
+<text x="156.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-1.85176224995" >-1.85</text>
 <line y1="50" y2="410" x1="262.0" x2="262.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="262.0" x2="262.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="262.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-0.5837793958179991" >-0.58</text>
+<text x="262.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="-0.583779395818" >-0.58</text>
 <line y1="50" y2="410" x1="368.0" x2="368.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="368.0" x2="368.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="368.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="0.6842034583178735" >0.68</text>
+<text x="368.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="0.684203458318" >0.68</text>
 <line y1="50" y2="410" x1="474.0" x2="474.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="474.0" x2="474.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
-<text x="474.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="1.9521863124537462" >1.95</text>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="352.33" cy="198.15" r="7" fill="#56c567" data-x="0.4967141530112327" data-y="0.5375366156662712" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="299.24" cy="215.4" r="7" fill="#27ab81" data-x="-0.13826430117118466" data-y="0.2465989200596706" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="364.95" cy="166.55" r="7" fill="#74ce54" data-x="0.6476885381006925" data-y="1.0708282956706163" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="438.12" cy="133.87" r="7" fill="#62ca60" data-x="1.5230298564080254" data-y="1.6222506378861583" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.23" cy="288.02" r="7" fill="#22958a" data-x="-0.23415337472333597" data-y="-0.978801314344423" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.23" cy="272.38" r="7" fill="#27ab81" data-x="-0.23413695694918055" data-y="-0.714884045966041" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="442.82" cy="150.86" r="7" fill="#5dc962" data-x="1.5792128155073915" data-y="1.3355094904050002" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="374.96" cy="182.18" r="7" fill="#97d73e" data-x="0.7674347291529088" data-y="0.807104144496716" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="271.56" cy="229.78" r="7" fill="#249e86" data-x="-0.4694743859349521" data-y="0.003870260925909863" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="356.16" cy="72.11" r="7" fill="#238b8c" data-x="0.5425600435859647" data-y="2.6643029227237096" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="272.06" cy="227.56" r="7" fill="#26a683" data-x="-0.46341769281246226" data-y="0.04131280608779969" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="271.87" cy="207.57" r="7" fill="#238d8c" data-x="-0.46572975357025687" data-y="0.3786150442876924" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="331.03" cy="186.77" r="7" fill="#30b27c" data-x="0.24196227156603412" data-y="0.7296765346138435" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="150.86" cy="280.56" r="7" fill="#21928c" data-x="-1.913280244657798" data-y="-0.8527974082440899" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="166.6" cy="307.67" r="7" fill="#2f6b8d" data-x="-1.7249178325130328" data-y="-1.3103581379176787" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="263.8" cy="224.68" r="7" fill="#228e8c" data-x="-0.5622875292409727" data-y="0.0898946382893282" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="226.13" cy="296.51" r="7" fill="#277f8d" data-x="-1.0128311203344238" data-y="-1.1220353569399184" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="337.07" cy="226.33" r="7" fill="#7ad051" data-x="0.3142473325952739" data-y="0.06216960214292272" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="234.89" cy="282.25" r="7" fill="#25878d" data-x="-0.9080240755212109" data-y="-0.8814337777862491" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="192.74" cy="281.51" r="7" fill="#2c728e" data-x="-1.4123037013352915" data-y="-0.868872922236146" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="433.33" cy="91.24" r="7" fill="#50c26a" data-x="1.465648768921554" data-y="2.3414668398031155" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.93" cy="305.11" r="7" fill="#26a683" data-x="-0.22577630048653566" data-y="-1.2671137108712969" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="316.45" cy="203.01" r="7" fill="#41ba72" data-x="0.06752820468792384" data-y="0.4556494472718586" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="191.7" cy="342.25" r="7" fill="#3c4e89" data-x="-1.4247481862134568" data-y="-1.8937158437525379" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="265.29" cy="267.77" r="7" fill="#239989" data-x="-0.5443827245251827" data-y="-0.6370078904150288" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="320.08" cy="187.02" r="7" fill="#61ca60" data-x="0.11092258970986608" data-y="0.7254700414918326" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="214.58" cy="272.07" r="7" fill="#306a8d" data-x="-1.1509935774223028" data-y="-0.7095778138672192" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="342.21" cy="253.86" r="7" fill="#8fd543" data-x="0.37569801834567196" data-y="-0.40244315483289683" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="260.59" cy="278.59" r="7" fill="#22968a" data-x="-0.600638689918805" data-y="-0.8195973740032041" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="286.42" cy="217.08" r="7" fill="#21928b" data-x="-0.2916937497932768" data-y="0.21815771199517556" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="260.5" cy="279.17" r="7" fill="#2a788e" data-x="-0.6017066122293969" data-y="-0.8293292769793901" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="465.65" cy="150.96" r="7" fill="#36b578" data-x="1.8522781845089378" data-y="1.3338559736799944" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="309.67" cy="228.91" r="7" fill="#3db874" data-x="-0.013497224737933921" data-y="0.01856990786263122" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="222.38" cy="293.93" r="7" fill="#2b758e" data-x="-1.0577109289559004" data-y="-1.0784723123848254" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.56" cy="122.08" r="7" fill="#62ca5f" data-x="0.822544912103189" data-y="1.8210206464622682" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="208.74" cy="254.5" r="7" fill="#287d8d" data-x="-1.2208436499710222" data-y="-0.41319695909035775" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="328.26" cy="293.98" r="7" fill="#5ec962" data-x="0.2088635950047554" data-y="-1.0793242152414733" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="146.98" cy="298.88" r="7" fill="#32668d" data-x="-1.9596701238797756" data-y="-1.1619129916601976" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="199.77" cy="304.71" r="7" fill="#3e4987" data-x="-1.3281860488984305" data-y="-1.2603928106450126" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="327.26" cy="192.12" r="7" fill="#4fc26a" data-x="0.19686123586912352" data-y="0.6394198041926646" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="372.54" cy="229.75" r="7" fill="#c6df2d" data-x="0.7384665799954104" data-y="0.00449083393739641" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.13" cy="227.49" r="7" fill="#5bc864" data-x="0.1713682811899705" data-y="0.04254751789334142" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="301.13" cy="216.51" r="7" fill="#239b88" data-x="-0.11564828238824053" data-y="0.22782098383591792" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="285.63" cy="210.83" r="7" fill="#26a584" data-x="-0.3011036955892888" data-y="0.3237357143690351" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="187.2" cy="329.65" r="7" fill="#433880" data-x="-1.4785219903674274" data-y="-1.6812171379722936" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="250.63" cy="269.64" r="7" fill="#228f8c" data-x="-0.7198442083947086" data-y="-0.6685994769611296" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="272.29" cy="264.65" r="7" fill="#249b88" data-x="-0.4606387709597875" data-y="-0.5843823878204355" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="399.18" cy="212.52" r="7" fill="#b3dd2f" data-x="1.0571222262189157" data-y="0.29513190749806817" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.53" cy="153.99" r="7" fill="#30b27c" data-x="0.3436182895684614" data-y="1.282624432388158" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="163.42" cy="283.53" r="7" fill="#2f6b8d" data-x="-1.763040155362734" data-y="-0.9029870744092039" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="337.89" cy="262.37" r="7" fill="#66cb5d" data-x="0.324083969394795" data-y="-0.5458757924944103" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="278.61" cy="212.21" r="7" fill="#28ac81" data-x="-0.38508228041631654" data-y="0.30041368596225987" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="254.21" cy="180.63" r="7" fill="#2a778e" data-x="-0.6769220003059587" data-y="0.8332944180087067" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="361.94" cy="169.73" r="7" fill="#85d249" data-x="0.6116762888408679" data-y="1.0170687440772523" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="396.99" cy="244.32" r="7" fill="#c1df2d" data-x="1.030999522495951" data-y="-0.2414722899500399" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="388.65" cy="211.36" r="7" fill="#aedc30" data-x="0.9312801191161986" data-y="0.3147916337057783" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="240.65" cy="217.29" r="7" fill="#24878d" data-x="-0.8392175232226385" data-y="0.21465529941725858" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="284.95" cy="267.09" r="7" fill="#22938b" data-x="-0.3092123758512146" data-y="-0.6255897236745579" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="338.5" cy="201.47" r="7" fill="#5cc863" data-x="0.33126343140356396" data-y="0.4816128873000536" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="392.36" cy="164.88" r="7" fill="#6ecd58" data-x="0.9755451271223592" data-y="1.0988847646871356" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="270.74" cy="281.43" r="7" fill="#26a683" data-x="-0.47917423784528995" data-y="-0.8676215375462882" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="295.28" cy="239.28" r="7" fill="#2cb07e" data-x="-0.18565897666381712" data-y="-0.15639354846856118" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="218.32" cy="387.89" r="7" fill="#440154" data-x="-1.1063349740060282" data-y="-2.6638781371453617" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="210.8" cy="312.52" r="7" fill="#355e8c" data-x="-1.1962066240806708" data-y="-1.39216689045301" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="378.73" cy="207.69" r="7" fill="#b7dd2f" data-x="0.812525822394198" data-y="0.37660089372033256" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="424.18" cy="222.14" r="7" fill="#d7e22a" data-x="1.356240028570823" data-y="0.1328861093921253" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.78" cy="174.74" r="7" fill="#2baf7e" data-x="-0.07201012158033385" data-y="0.9326402033317641" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="394.7" cy="242.21" r="7" fill="#ebe527" data-x="1.0035328978920242" data-y="-0.20578844314656386" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="341.03" cy="231.73" r="7" fill="#6dcd58" data-x="0.36163602504763415" data-y="-0.02896327573722804" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="256.87" cy="250.22" r="7" fill="#24898d" data-x="-0.6451197546051243" data-y="-0.34088349412167596" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="341.01" cy="164.84" r="7" fill="#45bd70" data-x="0.36139560550841393" data-y="1.0996711170201383" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="439.38" cy="221.82" r="7" fill="#8bd445" data-x="1.5380365664659692" data-y="0.13820647749521642" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="307.81" cy="190.03" r="7" fill="#25a086" data-x="-0.03582603910995154" data-y="0.6746113258715073" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="441.6" cy="169.37" r="7" fill="#d0e12b" data-x="1.5646436558140062" data-y="1.0231582128908563" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="91.8" cy="365.84" r="7" fill="#26848d" data-x="-2.6197451040897444" data-y="-2.2917395082871046" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.51" cy="181.92" r="7" fill="#99d73d" data-x="0.8219025043752238" data-y="0.8114987124018579" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.08" cy="219.58" r="7" fill="#5cc863" data-x="0.08704706823817122" data-y="0.17601641169889332" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="285.81" cy="262.88" r="7" fill="#26a683" data-x="-0.29900735046586746" data-y="-0.5544849040980906" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.47" cy="224.0" r="7" fill="#b1dc30" data-x="0.0917607765355023" data-y="0.10152575574208784" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="144.65" cy="320.28" r="7" fill="#2a788e" data-x="-1.9875689146008928" data-y="-1.5231079526076363" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="292.44" cy="234.44" r="7" fill="#28ac81" data-x="-0.21967188783751193" data-y="-0.07467631994363393" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="340.66" cy="192.71" r="7" fill="#50c26a" data-x="0.3571125715117464" data-y="0.6294015761952632" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="434.35" cy="116.68" r="7" fill="#27ab81" data-x="1.477894044741516" data-y="1.9122412187691966" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="267.48" cy="294.0" r="7" fill="#25878d" data-x="-0.5182702182736474" data-y="-1.0795649411739803" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="243.21" cy="185.31" r="7" fill="#2b768e" data-x="-0.8084936028931876" data-y="0.7542991829131879" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="268.86" cy="318.76" r="7" fill="#355f8c" data-x="-0.5017570435845365" data-y="-1.4973947580434497" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="387.33" cy="200.15" r="7" fill="#aadb32" data-x="0.9154021177020741" data-y="0.5039403194849982" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="338.29" cy="196.43" r="7" fill="#4cc06c" data-x="0.32875110965968446" data-y="0.5666785451695409" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="266.52" cy="240.43" r="7" fill="#28ad80" data-x="-0.5297602037670388" data-y="-0.17574901180755567" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="353.71" cy="232.38" r="7" fill="#b6dd2f" data-x="0.5132674331133561" data-y="-0.0399958803686748" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.92" cy="233.67" r="7" fill="#52c369" data-x="0.09707754934804039" data-y="-0.06177294313813887" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="391.78" cy="210.23" r="7" fill="#fde725" data-x="0.9686449905328892" data-y="0.3338186830510783" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="252.11" cy="278.02" r="7" fill="#26848d" data-x="-0.7020530938773524" data-y="-0.8099533651868059" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="283.41" cy="212.42" r="7" fill="#239a88" data-x="-0.3276621465977682" data-y="0.2967808629240654" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="278.02" cy="232.42" r="7" fill="#34b479" data-x="-0.39210815313215763" data-y="-0.04066100795687405" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="188.46" cy="311.03" r="7" fill="#32648d" data-x="-1.4635149481321186" data-y="-1.3670304734422696" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.56" cy="186.61" r="7" fill="#42bb72" data-x="0.29612027706457605" data-y="0.7322381053519249" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.63" cy="209.03" r="7" fill="#5fc961" data-x="0.26105527217988933" data-y="0.3540656394428937" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="311.23" cy="200.91" r="7" fill="#29af7f" data-x="0.00511345664246089" data-y="0.4910410181209756" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.19" cy="216.66" r="7" fill="#239b88" data-x="-0.23458713337514692" data-y="0.22529566846032184" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="192.48" cy="314.02" r="7" fill="#31668d" data-x="-1.4153707420504142" data-y="-1.4173879888860128" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="275.64" cy="266.14" r="7" fill="#2cb07e" data-x="-0.42064532276535904" data-y="-0.6095280839156652" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="282.15" cy="216.64" r="7" fill="#22938b" data-x="-0.3427145165267695" data-y="0.22561172733155688" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="243.73" cy="239.21" r="7" fill="#21928c" data-x="-0.8022772692216189" data-y="-0.15525806573397344" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="297.32" cy="236.97" r="7" fill="#27aa82" data-x="-0.16128571166600914" data-y="-0.11737666896139483" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="344.58" cy="210.27" r="7" fill="#70cd56" data-x="0.4040508568145384" data-y="0.3330294869147192" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="468.48" cy="111.91" r="7" fill="#26a783" data-x="1.8861859012105302" data-y="1.9926197732598996" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.4" cy="244.32" r="7" fill="#47bd6f" data-x="0.17457781283183896" data-y="-0.24146725496080262" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.33" cy="200.64" r="7" fill="#60ca61" data-x="0.25755039072276437" data-y="0.4956661826718196" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.58" cy="240.07" r="7" fill="#28ad80" data-x="-0.07444591576616721" data-y="-0.16970543670834512" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="150.4" cy="311.67" r="7" fill="#2d708e" data-x="-1.9187712152990415" data-y="-1.377810011880709" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="308.59" cy="191.96" r="7" fill="#31b37b" data-x="-0.026513875449216878" data-y="0.6420320921503231" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="315.84" cy="198.34" r="7" fill="#3db974" data-x="0.06023020994102644" data-y="0.5343994458544851" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="516.72" cy="106.19" r="7" fill="#29798e" data-x="2.463242112485286" data-y="2.089213154715819" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="294.72" cy="191.0" r="7" fill="#25a086" data-x="-0.19236096478112252" data-y="0.6582526571848678" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="336.01" cy="217.65" r="7" fill="#8ad446" data-x="0.30154734233361247" data-y="0.20860807749650354" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="307.9" cy="207.1" r="7" fill="#46bd6f" data-x="-0.03471176970524331" data-y="0.3866091324685702" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="213.1" cy="286.07" r="7" fill="#34628c" data-x="-1.168678037619532" data-y="-0.9458007784087694" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="406.34" cy="174.46" r="7" fill="#b2dd2f" data-x="1.1428228145150205" data-y="0.9373346409278287" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="373.66" cy="205.67" r="7" fill="#cbe02c" data-x="0.7519330326867741" data-y="0.41067063862579245" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.93" cy="196.09" r="7" fill="#77cf52" data-x="0.7910319470430469" data-y="0.5723683445736114" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="234.78" cy="243.88" r="7" fill="#228d8c" data-x="-0.9093874547947389" data-y="-0.23400763035443212" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="428.07" cy="205.07" r="7" fill="#bede2e" data-x="1.4027943109360992" data-y="0.42088389216838107" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="193.61" cy="209.61" r="7" fill="#25858d" data-x="-1.4018510627922809" data-y="0.34422917459629343" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="359.86" cy="243.18" r="7" fill="#88d347" data-x="0.5868570938002703" data-y="-0.2221533179296455" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="493.92" cy="188.8" r="7" fill="#42bb71" data-x="2.1904556258099785" data-y="0.6952829891038468" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="228.0" cy="226.99" r="7" fill="#2d6f8e" data-x="-0.9905363251306883" data-y="0.051017912765093265" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="263.46" cy="223.68" r="7" fill="#239889" data-x="-0.5662977296027719" data-y="0.10690409213595975" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="319.13" cy="203.98" r="7" fill="#51c369" data-x="0.09965136508764122" data-y="0.43924527753825987" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="268.71" cy="227.06" r="7" fill="#21908c" data-x="-0.5034756541161992" data-y="0.049748130383038436" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="181.17" cy="290.19" r="7" fill="#2a768e" data-x="-1.5506634310661327" data-y="-1.015279293901135" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="316.53" cy="259.28" r="7" fill="#27aa82" data-x="0.06856297480602733" data-y="-0.4937866892675811" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="222.0" cy="268.24" r="7" fill="#29798e" data-x="-1.0623037137261049" data-y="-0.6450146790057324" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.39" cy="235.85" r="7" fill="#6acc5b" data-x="0.4735924306351816" data-y="-0.09846194699439897" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="233.94" cy="230.76" r="7" fill="#287e8d" data-x="-0.9194242342338032" data-y="-0.012553912201321404" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="440.37" cy="175.53" r="7" fill="#aedc30" data-x="1.5499344050175394" data-y="0.9192229343601174" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="245.32" cy="289.54" r="7" fill="#2e6d8e" data-x="-0.7832532923362371" data-y="-1.004412958094061" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="283.88" cy="253.85" r="7" fill="#249f86" data-x="-0.3220615162056756" data-y="-0.4021714905254852" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="378.81" cy="183.99" r="7" fill="#c5df2d" data-x="0.8135172173696698" data-y="0.7765450638556599" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="207.91" cy="297.48" r="7" fill="#355f8c" data-x="-1.2308643164339552" data-y="-1.1382965373644558" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="329.82" cy="250.49" r="7" fill="#7bd050" data-x="0.22745993460412942" data-y="-0.34548327984717475" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="420.08" cy="170.99" r="7" fill="#87d348" data-x="1.307142754282428" data-y="0.9958551171787257" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="176.42" cy="283.23" r="7" fill="#297b8d" data-x="-1.6074832345612275" data-y="-0.8978841597995644" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="326.24" cy="240.93" r="7" fill="#8bd445" data-x="0.1846338585323042" data-y="-0.1841538971766801" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.53" cy="236.75" r="7" fill="#2fb27c" data-x="0.25988279424842353" data-y="-0.11369916710951838" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.16" cy="191.64" r="7" fill="#8ed543" data-x="0.7818228717773104" data-y="0.6474148290698335" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="207.4" cy="329.16" r="7" fill="#3a548b" data-x="-1.236950710878082" data-y="-1.6728685669691479" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="200.42" cy="330.93" r="7" fill="#3f4786" data-x="-1.3204566130842763" data-y="-1.7027750631307126" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="354.44" cy="235.45" r="7" fill="#a6da35" data-x="0.5219415656168976" data-y="-0.09180451510047816" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.63" cy="226.16" r="7" fill="#5fc962" data-x="0.29698467323318606" data-y="0.06497174657446261" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="331.74" cy="209.31" r="7" fill="#66cb5d" data-x="0.25049285034587654" data-y="0.34936489208362254" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.76" cy="164.2" r="7" fill="#45bd70" data-x="0.3464482094969757" data-y="1.1104050663427654" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="253.95" cy="225.71" r="7" fill="#249f86" data-x="-0.6800247215784908" data-y="0.07257970489519255" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="330.22" cy="226.75" r="7" fill="#6fcd57" data-x="0.23225369716100355" data-y="0.05500178517659604" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.3" cy="219.4" r="7" fill="#7cd04f" data-x="0.29307247329868125" data-y="0.1790873829025295" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="251.08" cy="293.18" r="7" fill="#2b748e" data-x="-0.7143514180263678" data-y="-1.0658460404998245" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="466.78" cy="158.79" r="7" fill="#64ca5e" data-x="1.8657745111447566" data-y="1.2016455506486579" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.41" cy="222.02" r="7" fill="#83d24b" data-x="0.4738329209117875" data-y="0.13479621524057891" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="211.21" cy="264.43" r="7" fill="#287e8d" data-x="-1.1913034972026486" data-y="-0.5807161369788679" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="365.69" cy="234.14" r="7" fill="#a0d938" data-x="0.6565536086338297" data-y="-0.06957872051940445" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="229.32" cy="249.09" r="7" fill="#25868d" data-x="-0.9746816702273214" data-y="-0.3219351771030556" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.6" cy="145.19" r="7" fill="#a3da37" data-x="0.787084603742452" data-y="1.4312483402341405" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="407.66" cy="189.25" r="7" fill="#e1e329" data-x="1.158595579007404" data-y="0.6878310372806982" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="242.2" cy="247.34" r="7" fill="#25848d" data-x="-0.8206823183517105" data-y="-0.292416473669247" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="391.34" cy="168.36" r="7" fill="#c2df2d" data-x="0.9633761292443218" data-y="1.0402808790354767" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="345.31" cy="228.38" r="7" fill="#7ad050" data-x="0.4127809269364983" data-y="0.027575319377222185" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.52" cy="190.37" r="7" fill="#69cc5b" data-x="0.82206015999449" data-y="0.6687945930826685" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="469.37" cy="156.49" r="7" fill="#51c269" data-x="1.8967929826539474" data-y="1.2404708791941428" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="290.29" cy="235.99" r="7" fill="#22958a" data-x="-0.2453881160028705" data-y="-0.1008966162725668" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="247.79" cy="286.54" r="7" fill="#2a778e" data-x="-0.7537361643574896" data-y="-0.9537343771456481" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="236.44" cy="263.41" r="7" fill="#27818d" data-x="-0.8895144296255233" data-y="-0.5634782747012246" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="242.6" cy="243.73" r="7" fill="#249e86" data-x="-0.8158102849654383" data-y="-0.23147771048026505" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.36" cy="181.38" r="7" fill="#2aaf7f" data-x="-0.0771017094141042" data-y="0.8205700535578573" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.32" cy="182.76" r="7" fill="#57c566" data-x="0.3411519748166439" data-y="0.7973112792819426" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="333.93" cy="142.78" r="7" fill="#37b578" data-x="0.27669079933001905" data-y="1.471758494071446" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.95" cy="225.43" r="7" fill="#7ad050" data-x="0.8271832490360238" data-y="0.07726057414058579" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="311.89" cy="198.49" r="7" fill="#42bb72" data-x="0.01300189187790702" data-y="0.5318436117530465" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="432.31" cy="167.5" r="7" fill="#bede2e" data-x="1.4535340771573169" data-y="1.054802353595267" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="288.68" cy="162.34" r="7" fill="#27808d" data-x="-0.2646568332379561" data-y="1.1418548183259318" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="538.2" cy="153.96" r="7" fill="#26a783" data-x="2.720169166589619" data-y="1.2831309870701615" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="363.11" cy="235.77" r="7" fill="#b5dd2f" data-x="0.6256673477650062" data-y="-0.09714932926121156" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="239.15" cy="284.35" r="7" fill="#2c738e" data-x="-0.8571575564162826" data-y="-0.9167879989369969" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="221.28" cy="346.79" r="7" fill="#3f4686" data-x="-1.0708924980611123" data-y="-1.970417558325607" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="351.14" cy="230.12" r="7" fill="#dfe329" data-x="0.4824724152431853" data-y="-0.0018459431003861604" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="292.12" cy="265.62" r="7" fill="#27a982" data-x="-0.2234627853258509" data-y="-0.6007304073940218" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="370.49" cy="197.16" r="7" fill="#aedc30" data-x="0.714000494092092" data-y="0.5543365930455844" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.36" cy="199.63" r="7" fill="#75cf53" data-x="0.47323762457354485" data-y="0.5126580414390998" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.71" cy="166.1" r="7" fill="#239989" data-x="-0.07282891265687277" data-y="1.0783637103025643" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="240.01" cy="228.84" r="7" fill="#22948b" data-x="-0.846793718068405" data-y="0.019838386167166933" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="184.17" cy="308.89" r="7" fill="#3a548b" data-x="-1.5148472246858646" data-y="-1.330792889443254" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="273.47" cy="279.16" r="7" fill="#21928b" data-x="-0.4465149520670211" data-y="-0.8292835216525785" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="382.4" cy="179.53" r="7" fill="#92d541" data-x="0.8563987943234723" data-y="0.8518107192141604" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="328.7" cy="268.71" r="7" fill="#5dc962" data-x="0.21409374413020396" data-y="-0.6529789905277528" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="206.66" cy="212.88" r="7" fill="#26828d" data-x="-1.245738778711988" data-y="0.2891450533498199" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.28" cy="181.4" r="7" fill="#5cc863" data-x="0.173180925851182" data-y="0.8202316742360405" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="343.01" cy="231.85" r="7" fill="#72ce55" data-x="0.3853173797288368" data-y="-0.03104909443907894" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="236.91" cy="324.98" r="7" fill="#3a558b" data-x="-0.883857436201133" data-y="-1.6023880509852628" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="323.65" cy="175.95" r="7" fill="#28ad80" data-x="0.1537251059455279" data-y="0.9122447433638408" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="315.67" cy="231.84" r="7" fill="#43bb71" data-x="0.058208718445999896" data-y="-0.030888240161670792" data-label=""/>
-<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="215.25" cy="230.03" r="7" fill="#25868d" data-x="-1.142970297830623" data-y="-0.00024090640582796752" data-label=""/>
+<text x="474.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="1.95218631245" >1.95</text>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="352.33" cy="198.15" r="7" fill="#56c567" data-x="0.496714153011" data-y="0.537536615666" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="299.24" cy="215.4" r="7" fill="#27ab81" data-x="-0.138264301171" data-y="0.24659892006" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="364.95" cy="166.55" r="7" fill="#74ce54" data-x="0.647688538101" data-y="1.07082829567" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="438.12" cy="133.87" r="7" fill="#62ca60" data-x="1.52302985641" data-y="1.62225063789" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.23" cy="288.02" r="7" fill="#22958a" data-x="-0.234153374723" data-y="-0.978801314344" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.23" cy="272.38" r="7" fill="#27ab81" data-x="-0.234136956949" data-y="-0.714884045966" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="442.82" cy="150.86" r="7" fill="#5dc962" data-x="1.57921281551" data-y="1.33550949041" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="374.96" cy="182.18" r="7" fill="#97d73e" data-x="0.767434729153" data-y="0.807104144497" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="271.56" cy="229.78" r="7" fill="#249e86" data-x="-0.469474385935" data-y="0.00387026092591" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="356.16" cy="72.11" r="7" fill="#238b8c" data-x="0.542560043586" data-y="2.66430292272" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="272.06" cy="227.56" r="7" fill="#26a683" data-x="-0.463417692812" data-y="0.0413128060878" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="271.87" cy="207.57" r="7" fill="#238d8c" data-x="-0.46572975357" data-y="0.378615044288" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="331.03" cy="186.77" r="7" fill="#30b27c" data-x="0.241962271566" data-y="0.729676534614" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="150.86" cy="280.56" r="7" fill="#21928c" data-x="-1.91328024466" data-y="-0.852797408244" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="166.6" cy="307.67" r="7" fill="#2f6b8d" data-x="-1.72491783251" data-y="-1.31035813792" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="263.8" cy="224.68" r="7" fill="#228e8c" data-x="-0.562287529241" data-y="0.0898946382893" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="226.13" cy="296.51" r="7" fill="#277f8d" data-x="-1.01283112033" data-y="-1.12203535694" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="337.07" cy="226.33" r="7" fill="#7ad051" data-x="0.314247332595" data-y="0.0621696021429" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="234.89" cy="282.25" r="7" fill="#25878d" data-x="-0.908024075521" data-y="-0.881433777786" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="192.74" cy="281.51" r="7" fill="#2c728e" data-x="-1.41230370134" data-y="-0.868872922236" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="433.33" cy="91.24" r="7" fill="#50c26a" data-x="1.46564876892" data-y="2.3414668398" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.93" cy="305.11" r="7" fill="#26a683" data-x="-0.225776300487" data-y="-1.26711371087" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="316.45" cy="203.01" r="7" fill="#41ba72" data-x="0.0675282046879" data-y="0.455649447272" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="191.7" cy="342.25" r="7" fill="#3c4e89" data-x="-1.42474818621" data-y="-1.89371584375" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="265.29" cy="267.77" r="7" fill="#239989" data-x="-0.544382724525" data-y="-0.637007890415" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="320.08" cy="187.02" r="7" fill="#61ca60" data-x="0.11092258971" data-y="0.725470041492" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="214.58" cy="272.07" r="7" fill="#306a8d" data-x="-1.15099357742" data-y="-0.709577813867" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="342.21" cy="253.86" r="7" fill="#8fd543" data-x="0.375698018346" data-y="-0.402443154833" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="260.59" cy="278.59" r="7" fill="#22968a" data-x="-0.600638689919" data-y="-0.819597374003" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="286.42" cy="217.08" r="7" fill="#21928b" data-x="-0.291693749793" data-y="0.218157711995" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="260.5" cy="279.17" r="7" fill="#2a788e" data-x="-0.601706612229" data-y="-0.829329276979" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="465.65" cy="150.96" r="7" fill="#36b578" data-x="1.85227818451" data-y="1.33385597368" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="309.67" cy="228.91" r="7" fill="#3db874" data-x="-0.0134972247379" data-y="0.0185699078626" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="222.38" cy="293.93" r="7" fill="#2b758e" data-x="-1.05771092896" data-y="-1.07847231238" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.56" cy="122.08" r="7" fill="#62ca5f" data-x="0.822544912103" data-y="1.82102064646" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="208.74" cy="254.5" r="7" fill="#287d8d" data-x="-1.22084364997" data-y="-0.41319695909" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="328.26" cy="293.98" r="7" fill="#5ec962" data-x="0.208863595005" data-y="-1.07932421524" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="146.98" cy="298.88" r="7" fill="#32668d" data-x="-1.95967012388" data-y="-1.16191299166" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="199.77" cy="304.71" r="7" fill="#3e4987" data-x="-1.3281860489" data-y="-1.26039281065" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="327.26" cy="192.12" r="7" fill="#4fc26a" data-x="0.196861235869" data-y="0.639419804193" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="372.54" cy="229.75" r="7" fill="#c6df2d" data-x="0.738466579995" data-y="0.0044908339374" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.13" cy="227.49" r="7" fill="#5bc864" data-x="0.17136828119" data-y="0.0425475178933" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="301.13" cy="216.51" r="7" fill="#239b88" data-x="-0.115648282388" data-y="0.227820983836" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="285.63" cy="210.83" r="7" fill="#26a584" data-x="-0.301103695589" data-y="0.323735714369" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="187.2" cy="329.65" r="7" fill="#433880" data-x="-1.47852199037" data-y="-1.68121713797" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="250.63" cy="269.64" r="7" fill="#228f8c" data-x="-0.719844208395" data-y="-0.668599476961" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="272.29" cy="264.65" r="7" fill="#249b88" data-x="-0.46063877096" data-y="-0.58438238782" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="399.18" cy="212.52" r="7" fill="#b3dd2f" data-x="1.05712222622" data-y="0.295131907498" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.53" cy="153.99" r="7" fill="#30b27c" data-x="0.343618289568" data-y="1.28262443239" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="163.42" cy="283.53" r="7" fill="#2f6b8d" data-x="-1.76304015536" data-y="-0.902987074409" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="337.89" cy="262.37" r="7" fill="#66cb5d" data-x="0.324083969395" data-y="-0.545875792494" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="278.61" cy="212.21" r="7" fill="#28ac81" data-x="-0.385082280416" data-y="0.300413685962" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="254.21" cy="180.63" r="7" fill="#2a778e" data-x="-0.676922000306" data-y="0.833294418009" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="361.94" cy="169.73" r="7" fill="#85d249" data-x="0.611676288841" data-y="1.01706874408" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="396.99" cy="244.32" r="7" fill="#c1df2d" data-x="1.0309995225" data-y="-0.24147228995" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="388.65" cy="211.36" r="7" fill="#aedc30" data-x="0.931280119116" data-y="0.314791633706" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="240.65" cy="217.29" r="7" fill="#24878d" data-x="-0.839217523223" data-y="0.214655299417" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="284.95" cy="267.09" r="7" fill="#22938b" data-x="-0.309212375851" data-y="-0.625589723675" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="338.5" cy="201.47" r="7" fill="#5cc863" data-x="0.331263431404" data-y="0.4816128873" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="392.36" cy="164.88" r="7" fill="#6ecd58" data-x="0.975545127122" data-y="1.09888476469" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="270.74" cy="281.43" r="7" fill="#26a683" data-x="-0.479174237845" data-y="-0.867621537546" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="295.28" cy="239.28" r="7" fill="#2cb07e" data-x="-0.185658976664" data-y="-0.156393548469" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="218.32" cy="387.89" r="7" fill="#440154" data-x="-1.10633497401" data-y="-2.66387813715" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="210.8" cy="312.52" r="7" fill="#355e8c" data-x="-1.19620662408" data-y="-1.39216689045" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="378.73" cy="207.69" r="7" fill="#b7dd2f" data-x="0.812525822394" data-y="0.37660089372" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="424.18" cy="222.14" r="7" fill="#d7e22a" data-x="1.35624002857" data-y="0.132886109392" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.78" cy="174.74" r="7" fill="#2baf7e" data-x="-0.0720101215803" data-y="0.932640203332" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="394.7" cy="242.21" r="7" fill="#ebe527" data-x="1.00353289789" data-y="-0.205788443147" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="341.03" cy="231.73" r="7" fill="#6dcd58" data-x="0.361636025048" data-y="-0.0289632757372" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="256.87" cy="250.22" r="7" fill="#24898d" data-x="-0.645119754605" data-y="-0.340883494122" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="341.01" cy="164.84" r="7" fill="#45bd70" data-x="0.361395605508" data-y="1.09967111702" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="439.38" cy="221.82" r="7" fill="#8bd445" data-x="1.53803656647" data-y="0.138206477495" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="307.81" cy="190.03" r="7" fill="#25a086" data-x="-0.03582603911" data-y="0.674611325872" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="441.6" cy="169.37" r="7" fill="#d0e12b" data-x="1.56464365581" data-y="1.02315821289" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="91.8" cy="365.84" r="7" fill="#26848d" data-x="-2.61974510409" data-y="-2.29173950829" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.51" cy="181.92" r="7" fill="#99d73d" data-x="0.821902504375" data-y="0.811498712402" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.08" cy="219.58" r="7" fill="#5cc863" data-x="0.0870470682382" data-y="0.176016411699" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="285.81" cy="262.88" r="7" fill="#26a683" data-x="-0.299007350466" data-y="-0.554484904098" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.47" cy="224.0" r="7" fill="#b1dc30" data-x="0.0917607765355" data-y="0.101525755742" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="144.65" cy="320.28" r="7" fill="#2a788e" data-x="-1.9875689146" data-y="-1.52310795261" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="292.44" cy="234.44" r="7" fill="#28ac81" data-x="-0.219671887838" data-y="-0.0746763199436" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="340.66" cy="192.71" r="7" fill="#50c26a" data-x="0.357112571512" data-y="0.629401576195" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="434.35" cy="116.68" r="7" fill="#27ab81" data-x="1.47789404474" data-y="1.91224121877" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="267.48" cy="294.0" r="7" fill="#25878d" data-x="-0.518270218274" data-y="-1.07956494117" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="243.21" cy="185.31" r="7" fill="#2b768e" data-x="-0.808493602893" data-y="0.754299182913" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="268.86" cy="318.76" r="7" fill="#355f8c" data-x="-0.501757043585" data-y="-1.49739475804" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="387.33" cy="200.15" r="7" fill="#aadb32" data-x="0.915402117702" data-y="0.503940319485" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="338.29" cy="196.43" r="7" fill="#4cc06c" data-x="0.32875110966" data-y="0.56667854517" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="266.52" cy="240.43" r="7" fill="#28ad80" data-x="-0.529760203767" data-y="-0.175749011808" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="353.71" cy="232.38" r="7" fill="#b6dd2f" data-x="0.513267433113" data-y="-0.0399958803687" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="318.92" cy="233.67" r="7" fill="#52c369" data-x="0.097077549348" data-y="-0.0617729431381" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="391.78" cy="210.23" r="7" fill="#fde725" data-x="0.968644990533" data-y="0.333818683051" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="252.11" cy="278.02" r="7" fill="#26848d" data-x="-0.702053093877" data-y="-0.809953365187" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="283.41" cy="212.42" r="7" fill="#239a88" data-x="-0.327662146598" data-y="0.296780862924" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="278.02" cy="232.42" r="7" fill="#34b479" data-x="-0.392108153132" data-y="-0.0406610079569" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="188.46" cy="311.03" r="7" fill="#32648d" data-x="-1.46351494813" data-y="-1.36703047344" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.56" cy="186.61" r="7" fill="#42bb72" data-x="0.296120277065" data-y="0.732238105352" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.63" cy="209.03" r="7" fill="#5fc961" data-x="0.26105527218" data-y="0.354065639443" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="311.23" cy="200.91" r="7" fill="#29af7f" data-x="0.00511345664246" data-y="0.491041018121" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="291.19" cy="216.66" r="7" fill="#239b88" data-x="-0.234587133375" data-y="0.22529566846" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="192.48" cy="314.02" r="7" fill="#31668d" data-x="-1.41537074205" data-y="-1.41738798889" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="275.64" cy="266.14" r="7" fill="#2cb07e" data-x="-0.420645322765" data-y="-0.609528083916" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="282.15" cy="216.64" r="7" fill="#22938b" data-x="-0.342714516527" data-y="0.225611727332" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="243.73" cy="239.21" r="7" fill="#21928c" data-x="-0.802277269222" data-y="-0.155258065734" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="297.32" cy="236.97" r="7" fill="#27aa82" data-x="-0.161285711666" data-y="-0.117376668961" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="344.58" cy="210.27" r="7" fill="#70cd56" data-x="0.404050856815" data-y="0.333029486915" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="468.48" cy="111.91" r="7" fill="#26a783" data-x="1.88618590121" data-y="1.99261977326" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.4" cy="244.32" r="7" fill="#47bd6f" data-x="0.174577812832" data-y="-0.241467254961" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.33" cy="200.64" r="7" fill="#60ca61" data-x="0.257550390723" data-y="0.495666182672" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.58" cy="240.07" r="7" fill="#28ad80" data-x="-0.0744459157662" data-y="-0.169705436708" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="150.4" cy="311.67" r="7" fill="#2d708e" data-x="-1.9187712153" data-y="-1.37781001188" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="308.59" cy="191.96" r="7" fill="#31b37b" data-x="-0.0265138754492" data-y="0.64203209215" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="315.84" cy="198.34" r="7" fill="#3db974" data-x="0.060230209941" data-y="0.534399445854" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="516.72" cy="106.19" r="7" fill="#29798e" data-x="2.46324211249" data-y="2.08921315472" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="294.72" cy="191.0" r="7" fill="#25a086" data-x="-0.192360964781" data-y="0.658252657185" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="336.01" cy="217.65" r="7" fill="#8ad446" data-x="0.301547342334" data-y="0.208608077497" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="307.9" cy="207.1" r="7" fill="#46bd6f" data-x="-0.0347117697052" data-y="0.386609132469" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="213.1" cy="286.07" r="7" fill="#34628c" data-x="-1.16867803762" data-y="-0.945800778409" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="406.34" cy="174.46" r="7" fill="#b2dd2f" data-x="1.14282281452" data-y="0.937334640928" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="373.66" cy="205.67" r="7" fill="#cbe02c" data-x="0.751933032687" data-y="0.410670638626" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.93" cy="196.09" r="7" fill="#77cf52" data-x="0.791031947043" data-y="0.572368344574" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="234.78" cy="243.88" r="7" fill="#228d8c" data-x="-0.909387454795" data-y="-0.234007630354" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="428.07" cy="205.07" r="7" fill="#bede2e" data-x="1.40279431094" data-y="0.420883892168" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="193.61" cy="209.61" r="7" fill="#25858d" data-x="-1.40185106279" data-y="0.344229174596" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="359.86" cy="243.18" r="7" fill="#88d347" data-x="0.5868570938" data-y="-0.22215331793" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="493.92" cy="188.8" r="7" fill="#42bb71" data-x="2.19045562581" data-y="0.695282989104" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="228.0" cy="226.99" r="7" fill="#2d6f8e" data-x="-0.990536325131" data-y="0.0510179127651" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="263.46" cy="223.68" r="7" fill="#239889" data-x="-0.566297729603" data-y="0.106904092136" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="319.13" cy="203.98" r="7" fill="#51c369" data-x="0.0996513650876" data-y="0.439245277538" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="268.71" cy="227.06" r="7" fill="#21908c" data-x="-0.503475654116" data-y="0.049748130383" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="181.17" cy="290.19" r="7" fill="#2a768e" data-x="-1.55066343107" data-y="-1.0152792939" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="316.53" cy="259.28" r="7" fill="#27aa82" data-x="0.068562974806" data-y="-0.493786689268" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="222.0" cy="268.24" r="7" fill="#29798e" data-x="-1.06230371373" data-y="-0.645014679006" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.39" cy="235.85" r="7" fill="#6acc5b" data-x="0.473592430635" data-y="-0.0984619469944" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="233.94" cy="230.76" r="7" fill="#287e8d" data-x="-0.919424234234" data-y="-0.0125539122013" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="440.37" cy="175.53" r="7" fill="#aedc30" data-x="1.54993440502" data-y="0.91922293436" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="245.32" cy="289.54" r="7" fill="#2e6d8e" data-x="-0.783253292336" data-y="-1.00441295809" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="283.88" cy="253.85" r="7" fill="#249f86" data-x="-0.322061516206" data-y="-0.402171490525" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="378.81" cy="183.99" r="7" fill="#c5df2d" data-x="0.81351721737" data-y="0.776545063856" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="207.91" cy="297.48" r="7" fill="#355f8c" data-x="-1.23086431643" data-y="-1.13829653736" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="329.82" cy="250.49" r="7" fill="#7bd050" data-x="0.227459934604" data-y="-0.345483279847" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="420.08" cy="170.99" r="7" fill="#87d348" data-x="1.30714275428" data-y="0.995855117179" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="176.42" cy="283.23" r="7" fill="#297b8d" data-x="-1.60748323456" data-y="-0.8978841598" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="326.24" cy="240.93" r="7" fill="#8bd445" data-x="0.184633858532" data-y="-0.184153897177" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="332.53" cy="236.75" r="7" fill="#2fb27c" data-x="0.259882794248" data-y="-0.11369916711" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.16" cy="191.64" r="7" fill="#8ed543" data-x="0.781822871777" data-y="0.64741482907" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="207.4" cy="329.16" r="7" fill="#3a548b" data-x="-1.23695071088" data-y="-1.67286856697" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="200.42" cy="330.93" r="7" fill="#3f4786" data-x="-1.32045661308" data-y="-1.70277506313" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="354.44" cy="235.45" r="7" fill="#a6da35" data-x="0.521941565617" data-y="-0.0918045151005" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.63" cy="226.16" r="7" fill="#5fc962" data-x="0.296984673233" data-y="0.0649717465745" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="331.74" cy="209.31" r="7" fill="#66cb5d" data-x="0.250492850346" data-y="0.349364892084" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.76" cy="164.2" r="7" fill="#45bd70" data-x="0.346448209497" data-y="1.11040506634" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="253.95" cy="225.71" r="7" fill="#249f86" data-x="-0.680024721578" data-y="0.0725797048952" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="330.22" cy="226.75" r="7" fill="#6fcd57" data-x="0.232253697161" data-y="0.0550017851766" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="335.3" cy="219.4" r="7" fill="#7cd04f" data-x="0.293072473299" data-y="0.179087382903" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="251.08" cy="293.18" r="7" fill="#2b748e" data-x="-0.714351418026" data-y="-1.0658460405" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="466.78" cy="158.79" r="7" fill="#64ca5e" data-x="1.86577451114" data-y="1.20164555065" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.41" cy="222.02" r="7" fill="#83d24b" data-x="0.473832920912" data-y="0.134796215241" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="211.21" cy="264.43" r="7" fill="#287e8d" data-x="-1.1913034972" data-y="-0.580716136979" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="365.69" cy="234.14" r="7" fill="#a0d938" data-x="0.656553608634" data-y="-0.0695787205194" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="229.32" cy="249.09" r="7" fill="#25868d" data-x="-0.974681670227" data-y="-0.321935177103" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="376.6" cy="145.19" r="7" fill="#a3da37" data-x="0.787084603742" data-y="1.43124834023" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="407.66" cy="189.25" r="7" fill="#e1e329" data-x="1.15859557901" data-y="0.687831037281" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="242.2" cy="247.34" r="7" fill="#25848d" data-x="-0.820682318352" data-y="-0.292416473669" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="391.34" cy="168.36" r="7" fill="#c2df2d" data-x="0.963376129244" data-y="1.04028087904" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="345.31" cy="228.38" r="7" fill="#7ad050" data-x="0.412780926936" data-y="0.0275753193772" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.52" cy="190.37" r="7" fill="#69cc5b" data-x="0.822060159994" data-y="0.668794593083" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="469.37" cy="156.49" r="7" fill="#51c269" data-x="1.89679298265" data-y="1.24047087919" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="290.29" cy="235.99" r="7" fill="#22958a" data-x="-0.245388116003" data-y="-0.100896616273" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="247.79" cy="286.54" r="7" fill="#2a778e" data-x="-0.753736164357" data-y="-0.953734377146" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="236.44" cy="263.41" r="7" fill="#27818d" data-x="-0.889514429626" data-y="-0.563478274701" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="242.6" cy="243.73" r="7" fill="#249e86" data-x="-0.815810284965" data-y="-0.23147771048" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.36" cy="181.38" r="7" fill="#2aaf7f" data-x="-0.0771017094141" data-y="0.820570053558" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="339.32" cy="182.76" r="7" fill="#57c566" data-x="0.341151974817" data-y="0.797311279282" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="333.93" cy="142.78" r="7" fill="#37b578" data-x="0.27669079933" data-y="1.47175849407" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="379.95" cy="225.43" r="7" fill="#7ad050" data-x="0.827183249036" data-y="0.0772605741406" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="311.89" cy="198.49" r="7" fill="#42bb72" data-x="0.0130018918779" data-y="0.531843611753" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="432.31" cy="167.5" r="7" fill="#bede2e" data-x="1.45353407716" data-y="1.0548023536" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="288.68" cy="162.34" r="7" fill="#27808d" data-x="-0.264656833238" data-y="1.14185481833" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="538.2" cy="153.96" r="7" fill="#26a783" data-x="2.72016916659" data-y="1.28313098707" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="363.11" cy="235.77" r="7" fill="#b5dd2f" data-x="0.625667347765" data-y="-0.0971493292612" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="239.15" cy="284.35" r="7" fill="#2c738e" data-x="-0.857157556416" data-y="-0.916787998937" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="221.28" cy="346.79" r="7" fill="#3f4686" data-x="-1.07089249806" data-y="-1.97041755833" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="351.14" cy="230.12" r="7" fill="#dfe329" data-x="0.482472415243" data-y="-0.00184594310039" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="292.12" cy="265.62" r="7" fill="#27a982" data-x="-0.223462785326" data-y="-0.600730407394" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="370.49" cy="197.16" r="7" fill="#aedc30" data-x="0.714000494092" data-y="0.554336593046" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="350.36" cy="199.63" r="7" fill="#75cf53" data-x="0.473237624574" data-y="0.512658041439" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="304.71" cy="166.1" r="7" fill="#239989" data-x="-0.0728289126569" data-y="1.0783637103" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="240.01" cy="228.84" r="7" fill="#22948b" data-x="-0.846793718068" data-y="0.0198383861672" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="184.17" cy="308.89" r="7" fill="#3a548b" data-x="-1.51484722469" data-y="-1.33079288944" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="273.47" cy="279.16" r="7" fill="#21928b" data-x="-0.446514952067" data-y="-0.829283521653" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="382.4" cy="179.53" r="7" fill="#92d541" data-x="0.856398794323" data-y="0.851810719214" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="328.7" cy="268.71" r="7" fill="#5dc962" data-x="0.21409374413" data-y="-0.652978990528" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="206.66" cy="212.88" r="7" fill="#26828d" data-x="-1.24573877871" data-y="0.28914505335" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="325.28" cy="181.4" r="7" fill="#5cc863" data-x="0.173180925851" data-y="0.820231674236" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="343.01" cy="231.85" r="7" fill="#72ce55" data-x="0.385317379729" data-y="-0.0310490944391" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="236.91" cy="324.98" r="7" fill="#3a558b" data-x="-0.883857436201" data-y="-1.60238805099" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="323.65" cy="175.95" r="7" fill="#28ad80" data-x="0.153725105946" data-y="0.912244743364" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="315.67" cy="231.84" r="7" fill="#43bb71" data-x="0.058208718446" data-y="-0.0308882401617" data-label=""/>
+<circle class="glyphx-point series-bca5fb8d" tabindex="0" role="graphics-symbol" cx="215.25" cy="230.03" r="7" fill="#25868d" data-x="-1.14297029783" data-y="-0.000240906405828" data-label=""/>
 <rect x="600" y="50.0" width="12" height="15.5" fill="#fde725"/>
 <rect x="600" y="65.0" width="12" height="15.5" fill="#e1e329"/>
 <rect x="600" y="80.0" width="12" height="15.5" fill="#c5df2d"/>

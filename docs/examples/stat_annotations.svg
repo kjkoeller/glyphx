@@ -1,4 +1,4 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-e4fb2b30fe2e-title glyphx-chart-e4fb2b30fe2e-desc" id="glyphx-chart-e4fb2b30fe2e" data-glyphx="true" data-plot="50,50,460,410" data-domain-x="0.0,3.0" data-domain-y="0,68.03685828644525" data-xscale="linear" data-yscale="linear" width="640" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460"><title id="glyphx-chart-e4fb2b30fe2e-title">Significance Brackets  —  fig.add_stat_annotation()</title><desc id="glyphx-chart-e4fb2b30fe2e-desc">Bar chart titled &quot;Significance Brackets  —  fig.add_stat_annotation()&quot;. X axis: Treatment Group. Y axis: Outcome Score (mean ± SE). Series &quot;Mean Score&quot;: 3 data points. Ranges from 44.9 (at Control) to 63.6 (at Drug A).</desc><rect width="640" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-61f83151085d-title glyphx-chart-61f83151085d-desc" id="glyphx-chart-61f83151085d" data-glyphx="true" data-plot="50,50,460,410" data-domain-x="0.0,3.0" data-domain-y="0,68.0368582864" data-xscale="linear" data-yscale="linear" width="640" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 460"><title id="glyphx-chart-61f83151085d-title">Significance Brackets  —  fig.add_stat_annotation()</title><desc id="glyphx-chart-61f83151085d-desc">Bar chart titled &quot;Significance Brackets  —  fig.add_stat_annotation()&quot;. X axis: Treatment Group. Y axis: Outcome Score (mean ± SE). Series &quot;Mean Score&quot;: 3 data points. Ranges from 44.9 (at Control) to 63.6 (at Drug A).</desc><rect width="640" height="460" fill="#ffffff"/>
 <text x="320" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Significance Brackets  —  fig.add_stat_annotation()</text>
 <line x1="50" y1="410" x2="460" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
@@ -9,34 +9,34 @@
 <text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
 <line x1="50" x2="460" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="13.60737165728905">13.6</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="13.6073716573">13.6</text>
 <line x1="50" x2="460" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="27.2147433145781">27.2</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="27.2147433146">27.2</text>
 <line x1="50" x2="460" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="40.82211497186715">40.8</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="40.8221149719">40.8</text>
 <line x1="50" x2="460" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="54.4294866291562">54.4</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="54.4294866292">54.4</text>
 <line x1="50" x2="460" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="68.03685828644525">68.0</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="68.0368582864">68.0</text>
 <line y1="50" y2="410" x1="118.33" x2="118.33" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="118.33" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Control</text>
 <line y1="50" y2="410" x1="255.0" x2="255.0" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="255.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug A</text>
 <line y1="50" y2="410" x1="391.67" x2="391.67" stroke="#ddd" stroke-dasharray="3,3" />
 <text x="391.67" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Drug B</text>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="63.66" y="172.55" width="109.34" height="237.45" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="44.8764758513449" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="63.66" y="172.55" width="109.34" height="237.45" fill="#60a5fa" stroke="#00000033" data-x="Control" data-y="44.8764758513" data-label="Mean Score"/>
 <line x1="118.33" x2="118.33" y1="177.0" y2="168.09" stroke="#333" stroke-width="1.5"/>
 <line x1="113.33" x2="123.33" y1="177.0" y2="177.0" stroke="#333" stroke-width="1.5"/>
 <line x1="113.33" x2="123.33" y1="168.09" y2="168.09" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="200.33" y="73.55" width="109.34" height="336.45" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="63.58584886583668" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="200.33" y="73.55" width="109.34" height="336.45" fill="#60a5fa" stroke="#00000033" data-x="Drug A" data-y="63.5858488658" data-label="Mean Score"/>
 <line x1="255.0" x2="255.0" y1="78.0" y2="69.1" stroke="#333" stroke-width="1.5"/>
 <line x1="250.0" x2="260.0" y1="78.0" y2="78.0" stroke="#333" stroke-width="1.5"/>
 <line x1="250.0" x2="260.0" y1="69.1" y2="69.1" stroke="#333" stroke-width="1.5"/>
-<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="337" y="110.21" width="109.34" height="299.79" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="56.65792166525963" data-label="Mean Score"/>
+<rect class="glyphx-point series-e0ca731b" tabindex="0" role="graphics-symbol" x="337" y="110.21" width="109.34" height="299.79" fill="#60a5fa" stroke="#00000033" data-x="Drug B" data-y="56.6579216653" data-label="Mean Score"/>
 <line x1="391.67" x2="391.67" y1="114.66" y2="105.76" stroke="#333" stroke-width="1.5"/>
 <line x1="386.67" x2="396.67" y1="114.66" y2="114.66" stroke="#333" stroke-width="1.5"/>
 <line x1="386.67" x2="396.67" y1="105.76" y2="105.76" stroke="#333" stroke-width="1.5"/>

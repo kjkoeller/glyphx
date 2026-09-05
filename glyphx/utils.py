@@ -629,8 +629,25 @@ def round_svg_geometry(svg: str, precision: int = SVG_PRECISION) -> str:
              r"|d|points|transform|viewBox|font-size|stroke-width|offset")
     # The lookbehind is essential: \b treats "-" as a boundary, so a plain
     # word-boundary match would also rewrite the "y" inside data-y and round
-    # away the values behind tooltips and selection.
-    return re.sub(rf'(?<![\w-])({attrs})="([^"]*)"', _round_attr, svg)
+    # geometry precision onto the values behind tooltips and selection.
+    svg = re.sub(rf'(?<![\w-])({attrs})="([^"]*)"', _round_attr, svg)
+
+    # Data attributes get their own, far looser pass. They carry the numbers
+    # a reader is actually shown, so they cannot take geometry's two
+    # decimals -- but they still reach the content hash that generates
+    # element ids, so last-bit noise in them changed every id in the file.
+    # Twelve significant figures is beyond any real dataset's precision and
+    # well inside the noise.
+    def _fmt_data(match: re.Match) -> str:
+        """Trim one data value to twelve significant figures."""
+        return f"{float(match.group(0)):.12g}"
+
+    return re.sub(
+        r'(?<=data-)(?:x|y|tick|domain-x|domain-y|value|percent|median'
+        r'|q1|q2|q3|open|high|low|close)="[^"]*"',
+        lambda m: re.sub(r"-?\d+\.\d{6,}(?:[eE][-+]?\d+)?", _fmt_data, m.group(0)),
+        svg,
+    )
 
 
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
@@ -660,10 +677,16 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
     Returns:
         str: Complete SVG document string.
     """
-    chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
-    # Rounded once here, at the single point every render passes through,
-    # rather than at the dozens of f-strings that build the markup.
+    # Round first, then hash. Hashing the unrounded markup let a
+    # platform-dependent last bit change the id, which then differs
+    # everywhere it appears -- so a file whose visible geometry was
+    # identical still failed a byte comparison on Windows.
     svg_content = round_svg_geometry(svg_content)
+    # The axis metadata is interpolated into the root tag below rather than
+    # coming through svg_content, so it needs the same pass -- its domains
+    # are raw floats straight off the data.
+    axis_metadata = round_svg_geometry(axis_metadata)
+    chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
 
     math_attr = ' data-has-math="true"' if has_math else ""
     xfilter_attr = ' data-glyphx-crossfilter="true"' if crossfilter else ""

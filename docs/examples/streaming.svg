@@ -1,25 +1,25 @@
-<svg role="img" focusable="false" aria-labelledby="glyphx-chart-be4eb8c334d8-title glyphx-chart-be4eb8c334d8-desc" id="glyphx-chart-be4eb8c334d8" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="79.5,199.5" data-domain-y="9.971904121188404,40.99175528190756" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-be4eb8c334d8-title">Live Sensor Feed  —  StreamingSeries(max_points=120)</title><desc id="glyphx-chart-be4eb8c334d8-desc">Streaming chart titled &quot;Live Sensor Feed  —  StreamingSeries(max_points=120)&quot;. Series &quot;Sensor A&quot;: 120 data points. Ranges from 16.5 (at 136) to 39.1 (at 101). Series &quot;Sensor B&quot;: 120 data points. Ranges from 11.9 (at 192) to 31.7 (at 80).</desc><rect width="760" height="460" fill="#ffffff"/>
+<svg role="img" focusable="false" aria-labelledby="glyphx-chart-a3edcf471635-title glyphx-chart-a3edcf471635-desc" id="glyphx-chart-a3edcf471635" data-glyphx="true" data-plot="50,50,580,410" data-domain-x="79.5,199.5" data-domain-y="9.97190412119,40.9917552819" data-xscale="linear" data-yscale="linear" width="760" height="460" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 460"><title id="glyphx-chart-a3edcf471635-title">Live Sensor Feed  —  StreamingSeries(max_points=120)</title><desc id="glyphx-chart-a3edcf471635-desc">Streaming chart titled &quot;Live Sensor Feed  —  StreamingSeries(max_points=120)&quot;. Series &quot;Sensor A&quot;: 120 data points. Ranges from 16.5 (at 136) to 39.1 (at 101). Series &quot;Sensor B&quot;: 120 data points. Ranges from 11.9 (at 192) to 31.7 (at 80).</desc><rect width="760" height="460" fill="#ffffff"/>
 <text x="380" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Live Sensor Feed  —  StreamingSeries(max_points=120)</text>
 <line x1="50" y1="410" x2="580" y2="410" stroke="#333" />
 <line x1="50" y1="50" x2="50" y2="410" stroke="#333" />
 <line x1="50" x2="580" y1="410.0" y2="410.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="410.0" y2="410.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="9.971904121188404">9.97</text>
+<text x="42.0" y="414.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="9.97190412119">9.97</text>
 <line x1="50" x2="580" y1="338.0" y2="338.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="338.0" y2="338.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="16.175874353332233">16.2</text>
+<text x="42.0" y="342.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="16.1758743533">16.2</text>
 <line x1="50" x2="580" y1="266.0" y2="266.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="266.0" y2="266.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="22.379844585476064">22.4</text>
+<text x="42.0" y="270.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="22.3798445855">22.4</text>
 <line x1="50" x2="580" y1="194.0" y2="194.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="194.0" y2="194.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="28.583814817619896">28.6</text>
+<text x="42.0" y="198.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="28.5838148176">28.6</text>
 <line x1="50" x2="580" y1="122.0" y2="122.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="122.0" y2="122.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="34.78778504976373">34.8</text>
+<text x="42.0" y="126.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="34.7877850498">34.8</text>
 <line x1="50" x2="580" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
-<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="40.99175528190756">41.0</text>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="40.9917552819">41.0</text>
 <line y1="50" y2="410" x1="50.0" x2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
 <line x1="50.0" x2="50.0" y1="410" y2="414.0" stroke="#000000" stroke-width="1"/>
 <text x="50.0" y="426" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" data-tick="79.5" >79.5</text>
