@@ -104,6 +104,13 @@ class Axes:
         yscale="linear",
         precision=SVG_PRECISION,
     ):
+        """
+        Set up the plot area, scales and the various tick and span registries.
+
+        Everything data-dependent -- the domains and the scale callables -- stays
+        ``None`` until :meth:`finalize` runs, since none of it can be computed
+        before the series are known.
+        """
         self.width    = width
         self.height   = height
         self.padding  = padding
@@ -275,7 +282,7 @@ class Axes:
 
         Example::
 
-            ax.set_tick_wrap()   # "Product Engineering" -> "Product" / "Engineering"
+            ax.set_tick_wrap()   # "Product Engineering" wraps onto two lines
         """
         self._tick_wrap = enabled
         return self
@@ -430,6 +437,12 @@ class Axes:
         # Vertical bands
         for span in self._vspans:
             def _resolve_x(v):
+                """
+                Turn a span boundary into a numeric x, resolving category names.
+
+                ``axvspan("Feb", "Apr")`` is as valid as passing numbers, so a string is
+                looked up against whatever categorical mapping the series registered.
+                """
                 if isinstance(v, str):
                     for s in self.series + self.y2_series:
                         cats = getattr(s, "_x_categories", None)
@@ -634,6 +647,12 @@ class Axes:
         ndigits = self.precision
 
         def scaler(value):
+            """
+            Map one data value onto its pixel position.
+
+            A zero-width domain would divide by zero, so a single-valued axis puts
+            everything at the midpoint of the range rather than failing.
+            """
             if domain_max == domain_min:
                 return round((range_min + range_max) / 2, ndigits)
             return round(
@@ -679,6 +698,13 @@ class Axes:
         ndigits = self.precision
 
         def scaler(value):
+            """
+            Map one data value onto its pixel position on a log axis.
+
+            Non-positive input has no logarithm, so it becomes NaN rather than a
+            number -- that routes it through the same ``is_finite`` gates as missing
+            data and leaves a gap, instead of silently pinning it to one end.
+            """
             if value is None or value <= 0:
                 # Undefined on a log axis. Returning NaN routes the value
                 # through the same is_finite() gates that handle missing
@@ -695,6 +721,7 @@ class Axes:
         return scaler
 
     def _make_scale(self, domain_min, domain_max, range_min, range_max, scale_type):
+        """Return the linear or log scaler for this axis, whichever is configured."""
         if scale_type == "log":
             return self._scale_log(domain_min, domain_max, range_min, range_max)
         return self._scale_linear(domain_min, domain_max, range_min, range_max)
@@ -817,7 +844,8 @@ class Axes:
 
     def _tick_label_svg(self, x_p: float, y_label: float, label, *,
                         anchor: str, font: str, text_color: str,
-                        transform: str = "", wrap_chars: float | None = None) -> str:
+                        transform: str = "", wrap_chars: float | None = None,
+                        tick_value=None) -> str:
         """
         Build the ``<text>`` element for one X-axis tick label.
 
@@ -852,10 +880,35 @@ class Axes:
             body = tspans
 
         transform_attr = f'transform="{transform}"' if transform else ""
+        tick_attr = "" if tick_value is None else f' data-tick="{tick_value}"'
         return (
             f'<text x="{x_p}" y="{y_label}" text-anchor="{anchor}" '
-            f'font-size="11" font-family="{font}" fill="{text_color}" {transform_attr}>'
+            f'font-size="11" font-family="{font}" fill="{text_color}" '
+            f'class="glyphx-tick glyphx-xtick"{tick_attr} {transform_attr}>'
             f'{body}</text>'
+        )
+
+    def axis_metadata(self) -> str:
+        """
+        The plot rectangle and data domains, as ``data-`` attributes.
+
+        Zooming rewrites the SVG's ``viewBox``, which crops the axis labels
+        along with everything else -- they are static text positioned for
+        the original domain. Publishing the geometry lets zoom.js map the
+        visible region back to data coordinates and redraw the ticks for
+        whatever is actually on screen.
+
+        Returns:
+            str: Attribute string, or ``""`` when there is no domain yet.
+        """
+        if not self._x_domain or not self._y_domain:
+            return ""
+        pad = self.padding
+        return (
+            f' data-plot="{pad},{pad},{self.width - pad},{self.height - pad}"'
+            f' data-domain-x="{self._x_domain[0]},{self._x_domain[1]}"'
+            f' data-domain-y="{self._y_domain[0]},{self._y_domain[1]}"'
+            f' data-xscale="{self.xscale}" data-yscale="{self.yscale}"'
         )
 
     def render_grid(self, ticks=5):
@@ -906,6 +959,13 @@ class Axes:
 
         # Helper: generate tick values for a numeric domain
         def _tick_vals(d_min: float, d_max: float, n: int, is_log: bool) -> list:
+            """
+            Choose tick positions for a domain.
+
+            Log axes get 1/2/5 multiples of each decade, which is what reads
+            naturally on a log scale; linear axes get ``n`` evenly spaced values.
+            Falls back to even spacing if the log path yields nothing usable.
+            """
             if is_log and d_min > 0:
                 lo = int(_math.floor(_math.log10(d_min)))
                 hi = int(_math.ceil(_math.log10(max(d_max, d_min * 10))))
@@ -924,6 +984,7 @@ class Axes:
         # Y1 ticks - left side, horizontal grid lines across full plot width
         # Use custom tick positions if set, otherwise auto-compute.
         def _fmt(val: float, label_override: str | None = None) -> str:
+            """Format one Y tick, honouring an explicit label or a custom formatter."""
             if label_override is not None:
                 return label_override
             if self._tick_formatter is not None:
@@ -953,7 +1014,8 @@ class Axes:
             # Label
             elements.append(
                 f'<text x="{pad - self._tick_length - 4}" y="{y_p + 4}" text-anchor="end" '
-                f'font-size="11" font-family="{font}" fill="{text_color}">'
+                f'font-size="11" font-family="{font}" fill="{text_color}" '
+                f'class="glyphx-tick glyphx-ytick" data-tick="{y_v}">'
                 f'{svg_label(_fmt(y_v, lbl_ovr))}</text>'
             )
 
@@ -1070,7 +1132,7 @@ class Axes:
                     elements.append(self._tick_label_svg(
                         x_p, y_label, tick_label, anchor=anchor, font=font,
                         text_color=text_color, transform=rot,
-                        wrap_chars=wrap_chars))
+                        wrap_chars=wrap_chars, tick_value=x_v))
             # Minor X ticks
             if self._minor_ticks > 0 and len(_x_tick_vals) >= 2:
                 for j in range(len(_x_tick_vals) - 1):

@@ -11,6 +11,7 @@ import numpy as np
 
 from .colormaps import apply_colormap
 from .projection3d import Camera3D, normalize
+from .utils import series_fingerprint, stable_id
 
 
 class Surface3DSeries:
@@ -38,6 +39,7 @@ class Surface3DSeries:
         wire_color:  str   = "#ffffff44",
         label:       str | None = None,
     ) -> None:
+        """Flatten the mesh grids and record the Z range used to shade faces."""
         self.x_1d                 = list(x)
         self.y_1d                 = list(y)
         self.z_mat                = [list(row) for row in z]
@@ -48,7 +50,17 @@ class Surface3DSeries:
         self.label                = label
         self.threshold            = None
         self.last_downsample_info = None
-        self.css_class            = f"series3d-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class            = "series3d-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Pre-compute face colours from Z values
         z_arr = np.asarray(z, dtype=float)
@@ -57,6 +69,7 @@ class Surface3DSeries:
         self._z_span = self._z_max - self._z_min or 1.0
 
     def _face_color(self, z_val: float) -> str:
+        """Shade one face by where its height sits in the surface's Z range."""
         norm = (z_val - self._z_min) / self._z_span
         return apply_colormap(norm, self.cmap)
 
@@ -100,6 +113,7 @@ class Surface3DSeries:
         z_norm = [zn_flat[j * nx + i] for j in range(ny) for i in range(nx)]
 
         def znv(j, i):
+            """Normalised Z at grid position (j, i), from the flattened array."""
             return z_norm[j * nx + i]
 
         # Project all grid vertices
@@ -145,6 +159,7 @@ class Surface3DSeries:
         return "\n".join(elements)
 
     def to_threejs_data(self) -> dict:
+        """Export the mesh as plain dicts for the Three.js renderer."""
         return {
             "type":       "surface",
             "x":          self.x_1d,

@@ -44,6 +44,7 @@ class ContourSeries(BaseSeries):
         alpha:      float             = 0.85,
         label:      str | None        = None,
     ) -> None:
+        """Store the grid and work out the contour levels to trace."""
         self.x_1d      = list(x)
         self.y_1d      = list(y)
         self.z_mat     = np.asarray(z, dtype=float)
@@ -143,6 +144,7 @@ class ContourSeries(BaseSeries):
                       sy(self.y_1d[j+1]),  sy(self.y_1d[j+1])]
 
                 def interp(za, zb, pa, pb):
+                    """Where along an edge a level crosses, for marching squares."""
                     if zb == za:
                         return ((pa[0]+pb[0])/2, (pa[1]+pb[1])/2)
                     t = (level - za) / (zb - za)

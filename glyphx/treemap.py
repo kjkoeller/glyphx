@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from ._typing import AxesLike
 from .colormaps import apply_colormap
-from .utils import _format_tick, svg_escape
+from .utils import _format_tick, point_attrs, series_fingerprint, stable_id, svg_escape
 
 # Squarification algorithm
 
@@ -134,6 +134,7 @@ class TreemapSeries:
         min_font: int = 9,
         label: str | None = None,
     ) -> None:
+        """Store the labels and values, checking the two line up."""
         if len(labels) != len(values):
             raise ValueError(
                 f"labels and values must be the same length "
@@ -149,7 +150,17 @@ class TreemapSeries:
         self.show_values = show_values
         self.min_font = min_font
         self.label    = label
-        self.css_class = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         if colors:
             # Re-sort colors to stay aligned with the sorted labels/values.
@@ -208,7 +219,8 @@ class TreemapSeries:
                 f'<rect class="glyphx-point {self.css_class}" '
                 f'x="{rx:.1f}" y="{ry:.1f}" '
                 f'width="{rw:.1f}" height="{rh:.1f}" '
-                f'fill="{color}" rx="3" {tooltip}/>'
+                f'fill="{color}" rx="3"'
+                f'{point_attrs(lbl, val, percent=f"{pct:.1f}")} {tooltip}/>'
             )
 
             # Label - only if rect is large enough

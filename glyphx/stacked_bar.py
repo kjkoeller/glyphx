@@ -31,6 +31,12 @@ from .utils import stable_id, svg_escape
 
 
 class StackedBarSeries(BaseSeries):
+    """
+    Bars split into stacked segments, optionally normalised to 100%.
+
+    Each key in ``stacks`` becomes one segment layer across every category,
+    drawn bottom-up in insertion order.
+    """
     #: Segments are measured from zero, so the domain must include it.
     zero_anchored = True
 
@@ -56,6 +62,7 @@ class StackedBarSeries(BaseSeries):
         bar_width: float          = 0.75,
         label: str | None         = None,
     ) -> None:
+        """Store the categories and stack layers, and pick the segment palette."""
         self.categories = list(x)
         self.stacks     = series              # OrderedDict-stable in 3.7+
         self.normalize  = normalize
@@ -109,6 +116,7 @@ class StackedBarSeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw each category's bar as a run of segments stacked from the baseline."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements: list[str] = []
 
@@ -154,6 +162,7 @@ class StackedBarSeries(BaseSeries):
                 label_txt = f"{val:.1f}{'%' if self.normalize else ''}"
                 tooltip = (
                     f'data-x="{svg_escape(str(cat))}" '
+                    f'data-y="{svg_escape(str(val))}" '
                     f'data-label="{svg_escape(name)}" '
                     f'data-value="{svg_escape(label_txt)}"'
                 )
@@ -173,6 +182,7 @@ class StackedBarSeries(BaseSeries):
     # Expose stack names/colors so draw_legend can render them
     @property
     def _legend_entries(self) -> list[tuple[str, str]]:
+        """One (name, colour) pair per stack layer, for the legend."""
         names = list(self.stacks.keys())
         return [(n, self.colors[i % len(self.colors)])
                 for i, n in enumerate(names)]

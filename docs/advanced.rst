@@ -22,6 +22,108 @@ points and dim everything else.
 - ``Shift``\+drag — draw the selection
 - ``Escape`` — clear the selection
 
+A readout appears with the count, mean, sum and range of what is selected,
+updating live as the rectangle grows rather than only once you let go.
+Non-numeric values are skipped, so a categorical axis still reports a count.
+The readout is an ARIA live region, so the numbers are announced rather than
+being visual-only.
+
+
+Selection Events
+----------------
+
+Clicking a point dispatches a ``glyphx:select`` event on ``document``, so
+anything on the page can react. Clicking the same point again, or pressing
+``Escape``, dispatches ``glyphx:deselect``.
+
+.. code-block:: python
+
+   fig.add(ScatterSeries(x, y, meta=[
+       {"customer": "Acme", "region": "North"},
+       {"customer": "Belltown", "region": "South"},
+   ]))
+
+.. code-block:: javascript
+
+   document.addEventListener('glyphx:select', (e) => {
+       console.log(e.detail.x, e.detail.y, e.detail.meta.customer);
+   });
+
+``meta`` is whatever was passed in Python, parsed back from JSON, so the
+listener receives the structure that was written rather than a flattened
+string. ``detail.data`` carries every ``data-`` attribute the element has,
+so a listener gets whatever that chart type knows about the thing clicked --
+``percent`` on a pie, ``q1``/``q2``/``q3`` on a box plot,
+``open``/``high``/``low``/``close`` on a candlestick.
+
+
+Detail Panel
+------------
+
+For the common case -- click a point, show its record -- there is no need to
+write a listener at all:
+
+.. code-block:: python
+
+   fig.add(ScatterSeries(x, y, meta=records))
+   fig.add_detail_panel(["customer", "region", "tier"], title="Selected")
+   fig.share("chart.html")
+
+The panel renders beside the chart, fills in on click, and returns to its
+empty message on ``Escape`` or a second click. ``fields`` fixes the display
+order and omits anything else; leave it out to show whatever each point
+carries.
+
+It is an ordinary listener on the same ``glyphx:select`` event, so it
+composes rather than competes -- your own listeners still fire for the same
+click, and cross-filtering still applies. Values render as text, never
+markup.
+
+
+Filter Controls
+---------------
+
+Checkboxes, radio buttons and a search box that filter the chart in the
+browser, with no server and no callbacks:
+
+.. code-block:: python
+
+   fig.add(ScatterSeries(x, y, meta=records))
+   fig.add_controls(checkboxes="region", radio="tier", search="customer",
+                    title="Filter")
+
+You name a *field*; GlyphX reads the distinct values out of the data and
+builds one control per value. A field is found wherever it lives -- in a
+point's ``meta``, in its own ``data-`` attributes, or as the series label via
+``"series"``.
+
+Filters combine with AND, which is how a stack of controls reads: tick two
+regions and type a name and you get that name within those regions. A running
+"Showing 12 of 40" sits underneath and is announced to screen readers.
+
+.. note::
+
+   Checkboxes start ticked and radio groups get an "All" option. A panel that
+   hides the data on load looks broken, and a radio group without "All" is a
+   one-way trip.
+
+
+Zoom, Pan and Touch
+-------------------
+
+Scroll to zoom, drag to pan, double-click empty space to reset. Axis labels
+are redrawn for whatever region is visible, so a zoomed chart still shows its
+scale rather than losing the numbers along with the rest of the drawing.
+Linear axes only; a log axis keeps its original ticks.
+
+On a touch device, one finger pans and two pinch to zoom, anchored on the
+midpoint between them.
+
+A **Reset view** button appears in the toolbar as soon as the view moves and
+disappears once it is back to the default, so the way out is visible exactly
+when it is wanted. It restores zoom, position and axis labels together,
+across every chart on the page.
+
 
 Synchronized Crosshair
 -----------------------

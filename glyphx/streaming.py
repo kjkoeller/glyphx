@@ -56,6 +56,12 @@ class StreamingSeries(BaseSeries):
         line_width: float = 2.0,
         show_points: bool = False,
     ) -> None:
+        """
+        Set up the rolling buffer that backs the stream.
+
+        ``max_points`` becomes the deque's ``maxlen``, so old samples fall off
+        the front automatically and the series never grows without bound.
+        """
         self._buffer: deque[float] = deque(maxlen=max_points)
         self.max_points = max_points
         self.line_width = line_width
@@ -110,6 +116,7 @@ class StreamingSeries(BaseSeries):
     # SVG rendering
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the current buffer contents as a line."""
         if not has_data(self.x) or not has_data(self.y):
             return ""
 
@@ -164,12 +171,14 @@ class _LiveContext:
     """Internal context manager for ``StreamingSeries.live()``."""
 
     def __init__(self, stream: StreamingSeries, fig: object, fps: float) -> None:
+        """Hold the stream, its figure, and the file to write each refresh to."""
         self._stream    = stream
         self._fig       = fig
         self._interval  = 1.0 / fps
         self._last_draw = 0.0
 
     def __enter__(self) -> _LiveContext:
+        """Enter the live block. Returns ``self`` so it can be bound with ``as``."""
         return self
 
     def push(self, value: float) -> None:
@@ -181,6 +190,12 @@ class _LiveContext:
             self._last_draw = now
 
     def _render(self) -> None:
+        """
+        Re-render the figure to disk, swallowing any error.
+
+        A failed frame should not kill a long-running feed, so this keeps going
+        and the next refresh gets another attempt.
+        """
         try:
             from IPython.display import SVG, clear_output, display
             clear_output(wait=True)
@@ -189,4 +204,5 @@ class _LiveContext:
             pass
 
     def __exit__(self, *_: object) -> None:
+        """Render one final frame on the way out, so the file reflects the last data."""
         self._render()

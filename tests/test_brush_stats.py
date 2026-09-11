@@ -1,0 +1,149 @@
+"""
+Brushing reports what was selected, and the selection is actually visible.
+
+Shift-dragging a rectangle used to select points and say nothing about
+them -- no count, no mean, no range, so you were left counting dots. It also
+never highlighted anything: a click event follows every mouseup, and
+interact.js resets every point's opacity on click, wiping the selection the
+instant it was applied.
+"""
+
+import pytest
+
+from glyphx import Figure
+
+pytestmark = pytest.mark.browser
+
+
+@pytest.fixture
+def page(tmp_path):
+    sync_playwright = pytest.importorskip("playwright.sync_api").sync_playwright
+    np = pytest.importorskip("numpy")
+
+    rng = np.random.default_rng(3)
+    path = tmp_path / "brush.html"
+    fig = Figure(width=640, height=440, auto_display=False, title="Spend vs Revenue")
+    fig.scatter(rng.normal(50, 15, 120).tolist(),
+                rng.normal(100, 25, 120).tolist(), label="Accounts")
+    fig.share(str(path))
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch()
+        pg = browser.new_page(viewport={"width": 820, "height": 640})
+        pg.goto(path.as_uri())
+        pg.wait_for_timeout(350)
+        yield pg
+        browser.close()
+
+
+def _brush(page, release=True, x0=0.30, y0=0.25, x1=0.72, y1=0.70):
+    box = page.eval_on_selector("svg[data-glyphx]", "e => e.getBoundingClientRect()")
+    page.keyboard.down("Shift")
+    page.mouse.move(box["x"] + box["width"] * x0, box["y"] + box["height"] * y0)
+    page.mouse.down()
+    page.mouse.move(box["x"] + box["width"] * x1, box["y"] + box["height"] * y1)
+    page.wait_for_timeout(120)
+    if release:
+        page.mouse.up()
+        page.keyboard.up("Shift")
+        page.wait_for_timeout(300)
+
+
+def _stats_text(page):
+    return page.eval_on_selector(".glyphx-brush-stats", "e => e.innerText")
+
+
+def _counts(page):
+    return page.eval_on_selector_all(".glyphx-point", """els => ({
+        dimmed: els.filter(e => e.style.opacity === '0.1').length,
+        lit: els.filter(e => e.style.opacity === '1').length,
+    })""")
+
+
+# ---------------------------------------------------------------------------
+# Statistics
+# ---------------------------------------------------------------------------
+
+def test_stats_appear_after_brushing(page):
+    _brush(page)
+    text = _stats_text(page)
+    for field in ("selected", "mean", "sum", "range"):
+        assert field in text, f"{field} missing from {text!r}"
+
+
+def test_stats_update_live_during_the_drag(page):
+    """The numbers should guide the drag, not only report on it afterwards."""
+    _brush(page, release=False)
+    mid = _stats_text(page)
+    assert "selected" in mid
+
+    box = page.eval_on_selector("svg[data-glyphx]", "e => e.getBoundingClientRect()")
+    page.mouse.move(box["x"] + box["width"] * 0.95, box["y"] + box["height"] * 0.95)
+    page.wait_for_timeout(150)
+    assert _stats_text(page) != mid, "stats did not track the growing rectangle"
+
+    page.mouse.up()
+    page.keyboard.up("Shift")
+
+
+def test_reported_count_matches_the_highlighted_points(page):
+    _brush(page)
+    reported = int(_stats_text(page).split("selected:")[1].split()[0])
+    assert reported == _counts(page)["lit"]
+
+
+def test_stats_are_hidden_before_any_brush(page):
+    exists = page.evaluate("() => !!document.querySelector('.glyphx-brush-stats')")
+    if exists:
+        assert page.eval_on_selector(".glyphx-brush-stats", "e => e.style.opacity") == "0"
+
+
+def test_stats_clear_on_escape(page):
+    _brush(page)
+    assert page.eval_on_selector(".glyphx-brush-stats", "e => e.style.opacity") == "1"
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(250)
+    assert page.eval_on_selector(".glyphx-brush-stats", "e => e.style.opacity") == "0"
+
+
+def test_stats_are_announced_to_screen_readers(page):
+    _brush(page)
+    role = page.eval_on_selector(".glyphx-brush-stats", "e => e.getAttribute('role')")
+    live = page.eval_on_selector(".glyphx-brush-stats", "e => e.getAttribute('aria-live')")
+    assert role == "status" and live == "polite"
+
+
+# ---------------------------------------------------------------------------
+# The selection is visible
+# ---------------------------------------------------------------------------
+
+def test_brushing_highlights_the_selection(page):
+    """
+    The bug: interact.js resets opacity on click, and a click always follows
+    a mouseup, so the selection was wiped the moment it was applied. Every
+    point stayed at full opacity and brushing looked like it did nothing.
+    """
+    _brush(page)
+    counts = _counts(page)
+    assert counts["lit"] > 0, "nothing was highlighted"
+    assert counts["dimmed"] > 0, "nothing was dimmed"
+    assert counts["lit"] + counts["dimmed"] == 120
+
+
+def test_selection_survives_the_click_that_follows_the_drag(page):
+    _brush(page)
+    before = _counts(page)["dimmed"]
+    page.wait_for_timeout(400)
+    assert _counts(page)["dimmed"] == before
+
+
+def test_a_plain_click_still_works_after_brushing(page):
+    """Only the click generated by the drag is swallowed, not the next one."""
+    _brush(page)
+    page.keyboard.press("Escape")
+    page.wait_for_timeout(200)
+    page.evaluate("() => { window.__clicked = false; "
+                  "document.addEventListener('glyphx:select', () => window.__clicked = true); }")
+    page.click(".glyphx-point >> nth=0")
+    page.wait_for_timeout(250)
+    assert page.evaluate("window.__clicked") is True

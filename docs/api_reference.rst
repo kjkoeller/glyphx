@@ -310,3 +310,55 @@ Vega-Lite Export
 .. autofunction:: glyphx.vega_lite.to_vega_lite
 
 .. autofunction:: glyphx.vega_lite.save_vega_lite
+
+
+Aggregation
+-----------
+
+Collapsing repeated measurements per x into an estimate and an interval,
+which is what :meth:`glyphx.Figure.aggregate_line` draws.
+
+.. autofunction:: glyphx.aggregate.aggregate
+
+
+Math in labels
+--------------
+
+.. autofunction:: glyphx.mathtext.render
+
+.. autofunction:: glyphx.mathtext.to_plain_text
+
+.. autofunction:: glyphx.mathtext.contains_math
+
+.. autofunction:: glyphx.mathtext.estimate_width
+
+
+Export backends
+---------------
+
+.. autofunction:: glyphx.export.render_to_file
+
+.. autofunction:: glyphx.export.available_backends
+
+
+PDF writer
+----------
+
+The pure-Python PDF backend. It needs nothing beyond the standard library,
+which is why ``.pdf`` works in a bare virtualenv or CI container with no
+system libraries and no browser.
+
+.. autofunction:: glyphx.pdf_writer.svg_to_pdf
+
+.. autoclass:: glyphx.pdf_writer.UnsupportedSVGError
+
+
+pandas backend
+--------------
+
+Registered under the ``pandas_plotting_backends`` entry point, so
+``pd.options.plotting.backend = "glyphx"`` resolves here. Not called
+directly -- see :meth:`glyphx.Figure.line` and the accessor below for
+GlyphX's own APIs.
+
+.. autofunction:: glyphx.pandas_backend.plot

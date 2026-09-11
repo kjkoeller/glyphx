@@ -88,11 +88,13 @@ def get_colormap(name: str) -> list[str]:
 # Color interpolation
 
 def _hex_to_rgb(hex_color: str) -> tuple[int, int, int]:
+    """Split ``#rrggbb`` into an (r, g, b) tuple of ints."""
     h = hex_color.lstrip("#")
     return int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)
 
 
 def _rgb_to_hex(r: float, g: float, b: float) -> str:
+    """Join r, g, b back into ``#rrggbb``, rounding to whole channels."""
     return f"#{round(r):02x}{round(g):02x}{round(b):02x}"
 
 

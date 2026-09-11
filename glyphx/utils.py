@@ -7,6 +7,7 @@ GlyphX utility functions: SVG helpers, display detection, legend rendering.
 import html
 import math
 import os
+import re
 import tempfile
 import webbrowser
 from pathlib import Path
@@ -17,6 +18,88 @@ from pathlib import Path
 #: the resolution of any real display and typically cuts document size by a
 #: third on point-dense charts.
 SVG_PRECISION = 2
+
+
+def point_attrs(x, y, label=None, **extra) -> str:
+    """
+    Build the ``data-*`` attributes that make an element selectable.
+
+    ``select.js`` binds to ``[data-x]``, so an element without these is
+    invisible to selection, the detail panel, cross-filtering and the
+    tooltip -- which is why clicking a pie slice or a treemap tile used to
+    do nothing at all while a bar responded.
+
+    Args:
+        x:     Category or position for this element.
+        y:     Its value.
+        label: Series name, for the tooltip heading.
+        **extra: Further ``data-`` attributes. Underscores become hyphens,
+            so ``percent=12.5`` emits ``data-percent="12.5"``. ``None``
+            values are dropped rather than written as "None".
+
+    Returns:
+        str: A leading-space-prefixed attribute string, ready to drop into
+        an element's opening tag.
+    """
+    parts = [
+        f'data-x="{svg_escape(str(x))}"',
+        f'data-y="{svg_escape(str(y))}"',
+    ]
+    if label is not None:
+        parts.append(f'data-label="{svg_escape(str(label))}"')
+    for key, value in extra.items():
+        if value is None:
+            continue
+        parts.append(f'data-{key.replace("_", "-")}="{svg_escape(str(value))}"')
+    return " " + " ".join(parts)
+
+
+def series_fingerprint(series) -> tuple:
+    """
+    A cheap, stable summary of a series' data, for deriving its CSS class.
+
+    Seventeen series types built their class from ``id(self) % 100000`` --
+    a memory address, so it changed on every run and broke the
+    byte-identical rendering that snapshot comparison and caching depend
+    on. Worse, the modulo made collisions between two series plausible,
+    and the class is what the legend toggles on.
+
+    Only lengths and endpoints are used, not every element: this needs to
+    distinguish series, not hash their contents, and it runs per series on
+    every construction.
+
+    Args:
+        series: Any series object.
+
+    Returns:
+        tuple: Hashable summary, stable across processes.
+    """
+    parts: list = []
+    for attr in ("x", "y", "values", "data", "datasets", "labels",
+                 "categories", "matrix", "z"):
+        value = getattr(series, attr, None)
+        if value is None:
+            continue
+        try:
+            length = len(value)
+        except TypeError:                       # scalars, callables
+            parts.append((attr, repr(value)[:40]))
+            continue
+        if isinstance(value, dict):
+            # Mapping attributes (choropleth's {region: value}) are not
+            # positionally indexable; their keys identify them well enough.
+            parts.append((attr, length, repr(sorted(map(str, value))[:3])[:48]))
+            continue
+        try:
+            head = repr(value[0])[:24] if length else ""
+            tail = repr(value[-1])[:24] if length else ""
+        except (KeyError, IndexError, TypeError):
+            # Anything sized but not positionally indexable: sets, and any
+            # third-party container that only supports iteration.
+            parts.append((attr, length))
+            continue
+        parts.append((attr, length, head, tail))
+    return tuple(parts)
 
 
 def stable_id(*parts, length: int = 12) -> str:
@@ -427,6 +510,46 @@ def wrap_svg_with_template(svg_string: str) -> str:
             + "\n</script>"
         )
 
+    # Cross-chart filtering. Inert unless a chart on the page carries
+    # data-glyphx-crossfilter, so it costs nothing when unused.
+    select_path = Path(__file__).parent / "assets" / "select.js"
+    select_js = ""
+    if select_path.exists():
+        select_js = (
+            "<script>\n"
+            + _strip_script_tags(select_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
+    controls_path = Path(__file__).parent / "assets" / "controls.js"
+    controls_js = ""
+    if controls_path.exists():
+        controls_js = (
+            "<script>\n"
+            + _strip_script_tags(controls_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
+    xfilter_path = Path(__file__).parent / "assets" / "crossfilter.js"
+    xfilter_js = ""
+    if xfilter_path.exists():
+        xfilter_js = (
+            "<script>\n"
+            + _strip_script_tags(xfilter_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
+    # Consumes the glyphx:select event select.js emits, so it must be loaded
+    # after it; the concatenation order below reflects that.
+    detail_path = Path(__file__).parent / "assets" / "detail_panel.js"
+    detail_js = ""
+    if detail_path.exists():
+        detail_js = (
+            "<script>\n"
+            + _strip_script_tags(detail_path.read_text(encoding="utf-8"))
+            + "\n</script>"
+        )
+
     # MathJax used to be injected when the SVG still held raw $...$ text.
     # It never worked: MathJax does not typeset inside an <svg> element, so
     # the labels showed the literal LaTeX in every format. Math is now
@@ -455,12 +578,81 @@ def wrap_svg_with_template(svg_string: str) -> str:
     return (
         html_content
         .replace("{{svg_content}}", svg_string)
-        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script + interact_script + a11y_script + legend_js)
+        .replace("{{extra_scripts}}", mathjax_script + zoom_script + brush_script
+                 + interact_script + a11y_script + legend_js + xfilter_js
+                 + select_js + detail_js + controls_js)
+    )
+
+
+def round_svg_geometry(svg: str, precision: int = SVG_PRECISION) -> str:
+    """
+    Round the geometry numbers in rendered SVG to a fixed precision.
+
+    Coordinates are computed with numpy and libm, whose last bits differ
+    between platforms -- the same chart rendered on Linux and on Windows
+    produced ``28.600002002128278`` and ``28.600002002128274``. That is far
+    below a pixel and invisible, but it made the output non-reproducible,
+    so a byte comparison of committed example files failed on Windows CI
+    while passing everywhere else.
+
+    Only geometry is touched. ``data-`` attributes carry the actual values
+    behind tooltips, selection and the detail panel, so rounding those would
+    corrupt what a reader is shown. At the default of two decimals the
+    change is 0.01 user units, well under one pixel on any real canvas, and
+    it makes files noticeably smaller as a side effect.
+
+    Args:
+        svg: Rendered SVG markup.
+        precision: Decimal places to keep.
+
+    Returns:
+        str: The same markup with geometry numbers rounded.
+    """
+    def _fmt(match: re.Match) -> str:
+        """Round one number, dropping a trailing .0 and normalising -0.0."""
+        value = round(float(match.group(0)), precision)
+        # Normalise -0.0, which differs textually but not numerically, and
+        # drop a trailing ".0" so integers stay integers.
+        if value == 0:
+            value = 0.0
+        return f"{value:g}"
+
+    number = r"-?\d+\.\d{3,}(?:[eE][-+]?\d+)?"
+
+    def _round_attr(match: re.Match) -> str:
+        """Round every number inside one attribute's value."""
+        name, body = match.group(1), match.group(2)
+        return f'{name}="{re.sub(number, _fmt, body)}"'
+
+    # Named geometry attributes, plus the ones whose values are number soup.
+    attrs = ("x|y|cx|cy|r|rx|ry|width|height|x1|y1|x2|y2|dx|dy"
+             r"|d|points|transform|viewBox|font-size|stroke-width|offset")
+    # The lookbehind is essential: \b treats "-" as a boundary, so a plain
+    # word-boundary match would also rewrite the "y" inside data-y and round
+    # geometry precision onto the values behind tooltips and selection.
+    svg = re.sub(rf'(?<![\w-])({attrs})="([^"]*)"', _round_attr, svg)
+
+    # Data attributes get their own, far looser pass. They carry the numbers
+    # a reader is actually shown, so they cannot take geometry's two
+    # decimals -- but they still reach the content hash that generates
+    # element ids, so last-bit noise in them changed every id in the file.
+    # Twelve significant figures is beyond any real dataset's precision and
+    # well inside the noise.
+    def _fmt_data(match: re.Match) -> str:
+        """Trim one data value to twelve significant figures."""
+        return f"{float(match.group(0)):.12g}"
+
+    return re.sub(
+        r'(?<=data-)(?:x|y|tick|domain-x|domain-y|value|percent|median'
+        r'|q1|q2|q3|open|high|low|close)="[^"]*"',
+        lambda m: re.sub(r"-?\d+\.\d{6,}(?:[eE][-+]?\d+)?", _fmt_data, m.group(0)),
+        svg,
     )
 
 
 def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
-                    has_math: bool = False) -> str:
+                    has_math: bool = False, crossfilter: bool = False,
+                    axis_metadata: str = "") -> str:
     """
     Wrap raw SVG elements in a full <svg> root element.
 
@@ -477,14 +669,30 @@ def wrap_svg_canvas(svg_content: str, width: int = 640, height: int = 480,
         height (int):      Canvas height in pixels.
         has_math (bool):   When True, embeds a MathJax data attribute so
                            wrap_svg_with_template injects the CDN script.
+        crossfilter (bool): When True, marks the root so crossfilter.js
+                           includes this chart. Charts without the marker
+                           are left alone, so one page can mix filtered and
+                           independent charts.
 
     Returns:
         str: Complete SVG document string.
     """
+    # Round first, then hash. Hashing the unrounded markup let a
+    # platform-dependent last bit change the id, which then differs
+    # everywhere it appears -- so a file whose visible geometry was
+    # identical still failed a byte comparison on Windows.
+    svg_content = round_svg_geometry(svg_content)
+    # The axis metadata is interpolated into the root tag below rather than
+    # coming through svg_content, so it needs the same pass -- its domains
+    # are raw floats straight off the data.
+    axis_metadata = round_svg_geometry(axis_metadata)
     chart_id  = f"glyphx-chart-{stable_id(svg_content, width, height)}"
+
     math_attr = ' data-has-math="true"' if has_math else ""
+    xfilter_attr = ' data-glyphx-crossfilter="true"' if crossfilter else ""
     return (
-        f'<svg id="{chart_id}" data-glyphx="true"{math_attr} '
+        f'<svg id="{chart_id}" data-glyphx="true"{math_attr}{xfilter_attr}'
+        f'{axis_metadata} '
         f'width="{width}" height="{height}" xmlns="http://www.w3.org/2000/svg" '
         f'viewBox="0 0 {width} {height}">{svg_content}</svg>'
     )
@@ -513,6 +721,7 @@ def wrap_svg_with_css_vars(svg_string: str, light_theme: dict, dark_theme: dict,
     chart_id = f"glyphx-css-{stable_id(svg_string)[:10]}"
 
     def _props(theme: dict) -> str:
+        """Render a theme dict as the CSS custom properties block."""
         mapping = {
             "--glyphx-bg":         theme.get("background", "#ffffff"),
             "--glyphx-text":       theme.get("text_color",  "#000000"),
@@ -727,7 +936,7 @@ def draw_legend(
     elif position == "right":
         x = width  - legend_width - padding
         y = (height - legend_height) // 2
-    # default / "top-left" -> x=padding, y=padding (already set)
+    # default and "top-left" both keep x=padding, y=padding (already set)
 
     items = []
     for i, s in enumerate(normalized):
@@ -807,6 +1016,7 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     assets_dir = Path(__file__).parent / "assets"
 
     def _read_js(name: str) -> str:
+        """Read one bundled JS asset from the package directory."""
         p = assets_dir / name
         if not p.exists():
             return ""
@@ -817,6 +1027,10 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
     interact_js = _read_js("interact.js")
     export_js   = _read_js("export.js")
     legend_js   = _read_js("legend.js")
+    xfilter_js  = _read_js("crossfilter.js")
+    detail_js   = _read_js("detail_panel.js")
+    controls_js = _read_js("controls.js")
+    select_js   = _read_js("select.js")
 
     # Read template and replace placeholders
     template_path = assets_dir / "responsive_template.html"
@@ -836,6 +1050,10 @@ def make_shareable_html(svg_string: str, title: str = "GlyphX Chart") -> str:
         f"<script>\n{a11y_js}\n</script>"     if a11y_js     else "",
         f"<script>\n{export_js}\n</script>"   if export_js   else "",
         f"<script>\n{legend_js}\n</script>"   if legend_js   else "",
+        f"<script>\n{xfilter_js}\n</script>"  if xfilter_js  else "",
+        f"<script>\n{select_js}\n</script>"   if select_js   else "",
+        f"<script>\n{detail_js}\n</script>"   if detail_js   else "",
+        f"<script>\n{controls_js}\n</script>" if controls_js else "",
     ]))
 
     # Metadata comment

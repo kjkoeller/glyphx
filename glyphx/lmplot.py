@@ -5,6 +5,7 @@ from .series import LineSeries, ScatterSeries
 
 
 def lmplot(df, x, y, theme="default", hue=None, order=1):
+    """Scatter with a fitted regression line, optionally split by hue."""
     fig = Figure()
     fig.set_theme(theme)
     ax = fig.add_axes()

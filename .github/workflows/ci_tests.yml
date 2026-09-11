@@ -106,6 +106,15 @@ jobs:
 
       - name: Run tests
         run: tox -e ${{ matrix.tox_env }} -- ${{ matrix.toxposargs }}
+        env:
+          # The committed example SVGs are byte-compared against a fresh
+          # render, which only holds in the environment they were generated
+          # in: np.histogram derives bin edges from linspace, whose last bits
+          # differ between numpy builds, and an edge that moves by one ulp
+          # can push a value into the next bin and change a bar height.
+          # Checking it in one job still catches the thing that matters --
+          # rendering changed and the images were not regenerated.
+          GLYPHX_CHECK_EXAMPLES: ${{ matrix.name == 'ubuntu-py312' && '1' || '0' }}
 
       - name: Upload coverage to Codecov
         if: matrix.tox_env == 'py312-cov'

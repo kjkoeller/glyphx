@@ -12,7 +12,7 @@ no CDN dependency -- pure SVG paths projected from GeoJSON coordinates.
     with open("world.geojson", encoding="utf-8") as fh:
         geo = json.load(fh)
 
-    # Attach data: map feature property -> numeric value
+    # Attach data: each feature property keys a numeric value
     data = {"USA": 63000, "GBR": 42000, "DEU": 51000, "FRA": 45000}
 
     fig = Figure(width=900, height=500, auto_display=False)
@@ -26,7 +26,7 @@ import math
 
 from ._typing import AxesLike
 from .colormaps import apply_colormap
-from .utils import _format_tick, has_data, svg_escape
+from .utils import _format_tick, has_data, series_fingerprint, stable_id, svg_escape
 
 # Mercator projection
 
@@ -68,6 +68,7 @@ def _coord_bounds(features: list) -> tuple[float, float, float, float]:
     all_ys:   list[float] = []
 
     def _walk(coords, depth=0):
+        """Recurse into nested coordinate lists, collecting every lon/lat pair."""
         if not coords:
             return
         if isinstance(coords[0], (int, float)):
@@ -138,6 +139,7 @@ class ChoroplethSeries:
         label:           str | None       = None,
         title:           str | None       = None,
     ) -> None:
+        """Store the features and data, and work out the value range for colouring."""
         self.cmap          = cmap
         self.data          = data
         self.key           = key
@@ -147,7 +149,17 @@ class ChoroplethSeries:
         self.alpha         = float(alpha)
         self.label         = label
         self.title         = title
-        self.css_class     = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class     = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Extract feature list
         if isinstance(geojson, dict):
@@ -166,6 +178,12 @@ class ChoroplethSeries:
         self.y = None
 
     def _feature_color(self, feature: dict) -> str:
+        """
+        Colour one feature by its value, or grey if the data has no entry for it.
+
+        Missing regions are common in real datasets, so an absent key is normal
+        rather than an error.
+        """
         props = feature.get("properties") or {}
         k     = props.get(self.key)
         val   = self.data.get(k) if k is not None else None
@@ -175,6 +193,7 @@ class ChoroplethSeries:
         return apply_colormap(norm, self.cmap)
 
     def to_svg(self, ax: AxesLike = None) -> str:  # type: ignore
+        """Project every feature to screen space and emit it as an SVG path."""
         W = getattr(ax, "width",  800) if ax else 800
         H = getattr(ax, "height", 500) if ax else 500
         font = ax.theme.get("font", "sans-serif") if ax else "sans-serif"
@@ -185,6 +204,7 @@ class ChoroplethSeries:
         elements: list[str] = []
 
         def _render_ring(ring_coords, color):
+            """Emit one polygon ring as a filled path."""
             pts = _project_coords(ring_coords, lon_min, lon_max,
                                    y_min, y_max, W, H)
             return _coords_to_path(pts)

@@ -1,0 +1,2280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlyphX Chart</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+      color: #1a202c;
+    }
+
+    .glyphx-wrapper {
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .glyphx-card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    .glyphx-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      /* Wrap rather than overflow: on a phone the row is wider than the
+         screen, and without this the leftmost buttons are cut off with no
+         way to scroll to them. */
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #fafafa;
+      border-bottom: 1px solid #e8eaed;
+    }
+
+    .glyphx-toolbar span {
+      margin-right: auto;
+      /* The hint takes the whole first line on a narrow screen, so the
+         buttons wrap beneath it instead of squeezing it to one word. */
+      flex: 1 1 100%;
+      font-size: 11px;
+      color: #888;
+      letter-spacing: 0.04em;
+    }
+
+    .glyphx-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      color: #444;
+      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      user-select: none;
+    }
+    .glyphx-btn:hover  { background: #f5f5f5; border-color: #aaa; }
+    .glyphx-btn:active { background: #ebebeb; }
+    .glyphx-btn.share  { color: #2563eb; border-color: #bfdbfe; background: #eff6ff; }
+    .glyphx-btn.share:hover { background: #dbeafe; }
+
+    .glyphx-chart-area {
+      padding: 20px;
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* -- Interactivity -- */
+    .glyphx-point {
+      cursor: pointer;
+    }
+    .glyphx-point:hover {
+      stroke: #1a202c;
+      stroke-width: 2;
+    }
+
+    /* -- Tooltip -- */
+    .glyphx-tooltip {
+      position: fixed;
+      background: rgba(15, 23, 42, 0.92);
+      color: #f8fafc;
+      padding: 7px 11px;
+      border-radius: 7px;
+      font-size: 12.5px;
+      line-height: 1.6;
+      pointer-events: none;
+      display: none;
+      z-index: 9999;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      max-width: 220px;
+    }
+    .glyphx-tooltip .tt-label { font-weight: 600; margin-bottom: 2px; }
+    .glyphx-tooltip .tt-row   { opacity: 0.85; }
+
+    /* -- Brush hint badge (injected by brush.js) -- */
+    .glyphx-brush-hint {
+      /* Styled by brush.js inline -- see brush.js */
+    }
+
+    /* -- Copied toast -- */
+    .glyphx-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(10px);
+      background: rgba(15,23,42,0.9);
+      color: #f8fafc;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+      z-index: 99999;
+    }
+    .glyphx-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="glyphx-wrapper">
+    <div class="glyphx-card">
+      <div class="glyphx-toolbar">
+        <span>GlyphX . <kbd>Shift</kbd>+drag to brush . scroll to zoom . drag to pan . dbl-click to reset</span>
+        <button class="glyphx-btn" onclick="glyphxDownload('svg')">Download SVG</button>
+        <button class="glyphx-btn" onclick="glyphxDownload('png')">Download PNG</button>
+        <button class="glyphx-btn share" onclick="glyphxCopyHtml()">Copy HTML</button>
+      </div>
+      <div class="glyphx-chart-area">
+        <div><div style="display:flex"><div style="margin:20px"><svg role="img" focusable="false" aria-labelledby="glyphx-chart-053dc2c4254e-title glyphx-chart-053dc2c4254e-desc" id="glyphx-chart-053dc2c4254e" data-glyphx="true" data-glyphx-crossfilter="true" data-plot="50,50,240,270" data-domain-x="0.0,6.0" data-domain-y="0,2.033" data-xscale="linear" data-yscale="linear" width="420" height="320" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320"><title id="glyphx-chart-053dc2c4254e-title">Revenue</title><desc id="glyphx-chart-053dc2c4254e-desc">Bar chart titled &quot;Revenue&quot;. Series: 6 data points. Ranges from 0.98 (at Mar) to 1.9 (at Jun).</desc><rect width="420" height="320" fill="#ffffff"/>
+<text x="210" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Revenue</text>
+<line x1="50" y1="270" x2="240" y2="270" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="270" stroke="#333" />
+<line x1="50" x2="240" y1="270.0" y2="270.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="270.0" y2="270.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="274.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
+<line x1="50" x2="240" y1="226.0" y2="226.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="226.0" y2="226.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="230.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.4066">0.41</text>
+<line x1="50" x2="240" y1="182.0" y2="182.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="182.0" y2="182.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="186.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.8132">0.81</text>
+<line x1="50" x2="240" y1="138.0" y2="138.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="138.0" y2="138.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="142.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.2198">1.22</text>
+<line x1="50" x2="240" y1="94.0" y2="94.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="94.0" y2="94.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="98.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.6264">1.63</text>
+<line x1="50" x2="240" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="2.033">2.03</text>
+<line y1="50" y2="270" x1="65.83" x2="65.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="65.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jan</text>
+<line y1="50" y2="270" x1="97.5" x2="97.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="97.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Feb</text>
+<line y1="50" y2="270" x1="129.17" x2="129.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="129.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mar</text>
+<line y1="50" y2="270" x1="160.83" x2="160.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="160.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Apr</text>
+<line y1="50" y2="270" x1="192.5" x2="192.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="192.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
+<line y1="50" y2="270" x1="224.17" x2="224.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="224.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="53.16" y="140.14" width="25.34" height="129.86" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="1.2" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="84.83" y="123.91" width="25.34" height="146.09" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="1.35" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="116.5" y="163.95" width="25.34" height="106.05" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.98" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="148.16" y="86.04" width="25.34" height="183.96" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.7" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="179.83" y="113.09" width="25.34" height="156.91" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="1.45" data-label=""/>
+<rect class="glyphx-point series-a40e1420" tabindex="0" role="graphics-symbol" x="211.5" y="64.39" width="25.34" height="205.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.9" data-label=""/>
+</svg></div><div style="margin:20px"><svg role="img" focusable="false" aria-labelledby="glyphx-chart-2b77839f7415-title glyphx-chart-2b77839f7415-desc" id="glyphx-chart-2b77839f7415" data-glyphx="true" data-glyphx-crossfilter="true" data-plot="50,50,240,270" data-domain-x="0.0,6.0" data-domain-y="0,1.177" data-xscale="linear" data-yscale="linear" width="420" height="320" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 320"><title id="glyphx-chart-2b77839f7415-title">Costs</title><desc id="glyphx-chart-2b77839f7415-desc">Bar chart titled &quot;Costs&quot;. Series: 6 data points. Ranges from 0.65 (at Mar) to 1.1 (at Jun).</desc><rect width="420" height="320" fill="#ffffff"/>
+<text x="210" y="28" text-anchor="middle" font-size="20" font-weight="bold" font-family="sans-serif" fill="#000000">Costs</text>
+<line x1="50" y1="270" x2="240" y2="270" stroke="#333" />
+<line x1="50" y1="50" x2="50" y2="270" stroke="#333" />
+<line x1="50" x2="240" y1="270.0" y2="270.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="270.0" y2="270.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="274.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.0">0</text>
+<line x1="50" x2="240" y1="226.0" y2="226.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="226.0" y2="226.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="230.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.2354">0.24</text>
+<line x1="50" x2="240" y1="182.0" y2="182.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="182.0" y2="182.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="186.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.4708">0.47</text>
+<line x1="50" x2="240" y1="138.0" y2="138.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="138.0" y2="138.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="142.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.7062">0.71</text>
+<line x1="50" x2="240" y1="94.0" y2="94.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="94.0" y2="94.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="98.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="0.9416">0.94</text>
+<line x1="50" x2="240" y1="50.0" y2="50.0" stroke="#ddd" stroke-dasharray="3,3" />
+<line x1="46.0" x2="50" y1="50.0" y2="50.0" stroke="#000000" stroke-width="1"/>
+<text x="42.0" y="54.0" text-anchor="end" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-ytick" data-tick="1.177">1.18</text>
+<line y1="50" y2="270" x1="65.83" x2="65.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="65.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jan</text>
+<line y1="50" y2="270" x1="97.5" x2="97.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="97.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Feb</text>
+<line y1="50" y2="270" x1="129.17" x2="129.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="129.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Mar</text>
+<line y1="50" y2="270" x1="160.83" x2="160.83" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="160.83" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Apr</text>
+<line y1="50" y2="270" x1="192.5" x2="192.5" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="192.5" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >May</text>
+<line y1="50" y2="270" x1="224.17" x2="224.17" stroke="#ddd" stroke-dasharray="3,3" />
+<text x="224.17" y="286" text-anchor="middle" font-size="11" font-family="sans-serif" fill="#000000" class="glyphx-tick glyphx-xtick" >Jun</text>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="53.16" y="120.47" width="25.34" height="149.53" fill="#1f77b4" stroke="#00000033" data-x="Jan" data-y="0.8" data-label=""/>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="84.83" y="101.78" width="25.34" height="168.22" fill="#1f77b4" stroke="#00000033" data-x="Feb" data-y="0.9" data-label=""/>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="116.5" y="148.5" width="25.34" height="121.5" fill="#1f77b4" stroke="#00000033" data-x="Mar" data-y="0.65" data-label=""/>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="148.16" y="83.08" width="25.34" height="186.92" fill="#1f77b4" stroke="#00000033" data-x="Apr" data-y="1.0" data-label=""/>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="179.83" y="92.43" width="25.34" height="177.57" fill="#1f77b4" stroke="#00000033" data-x="May" data-y="0.95" data-label=""/>
+<rect class="glyphx-point series-a5a863c9" tabindex="0" role="graphics-symbol" x="211.5" y="64.39" width="25.34" height="205.61" fill="#1f77b4" stroke="#00000033" data-x="Jun" data-y="1.1" data-label=""/>
+</svg></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="glyphx-tooltip" id="glyphx-tooltip"></div>
+  <div class="glyphx-toast"   id="glyphx-toast"></div>
+
+  <script>
+  /* -- Tooltip -- */
+  (function () {
+    const tip = document.getElementById('glyphx-tooltip');
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.glyphx-point').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+          const x   = el.getAttribute('data-x');
+          const y   = el.getAttribute('data-y');
+          const lbl = el.getAttribute('data-label');
+          const val = el.getAttribute('data-value');
+          const q1  = el.getAttribute('data-q1');
+          const q2  = el.getAttribute('data-q2');
+          const q3  = el.getAttribute('data-q3');
+
+          let html = '';
+          if (lbl) html += `<div class="tt-label">${lbl}</div>`;
+          if (q1)  html += `<div class="tt-row">Q1: ${(+q1).toFixed(3)}</div>
+                            <div class="tt-row">Median: ${(+q2).toFixed(3)}</div>
+                            <div class="tt-row">Q3: ${(+q3).toFixed(3)}</div>`;
+          else {
+            if (x !== null) html += `<div class="tt-row">x: ${x}</div>`;
+            if (y !== null) html += `<div class="tt-row">y: ${y}</div>`;
+            if (val)        html += `<div class="tt-row">value: ${val}</div>`;
+          }
+          tip.innerHTML = html || el.textContent;
+          tip.style.display = 'block';
+        });
+
+        el.addEventListener('mousemove', e => {
+          tip.style.left = (e.clientX + 14) + 'px';
+          tip.style.top  = (e.clientY + 14) + 'px';
+        });
+
+        el.addEventListener('mouseleave', () => {
+          tip.style.display = 'none';
+        });
+      });
+    });
+  })();
+
+  /* -- Toast helper -- */
+  function glyphxToast(msg) {
+    const t = document.getElementById('glyphx-toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /* -- Download -- */
+  function glyphxDownload(type) {
+    const svg = document.querySelector('svg');
+    const ser = new XMLSerializer();
+    const svgStr = ser.serializeToString(svg);
+    const blob = new Blob([svgStr], { type: 'image/svg+xml;charset=utf-8' });
+
+    if (type === 'svg') {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'glyphx_chart.svg';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      glyphxToast('SVG downloaded');
+      return;
+    }
+
+    const canvas = document.createElement('canvas');
+    const bbox = svg.getBBox ? svg.getBBox() : { width: svg.clientWidth, height: svg.clientHeight };
+    canvas.width  = bbox.width  + 40 || 800;
+    canvas.height = bbox.height + 40 || 600;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 20, 20);
+      const a = document.createElement('a');
+      a.download = `glyphx_chart.${type}`;
+      a.href = canvas.toDataURL(type === 'jpg' ? 'image/jpeg' : 'image/png');
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      glyphxToast(`${type.toUpperCase()} downloaded`);
+    };
+    img.src = URL.createObjectURL(blob);
+  }
+
+  /* -- Share (copy self-contained HTML to clipboard) -- */
+  function glyphxCopyHtml() {
+    const html = document.documentElement.outerHTML;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(html).then(() => {
+        glyphxToast('[OK] Full page HTML copied to clipboard!');
+      });
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = html;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      glyphxToast('[OK] Full page HTML copied to clipboard!');
+    }
+  }
+  </script>
+
+  <script>
+/**
+ * GlyphX Zoom + Pan
+ *
+ * Mouse wheel  -> zoom (centred on cursor)
+ * Mouse drag   -> pan  (only when Shift is NOT held -- Shift+drag = brush)
+ */
+(function () {
+  const svgs = document.querySelectorAll('svg[data-glyphx]');
+  if (!svgs.length) return;
+
+  // ---- Axis relabelling ---------------------------------------------------
+  //
+  // Zooming rewrites the viewBox, which crops the whole drawing -- including
+  // the tick labels, which are static text positioned for the original
+  // domain. A few scroll steps in and the chart had no visible scale at all:
+  // no numbers, no gridlines, no way to tell what you were looking at.
+  //
+  // The root carries the plot rectangle and the data domains, so the visible
+  // region can be mapped back to data coordinates and the ticks redrawn for
+  // whatever is actually on screen.
+
+  function nums(svg, attr) {
+    const raw = svg.getAttribute(attr);
+    return raw ? raw.split(',').map(Number) : null;
+  }
+
+  // "Nice" round steps, so labels read 0.5 / 1 / 2 rather than 0.4713.
+  function niceTicks(lo, hi, count) {
+    if (!isFinite(lo) || !isFinite(hi) || hi <= lo) return [];
+    const raw  = (hi - lo) / Math.max(1, count);
+    const mag  = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / mag;
+    const step = (norm >= 5 ? 10 : norm >= 2 ? 5 : norm >= 1 ? 2 : 1) * mag;
+    const out  = [];
+    for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) {
+      out.push(Math.abs(v) < step * 1e-9 ? 0 : v);
+    }
+    return out;
+  }
+
+  function format(v, span) {
+    if (v === 0) return '0';
+    const digits = span >= 100 ? 0 : span >= 10 ? 1 : span >= 1 ? 2 : 3;
+    return v.toFixed(digits);
+  }
+
+  function snapshot(svg) {
+    svg.querySelectorAll('.glyphx-tick').forEach(node => {
+      if (node.dataset.origText === undefined) {
+        node.dataset.origText = node.textContent;
+        node.dataset.origX = node.getAttribute('x');
+        node.dataset.origY = node.getAttribute('y');
+        node.dataset.origAnchor = node.getAttribute('text-anchor') || '';
+        node.dataset.origSize = node.getAttribute('font-size') || '11';
+      }
+    });
+  }
+
+  // Reset puts the original labels back verbatim rather than recomputing
+  // them, so a zoom-and-reset round trip leaves the chart byte-identical.
+  function restore(svg) {
+    svg.querySelectorAll('.glyphx-tick').forEach(node => {
+      if (node.dataset.origText === undefined) return;
+      node.textContent = node.dataset.origText;
+      node.setAttribute('x', node.dataset.origX);
+      node.setAttribute('y', node.dataset.origY);
+      node.setAttribute('font-size', node.dataset.origSize);
+      if (node.dataset.origAnchor) {
+        node.setAttribute('text-anchor', node.dataset.origAnchor);
+      }
+      node.style.display = '';
+    });
+  }
+
+  // -- Reset control --------------------------------------------------------
+  //
+  // Resetting was a double-click on empty space and nothing else -- no
+  // button, and the toolbar hint never mentioned it, so a user who zoomed in
+  // had no visible way back. The button appears only once the view has
+  // actually moved, which both keeps the toolbar quiet for people who never
+  // zoom and makes the affordance show up exactly when it is wanted.
+
+  function atDefault(svg) {
+    return !svg.dataset.originalViewBox ||
+           svg.getAttribute('viewBox') === svg.dataset.originalViewBox;
+  }
+
+  function resetAll() {
+    document.querySelectorAll('svg[data-glyphx]').forEach(svg => {
+      if (!svg.dataset.originalViewBox) return;
+      svg.setAttribute('viewBox', svg.dataset.originalViewBox);
+      restore(svg);
+      if (svg.__glyphxSyncViewBox) svg.__glyphxSyncViewBox();
+    });
+    updateResetButton();
+  }
+
+  function resetButton() {
+    const toolbar = document.querySelector('.glyphx-toolbar');
+    if (!toolbar) return null;
+    let btn = toolbar.querySelector('.glyphx-reset-view');
+    if (btn) return btn;
+
+    btn = document.createElement('button');
+    btn.className = 'glyphx-btn glyphx-reset-view';
+    btn.textContent = 'Reset view';
+    btn.title = 'Back to the original zoom and position (or double-click the chart)';
+    btn.style.display = 'none';
+    btn.addEventListener('click', resetAll);
+    toolbar.insertBefore(btn, toolbar.firstElementChild
+      && toolbar.querySelector('.glyphx-btn'));
+    return btn;
+  }
+
+  function updateResetButton() {
+    const btn = resetButton();
+    if (!btn) return;
+    const moved = Array.prototype.slice
+      .call(document.querySelectorAll('svg[data-glyphx]'))
+      .some(svg => !atDefault(svg));
+    btn.style.display = moved ? '' : 'none';
+  }
+
+  function relabel(svg) {
+    snapshot(svg);
+    const plot = nums(svg, 'data-plot');
+    const dx   = nums(svg, 'data-domain-x');
+    const dy   = nums(svg, 'data-domain-y');
+    if (!plot || !dx || !dy) return;                  // nothing to work from
+    if (svg.getAttribute('data-xscale') !== 'linear' ||
+        svg.getAttribute('data-yscale') !== 'linear') return;   // log: leave alone
+
+    const vb = svg.getAttribute('viewBox').split(' ').map(Number);
+    const [px0, py0, px1, py1] = plot;
+    const scale = vb[2] / (svg.dataset.originalViewBox
+      ? Number(svg.dataset.originalViewBox.split(' ')[2]) : vb[2]);
+
+    // Visible user-space window, intersected with the plot rectangle.
+    const ux0 = Math.max(px0, vb[0]), ux1 = Math.min(px1, vb[0] + vb[2]);
+    const uy0 = Math.max(py0, vb[1]), uy1 = Math.min(py1, vb[1] + vb[3]);
+    if (ux1 <= ux0 || uy1 <= uy0) return;
+
+    const toDataX = u => dx[0] + (u - px0) / (px1 - px0) * (dx[1] - dx[0]);
+    const toDataY = u => dy[1] - (u - py0) / (py1 - py0) * (dy[1] - dy[0]);
+    const toUserX = d => px0 + (d - dx[0]) / (dx[1] - dx[0]) * (px1 - px0);
+    const toUserY = d => py0 + (dy[1] - d) / (dy[1] - dy[0]) * (py1 - py0);
+
+    apply(svg, 'glyphx-xtick', niceTicks(toDataX(ux0), toDataX(ux1), 5),
+          toUserX, 'x', vb, scale);
+    apply(svg, 'glyphx-ytick', niceTicks(toDataY(uy1), toDataY(uy0), 5),
+          toUserY, 'y', vb, scale);
+  }
+
+  function apply(svg, cls, values, toUser, axis, vb, scale) {
+    const nodes = Array.prototype.slice.call(svg.querySelectorAll('.' + cls));
+    if (!nodes.length) return;
+    const span = values.length > 1 ? Math.abs(values[values.length - 1] - values[0]) : 1;
+
+    nodes.forEach((node, i) => {
+      if (i >= values.length) { node.style.display = 'none'; return; }
+      node.style.display = '';
+      const user = toUser(values[i]);
+      // Pin the label to the edge of the *visible* window, not the original
+      // canvas, or it sits off-screen the moment you pan away from it.
+      if (axis === 'x') {
+        node.setAttribute('x', user);
+        node.setAttribute('y', vb[1] + vb[3] - 6 * scale);
+      } else {
+        node.setAttribute('y', user);
+        node.setAttribute('x', vb[0] + 6 * scale);
+        node.setAttribute('text-anchor', 'start');
+      }
+      // Counteract the viewBox scale so text stays a constant size.
+      node.setAttribute('font-size', 11 * scale);
+      node.textContent = format(values[i], span);
+    });
+  }
+
+  svgs.forEach(svg => {
+    let viewBox   = svg.getAttribute('viewBox').split(' ').map(Number);
+    let isPanning = false;
+    let startX    = 0, startY = 0;
+
+    svg.style.cursor = 'grab';
+
+    svg.addEventListener('mousedown', e => {
+      // Leave Shift+drag to brush.js
+      if (e.shiftKey || e.button !== 0) return;
+      isPanning = true;
+      startX    = e.clientX;
+      startY    = e.clientY;
+      svg.style.cursor = 'grabbing';
+    });
+
+    svg.addEventListener('mousemove', e => {
+      if (!isPanning) return;
+      const dx = (e.clientX - startX) * (viewBox[2] / svg.clientWidth);
+      const dy = (e.clientY - startY) * (viewBox[3] / svg.clientHeight);
+      viewBox[0] -= dx;
+      viewBox[1] -= dy;
+      svg.setAttribute('viewBox', viewBox.join(' '));
+      relabel(svg);
+      updateResetButton();
+      startX = e.clientX;
+      startY = e.clientY;
+    });
+
+    ['mouseup', 'mouseleave'].forEach(ev => {
+      svg.addEventListener(ev, () => {
+        if (isPanning) {
+          isPanning = false;
+          svg.style.cursor = 'grab';
+        }
+      });
+    });
+
+    svg.addEventListener('wheel', e => {
+      e.preventDefault();
+      const factor = e.deltaY > 0 ? 1.1 : 1 / 1.1;
+      const [x, y, w, h] = viewBox;
+      const nw = w * factor;
+      const nh = h * factor;
+      const mx = e.offsetX / svg.clientWidth;
+      const my = e.offsetY / svg.clientHeight;
+      viewBox = [x + mx * (w - nw), y + my * (h - nh), nw, nh];
+      svg.setAttribute('viewBox', viewBox.join(' '));
+      relabel(svg);
+      updateResetButton();
+    }, { passive: false });
+
+    // Double-click on empty space resets the view. On a data point it means
+    // "focus this series" instead (interact.js), so ignore those -- one
+    // gesture doing both at once was the previous behaviour and read as a
+    // glitch: the chart would isolate a series and jump back to full extent
+    // in the same motion.
+    svg.addEventListener('dblclick', (e) => {
+      if (e.target.closest('[data-x], [data-label]')) return;
+      if (svg.dataset.originalViewBox) {
+        svg.setAttribute('viewBox', svg.dataset.originalViewBox);
+        viewBox = svg.dataset.originalViewBox.split(' ').map(Number);
+        restore(svg);
+        updateResetButton();
+      }
+    });
+
+    // -- Touch ------------------------------------------------------------
+    //
+    // Only mouse events were bound, so on a phone or tablet the chart was a
+    // static image -- while still advertising cursor: grab, promising a
+    // drag the device could not perform. One finger pans, two pinch to zoom,
+    // mirroring the mouse behaviour above.
+
+    let touchStart  = null;   // {x, y} for a one-finger pan
+    let pinchStart  = null;   // {dist, cx, cy, box} for a two-finger pinch
+
+    function touchMid(touches) {
+      return {
+        x: (touches[0].clientX + touches[1].clientX) / 2,
+        y: (touches[0].clientY + touches[1].clientY) / 2,
+      };
+    }
+
+    function touchDist(touches) {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    svg.addEventListener('touchstart', e => {
+      if (e.touches.length === 1) {
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        pinchStart = null;
+      } else if (e.touches.length === 2) {
+        touchStart = null;
+        pinchStart = {
+          dist: touchDist(e.touches),
+          mid:  touchMid(e.touches),
+          box:  viewBox.slice(),
+        };
+      }
+    }, { passive: true });
+
+    svg.addEventListener('touchmove', e => {
+      const rect = svg.getBoundingClientRect();
+
+      if (e.touches.length === 1 && touchStart) {
+        // Pan. preventDefault stops the page scrolling underneath the drag,
+        // which otherwise makes the chart feel stuck.
+        e.preventDefault();
+        const dx = (e.touches[0].clientX - touchStart.x) * (viewBox[2] / rect.width);
+        const dy = (e.touches[0].clientY - touchStart.y) * (viewBox[3] / rect.height);
+        viewBox[0] -= dx;
+        viewBox[1] -= dy;
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        svg.setAttribute('viewBox', viewBox.join(' '));
+        relabel(svg);
+        updateResetButton();
+        return;
+      }
+
+      if (e.touches.length === 2 && pinchStart) {
+        e.preventDefault();
+        const ratio = pinchStart.dist / Math.max(1, touchDist(e.touches));
+        const box   = pinchStart.box;
+        // Anchor on the midpoint between the fingers, so the chart zooms
+        // around what is being pinched rather than around the corner.
+        const mx = (pinchStart.mid.x - rect.left) / rect.width;
+        const my = (pinchStart.mid.y - rect.top) / rect.height;
+        const nw = box[2] * ratio;
+        const nh = box[3] * ratio;
+        viewBox = [
+          box[0] + mx * (box[2] - nw),
+          box[1] + my * (box[3] - nh),
+          nw, nh,
+        ];
+        svg.setAttribute('viewBox', viewBox.join(' '));
+        relabel(svg);
+        updateResetButton();
+      }
+    }, { passive: false });
+
+    svg.addEventListener('touchend', e => {
+      if (e.touches.length === 0) { touchStart = null; pinchStart = null; }
+      else if (e.touches.length === 1) {
+        pinchStart = null;
+        touchStart = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      }
+    }, { passive: true });
+
+    // Without this the browser claims the gesture for page scroll and
+    // pinch-zoom, and touchmove never fires often enough to be usable.
+    svg.style.touchAction = 'none';
+
+    // Store original viewBox for reset
+    svg.dataset.originalViewBox = viewBox.join(' ');
+    // resetAll() runs outside this closure; without this the button would
+    // reset the attribute while the next scroll kept zooming from the old
+    // value, so the chart would jump.
+    svg.__glyphxSyncViewBox = () => {
+      viewBox = svg.getAttribute('viewBox').split(' ').map(Number);
+    };
+  });
+})();
+</script><script>
+/**
+ * GlyphX Linked Brushing
+ *
+ * Hold Shift + drag on any chart to draw a selection rectangle.
+ * All .glyphx-point elements sharing the same data-x values
+ * across EVERY chart on the page are highlighted; others dim.
+ *
+ * Keyboard shortcuts:
+ *   Shift + drag  -- draw selection
+ *   Escape        -- clear selection
+ *   Click outside -- clear selection
+ */
+(function () {
+  'use strict';
+
+  // -- State --------------------------------------------------------------
+  let isBrushing = false;
+  let startPt    = null;
+  let activeSvg  = null;
+
+  // -- Coordinate helper ---------------------------------------------------
+  function svgPoint(svg, e) {
+    const rect  = svg.getBoundingClientRect();
+    const vb    = svg.viewBox.baseVal;
+    const sx    = vb.width  / rect.width;
+    const sy    = vb.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * sx,
+      y: (e.clientY - rect.top)  * sy,
+    };
+  }
+
+  function elementCenter(el) {
+    const tag = el.tagName.toLowerCase();
+    if (tag === 'circle') {
+      return { x: +el.getAttribute('cx'), y: +el.getAttribute('cy') };
+    }
+    try {
+      const b = el.getBBox();
+      return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    } catch (_) { return null; }
+  }
+
+  // -- Selection application -----------------------------------------------
+  function applySelection(selectedKeys) {
+    document.querySelectorAll('.glyphx-point').forEach(el => {
+      el.style.transition = 'opacity 0.12s, filter 0.12s';
+      if (!selectedKeys || selectedKeys.size === 0) {
+        el.style.opacity = '';
+        el.style.filter  = '';
+      } else {
+        const key = el.getAttribute('data-x');
+        const hit = key !== null && selectedKeys.has(key);
+        el.style.opacity = hit ? '1'  : '0.1';
+        el.style.filter  = hit ? '' : 'grayscale(100%)';
+      }
+    });
+  }
+
+  function clearSelection() {
+    applySelection(null);
+    document.querySelectorAll('.glyphx-brush-hint').forEach(h => {
+      h.style.opacity = '0';
+    });
+    document.querySelectorAll('.glyphx-brush-stats').forEach(b => {
+      b.style.opacity = '0';
+    });
+  }
+
+  // -- Brush rectangle -----------------------------------------------------
+  function ensureBrushRect(svg) {
+    let r = svg.querySelector('.glyphx-brush-rect');
+    if (r) return r;
+    r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    r.setAttribute('class',           'glyphx-brush-rect');
+    r.setAttribute('fill',             'rgba(66,153,225,0.12)');
+    r.setAttribute('stroke',           '#4299e1');
+    r.setAttribute('stroke-width',     '1.5');
+    r.setAttribute('stroke-dasharray', '5,3');
+    r.setAttribute('rx',               '2');
+    r.style.display       = 'none';
+    r.style.pointerEvents = 'none';
+    svg.appendChild(r);
+    return r;
+  }
+
+  function updateBrushRect(r, x1, y1, x2, y2) {
+    r.setAttribute('x',      Math.min(x1, x2));
+    r.setAttribute('y',      Math.min(y1, y2));
+    r.setAttribute('width',  Math.abs(x2 - x1));
+    r.setAttribute('height', Math.abs(y2 - y1));
+    r.style.display = '';
+  }
+
+  // -- Hint badge ----------------------------------------------------------
+  function ensureHint(svg) {
+    const parent = svg.parentElement;
+    let hint = parent.querySelector('.glyphx-brush-hint');
+    if (hint) return hint;
+
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    hint = document.createElement('div');
+    hint.className = 'glyphx-brush-hint';
+    hint.textContent = 'Brush mode: shift and drag to select, Esc to clear';
+    Object.assign(hint.style, {
+      position:      'absolute',
+      top:           '8px',
+      left:          '50%',
+      transform:     'translateX(-50%)',
+      background:    'rgba(66,153,225,0.92)',
+      color:         '#fff',
+      padding:       '4px 12px',
+      borderRadius:  '12px',
+      fontSize:      '11px',
+      fontFamily:    'system-ui, sans-serif',
+      letterSpacing: '0.02em',
+      pointerEvents: 'none',
+      opacity:       '0',
+      transition:    'opacity 0.2s',
+      whiteSpace:    'nowrap',
+      zIndex:        '99',
+      boxShadow:     '0 2px 6px rgba(0,0,0,0.2)',
+    });
+    parent.appendChild(hint);
+    return hint;
+  }
+
+  // -- Selection statistics -------------------------------------------------
+  //
+  // Brushing used to select points and say nothing about them: everything
+  // outside faded, and you were left counting dots by eye. The numbers are
+  // already in data-y on every element, so summarising them is free.
+
+  // Set when a brush drag finishes, so the click it generates is swallowed
+  // before any other handler treats it as a plain click on the chart.
+  let suppressNextClick = false;
+  document.addEventListener('click', e => {
+    if (!suppressNextClick) return;
+    suppressNextClick = false;
+    e.stopPropagation();
+    e.preventDefault();
+  }, true);
+
+  function ensureStats(svg) {
+    const parent = svg.parentElement;
+    let box = parent.querySelector('.glyphx-brush-stats');
+    if (box) return box;
+
+    if (getComputedStyle(parent).position === 'static') {
+      parent.style.position = 'relative';
+    }
+    box = document.createElement('div');
+    box.className = 'glyphx-brush-stats';
+    box.setAttribute('role', 'status');
+    box.setAttribute('aria-live', 'polite');
+    Object.assign(box.style, {
+      position:      'absolute',
+      top:           '8px',
+      right:         '8px',
+      background:    'rgba(17,24,39,0.92)',
+      color:         '#fff',
+      padding:       '8px 12px',
+      borderRadius:  '8px',
+      fontSize:      '12px',
+      fontFamily:    'system-ui, sans-serif',
+      lineHeight:    '1.5',
+      pointerEvents: 'none',
+      opacity:       '0',
+      transition:    'opacity 0.15s',
+      zIndex:        '100',
+      boxShadow:     '0 2px 8px rgba(0,0,0,0.25)',
+      fontVariantNumeric: 'tabular-nums',
+    });
+    parent.appendChild(box);
+    return box;
+  }
+
+  // Significant figures rather than fixed decimals: a selection spanning
+  // 0.002 and one spanning 20000 both need to read sensibly.
+  function fmt(v) {
+    if (!isFinite(v)) return '--';
+    const abs = Math.abs(v);
+    if (abs === 0) return '0';
+    if (abs >= 1000) return v.toFixed(0);
+    if (abs >= 10) return v.toFixed(1);
+    if (abs >= 1) return v.toFixed(2);
+    return v.toPrecision(3);
+  }
+
+  function elementsInside(svg, bx, by, bw, bh) {
+    const hits = [];
+    svg.querySelectorAll('.glyphx-point').forEach(el => {
+      const c = elementCenter(el);
+      if (c && c.x >= bx && c.x <= bx + bw && c.y >= by && c.y <= by + bh) {
+        hits.push(el);
+      }
+    });
+    return hits;
+  }
+
+  function summarise(elements) {
+    const ys = [];
+    elements.forEach(el => {
+      const raw = el.getAttribute('data-y');
+      if (raw === null) return;
+      const n = Number(raw);
+      if (isFinite(n)) ys.push(n);          // categorical y is skipped
+    });
+    if (!ys.length) return { count: elements.length, numeric: 0 };
+
+    let sum = 0, min = Infinity, max = -Infinity;
+    ys.forEach(v => { sum += v; if (v < min) min = v; if (v > max) max = v; });
+    return {
+      count: elements.length,
+      numeric: ys.length,
+      sum: sum,
+      mean: sum / ys.length,
+      min: min,
+      max: max,
+    };
+  }
+
+  function renderStats(svg, stats) {
+    const box = ensureStats(svg);
+    if (!stats || !stats.count) { box.style.opacity = '0'; return; }
+
+    const rows = [['selected', String(stats.count)]];
+    if (stats.numeric) {
+      rows.push(['mean', fmt(stats.mean)]);
+      rows.push(['sum', fmt(stats.sum)]);
+      rows.push(['range', fmt(stats.min) + ' to ' + fmt(stats.max)]);
+    }
+    // textContent per cell, never innerHTML: these values come from the
+    // plotted data.
+    box.textContent = '';
+    rows.forEach(([term, value]) => {
+      const line = document.createElement('div');
+      const k = document.createElement('span');
+      k.textContent = term + ': ';
+      k.style.opacity = '0.65';
+      const v = document.createElement('span');
+      v.textContent = value;
+      line.appendChild(k); line.appendChild(v);
+      box.appendChild(line);
+    });
+    box.style.opacity = '1';
+  }
+
+  function hideStats() {
+    document.querySelectorAll('.glyphx-brush-stats').forEach(b => {
+      b.style.opacity = '0';
+    });
+  }
+
+  // -- Wire a single chart SVG ---------------------------------------------
+  function wireChart(svg) {
+    svg.addEventListener('mousedown', e => {
+      if (!e.shiftKey) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      isBrushing = true;
+      activeSvg  = svg;
+      startPt    = svgPoint(svg, e);
+
+      const r = ensureBrushRect(svg);
+      updateBrushRect(r, startPt.x, startPt.y, startPt.x, startPt.y);
+      svg.style.cursor = 'crosshair';
+    });
+
+    svg.addEventListener('mousemove', e => {
+      if (!isBrushing || activeSvg !== svg) return;
+      const cur = svgPoint(svg, e);
+      const r   = ensureBrushRect(svg);
+      updateBrushRect(r, startPt.x, startPt.y, cur.x, cur.y);
+
+      // Update as the rectangle grows, so the numbers guide the drag
+      // rather than only reporting on it afterwards.
+      renderStats(svg, summarise(elementsInside(
+        svg, +r.getAttribute('x'), +r.getAttribute('y'),
+        +r.getAttribute('width'), +r.getAttribute('height'))));
+    });
+
+    svg.addEventListener('mouseup', e => {
+      if (!isBrushing || activeSvg !== svg) return;
+      isBrushing          = false;
+      svg.style.cursor    = '';
+      const r             = ensureBrushRect(svg);
+      r.style.display     = 'none';
+
+      const bx = +r.getAttribute('x');
+      const by = +r.getAttribute('y');
+      const bw = +r.getAttribute('width');
+      const bh = +r.getAttribute('height');
+
+      // Tiny drag = clear
+      if (bw < 6 && bh < 6) { clearSelection(); hideStats(); return; }
+
+      renderStats(svg, summarise(elementsInside(svg, bx, by, bw, bh)));
+
+      // Collect data-x keys inside the brush on THIS chart
+      const selected = new Set();
+      svg.querySelectorAll('.glyphx-point').forEach(el => {
+        const c = elementCenter(el);
+        if (c && c.x >= bx && c.x <= bx + bw && c.y >= by && c.y <= by + bh) {
+          const k = el.getAttribute('data-x');
+          if (k !== null) selected.add(k);
+        }
+      });
+
+      applySelection(selected.size ? selected : null);
+
+      // A click event follows every mousedown/mouseup pair, and interact.js
+      // handles clicks by resetting every point's opacity -- which wiped the
+      // selection the instant it was applied, so brushing never actually
+      // highlighted anything. Swallow that one click.
+      suppressNextClick = true;
+    });
+
+    // Cancel if mouse leaves while dragging
+    svg.addEventListener('mouseleave', () => {
+      if (isBrushing && activeSvg === svg) {
+        isBrushing = false;
+        svg.style.cursor = '';
+        ensureBrushRect(svg).style.display = 'none';
+      }
+    });
+  }
+
+  // -- Global keyboard handlers ---------------------------------------------
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Shift') {
+      document.querySelectorAll('svg[data-glyphx]').forEach(svg => {
+        ensureHint(svg).style.opacity = '1';
+      });
+    }
+    if (e.key === 'Escape') { clearSelection(); }
+  });
+
+  document.addEventListener('keyup', e => {
+    if (e.key === 'Shift') {
+      document.querySelectorAll('.glyphx-brush-hint').forEach(h => {
+        h.style.opacity = '0';
+      });
+    }
+  });
+
+  // Click outside any chart clears selection (without Shift)
+  document.addEventListener('click', e => {
+    if (!e.shiftKey && !e.target.closest('svg[data-glyphx]')) {
+      clearSelection();
+    }
+  });
+
+  // -- Init ------------------------------------------------------------------
+  function init() {
+    document.querySelectorAll('svg[data-glyphx]').forEach(wireChart);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script><script>
+/**
+ * GlyphX 2D Interactivity -- Series Highlighting, Inspector, Keyboard
+ *
+ * Features added here (beyond tooltip.js / zoom.js / brush.js):
+ *
+ *   Click a point          -> highlight that series, dim all others (0.1 opacity)
+ *   Double-click a point   -> isolate ONLY that series (hide all others completely)
+ *   Escape                 -> reset all series to full opacity
+ *   Click legend item      -> toggle that series visible / hidden
+ *   Shift + click a point  -> open data inspector panel for that point
+ *   F key                  -> toggle fullscreen on the chart card
+ *   C key                  -> toggle synchronized crosshair on/off
+ *   H key                  -> show keyboard shortcut help overlay
+ *
+ * Works with any series that has .glyphx-point elements and a css_class
+ * attribute (set by GlyphX as data-series on each element group).
+ */
+(function () {
+  'use strict';
+
+  // -- State --------------------------------------------------------------
+  let activeClass  = null;   // currently highlighted css_class
+  let isIsolated   = false;  // double-click isolation mode
+  let crosshairOn  = false;  // C key toggle
+  let helpVisible  = false;
+
+  // -- Inspector panel ----------------------------------------------------
+  const inspector = document.createElement('div');
+  inspector.id = 'glyphx-inspector';
+  Object.assign(inspector.style, {
+    position:     'fixed',
+    right:        '20px',
+    top:          '60px',
+    width:        '220px',
+    background:   'rgba(15,23,42,0.93)',
+    color:        '#f8fafc',
+    borderRadius: '10px',
+    padding:      '14px 16px',
+    fontSize:     '12.5px',
+    lineHeight:   '1.7',
+    zIndex:       '99998',
+    display:      'none',
+    boxShadow:    '0 8px 30px rgba(0,0,0,0.35)',
+    backdropFilter: 'blur(4px)',
+  });
+  document.body.appendChild(inspector);
+
+  function showInspector(el) {
+    const attrs = {};
+    ['data-x','data-y','data-label','data-value','data-q1','data-q2',
+     'data-q3','data-size'].forEach(a => {
+      const v = el.getAttribute(a);
+      if (v !== null) attrs[a.replace('data-','')] = v;
+    });
+    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">Data point</div>';
+    Object.entries(attrs).forEach(([k, v]) => {
+      html += `<div><span style="opacity:0.55;min-width:52px;display:inline-block">${k}</span><b>${v}</b></div>`;
+    });
+    html += '<div style="margin-top:10px;font-size:10.5px;opacity:0.4">Shift+click to pin . Esc to close</div>';
+    inspector.innerHTML = html;
+    inspector.style.display = 'block';
+  }
+
+  // -- Help overlay -------------------------------------------------------
+  const helpOverlay = document.createElement('div');
+  helpOverlay.id = 'glyphx-help';
+  Object.assign(helpOverlay.style, {
+    position: 'fixed', inset: '0',
+    background: 'rgba(0,0,0,0.6)',
+    display: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: '999999',
+    backdropFilter: 'blur(3px)',
+  });
+  helpOverlay.innerHTML = `
+    <div style="background:#1e293b;color:#f8fafc;border-radius:14px;
+                padding:28px 34px;max-width:380px;width:90%;
+                box-shadow:0 20px 60px rgba(0,0,0,0.5)">
+      <div style="font-size:16px;font-weight:700;margin-bottom:16px">
+        GlyphX keyboard shortcuts
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+        <tr><td style="padding:4px 0;opacity:0.55;width:110px"><kbd>Click</kbd></td>
+            <td>Highlight series</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Dbl-click</kbd></td>
+            <td>Isolate series</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Shift+Click</kbd></td>
+            <td>Open inspector</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Esc</kbd></td>
+            <td>Reset / close</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>C</kbd></td>
+            <td>Toggle crosshair</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>F</kbd></td>
+            <td>Fullscreen</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>H</kbd></td>
+            <td>Show this help</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Scroll</kbd></td>
+            <td>Zoom</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Drag</kbd></td>
+            <td>Pan</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Shift+Drag</kbd></td>
+            <td>Brush / select</td></tr>
+        <tr><td style="padding:4px 0;opacity:0.55"><kbd>Dbl-click</kbd></td>
+            <td>Reset zoom</td></tr>
+      </table>
+      <div style="margin-top:16px;text-align:center;opacity:0.4;font-size:11px">
+        Click anywhere or press Esc to close
+      </div>
+    </div>`;
+  helpOverlay.addEventListener('click', () => closeHelp());
+  document.body.appendChild(helpOverlay);
+
+  function showHelp() { helpOverlay.style.display = 'flex'; helpVisible = true; }
+  function closeHelp(){ helpOverlay.style.display = 'none'; helpVisible = false; }
+
+  // -- Core: apply highlight state ----------------------------------------
+  function applyHighlight() {
+    document.querySelectorAll('.glyphx-point').forEach(el => {
+      el.style.transition = 'opacity 0.18s, filter 0.18s';
+      if (!activeClass) {
+        el.style.opacity = '';
+        el.style.filter  = '';
+      } else {
+        // Match any of the element's class tokens against activeClass
+        const hit = el.classList.contains(activeClass);
+        if (isIsolated) {
+          el.style.opacity = hit ? '1' : '0';
+          el.style.filter  = '';
+        } else {
+          el.style.opacity = hit ? '1'  : '0.10';
+          el.style.filter  = hit ? '' : 'grayscale(80%)';
+        }
+      }
+    });
+  }
+
+  function resetHighlight() {
+    activeClass = null;
+    isIsolated  = false;
+    applyHighlight();
+    inspector.style.display = 'none';
+  }
+
+  // -- Click / double-click on points ------------------------------------
+  // Use event delegation on the document so dynamically injected points work
+  let lastClick = 0;
+  document.addEventListener('click', e => {
+    const el = e.target.closest('.glyphx-point');
+    if (!el) {
+      // Clicked outside any point -- reset unless clicking inspector/help
+      if (!inspector.contains(e.target) && !helpOverlay.contains(e.target)) {
+        resetHighlight();
+      }
+      return;
+    }
+
+    // Shift+click -> inspector
+    if (e.shiftKey) {
+      showInspector(el);
+      return;
+    }
+
+    // Detect double-click manually (150ms window)
+    const now = Date.now();
+    const cls = [...el.classList].find(c => c.startsWith('series') || c.startsWith('series3d'));
+
+    if (now - lastClick < 300 && cls === activeClass) {
+      // Double-click: toggle isolation
+      isIsolated = !isIsolated;
+      applyHighlight();
+    } else {
+      // Single click: highlight/unhighlight
+      if (cls && cls === activeClass && !isIsolated) {
+        resetHighlight();
+      } else {
+        activeClass = cls || null;
+        isIsolated  = false;
+        applyHighlight();
+      }
+    }
+    lastClick = now;
+  });
+
+  // -- Legend item click -> toggle series visibility -----------------------
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.legend-icon, .legend-label').forEach(leg => {
+      // Add a visible toggle indicator and pointer cursor
+      leg.style.cursor = 'pointer';
+      leg.title = 'Click to show/hide series . double-click to isolate';
+
+      leg.addEventListener('click', e => {
+        e.stopPropagation();
+        const target = leg.dataset.target;
+        if (!target) return;
+
+        const pts = document.querySelectorAll('.' + target);
+        if (!pts.length) return;
+
+        // Check current state from first point
+        const hidden = pts[0].style.opacity === '0' ||
+                       pts[0].style.display === 'none';
+
+        pts.forEach(pt => {
+          pt.style.transition = 'opacity 0.18s';
+          pt.style.opacity = hidden ? '1' : '0';
+        });
+
+        // Visual feedback on the legend item
+        leg.style.opacity = hidden ? '1' : '0.35';
+      });
+    });
+  });
+
+  // -- Keyboard shortcuts -------------------------------------------------
+  document.addEventListener('keydown', e => {
+    // Don't steal keys from input fields
+    if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+
+    switch (e.key) {
+      case 'Escape':
+        if (helpVisible) { closeHelp(); break; }
+        if (inspector.style.display !== 'none') { inspector.style.display = 'none'; break; }
+        resetHighlight();
+        break;
+
+      case 'f': case 'F':
+        if (!document.fullscreenElement) {
+          const card = document.querySelector('.glyphx-card') ||
+                       document.querySelector('.glyphx-wrapper') ||
+                       document.documentElement;
+          card.requestFullscreen && card.requestFullscreen();
+        } else {
+          document.exitFullscreen && document.exitFullscreen();
+        }
+        break;
+
+      case 'c': case 'C':
+        crosshairOn = !crosshairOn;
+        // Signal crosshair.js if present
+        document.querySelectorAll('svg[data-glyphx]').forEach(svg => {
+          svg.dataset.crosshair = crosshairOn ? 'on' : 'off';
+          if (!crosshairOn) {
+            svg.querySelectorAll('.glyphx-crosshair').forEach(l => l.remove());
+          }
+        });
+        if (typeof glyphxToast === 'function')
+          glyphxToast(crosshairOn ? '+ Crosshair on' : 'Crosshair off');
+        break;
+
+      case 'h': case 'H':
+        if (helpVisible) closeHelp(); else showHelp();
+        break;
+    }
+  });
+
+  // -- Add [?] help button to every toolbar -------------------------------
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.glyphx-toolbar').forEach(tb => {
+      const btn = document.createElement('button');
+      btn.className = 'glyphx-btn';
+      btn.textContent = 'Keyboard shortcuts';
+      btn.title = 'Show keyboard shortcuts (H)';
+      btn.addEventListener('click', showHelp);
+      tb.appendChild(btn);
+    });
+
+    // Update toolbar hint
+    document.querySelectorAll('.glyphx-toolbar span').forEach(s => {
+      s.textContent = 'Scroll to zoom \u00b7 drag to pan \u00b7 double-click to reset \u00b7 press ? for all shortcuts';
+    });
+  });
+
+})();
+</script><script>
+/**
+ * GlyphX Keyboard Accessibility
+ *
+ * Makes every .glyphx-point element fully keyboard-navigable:
+ *
+ *   Tab / Shift-Tab  -- move focus through data points
+ *   Enter / Space    -- trigger the hover tooltip on the focused point
+ *   Arrow keys       -- move to the next/previous point within a series
+ *   Escape           -- dismiss tooltip and blur the active point
+ *
+ * Screen readers receive the aria-label built from data-x / data-y
+ * attributes, so each point announces itself correctly.
+ */
+(function () {
+  'use strict';
+
+  const POINT_SEL = '.glyphx-point';
+
+  // -- Build aria-label for a data point element ---------------------------
+  function buildAriaLabel(el) {
+    const x   = el.getAttribute('data-x');
+    const y   = el.getAttribute('data-y');
+    const lbl = el.getAttribute('data-label');
+    const val = el.getAttribute('data-value');
+    const q1  = el.getAttribute('data-q1');
+    const q2  = el.getAttribute('data-q2');
+    const q3  = el.getAttribute('data-q3');
+
+    const parts = [];
+    if (lbl) parts.push(lbl);
+    if (q1)  parts.push(`Q1 ${(+q1).toFixed(2)}, median ${(+q2).toFixed(2)}, Q3 ${(+q3).toFixed(2)}`);
+    else {
+      if (x !== null) parts.push(`x: ${x}`);
+      if (y !== null) parts.push(`y: ${y}`);
+      if (val)        parts.push(`value: ${val}`);
+    }
+    return parts.join(', ') || 'Data point';
+  }
+
+  // -- Show / hide the shared GlyphX tooltip -------------------------------
+  function showTip(el) {
+    const tip = document.getElementById('glyphx-tooltip');
+    if (!tip) return;
+    const lbl = el.getAttribute('data-label');
+    const x   = el.getAttribute('data-x');
+    const y   = el.getAttribute('data-y');
+    const val = el.getAttribute('data-value');
+    const q1  = el.getAttribute('data-q1');
+    const q2  = el.getAttribute('data-q2');
+    const q3  = el.getAttribute('data-q3');
+
+    let html = '';
+    if (lbl) html += `<div class="tt-label">${lbl}</div>`;
+    if (q1)  html += `<div class="tt-row">Q1: ${(+q1).toFixed(3)}</div>
+                      <div class="tt-row">Median: ${(+q2).toFixed(3)}</div>
+                      <div class="tt-row">Q3: ${(+q3).toFixed(3)}</div>`;
+    else {
+      if (x !== null) html += `<div class="tt-row">x: ${x}</div>`;
+      if (y !== null) html += `<div class="tt-row">y: ${y}</div>`;
+      if (val)        html += `<div class="tt-row">value: ${val}</div>`;
+    }
+
+    tip.innerHTML = html || buildAriaLabel(el);
+    tip.style.display = 'block';
+
+    // Position near the focused element
+    try {
+      const rect = el.getBoundingClientRect();
+      tip.style.left = (rect.right + 8) + 'px';
+      tip.style.top  = (rect.top  - 4) + 'px';
+    } catch (_) {}
+  }
+
+  function hideTip() {
+    const tip = document.getElementById('glyphx-tooltip');
+    if (tip) tip.style.display = 'none';
+  }
+
+  // -- Wire a single point element -----------------------------------------
+  function wirePoint(el, allPoints) {
+    // Stamp aria-label so screen readers announce values
+    if (!el.getAttribute('aria-label')) {
+      el.setAttribute('aria-label', buildAriaLabel(el));
+    }
+
+    el.addEventListener('focus', () => showTip(el));
+    el.addEventListener('blur',  hideTip);
+
+    el.addEventListener('keydown', e => {
+      const idx = allPoints.indexOf(el);
+
+      switch (e.key) {
+        case 'Enter':
+        case ' ':
+          showTip(el);
+          e.preventDefault();
+          break;
+
+        case 'ArrowRight':
+        case 'ArrowDown': {
+          e.preventDefault();
+          const next = allPoints[idx + 1];
+          if (next) next.focus();
+          break;
+        }
+
+        case 'ArrowLeft':
+        case 'ArrowUp': {
+          e.preventDefault();
+          const prev = allPoints[idx - 1];
+          if (prev) prev.focus();
+          break;
+        }
+
+        case 'Escape':
+          hideTip();
+          el.blur();
+          break;
+      }
+    });
+  }
+
+  // -- Init ------------------------------------------------------------------
+  function init() {
+    const allPoints = Array.from(document.querySelectorAll(POINT_SEL));
+    allPoints.forEach(el => wirePoint(el, allPoints));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- interactive legend.
+ *
+ * Clicking (or pressing Enter/Space on) a legend entry hides or shows the
+ * matching series. draw_legend() already stamps every icon and label with
+ * data-target="series-N", which is the same class each series puts on its
+ * own SVG elements, so the wiring is a class lookup.
+ *
+ * Hiding uses the "hidden" attribute plus a CSS class rather than an inline
+ * style, so the toggle survives a re-render and does not fight any stylesheet
+ * the host page applies.
+ */
+(function () {
+  "use strict";
+
+  var HIDDEN_CLASS = "glyphx-series-hidden";
+
+  function seriesElements(root, target) {
+    // Series elements carry the target class; legend entries carry
+    // data-target and must not hide themselves.
+    return Array.prototype.filter.call(
+      root.querySelectorAll("." + target),
+      function (el) {
+        return !el.hasAttribute("data-target");
+      }
+    );
+  }
+
+  function legendEntries(root, target) {
+    return root.querySelectorAll('[data-target="' + target + '"]');
+  }
+
+  function setHidden(root, target, hidden) {
+    seriesElements(root, target).forEach(function (el) {
+      if (hidden) {
+        el.classList.add(HIDDEN_CLASS);
+        el.setAttribute("visibility", "hidden");
+      } else {
+        el.classList.remove(HIDDEN_CLASS);
+        el.removeAttribute("visibility");
+      }
+    });
+
+    legendEntries(root, target).forEach(function (el) {
+      // Dim the legend entry so the toggle state is visible, and expose it
+      // to assistive tech.
+      el.setAttribute("opacity", hidden ? "0.35" : "1");
+      el.setAttribute("aria-pressed", hidden ? "false" : "true");
+    });
+  }
+
+  function isHidden(root, target) {
+    var els = seriesElements(root, target);
+    return els.length > 0 && els[0].classList.contains(HIDDEN_CLASS);
+  }
+
+  function bind(root) {
+    var entries = root.querySelectorAll(".legend-icon, .legend-label");
+    if (!entries.length) return;
+
+    entries.forEach(function (el) {
+      var target = el.getAttribute("data-target");
+      if (!target) return;
+
+      // Make the entry operable without a mouse.
+      el.setAttribute("role", "switch");
+      el.setAttribute("tabindex", "0");
+      el.setAttribute("aria-pressed", "true");
+      el.style.cursor = "pointer";
+
+      var label = el.textContent || target;
+      el.setAttribute("aria-label", "Toggle series " + label);
+
+      function toggle(event) {
+        event.preventDefault();
+        setHidden(root, target, !isHidden(root, target));
+      }
+
+      el.addEventListener("click", toggle);
+      el.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+          toggle(event);
+        }
+      });
+    });
+  }
+
+  function init() {
+    var charts = document.querySelectorAll('svg[data-glyphx="true"]');
+    if (charts.length) {
+      Array.prototype.forEach.call(charts, bind);
+    } else {
+      bind(document);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- cross-chart filtering.
+ *
+ * Click a bar, point or slice in one chart and every other GlyphX chart on
+ * the page dims everything that does not share that x value. Click the same
+ * element again, or press Escape, to clear.
+ *
+ * The wiring is already in the markup: every drawn element carries data-x,
+ * so the x value is the join key between charts. Nothing is sent anywhere
+ * and no server is involved -- the charts on the page are the whole dataset.
+ *
+ * Deliberately scoped to data-x. Filtering on data-y would mean matching on
+ * a measured value rather than a category, which is almost never what
+ * someone means by "show me February".
+ */
+(function () {
+  "use strict";
+
+  var DIM_CLASS = "glyphx-crossfilter-dim";
+  var DIM_OPACITY = "0.12";
+  var active = null;               // currently selected data-x, or null
+
+  // Charts opt in by carrying data-glyphx-crossfilter on their root <svg>.
+  // Anything without it is left alone, so a page can mix filtered and
+  // independent charts.
+  function participatingRoots() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll("svg[data-glyphx-crossfilter]")
+    );
+  }
+
+  function ensureStyle() {
+    if (document.getElementById("glyphx-crossfilter-style")) return;
+    var style = document.createElement("style");
+    style.id = "glyphx-crossfilter-style";
+    // A class rather than an inline style, so a re-render or a host
+    // stylesheet does not fight the toggle.
+    style.textContent =
+      "." + DIM_CLASS + " { opacity: " + DIM_OPACITY + "; " +
+      "transition: opacity 120ms ease-out; }";
+    document.head.appendChild(style);
+  }
+
+  function apply(value) {
+    participatingRoots().forEach(function (root) {
+      var elements = root.querySelectorAll("[data-x]");
+      Array.prototype.forEach.call(elements, function (el) {
+        if (value === null || el.getAttribute("data-x") === value) {
+          el.classList.remove(DIM_CLASS);
+        } else {
+          el.classList.add(DIM_CLASS);
+        }
+      });
+    });
+    announce(value);
+  }
+
+  // Screen readers get told what happened; the visual change alone is not
+  // an accessible signal.
+  function announce(value) {
+    var live = document.getElementById("glyphx-crossfilter-status");
+    if (!live) {
+      live = document.createElement("div");
+      live.id = "glyphx-crossfilter-status";
+      live.setAttribute("aria-live", "polite");
+      live.setAttribute("role", "status");
+      live.style.cssText =
+        "position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);";
+      document.body.appendChild(live);
+    }
+    live.textContent = value === null
+      ? "Filter cleared. All data shown."
+      : "Filtered to " + value + " across all charts.";
+  }
+
+  function select(value) {
+    active = (active === value) ? null : value;   // clicking again clears
+    apply(active);
+  }
+
+  // Capture phase, and stop propagation once handled. interact.js binds a
+  // click handler on document too, and its series-highlight sets *inline*
+  // opacity, which beats a class rule -- so with both live the two fought:
+  // the clicked chart stayed fully lit and the other went uniformly grey.
+  // On a crossfilter chart a plain click means "filter", so interact.js
+  // should not also see it. Modified clicks fall through untouched, which
+  // keeps shift+click opening the inspector.
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest("[data-x]") : null;
+    if (!el) return;
+    var root = el.closest("svg[data-glyphx-crossfilter]");
+    if (!root) return;
+    if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey) return;
+    e.stopPropagation();
+    select(el.getAttribute("data-x"));
+  }, true);
+
+  // Keyboard parity: elements are already focusable with tabindex="0".
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && active !== null) {
+      active = null;
+      apply(null);
+      return;
+    }
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = document.activeElement;
+    if (!el || !el.getAttribute || !el.getAttribute("data-x")) return;
+    if (!el.closest("svg[data-glyphx-crossfilter]")) return;
+    e.preventDefault();
+    select(el.getAttribute("data-x"));
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureStyle);
+  } else {
+    ensureStyle();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- selection events.
+ *
+ * Clicking a data point dispatches a `glyphx:select` CustomEvent on
+ * `document`, and clicking empty space dispatches `glyphx:deselect`. That is
+ * the whole extension surface: anything on the page -- a detail panel, a
+ * table, a second chart, an <img>, a fetch to your own endpoint -- can listen
+ * and update itself.
+ *
+ *   document.addEventListener('glyphx:select', (e) => {
+ *     const { x, y, label, series, meta, element } = e.detail;
+ *     document.getElementById('detail').textContent = meta.customer;
+ *   });
+ *
+ * `meta` is whatever was passed to the series as `meta=[...]` in Python,
+ * parsed back from JSON, so the listener receives the same structure the
+ * caller wrote rather than a flattened string.
+ *
+ * Events rather than a callback registry: any number of listeners can attach
+ * without knowing about each other, they can be removed, and nothing here
+ * needs to know what they do. No server, no callback round-trip -- this all
+ * runs in the exported file.
+ */
+(function () {
+  "use strict";
+
+  var SELECTED_CLASS = "glyphx-selected";
+  var selected = null;
+
+  function ensureStyle() {
+    if (document.getElementById("glyphx-select-style")) return;
+    var style = document.createElement("style");
+    style.id = "glyphx-select-style";
+    // An outline rather than a fill change, so the point keeps its encoded
+    // colour -- the colour is data, the selection is not.
+    style.textContent =
+      "." + SELECTED_CLASS + " { stroke: currentColor; stroke-width: 2.5px; " +
+      "paint-order: stroke; }";
+    document.head.appendChild(style);
+  }
+
+  function parseMeta(el) {
+    var raw = el.getAttribute("data-meta");
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      // Malformed metadata should not take the whole page down; hand the
+      // listener the raw string and let it decide.
+      return raw;
+    }
+  }
+
+  function seriesOf(el) {
+    var cls = Array.prototype.find.call(el.classList, function (c) {
+      return c.indexOf("series-") === 0 || c.indexOf("series3d-") === 0;
+    });
+    return cls || null;
+  }
+
+  // Everything else the element carries, keyed without the "data-" prefix:
+  // a pie slice has percent, a box plot has q1/q2/q3, a candlestick has
+  // open/high/low/close. Surfacing them generically means a listener gets
+  // whatever that chart type knows about the thing that was clicked, rather
+  // than only the four fields every type happens to share.
+  function dataAttrs(el) {
+    var out = {};
+    var skip = { x: 1, y: 1, label: 1, meta: 1 };
+    Array.prototype.forEach.call(el.attributes, function (attr) {
+      if (attr.name.indexOf("data-") !== 0) return;
+      var key = attr.name.slice(5);
+      if (skip[key]) return;
+      out[key] = attr.value;
+    });
+    return out;
+  }
+
+  function detailFor(el) {
+    return {
+      x: el.getAttribute("data-x"),
+      y: el.getAttribute("data-y"),
+      label: el.getAttribute("data-label"),
+      series: seriesOf(el),
+      meta: parseMeta(el),
+      data: dataAttrs(el),
+      element: el,
+    };
+  }
+
+  function clearSelection() {
+    if (!selected) return;
+    selected.classList.remove(SELECTED_CLASS);
+    selected = null;
+    document.dispatchEvent(new CustomEvent("glyphx:deselect"));
+  }
+
+  function select(el) {
+    if (selected === el) {          // clicking the same point again clears
+      clearSelection();
+      return;
+    }
+    if (selected) selected.classList.remove(SELECTED_CLASS);
+    selected = el;
+    el.classList.add(SELECTED_CLASS);
+    document.dispatchEvent(new CustomEvent("glyphx:select", {
+      detail: detailFor(el),
+    }));
+  }
+
+  // Capture phase, because crossfilter.js also claims plain clicks and calls
+  // stopPropagation() there -- a bubble-phase listener would never run on a
+  // chart with filtering enabled. Both are capture listeners on `document`,
+  // and stopPropagation does not stop siblings on the same node, so the two
+  // features compose: one click both filters and emits a selection.
+  document.addEventListener("click", function (e) {
+    if (!e.target.closest) return;
+    var el = e.target.closest("[data-x]");
+    if (!el || !el.closest("svg[data-glyphx]")) {
+      // A click on the chart background means "nothing is selected".
+      if (e.target.closest && e.target.closest("svg[data-glyphx]")) {
+        clearSelection();
+      }
+      return;
+    }
+    // Modified clicks belong to the inspector and the other interact.js
+    // gestures; only a plain click is a selection.
+    if (e.shiftKey || e.altKey || e.metaKey || e.ctrlKey) return;
+    select(el);
+  }, true);
+
+  // Keyboard parity: points already carry tabindex="0".
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      clearSelection();
+      return;
+    }
+    if (e.key !== "Enter" && e.key !== " ") return;
+    var el = document.activeElement;
+    if (!el || !el.getAttribute || el.getAttribute("data-x") === null) return;
+    if (!el.closest("svg[data-glyphx]")) return;
+    e.preventDefault();
+    select(el);
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", ensureStyle);
+  } else {
+    ensureStyle();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- selection detail panel.
+ *
+ * A panel that fills itself in when a point is clicked, so the common case
+ * ("click a point, show its details") needs no JavaScript from the caller.
+ * Configured entirely from Python:
+ *
+ *     fig.add_detail_panel(fields=["customer", "region"])
+ *
+ * which emits a <div data-glyphx-detail-panel='{...}'> next to the chart.
+ * This reads that config and subscribes to the `glyphx:select` event that
+ * select.js already dispatches -- it is an ordinary consumer of the public
+ * event, not a special case wired into the chart. Anything else on the page
+ * can listen to the same event at the same time.
+ */
+(function () {
+  "use strict";
+
+  var STYLE_ID = "glyphx-detail-panel-style";
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    var style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = [
+      ".glyphx-detail-panel {",
+      "  font: 13px/1.5 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;",
+      "  border: 1px solid rgba(0,0,0,.12); border-radius: 8px;",
+      "  padding: 12px 14px; min-width: 180px; background: #fff;",
+      "}",
+      ".glyphx-detail-panel[data-empty='true'] { color: #6b7280; }",
+      ".glyphx-detail-panel dl { margin: 0; display: grid;",
+      "  grid-template-columns: auto 1fr; gap: 4px 12px; }",
+      ".glyphx-detail-panel dt { color: #6b7280; white-space: nowrap; }",
+      ".glyphx-detail-panel dd { margin: 0; font-variant-numeric: tabular-nums; }",
+      ".glyphx-detail-panel h4 { margin: 0 0 8px; font-size: 13px; }",
+      // Put the panel beside the chart when there is room, and below it on
+      // a narrow screen, without the caller writing any layout CSS. The
+      // template sets `svg { width: 100% }`, which would take the whole row
+      // and push the panel onto the next line, so the SVG is given a flex
+      // basis it can shrink from instead.
+      ".glyphx-chart-area:has(.glyphx-detail-panel) {",
+      "  display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;",
+      "}",
+      ".glyphx-chart-area:has(.glyphx-detail-panel) > svg {",
+      "  flex: 1 1 340px; min-width: 0; width: auto;",
+      "}",
+      ".glyphx-chart-area > .glyphx-detail-panel { flex: 0 1 220px; }",
+    ].join("\n");
+    document.head.appendChild(style);
+  }
+
+  function config(panel) {
+    try {
+      return JSON.parse(panel.getAttribute("data-glyphx-detail-panel")) || {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  // Text, never markup: the values come from the chart's own data, which is
+  // whatever the caller plotted. Building innerHTML from it would make any
+  // dataset containing a "<" an injection vector.
+  function row(dl, term, value) {
+    var dt = document.createElement("dt");
+    dt.textContent = term;
+    var dd = document.createElement("dd");
+    dd.textContent = value;
+    dl.appendChild(dt);
+    dl.appendChild(dd);
+  }
+
+  function render(panel, detail) {
+    var cfg = config(panel);
+    panel.textContent = "";
+    panel.setAttribute("data-empty", "false");
+
+    if (cfg.title) {
+      var heading = document.createElement("h4");
+      heading.textContent = cfg.title;
+      panel.appendChild(heading);
+    }
+
+    var dl = document.createElement("dl");
+    var meta = (detail.meta && typeof detail.meta === "object") ? detail.meta : {};
+
+    if (cfg.fields && cfg.fields.length) {
+      // An explicit field list also fixes the order, which Object.keys()
+      // would not guarantee across browsers for numeric-looking keys.
+      cfg.fields.forEach(function (field) {
+        // metadata first, then the point's own fields, then anything else
+        // the chart type emitted (percent on a pie, q1/q2/q3 on a box plot).
+        var value = meta[field];
+        if (value === undefined && field === "x") value = detail.x;
+        if (value === undefined && field === "y") value = detail.y;
+        if (value === undefined && field === "label") value = detail.label;
+        if (value === undefined && detail.data) value = detail.data[field];
+        if (value === undefined) return;      // absent for this point
+        row(dl, field, value);
+      });
+    } else {
+      // No field list: show whatever the point carries, metadata first.
+      Object.keys(meta).forEach(function (k) { row(dl, k, meta[k]); });
+      if (!Object.keys(meta).length) {
+        row(dl, "x", detail.x);
+        row(dl, "y", detail.y);
+        if (detail.label) row(dl, "series", detail.label);
+      }
+    }
+
+    panel.appendChild(dl);
+  }
+
+  function clear(panel) {
+    var cfg = config(panel);
+    panel.textContent = cfg.empty || "Click a point to see its details.";
+    panel.setAttribute("data-empty", "true");
+  }
+
+  function panels() {
+    return Array.prototype.slice.call(
+      document.querySelectorAll("[data-glyphx-detail-panel]")
+    );
+  }
+
+  function init() {
+    var found = panels();
+    if (!found.length) return;
+    ensureStyle();
+    found.forEach(clear);
+
+    document.addEventListener("glyphx:select", function (e) {
+      panels().forEach(function (panel) { render(panel, e.detail); });
+    });
+    document.addEventListener("glyphx:deselect", function () {
+      panels().forEach(clear);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script><script>
+/*
+ * GlyphX -- chart controls.
+ *
+ * Checkboxes, radio buttons, a search box and reset buttons that filter the
+ * chart in the browser. Configured from Python:
+ *
+ *     fig.add_controls(checkboxes="region", search="customer")
+ *
+ * which emits a <div data-glyphx-controls='{...}'> beside the chart. There is
+ * no server and no callback: every control narrows the set of visible
+ * elements by matching against the data-* attributes already on them, the
+ * same mechanism the cross-filter and detail panel use.
+ *
+ * Filters combine with AND, which is what a stack of controls reads as: tick
+ * two regions and type a name, and you get that name within those regions.
+ */
+(function () {
+  "use strict";
+
+  var STYLE_ID = "glyphx-controls-style";
+  var HIDDEN = "glyphx-filtered-out";
+
+  function ensureStyle() {
+    if (document.getElementById(STYLE_ID)) return;
+    var style = document.createElement("style");
+    style.id = STYLE_ID;
+    style.textContent = [
+      ".glyphx-controls {",
+      "  font: 13px/1.6 -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;",
+      "  border: 1px solid rgba(0,0,0,.12); border-radius: 8px;",
+      "  padding: 12px 14px; min-width: 170px; background: #fff;",
+      "}",
+      ".glyphx-controls h4 { margin: 0 0 8px; font-size: 13px; }",
+      ".glyphx-controls fieldset { border: 0; margin: 0 0 12px; padding: 0; }",
+      ".glyphx-controls legend {",
+      "  padding: 0; margin-bottom: 4px; color: #6b7280; font-size: 12px;",
+      "}",
+      ".glyphx-controls label {",
+      "  display: flex; align-items: center; gap: 7px; cursor: pointer;",
+      "  padding: 1px 0;",
+      "}",
+      ".glyphx-controls input[type=search] {",
+      "  width: 100%; box-sizing: border-box; padding: 5px 8px;",
+      "  border: 1px solid rgba(0,0,0,.2); border-radius: 6px; font: inherit;",
+      "}",
+      ".glyphx-controls button {",
+      "  font: inherit; padding: 5px 10px; border-radius: 6px; cursor: pointer;",
+      "  border: 1px solid rgba(0,0,0,.2); background: #fff;",
+      "}",
+      ".glyphx-controls button:hover { background: #f3f4f6; }",
+      ".glyphx-controls .glyphx-controls-count {",
+      "  color: #6b7280; font-size: 12px; margin-top: 4px;",
+      "}",
+      "." + HIDDEN + " { display: none; }",
+      // Sit beside the chart when there is room, below on a narrow screen.
+      // The template sets `svg { width: 100% }`, which takes the whole row
+      // and pushes the panel onto the next line, so the SVG is given a flex
+      // basis it can shrink from instead.
+      ".glyphx-chart-area:has(.glyphx-controls) {",
+      "  display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;",
+      "}",
+      ".glyphx-chart-area:has(.glyphx-controls) > svg {",
+      "  flex: 1 1 340px; min-width: 0; width: auto;",
+      "}",
+      ".glyphx-chart-area > .glyphx-controls { flex: 0 1 190px; }",
+    ].join("\n");
+    document.head.appendChild(style);
+  }
+
+  function config(panel) {
+    try {
+      return JSON.parse(panel.getAttribute("data-glyphx-controls")) || {};
+    } catch (err) {
+      return {};
+    }
+  }
+
+  function charts(panel) {
+    // Controls filter every chart in their own container, so a SubplotGrid
+    // gets one panel driving the whole dashboard rather than one each.
+    var scope = panel.closest(".glyphx-chart-area") || document;
+    return Array.prototype.slice.call(scope.querySelectorAll("svg[data-glyphx]"));
+  }
+
+  function points(panel) {
+    var out = [];
+    charts(panel).forEach(function (svg) {
+      out = out.concat(Array.prototype.slice.call(
+        svg.querySelectorAll("[data-x]")));
+    });
+    return out;
+  }
+
+  function metaOf(el) {
+    var raw = el.getAttribute("data-meta");
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch (err) { return null; }
+  }
+
+  // Look a field up wherever it lives: in the point's metadata, in its own
+  // data-* attributes, or as the series label. Callers should not have to
+  // know which, and the answer differs per chart type.
+  function valueOf(el, field) {
+    var meta = metaOf(el);
+    if (meta && meta[field] !== undefined) return String(meta[field]);
+    var attr = el.getAttribute("data-" + field);
+    if (attr !== null) return attr;
+    if (field === "series" || field === "label") {
+      return el.getAttribute("data-label") || "";
+    }
+    return null;
+  }
+
+  function distinct(panel, field) {
+    var seen = [];
+    points(panel).forEach(function (el) {
+      var v = valueOf(el, field);
+      if (v !== null && v !== "" && seen.indexOf(v) === -1) seen.push(v);
+    });
+    return seen.sort();
+  }
+
+  function labelled(text, input) {
+    var label = document.createElement("label");
+    label.appendChild(input);
+    var span = document.createElement("span");
+    span.textContent = text;          // values come from the plotted data
+    label.appendChild(span);
+    return label;
+  }
+
+  function build(panel) {
+    var cfg = config(panel);
+    panel.textContent = "";
+
+    if (cfg.title) {
+      var h = document.createElement("h4");
+      h.textContent = cfg.title;
+      panel.appendChild(h);
+    }
+
+    var state = { checkbox: {}, radio: {}, search: "" };
+    panel.__glyphxState = state;
+
+    if (cfg.checkboxes) {
+      var values = distinct(panel, cfg.checkboxes);
+      var fs = document.createElement("fieldset");
+      var lg = document.createElement("legend");
+      lg.textContent = cfg.checkbox_label || cfg.checkboxes;
+      fs.appendChild(lg);
+      // Everything starts ticked: a control panel that hides the data on
+      // load looks broken.
+      values.forEach(function (v) {
+        state.checkbox[v] = true;
+        var input = document.createElement("input");
+        input.type = "checkbox";
+        input.checked = true;
+        input.value = v;
+        input.addEventListener("change", function () {
+          state.checkbox[v] = input.checked;
+          apply(panel);
+        });
+        fs.appendChild(labelled(v, input));
+      });
+      panel.appendChild(fs);
+    }
+
+    if (cfg.radio) {
+      var rvalues = distinct(panel, cfg.radio);
+      var rfs = document.createElement("fieldset");
+      var rlg = document.createElement("legend");
+      rlg.textContent = cfg.radio_label || cfg.radio;
+      rfs.appendChild(rlg);
+      var name = "glyphx-radio-" + Math.random().toString(36).slice(2, 8);
+
+      // An "All" option, or a radio group has no way back to unfiltered
+      // once the reader picks one.
+      ["All"].concat(rvalues).forEach(function (v, i) {
+        var input = document.createElement("input");
+        input.type = "radio";
+        input.name = name;
+        input.value = v;
+        input.checked = i === 0;
+        input.addEventListener("change", function () {
+          state.radio[cfg.radio] = (v === "All") ? null : v;
+          apply(panel);
+        });
+        rfs.appendChild(labelled(v, input));
+      });
+      state.radio[cfg.radio] = null;
+      panel.appendChild(rfs);
+    }
+
+    if (cfg.search) {
+      var sfs = document.createElement("fieldset");
+      var slg = document.createElement("legend");
+      slg.textContent = cfg.search_label || cfg.search;
+      sfs.appendChild(slg);
+      var box = document.createElement("input");
+      box.type = "search";
+      box.placeholder = cfg.placeholder || "Type to filter";
+      box.addEventListener("input", function () {
+        state.search = box.value.trim().toLowerCase();
+        apply(panel);
+      });
+      sfs.appendChild(box);
+      panel.appendChild(sfs);
+      panel.__glyphxSearchBox = box;
+    }
+
+    if (cfg.reset !== false) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.textContent = cfg.reset_label || "Show all";
+      btn.addEventListener("click", function () {
+        panel.querySelectorAll("input[type=checkbox]").forEach(function (i) {
+          i.checked = true;
+          state.checkbox[i.value] = true;
+        });
+        panel.querySelectorAll("input[type=radio]").forEach(function (i) {
+          i.checked = i.value === "All";
+        });
+        Object.keys(state.radio).forEach(function (k) { state.radio[k] = null; });
+        if (panel.__glyphxSearchBox) panel.__glyphxSearchBox.value = "";
+        state.search = "";
+        apply(panel);
+      });
+      panel.appendChild(btn);
+    }
+
+    var count = document.createElement("div");
+    count.className = "glyphx-controls-count";
+    count.setAttribute("role", "status");
+    count.setAttribute("aria-live", "polite");
+    panel.appendChild(count);
+    panel.__glyphxCount = count;
+
+    apply(panel);
+  }
+
+  function matches(el, cfg, state) {
+    if (cfg.checkboxes) {
+      var v = valueOf(el, cfg.checkboxes);
+      if (v !== null && state.checkbox[v] === false) return false;
+    }
+    var chosen = cfg.radio ? state.radio[cfg.radio] : null;
+    if (chosen) {
+      if (valueOf(el, cfg.radio) !== chosen) return false;
+    }
+    if (state.search && cfg.search) {
+      var s = valueOf(el, cfg.search);
+      if (s === null || s.toLowerCase().indexOf(state.search) === -1) return false;
+    }
+    return true;
+  }
+
+  function apply(panel) {
+    var cfg = config(panel);
+    var state = panel.__glyphxState;
+    if (!state) return;
+
+    var shown = 0, total = 0;
+    points(panel).forEach(function (el) {
+      total += 1;
+      if (matches(el, cfg, state)) {
+        el.classList.remove(HIDDEN);
+        shown += 1;
+      } else {
+        el.classList.add(HIDDEN);
+      }
+    });
+
+    if (panel.__glyphxCount) {
+      panel.__glyphxCount.textContent =
+        shown === total ? "Showing all " + total
+                        : "Showing " + shown + " of " + total;
+    }
+  }
+
+  function init() {
+    var panels = document.querySelectorAll("[data-glyphx-controls]");
+    if (!panels.length) return;
+    ensureStyle();
+    Array.prototype.forEach.call(panels, build);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>

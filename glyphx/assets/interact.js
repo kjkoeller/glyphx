@@ -52,7 +52,7 @@
       const v = el.getAttribute(a);
       if (v !== null) attrs[a.replace('data-','')] = v;
     });
-    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">[chart] Data Point</div>';
+    let html = '<div style="font-weight:700;margin-bottom:8px;font-size:13px">Data point</div>';
     Object.entries(attrs).forEach(([k, v]) => {
       html += `<div><span style="opacity:0.55;min-width:52px;display:inline-block">${k}</span><b>${v}</b></div>`;
     });
@@ -78,7 +78,7 @@
                 padding:28px 34px;max-width:380px;width:90%;
                 box-shadow:0 20px 60px rgba(0,0,0,0.5)">
       <div style="font-size:16px;font-weight:700;margin-bottom:16px">
-        [keyboard] GlyphX Keyboard Shortcuts
+        GlyphX keyboard shortcuts
       </div>
       <table style="width:100%;border-collapse:collapse;font-size:12.5px">
         <tr><td style="padding:4px 0;opacity:0.55;width:110px"><kbd>Click</kbd></td>
@@ -259,7 +259,7 @@
     document.querySelectorAll('.glyphx-toolbar').forEach(tb => {
       const btn = document.createElement('button');
       btn.className = 'glyphx-btn';
-      btn.textContent = '? Shortcuts';
+      btn.textContent = 'Keyboard shortcuts';
       btn.title = 'Show keyboard shortcuts (H)';
       btn.addEventListener('click', showHelp);
       tb.appendChild(btn);
@@ -267,7 +267,7 @@
 
     // Update toolbar hint
     document.querySelectorAll('.glyphx-toolbar span').forEach(s => {
-      s.textContent = 'GlyphX . click=highlight . shift+click=inspect . dbl-click=isolate . H=shortcuts';
+      s.textContent = 'Scroll to zoom \u00b7 drag to pan \u00b7 double-click to reset \u00b7 press ? for all shortcuts';
     });
   });
 

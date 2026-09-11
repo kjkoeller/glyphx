@@ -65,6 +65,12 @@ class Figure:
         yscale: str = "linear",
         shared_x: bool = False,
     ) -> None:
+        """
+        Set up the canvas, theme and the empty subplot grid.
+
+        ``rows``/``cols`` size the grid up front because :meth:`add_axes`
+        validates against it; a plain figure is just the 1x1 case.
+        """
         self.width        = width
         self.height       = height
         self.padding      = padding
@@ -113,6 +119,12 @@ class Figure:
         self._annotations:   list[dict[str, Any]] = []
         # (Axes, x_px, y_px) for each inset panel; see inset_axes().
         self._insets:        list[tuple] = []
+        # Opt-in marker read by crossfilter.js; see enable_crossfilter().
+        self._crossfilter:   bool = False
+        # Config for detail_panel.js, or None; see add_detail_panel().
+        self._detail_panel:  dict | None = None
+        # Config for controls.js, or None; see add_controls().
+        self._controls:      dict | None = None
         self._canvas_texts:  list[dict[str, Any]] = []
         self._supxlabel:     dict | None = None
         self._supylabel:     dict | None = None
@@ -151,6 +163,273 @@ class Figure:
     def set_ylabel(self, label: str) -> Figure:
         """Set the Y-axis label and return ``self``."""
         self.axes.ylabel = label
+        return self
+
+    def aggregate_line(self, data=None, x=None, y=None, *, hue=None,
+                       estimator="mean", ci=95, n_boot=1000, n_std=1.0,
+                       band_alpha: float = 0.2, label: str | None = None,
+                       color: str | None = None, seed: int = 42) -> Figure:
+        """
+        Plot the estimate of repeated measurements per x, with a CI band.
+
+        The equivalent of ``seaborn.lineplot()``: hand it raw
+        repeated-measures data -- several y values per x, from several
+        subjects, trials or runs -- and it draws the mean per x with a
+        bootstrapped confidence band, without a manual ``groupby`` first.
+
+        Args:
+            data: A DataFrame, or ``None`` to pass ``x``/``y`` as sequences.
+            x: Column name, or the x of each observation. Repeats are the
+                point: every observation sharing an x forms one group.
+            y: Column name, or the observed value of each.
+            hue: Column to split into one line and band per group.
+            estimator: ``"mean"``, ``"median"``, ``"sum"``, ``"min"``,
+                ``"max"``, ``"count"``, or a callable reducing an array to a
+                scalar.
+            ci: Confidence level 0-100 for a bootstrap interval, ``"sd"``,
+                ``"se"``, or ``None`` for the line alone.
+            n_boot: Bootstrap resamples when ``ci`` is a number.
+            n_std: Multiplier for the ``"sd"`` and ``"se"`` intervals.
+            band_alpha: Opacity of the band.
+            label: Series label. Defaults to the y column name.
+            color: Line colour. Defaults to the theme palette.
+            seed: Fixed, so redrawing the same data gives an identical band.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            fig.aggregate_line(df, x="timepoint", y="score", hue="treatment")
+        """
+        from .aggregate import aggregate
+        from .fill_between import FillBetweenSeries
+        from .series import LineSeries
+
+        if data is not None:
+            from .dataframes import get_column
+
+            if x is None or y is None:
+                raise ValueError(
+                    "aggregate_line(data=...) needs x= and y= column names."
+                )
+            x_values = get_column(data, x)
+            y_values = get_column(data, y)
+            hue_values = get_column(data, hue) if hue else None
+            default_label = str(y)
+        else:
+            if x is None or y is None:
+                raise ValueError("aggregate_line() needs x and y.")
+            x_values, y_values = list(x), list(y)
+            hue_values = list(hue) if hue is not None else None
+            default_label = label or ""
+
+        if hue_values is None:
+            groups = [(label or default_label, x_values, y_values)]
+        else:
+            # dict.fromkeys keeps first-seen order, so the legend follows the
+            # data rather than being alphabetised.
+            split: dict = {}
+            for xv, yv, hv in zip(x_values, y_values, hue_values):
+                split.setdefault(hv, ([], []))
+                split[hv][0].append(xv)
+                split[hv][1].append(yv)
+            groups = [(str(k), gx, gy) for k, (gx, gy) in split.items()]
+
+        # A band belongs to its line, so both get the same colour. Left to
+        # the theme they would take consecutive palette slots independently,
+        # and a group's band would come out a different colour from its line.
+        palette = (self.theme or {}).get("colors") or []
+
+        for index, (group_label, gx, gy) in enumerate(groups):
+            xs, centre, lower, upper = aggregate(
+                gx, gy, estimator=estimator, ci=ci,
+                n_boot=n_boot, n_std=n_std, seed=seed,
+            )
+            group_color = color or (palette[index % len(palette)]
+                                    if palette else None)
+            # Band first, so the line draws on top of it. FillBetweenSeries
+            # types color as str with its own default, so the argument is
+            # omitted rather than passed as None.
+            if lower is not None:
+                if group_color:
+                    band = FillBetweenSeries(xs, lower, upper,
+                                             color=group_color, alpha=band_alpha)
+                else:
+                    band = FillBetweenSeries(xs, lower, upper, alpha=band_alpha)
+                self.add(band)
+            self.add(LineSeries(xs, centre, label=group_label,
+                                color=group_color))
+
+        return self
+
+    def add_controls(self, *, checkboxes: str | None = None,
+                     radio: str | None = None, search: str | None = None,
+                     title: str | None = None, reset: bool = True,
+                     labels: dict[str, str] | None = None,
+                     placeholder: str | None = None) -> Figure:
+        """
+        Add filter controls beside the chart: checkboxes, radios, a search box.
+
+        Each control narrows what the chart shows, in the browser, with no
+        server and no callback. Pass the name of a field and GlyphX reads
+        the distinct values out of the data and builds one control per
+        value -- you do not enumerate them yourself.
+
+        A field is looked up wherever it lives: in a point's ``meta``, in its
+        own ``data-`` attributes (``percent`` on a pie, ``close`` on a
+        candlestick), or as the series label via ``"series"``. Callers should
+        not have to know which, since it differs per chart type.
+
+        Filters combine with AND, which is how a stack of controls reads:
+        tick two regions and type a name, and you get that name within those
+        regions. A running "Showing 12 of 40" sits underneath, announced to
+        screen readers.
+
+        Args:
+            checkboxes: Field to build a checkbox per value from. All start
+                ticked -- a panel that hides the data on load looks broken.
+            radio:      Field to build a radio group from. Gets an "All"
+                option, or there is no way back to unfiltered.
+            search:     Field a text box filters on, case-insensitive
+                substring.
+            title:      Heading for the panel.
+            reset:      Include a "Show all" button. ``False`` to omit.
+            labels:     Friendlier captions per control, keyed ``"checkboxes"``,
+                ``"radio"``, ``"search"``. Defaults to the field name.
+            placeholder: Placeholder for the search box.
+
+        Returns:
+            ``self`` for chaining.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined.
+
+        Example::
+
+            fig.add(ScatterSeries(x, y, meta=records))
+            fig.add_controls(checkboxes="region", search="customer",
+                             title="Filter")
+        """
+        if not any((checkboxes, radio, search)):
+            raise ValueError(
+                "add_controls() needs at least one of checkboxes=, radio= "
+                "or search= to have anything to control."
+            )
+        labels = labels or {}
+        self._controls = {
+            "checkboxes": checkboxes,
+            "radio": radio,
+            "search": search,
+            "title": title,
+            "reset": reset,
+            "checkbox_label": labels.get("checkboxes"),
+            "radio_label": labels.get("radio"),
+            "search_label": labels.get("search"),
+            "placeholder": placeholder,
+        }
+        return self
+
+    def _controls_html(self) -> str:
+        """Markup for the control panel, or an empty string when unused."""
+        if not self._controls:
+            return ""
+        import html as _html
+        import json as _json
+
+        config = _html.escape(_json.dumps(self._controls), quote=True)
+        return (f'<div class="glyphx-controls" '
+                f"data-glyphx-controls='{config}'></div>")
+
+    def add_detail_panel(self, fields: list[str] | None = None, *,
+                         title: str | None = None,
+                         empty: str | None = None) -> Figure:
+        """
+        Show a panel that fills in with a point's details when it is clicked.
+
+        The common case for selection events without
+        writing any JavaScript. Pass ``meta=[...]`` to the series and the
+        panel lists those values for whichever point is selected; click the
+        same point again, or press Escape, and it goes back to its empty
+        message.
+
+        Under the hood this is an ordinary listener on the public
+        ``glyphx:select`` event, so it composes rather than competes: your
+        own listeners still fire for the same click, and cross-filtering
+        still applies.
+
+        Args:
+            fields: Metadata keys to show, in this order. ``"x"``, ``"y"``
+                and ``"label"`` are also accepted and fall back to the
+                point's own values. A key a given point lacks is skipped.
+                Defaults to every key that point's ``meta`` carries, or to
+                x/y/series for a series plotted without metadata.
+            title:  Heading for the panel.
+            empty:  Text shown before anything is selected.
+
+        Returns:
+            ``self`` for chaining.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined.
+
+        Example::
+
+            fig.add(ScatterSeries(x, y, meta=records))
+            fig.add_detail_panel(["customer", "region"], title="Selected")
+            fig.share("chart.html")
+        """
+        self._detail_panel = {
+            "fields": list(fields) if fields else [],
+            "title": title,
+            "empty": empty or "Click a point to see its details.",
+        }
+        return self
+
+    def _detail_panel_html(self) -> str:
+        """Markup for the detail panel, or an empty string when unused."""
+        if not self._detail_panel:
+            return ""
+        import html as _html
+        import json as _json
+
+        config = _html.escape(_json.dumps(self._detail_panel), quote=True)
+        return (f'<div class="glyphx-detail-panel" '
+                f"data-glyphx-detail-panel='{config}'></div>")
+
+    def enable_crossfilter(self, enabled: bool = True) -> Figure:
+        """
+        Let clicks in this chart filter every other opted-in chart on the page.
+
+        Clicking a bar, point or slice dims everything in every participating
+        chart that does not share its x value; clicking the same element
+        again, or pressing Escape, clears the filter. The x value is the join
+        key, since that is what ``data-x`` already carries on every drawn
+        element.
+
+        Charts opt in individually, so a page can mix filtered charts with
+        independent ones. The filtering runs entirely in the exported HTML --
+        there is no server, no callback round-trip, and nothing leaves the
+        page, which is what Dash or Streamlit are normally needed for.
+
+        Only meaningful for ``.share()`` and ``.save()`` output, where the
+        JavaScript is inlined. A bare ``render_svg()`` string carries the
+        marker but has no script to act on it.
+
+        Args:
+            enabled: ``False`` to opt this chart back out.
+
+        Returns:
+            ``self`` for chaining.
+
+        Example::
+
+            revenue = Figure().bar(months, revenue).enable_crossfilter()
+            costs   = Figure().bar(months, costs).enable_crossfilter()
+            SubplotGrid(1, 2).add(revenue, 0, 0).add(costs, 0, 1).save("d.html")
+            # clicking "Feb" in either chart dims every other month in both
+        """
+        self._crossfilter = enabled
         return self
 
     def set_y2label(self, label: str) -> Figure:
@@ -643,15 +922,20 @@ class Figure:
             ax._x_domain_override = shared
             ax.finalize()
 
-        # Label only the lowest occupied cell in each column.
+        # Label only the lowest occupied cell in each column.  Built with an
+        # explicit loop rather than a comprehension plus assert: mypy cannot
+        # narrow Axes | None through a comprehension's filter, and an assert
+        # as the narrowing device is stripped by python -O.
         for c in range(self.cols):
-            occupied = [(r, self.grid[r][c]) for r in range(self.rows)
-                        if self.grid[r][c] is not None]
+            occupied: list[tuple[int, Axes]] = []
+            for r in range(self.rows):
+                cell = self.grid[r][c]
+                if cell is not None:
+                    occupied.append((r, cell))
             if not occupied:
                 continue
             bottom = max(r for r, _ in occupied)
             for r, cell in occupied:
-                assert cell is not None      # narrowed by the filter above
                 cell._hide_xticklabels = (r != bottom)
 
     def _render_insets(self) -> str:
@@ -982,6 +1266,7 @@ class Figure:
         return id(self)
 
     def __repr__(self) -> str:
+        """Summarise the figure for the REPL: size, series, theme."""
         series_desc = ", ".join(
             f"{s.__class__.__name__}({repr(s.label)})"
             if getattr(s, "label", None)
@@ -1038,8 +1323,10 @@ class Figure:
         scale_y: Any,
         font: str,
     ) -> str:
+        """Emit every annotation: its text, and a leader arrow where one was asked for."""
         elements: list[str] = []
-        # Build a category->numeric map from all registered series
+        # Build the map from category name to numeric position, across every
+        # registered series
         cat_map: dict = {}
         for s, _ in self.series:
             if hasattr(s, "_x_categories") and s._x_categories:
@@ -1095,6 +1382,7 @@ class Figure:
         return "glyphx-arrow-" + stable_id(repr(self._annotations), length=8)
 
     def _arrow_marker_def(self) -> str:
+        """Emit the ``<marker>`` this figure's annotation arrows point at."""
         marker_id = self._arrow_marker_id()
         return (
             f'<defs><marker id="{marker_id}" markerWidth="8" markerHeight="8" '
@@ -1288,6 +1576,8 @@ class Figure:
             width=self.width,
             height=self.height,
             has_math=_has_math,
+            crossfilter=self._crossfilter,
+            axis_metadata=self.axes.axis_metadata(),
         )
 
         # Accessibility injection
@@ -1441,7 +1731,8 @@ class Figure:
             except Exception:
                 pass
 
-        html = wrap_svg_with_template(svg_string)
+        html = wrap_svg_with_template(svg_string + self._controls_html()
+                                      + self._detail_panel_html())
         tmp  = NamedTemporaryFile(delete=False, suffix=".html", mode="w", encoding="utf-8")
         tmp.write(html)
         tmp.close()
@@ -1669,7 +1960,10 @@ class Figure:
             Complete HTML document string.
         """
         from .utils import make_shareable_html
-        svg   = self.render_svg()
+        # The panel sits alongside the chart inside the same content block,
+        # so it travels with the SVG through both export paths.
+        svg   = (self.render_svg() + self._controls_html()
+                 + self._detail_panel_html())
         label = title or self.title or "GlyphX Chart"
         html  = make_shareable_html(svg, title=label)
         if filename:
@@ -1722,7 +2016,7 @@ def _add_pptx_slide(cairosvg, prs, svg: str, title: str | None = None) -> None:
     from pptx.enum.text import PP_ALIGN
     from pptx.util import Inches, Pt
 
-    # SVG -> PNG at 2x for crisp rendering
+    # Rasterise at 2x so the slide image stays crisp
     png_bytes = cairosvg.svg2png(bytestring=svg.encode(), scale=2)
     png_stream = io.BytesIO(png_bytes)
 
@@ -1790,6 +2084,7 @@ class SubplotGrid:
     """
 
     def __init__(self, rows: int, cols: int) -> None:
+        """Create an empty rows x cols grid to place existing figures into."""
         self.rows = rows
         self.cols = cols
         self.grid: list[list[Figure | None]] = [

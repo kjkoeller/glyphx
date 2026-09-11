@@ -11,6 +11,12 @@ from .utils import svg_escape
 
 
 class CountPlotSeries(BaseSeries):
+    """
+    Bar chart of how often each category appears.
+
+    Counts the values itself, so it takes the raw column rather than
+    pre-aggregated totals.
+    """
     #: Bars are drawn from y=0, so the domain must include zero.
     zero_anchored = True
 
@@ -26,6 +32,7 @@ class CountPlotSeries(BaseSeries):
     """
 
     def __init__(self, data, order=None, color="#1f77b4", bar_width=0.8, label=None):
+        """Tally the values, honouring an explicit category order if one is given."""
         self.data = list(data)
         self.order = list(order) if order else sorted(set(self.data))
         self.bar_width = bar_width
@@ -43,6 +50,7 @@ class CountPlotSeries(BaseSeries):
         )
 
     def to_svg(self, ax, use_y2=False) -> str:
+        """Draw one bar per category, sized by its count."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         scale_x = ax.scale_x
 

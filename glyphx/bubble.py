@@ -73,6 +73,7 @@ class BubbleSeries(BaseSeries):
         stroke_width: float   = 0.8,
         title: str | None     = None,
     ) -> None:
+        """Store the points plus the size and colour encodings."""
         super().__init__(x=list(x), y=list(y), color=color or "#3b82f6",
                          label=label, title=title)
         self.c            = c
@@ -112,6 +113,7 @@ class BubbleSeries(BaseSeries):
             self._c_norm = None
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw one circle per point, radius from ``sizes`` and fill from ``c``."""
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals   = getattr(self, "_numeric_x", self.x)
         elements: list[str] = []

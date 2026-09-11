@@ -36,7 +36,7 @@ from typing import Any
 from ._typing import AxesLike
 from .colormaps import colormap_colors
 from .series import BaseSeries
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 
 
 def _to_date(v) -> date:
@@ -101,13 +101,24 @@ class GanttSeries(BaseSeries):
         show_grid:    bool                  = True,
         label:        str | None            = None,
     ) -> None:
+        """Store the tasks and work out the overall date span the chart covers."""
         self.tasks       = tasks
         self.bar_height  = int(bar_height)
         self.row_padding = int(row_padding)
         self.show_today  = show_today
         self.today_color = today_color
         self.show_grid   = show_grid
-        self.css_class   = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class   = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Parse all dates
         self._starts = [_to_date(t["start"]) for t in tasks]
@@ -138,6 +149,7 @@ class GanttSeries(BaseSeries):
         super().__init__(x=None, y=None, color=self._default_color, label=label)
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw one horizontal bar per task, positioned by its start and end dates."""
         w     = getattr(ax, "width",   800)
         h     = getattr(ax, "height",  400)
         pad_l = getattr(ax, "padding", 50) + 80  # extra room for labels
@@ -161,6 +173,7 @@ class GanttSeries(BaseSeries):
         span      = epoch_max - epoch_min or 1
 
         def dx(d: date) -> float:
+            """Pixel x for a date, measured from the chart's earliest date."""
             return pad_l + ((_date_to_epoch(d) - epoch_min) / span) * plot_w
 
         elements: list[str] = []
@@ -210,7 +223,7 @@ class GanttSeries(BaseSeries):
             is_mile = task.get("milestone", False)
             prog    = task.get("progress")
             tip_txt = task.get("tooltip") or (
-                f"{task['task']}: {start.isoformat()} -> {end.isoformat()}"
+                f"{task['task']}: {start.isoformat()} to {end.isoformat()}"
             )
 
             # Task label on left

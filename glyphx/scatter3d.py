@@ -11,7 +11,7 @@ import numpy as np
 from .colormaps import apply_colormap
 from .downsample import AUTO_THRESHOLD
 from .projection3d import Camera3D, _format_3d_tick
-from .utils import svg_escape
+from .utils import series_fingerprint, stable_id, svg_escape
 
 
 class Scatter3DSeries:
@@ -38,6 +38,7 @@ class Scatter3DSeries:
         label:  str | None    = None,
         alpha:  float         = 0.85,
     ) -> None:
+        """Store the three coordinate arrays and the marker styling."""
         self.x                    = list(x)
         self.y                    = list(y)
         self.z                    = list(z)
@@ -49,7 +50,17 @@ class Scatter3DSeries:
         self.alpha                = float(alpha)
         self.threshold            = None
         self.last_downsample_info = None
-        self.css_class            = f"series3d-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class            = "series3d-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Pre-compute per-point colors
         if c is not None:

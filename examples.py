@@ -27,6 +27,8 @@ from glyphx.waterfall   import WaterfallSeries
 from glyphx.treemap     import TreemapSeries
 from glyphx.streaming   import StreamingSeries
 from glyphx.colormaps   import colormap_colors
+from glyphx.figure      import SubplotGrid
+from glyphx             import register_theme
 import pandas as pd
 
 np.random.seed(42)
@@ -373,6 +375,101 @@ for va, vb in zip(
     stream_a.push(float(va))
     stream_b.push(float(vb))
 save(fig, "streaming")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# LAYOUT
+# ─────────────────────────────────────────────────────────────────────────────
+print("Layout")
+
+# Inset axes — a zoomed detail panel over the main plot.
+signal_x = list(np.linspace(0, 120, 400))
+signal_y = [float(v) for v in np.sin(np.array(signal_x) / 7) * 10 + np.array(signal_x) / 12]
+
+fig = Figure(width=W, height=H, auto_display=False)
+fig.set_title("Inset axes  —  fig.inset_axes(x, y, w, h)")
+fig.line(signal_x, signal_y, label="Full range")
+inset = fig.inset_axes(0.55, 0.14, 0.36, 0.32)
+inset.add_series(LineSeries(signal_x[:45], signal_y[:45], label="First 45 samples"))
+save(fig, "inset_axes")
+
+# Shared X across stacked panels — the price / volume / indicator layout.
+fig = Figure(rows=3, cols=1, width=W, height=560, auto_display=False,
+             shared_x=True, legend=None)
+fig.set_title("Shared X axis  —  Figure(rows=3, shared_x=True)")
+panels = [
+    ("Price",  [float(v) for v in np.sin(np.array(signal_x) / 9) * 10 + 40]),
+    ("Volume", [float(v) for v in np.abs(np.cos(np.array(signal_x) / 7)) * 100]),
+    ("RSI",    [float(v) for v in np.abs(np.sin(np.array(signal_x) / 13)) * 100]),
+]
+# Each panel deliberately covers a different slice, to show the alignment.
+for i, ((name, values), sl) in enumerate(zip(panels, [slice(0, 260), slice(60, 400), slice(0, 400)])):
+    ax = fig.add_axes(i, 0)
+    ax.add_series(LineSeries(signal_x[sl], values[sl], label=name))
+save(fig, "shared_x")
+
+# Wrapped tick labels instead of rotated ones.
+fig = Figure(width=W, height=H, auto_display=False)
+fig.set_title("Wrapped tick labels  —  fig.set_tick_wrap()")
+fig.bar(["Product Engineering", "Sales & Marketing", "Customer Support",
+         "Research & Development"], [42.0, 31.0, 18.0, 27.0])
+fig.tight_layout().set_tick_wrap()
+save(fig, "tick_wrap")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# DUAL AXIS
+# ─────────────────────────────────────────────────────────────────────────────
+print("Dual axis")
+
+fig = Figure(width=W, height=H, auto_display=False)
+fig.set_title("Dual Y axis  —  aligned ticks, labelled right axis")
+fig.add(LineSeries(months, [r * 20 for r in revenue], label="Price (left)"))
+fig.add(BarSeries(months, [c * 300 for c in costs], label="Volume (right)"), use_y2=True)
+fig.set_xlabel("Month").set_ylabel("Price ($)").set_y2label("Volume (units)")
+fig.axes.set_yticks([20, 35, 50, 65])          # a non-default tick count
+fig.set_tick_format(lambda v: f"{v:,.0f}")     # applies to X, Y1 and Y2
+save(fig, "dual_y_labelled")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# THEMES
+# ─────────────────────────────────────────────────────────────────────────────
+print("Themes")
+
+# A registered theme works anywhere a theme *name* is accepted.
+register_theme(
+    "acme",
+    base="dark",
+    colors=["#e6194b", "#3cb44b", "#4363d8", "#f58231"],
+    font="Inter, Helvetica, sans-serif",
+)
+fig = Figure(width=W, height=H, auto_display=False, theme="acme")
+fig.set_title("Custom theme  —  register_theme(\"acme\", base=\"dark\", ...)")
+for offset, label in [(0, "North"), (6, "South"), (12, "East"), (18, "West")]:
+    fig.line(months, [r * 10 + offset for r in revenue], label=label)
+save(fig, "registered_theme")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INTERACTIVE DASHBOARD
+# ─────────────────────────────────────────────────────────────────────────────
+print("Dashboard")
+
+# Cross-filter and multi-figure export both need real files rather than a
+# single SVG, so this one writes HTML.
+rev_fig = Figure(width=420, height=320, auto_display=False, title="Revenue")
+rev_fig.bar(months[:6], revenue[:6]).enable_crossfilter()
+cost_fig = Figure(width=420, height=320, auto_display=False, title="Costs")
+cost_fig.bar(months[:6], costs[:6]).enable_crossfilter()
+
+dashboard = SubplotGrid(1, 2)
+dashboard.add(rev_fig, 0, 0).add(cost_fig, 0, 1)
+dashboard.save(str(OUT / "crossfilter_dashboard.html"))
+print("  crossfilter_dashboard.html")
+
+# Each figure also gets an SVG so the docs can show them statically.
+save(rev_fig, "crossfilter_revenue")
 
 
 print(f"\nDone — {len(list(OUT.glob('*.svg')))} SVGs written to {OUT}/")

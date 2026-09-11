@@ -11,6 +11,12 @@ from typing import NamedTuple
 
 
 class Projected(NamedTuple):
+    """
+    One projected point: its screen pixels plus its depth from the camera.
+
+    Depth is kept so callers can sort faces back to front; SVG has no
+    z-buffer, so paint order is the only thing deciding what sits on top.
+    """
     px: float    # screen X pixel
     py: float    # screen Y pixel (SVG convention: positive = down)
     depth: float # depth value for painter's-algorithm sorting (larger = farther)
@@ -45,6 +51,7 @@ class Camera3D:
         cy: float  = 0.0,    # canvas centre y
         scale: float = 1.0,  # pixels per normalised unit
     ) -> None:
+        """Set the camera angles and distance, then build the projection matrix."""
         self.azimuth   = azimuth
         self.elevation = elevation
         self.cx        = cx
@@ -53,6 +60,7 @@ class Camera3D:
         self._update()
 
     def _update(self) -> None:
+        """Recompute the cached sines and cosines after an angle change."""
         az = math.radians(self.azimuth)
         el = math.radians(self.elevation)
         self._cos_az = math.cos(az)

@@ -68,7 +68,7 @@
       const rect = el.getBoundingClientRect();
       tip.style.left = (rect.right + 8) + 'px';
       tip.style.top  = (rect.top  - 4) + 'px';
-    } catch (_) {}
+    } catch (_) { /* empty */ }
   }
 
   function hideTip() {

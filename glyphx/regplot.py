@@ -263,7 +263,7 @@ def regplot(
             slope, intercept = coeffs
             lbl = f"y = {slope:.2g}x + {intercept:.2g}"
             # np.corrcoef divides by the standard deviations, so a constant y
-            # gives 0/0 -> nan plus a divide-by-zero warning.  The fit itself
+            # divides 0 by 0, giving nan and a warning.  The fit itself
             # is still meaningful (a flat line); only r is not.
             if np.ptp(arr_y) > 0:
                 corr = float(np.corrcoef(arr_x, arr_y)[0, 1])

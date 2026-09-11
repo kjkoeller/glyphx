@@ -48,6 +48,7 @@ class ECDFSeries(BaseSeries):
         line_width: float = 2.0,
         complementary: bool = False,
     ) -> None:
+        """Sort the data and build the cumulative step values."""
         arr = np.sort(np.asarray(data, dtype=float))
         n   = len(arr)
         ys  = np.arange(1, n + 1) / n

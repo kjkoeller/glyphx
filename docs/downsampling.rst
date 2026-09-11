@@ -158,9 +158,9 @@ SVG comments are also embedded inline whenever downsampling occurs:
 
 .. code-block:: xml
 
-   <!-- glyphx: M4+LTTB downsampled 200000 -> 1631 points -->
-   <!-- glyphx: voxel-2D downsampled 100000 -> 5041 points -->
-   <!-- glyphx: grid-decimate (faces) downsampled 39601 -> 3481 points -->
+   <!-- glyphx: M4+LTTB downsampled 200000 points to 1631 -->
+   <!-- glyphx: voxel-2D downsampled 100000 points to 5041 -->
+   <!-- glyphx: grid-decimate (faces) downsampled 39601 points to 3481 -->
 
 
 Global kill-switch

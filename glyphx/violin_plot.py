@@ -4,6 +4,8 @@ GlyphX ViolinPlotSeries - replaces scipy gaussian_kde with a pure-numpy implemen
 
 import numpy as np
 
+from .utils import series_fingerprint, stable_id
+
 
 def _numpy_kde(data, bandwidth=None):
     """
@@ -22,6 +24,7 @@ def _numpy_kde(data, bandwidth=None):
         h = 1e-6
 
     def kde(y_vals):
+        """Gaussian kernel density estimate, with a Silverman bandwidth."""
         y  = np.asarray(y_vals)
         z  = (y[:, None] - data[None, :]) / h
         return np.exp(-0.5 * z ** 2).mean(axis=1) / (h * np.sqrt(2 * np.pi))
@@ -48,6 +51,7 @@ class ViolinPlotSeries:
     def __init__(self, data, positions=None, color="#1f77b4",
                  width=50, show_median=True, show_box=True, label=None,
                  hue=None, hue_colors=None, cmap="viridis", categories=None):
+        """Store one dataset per violin, with optional explicit x positions."""
         self.data        = data
         self.positions   = positions or list(range(len(data)))
         self.color       = color
@@ -59,7 +63,17 @@ class ViolinPlotSeries:
         self.show_median = show_median
         self.show_box    = show_box
         self.label       = label
-        self.css_class   = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class   = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Expose x/y for Axes domain computation
         self.x = self.positions
@@ -67,6 +81,7 @@ class ViolinPlotSeries:
         self.y   = [float(all_vals.min()), float(all_vals.max())]
 
     def to_svg(self, ax, use_y2=False):
+        """Draw each violin as a mirrored density curve, with its inner box."""
         from glyphx.colormaps import colormap_colors
         scale_y  = ax.scale_y2 if use_y2 else ax.scale_y
         elements = []

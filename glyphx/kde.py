@@ -17,6 +17,7 @@ import numpy as np
 
 from ._typing import AxesLike
 from .series import BaseSeries
+from .utils import series_fingerprint, stable_id
 from .violin_plot import _numpy_kde
 
 
@@ -47,6 +48,7 @@ class KDESeries(BaseSeries):
         label: str | None    = None,
         bw_method: str | float = "silverman",
     ) -> None:
+        """Estimate the density on construction, so the curve is ready to draw."""
         arr = np.asarray(data, dtype=float)
         arr = arr[np.isfinite(arr)]
 
@@ -60,7 +62,17 @@ class KDESeries(BaseSeries):
         self.filled   = filled
         self.alpha    = float(alpha)
         self.width    = int(width)
-        self.css_class = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         super().__init__(
             x     = self.kde_x,
@@ -70,6 +82,7 @@ class KDESeries(BaseSeries):
         )
 
     def to_svg(self, ax: AxesLike, use_y2: bool = False) -> str:
+        """Draw the density curve, filled beneath if that was asked for."""
         scale_y = ax.scale_y2 if use_y2 else ax.scale_y
         x_vals  = getattr(self, "_numeric_x", self.kde_x)
 

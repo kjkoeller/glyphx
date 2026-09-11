@@ -78,6 +78,7 @@ class StatAnnotation:
         tip_len: float = 8.0,
         y_offset: float = 0.0,
     ) -> None:
+        """Store the two endpoints and the significance label to bridge them."""
         self.x1         = x1
         self.x2         = x2
         self.p_value    = p_value
@@ -102,6 +103,7 @@ class StatAnnotation:
 
         # Resolve x positions
         def resolve_x(val: Any) -> float:
+            """Turn an endpoint into a numeric x, looking up category names."""
             # Categorical lookup
             if isinstance(val, str):
                 for s in ax.series:

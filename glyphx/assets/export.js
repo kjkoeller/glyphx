@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Create a container div for export buttons
+  // The shareable-HTML template already renders styled Download SVG / PNG
+  // buttons in its toolbar. Injecting a second, unstyled row above the chart
+  // gave every exported file two sets of controls doing the same thing, in
+  // two different visual styles. When a toolbar is present, add only the one
+  // format it lacks; otherwise render the full row as before, so a bare SVG
+  // embedded in someone else's page still gets export controls.
+  const toolbar = document.querySelector(".glyphx-toolbar");
+
   const buttons = document.createElement("div");
   buttons.style.marginBottom = "10px";
 
@@ -54,7 +61,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const pngBtn = createButton("Download PNG", () => exportImage("png"));
   const jpgBtn = createButton("Download JPG", () => exportImage("jpeg"));
 
-  // Add buttons to the page, right before existing content
+  if (toolbar) {
+    // Match the toolbar's own button styling rather than the inline styles
+    // used for the standalone row.
+    jpgBtn.removeAttribute("style");
+    jpgBtn.className = "glyphx-btn";
+    const shortcuts = toolbar.querySelector(".glyphx-btn:last-child");
+    toolbar.insertBefore(jpgBtn, shortcuts);
+    return;
+  }
+
   buttons.appendChild(svgBtn);
   buttons.appendChild(pngBtn);
   buttons.appendChild(jpgBtn);

@@ -23,7 +23,7 @@ from collections import defaultdict
 
 from ._typing import AxesLike
 from .colormaps import colormap_colors
-from .utils import _format_tick, svg_escape
+from .utils import _format_tick, point_attrs, series_fingerprint, stable_id, svg_escape
 
 
 class SunburstSeries:
@@ -62,6 +62,7 @@ class SunburstSeries:
         min_label_arc: float            = 14.0,
         label:         str | None       = None,
     ) -> None:
+        """Build the parent/child index and check the label arrays line up."""
         if len(labels) != len(parents) or len(labels) != len(values):
             raise ValueError(
                 "labels, parents, and values must all have the same length."
@@ -77,7 +78,17 @@ class SunburstSeries:
         self.show_labels   = show_labels
         self.min_label_arc = float(min_label_arc)
         self.label         = label
-        self.css_class     = f"series-{id(self) % 100000}"
+        # Derived from content, not id(self), so repeated renders of the
+
+        # same figure are byte-identical and snapshot comparison works.
+
+        self.css_class     = "series-" + stable_id(
+
+            type(self).__name__, getattr(self, "label", None),
+
+            series_fingerprint(self), length=8,
+
+        )
 
         # Build tree
         self._children: dict[str, list[str]] = defaultdict(list)
@@ -108,6 +119,7 @@ class SunburstSeries:
         self.y = None
 
     def _sum_tree(self, node: str) -> float:
+        """Total value of a node: its own, plus everything beneath it."""
         children = self._children.get(node, [])
         if not children:
             s = self._value.get(node, 0.0)
@@ -132,6 +144,12 @@ class SunburstSeries:
         return "#888888"
 
     def _is_descendant(self, node: str, ancestor: str) -> bool:
+        """
+        Is ``node`` somewhere under ``ancestor``?
+
+        Tracks visited nodes, so a malformed hierarchy with a parent cycle
+        terminates instead of recursing forever.
+        """
         visited: set[str] = set()
         cur = node
         parent_map = dict(zip(self.labels, self.parents))
@@ -147,6 +165,7 @@ class SunburstSeries:
                   a_start: float, a_end: float) -> str:
         """SVG path for an annular sector (ring segment)."""
         def pt(r: float, a: float):
+            """Cartesian point at radius ``r`` and angle ``a`` degrees from centre."""
             rad = math.radians(a)
             return cx + r * math.cos(rad), cy + r * math.sin(rad)
 
@@ -165,6 +184,7 @@ class SunburstSeries:
         )
 
     def to_svg(self, ax: AxesLike = None) -> str:
+        """Draw each ring outward from the root, one arc per node."""
         if ax is None:
             cx, cy = 275, 275
             font, tc = "sans-serif", "#000"
@@ -226,8 +246,8 @@ class SunburstSeries:
             )
             elements.append(
                 f'<path class="glyphx-point {self.css_class}" '
-                f'd="{path}" {fill_attr} stroke="#fff" stroke-width="0.8" '
-                f'{tooltip}/>'
+                f'd="{path}" {fill_attr} stroke="#fff" stroke-width="0.8"'
+                f'{point_attrs(node, val)} {tooltip}/>'
             )
 
             # Label - only if arc is wide enough
